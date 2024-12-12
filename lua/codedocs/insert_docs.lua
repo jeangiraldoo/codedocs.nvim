@@ -15,7 +15,7 @@ local function start_doc_insertion(lang_details, chosen_docstring)
 	end
 end
 
-local function insert_docs(lang_templates)
+local function insert_documentation(lang_templates)
 	local filetype = vim.bo.filetype
 	local lang_details = lang_templates[filetype]
 	local lang_docstring = lang_details["template"]
@@ -27,5 +27,5 @@ local function insert_docs(lang_templates)
 end
 
 return {
-	insert_docs = insert_docs
+	insert_docs = insert_documentation
 }
