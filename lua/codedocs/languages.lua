@@ -1,13 +1,13 @@
 return {
 		python = {
-			template = '"""\n\n"""',
+			template = {'"""', '""', '"""'},
 			func = "def",
 			pos = "below",
 			leader = "Args:<CR>\t",
 			before_arg = ""
 		},
 		javascript = {
-			template = "/**\n * \n */",
+			template = {"/**", " *jaj ", " */"},
 			func = "function",
 			pos = "above",
 			leader = "",
