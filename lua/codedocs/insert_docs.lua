@@ -16,6 +16,8 @@ local function start_doc_insertion(lang_details, docstring)
 end
 
 local function insert_documentation(lang_templates)
+	local current_line = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line (1-based index)
+	local line_content = vim.api.nvim_buf_get_lines(0, current_line -1, current_line, false)[1]
 	local filetype = vim.bo.filetype
 	local lang_details = lang_templates[filetype]
 	local docstring = lang_details["template"]
@@ -24,6 +26,7 @@ local function insert_documentation(lang_templates)
 	else
 		print("There are no defined documentation strings for " .. filetype .. " files")
 	end
+	require("codedocs.lua.codedocs.parameter_parser").start_arg_insertion(line_content, lang_details)
 end
 
 return {
