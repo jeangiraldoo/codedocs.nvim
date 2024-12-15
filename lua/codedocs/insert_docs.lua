@@ -29,10 +29,10 @@ local function insert_documentation(templates)
 	local line_content = vim.api.nvim_buf_get_lines(0, current_line -1, current_line, false)[1]
 	local filetype = vim.api.nvim_buf_get_option(0, "filetype")
 	local template = templates[filetype]
-	local struct = template["template"]
+	local struct = template["struct"]
 	if struct then
 		local final_docstring = require("codedocs.lua.codedocs.param_parser").get_final_docstring(template, struct, line_content)
-		insert_into_buffer(final_docstring, template["pos"], current_line)
+		insert_into_buffer(final_docstring, template["direction"], current_line)
 	else
 		print("There are no defined documentation strings for " .. filetype .. " files")
 	end
