@@ -27,10 +27,10 @@
 
 return {
 		python = {
-			struct = {'"""', '""', '"""'},
+			struct = {'"""', '\t', '"""'},
 			func = "def",
 			direction = "below",
-			params_title = "Args:<CR>\t",
+			params_title = "Args:",
 			param_keyword = ""
 		},
 		javascript = {

@@ -5,7 +5,7 @@
 -- @param insertion_direction (string) Direction to insert the string relative to the function declaration.
 -- @param current_line (number) The 1-based line number where the cursor is located.
 local function insert_into_buffer(final_docstring,  insertion_direction, current_line)
-	if insertion_direction ~= "above" then
+	if insertion_direction ~= "above" and insertion_direction ~= "below" then
 		error('\n\nYou can only insert a documentation string "above" or "below" a function. ' ..
 			'You used: ' .. insertion_direction .. '\n\n' ..
 			'To fix this issue, please verify the "pos" setting in your config file for the Codedocs plugin. ' ..
@@ -16,6 +16,8 @@ local function insert_into_buffer(final_docstring,  insertion_direction, current
 
 	if insertion_direction == "above" then
 		insertion_line_pos = current_line - 1
+	elseif insertion_direction == "below" then
+		insertion_line_pos = current_line
 	end
 	vim.api.nvim_buf_set_lines(0, insertion_line_pos, insertion_line_pos, false, final_docstring)
 end
