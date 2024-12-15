@@ -20,11 +20,13 @@ end
 local function update_docstring_content(docstring_struct, args_title, params, arg_keyword)
 	local docstring_copy = copy_docstring(docstring_struct)
 	local line_start = docstring_struct[2]
+	-- if identation then
+	-- 	line_start = "\t" .. line_start
+	-- end
 	table.insert(docstring_copy, 3, line_start)
 	if args_title ~= "" then
 		table.insert(params, 1, args_title)
 	end
-	print(vim.inspect(params))
 	for i = 1, #params do
 		table.insert(docstring_copy, i + 3, line_start .. arg_keyword .. params[i])
 	end
@@ -34,11 +36,22 @@ end
 --- Returns the parametres found in the function under the cursor
 -- @param line (string) The line under the cursor containing the function signature
 -- @param func_keyword (string) The keyword used to define functions in the associated language
+-- @param indentation (bool) Controls whether parameters are indented.
 -- @return (table|nil) A table with each parametre as an element, or nil if no parametres are found
-local function get_parametres(line, func_keyword)
+local function get_parametres(line, func_keyword, indentation)
+	local indentation_string = "\t"
+	if not indentation then
+		indentation_string = ""
+	end
+
 	if line and string.match(line, func_keyword) then
 		local params_string = string.match(line, "%((.-)%)")
-		return vim.split(params_string, ", ")
+		local params = vim.split(params_string, ", ")
+
+		for i = 1, #params do
+			params[i] = indentation_string .. params[i]
+		end
+		return params
 	end
 	return nil
 end
@@ -51,7 +64,7 @@ end
 -- @return (table) The updated docstring or the original one.
 local function get_final_docstring(template, docstring_struct, line)
 	local func_keyword = template["func"]
-	local detected_params = get_parametres(line, func_keyword)
+	local detected_params = get_parametres(line, func_keyword, template["param_indent"])
 
 	if not detected_params then
 		return docstring_struct

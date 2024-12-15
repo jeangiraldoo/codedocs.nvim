@@ -27,17 +27,19 @@
 
 return {
 		python = {
-			struct = {'"""', '\t', '"""'},
+			struct = {'"""', "", '"""'},
 			func = "def",
 			direction = "below",
 			params_title = "Args:",
-			param_keyword = ""
+			param_keyword = "",
+			param_indent = true
 		},
 		javascript = {
 			struct = {"/**", " * ", " */"},
 			func = "function",
 			direction = "above",
 			params_title = "",
-			param_keyword = "@param {} "
+			param_keyword = "@param {} ",
+			param_indent = false
 		}
 }
