@@ -1,32 +1,41 @@
-local function insert_above(docstring)
-	local current_line_pos = vim.fn.line(".") - 1
-	vim.api.nvim_buf_set_lines(0, current_line_pos, current_line_pos, false, docstring)
-
-	vim.cmd("normal! kk")
-	vim.cmd("normal! $")
-	vim.cmd('startinsert')
-	vim.api.nvim_input('<Right>')
-end
-
-local function start_doc_insertion(lang_details, docstring)
-	local docstring_pos = lang_details["pos"]
-	if docstring_pos == "above" then
-		insert_above(docstring)
+--- Inserts a documentation string into the buffer relative to a function declaration.
+-- This function places the given "final_docstring" either above or below a function
+-- declaration located at the specified "current_line" in the buffer.
+-- @param final_docstring (string) The string to be inserted into the buffer.
+-- @param insertion_direction (string) Direction to insert the string relative to the function declaration.
+-- @param current_line (number) The 1-based line number where the cursor is located.
+local function insert_into_buffer(final_docstring,  insertion_direction, current_line)
+	if insertion_direction ~= "above" then
+		error('\n\nYou can only insert a documentation string "above" or "below" a function. ' ..
+			'You used: ' .. insertion_direction .. '\n\n' ..
+			'To fix this issue, please verify the "pos" setting in your config file for the Codedocs plugin. ' ..
+			'Ensure that the "pos" setting is assigned a valid value for the language you want to use.\n'
+		)
 	end
+	local insertion_line_pos = 0
+
+	if insertion_direction == "above" then
+		insertion_line_pos = current_line - 1
+	end
+	vim.api.nvim_buf_set_lines(0, insertion_line_pos, insertion_line_pos, false, final_docstring)
 end
 
-local function insert_documentation(lang_templates)
+--- Inserts a documentation string for the function under the cursor.
+-- Retrieves a docstring structure based on the current filetype, parses the function 
+-- signature, and inserts the docstring into the buffer.
+-- @param templates (table) A map of languages to docstring configurations:
+local function insert_documentation(templates)
 	local current_line = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line (1-based index)
 	local line_content = vim.api.nvim_buf_get_lines(0, current_line -1, current_line, false)[1]
-	local filetype = vim.bo.filetype
-	local lang_details = lang_templates[filetype]
-	local docstring = lang_details["template"]
-	if docstring then
-		start_doc_insertion(lang_details, docstring)
+	local filetype = vim.api.nvim_buf_get_option(0, "filetype")
+	local template = templates[filetype]
+	local struct = template["template"]
+	if struct then
+		local final_docstring = require("codedocs.lua.codedocs.param_parser").get_final_docstring(template, struct, line_content)
+		insert_into_buffer(final_docstring, template["pos"], current_line)
 	else
 		print("There are no defined documentation strings for " .. filetype .. " files")
 	end
-	require("codedocs.lua.codedocs.parameter_parser").start_arg_insertion(line_content, lang_details)
 end
 
 return {
