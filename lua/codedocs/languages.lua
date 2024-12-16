@@ -47,5 +47,14 @@ return {
 			params_title = "",
 			param_keyword = "@param {} ",
 			param_indent = false
+		},
+		lua = {
+			struct = {"--- ", "-- "},
+			func = "function",
+			direction = "above",
+			title_pos = 1,
+			params_title = "",
+			param_keyword = "@param ",
+			param_indent = false
 		}
 }
