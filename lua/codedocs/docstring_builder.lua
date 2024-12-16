@@ -16,16 +16,7 @@ end
 -- @param line (string) The line of code to analyze
 -- @return (string) The extracted indentation string
 local function get_indent_from_line(line)
-	local indentation_string = ""
-	for char_pos = 1, #line do
-		local char = string.sub(line, char_pos, char_pos)
-		if not char:match("%w") then
-			indentation_string = char .. indentation_string
-		else
-			break
-		end
-	end
-	return indentation_string
+	return line:match("^[^%w]*")
 end
 
 --- Indents each line of a docstring by prepending an indentation string
