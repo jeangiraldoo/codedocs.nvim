@@ -15,7 +15,7 @@ end
 -- the first alphanumeric character, representing the line's indentation
 -- @param line (string) The line of code to analyze
 -- @return (string) The extracted indentation string
-local function get_indentation_string(line)
+local function get_indent_from_line(line)
 	local indentation_string = ""
 	for char_pos = 1, #line do
 		local char = string.sub(line, char_pos, char_pos)
@@ -34,7 +34,7 @@ end
 -- @param lines (table) A list of strings representing the lines of the docstring
 -- @param indentation_string (string) The string to prepend to each line for indentation
 -- @return (table) A list of indented lines
-local function get_indented_docstring(lines, indentation_string)
+local function add_indent_to_docstring(lines, indentation_string)
 	local indented_lines = {}
 	for _, line in pairs(lines) do
 		for idx = 1, #indentation_string do
@@ -51,7 +51,7 @@ end
 -- @param template (table) Settings to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @return (table) A new table with the updated docstring content
-local function update_docstring_content(template, params)
+local function generate_docstring(template, params)
 	local docstring_copy = copy_docstring(template["struct"])
 	local line_start = template["struct"][2]
 	table.insert(docstring_copy, 3, line_start)
@@ -67,7 +67,7 @@ end
 --- Adds a tab character ("\t") to the beginning of each string in a table
 -- This function modifies the input table in-place, prepending a "\t" to each element
 -- @param params (table) A table of strings, where each string represents a parameter
-local function add_indentation_to_params(params)
+local function add_indent_to_params(params)
 	for i = 1, #params do
 		params[i] = "\t" .. params[i]
 	end
@@ -77,7 +77,7 @@ end
 -- @param template (table) Settings to configure the language's docstring.
 -- @param line (string) The line under the cursor containing the function signature
 -- @return (table|nil) A table with each parametre as an element, or nil if no parametres are found
-local function get_parametres(template, line)
+local function get_params(template, line)
 	if line and not string.match(line, template["func"]) then
 		return nil
 	end
@@ -91,18 +91,18 @@ end
 -- @param line (string) The line under the cursor containing the function signature.
 -- @return (table) The updated docstring or the original one.
 local function get_final_docstring(template, line)
-	local params = get_parametres(template, line)
+	local params = get_params(template, line)
 
 	local final_docstring = {}
 	if not params then
 		final_docstring = template["struct"]
 	elseif params and not template["param_indent"] then
-		final_docstring = update_docstring_content(template, params)
+		final_docstring = generate_docstring(template, params)
 	else
-		add_indentation_to_params(params)
-		final_docstring = update_docstring_content(template, params)
+		add_indent_to_params(params)
+		final_docstring = generate_docstring(template, params)
 	end
-	return get_indented_docstring(final_docstring, get_indentation_string(line))
+	return add_indent_to_docstring(final_docstring, get_indent_from_line(line))
 end
 
 return {
