@@ -64,26 +64,25 @@ local function update_docstring_content(template, params)
 	return docstring_copy
 end
 
+--- Adds a tab character ("\t") to the beginning of each string in a table
+-- This function modifies the input table in-place, prepending a "\t" to each element
+-- @param params (table) A table of strings, where each string represents a parameter
+local function add_indentation_to_params(params)
+	for i = 1, #params do
+		params[i] = "\t" .. params[i]
+	end
+end
+
 --- Returns the parametres found in the function under the cursor
 -- @param template (table) Settings to configure the language's docstring.
 -- @param line (string) The line under the cursor containing the function signature
 -- @return (table|nil) A table with each parametre as an element, or nil if no parametres are found
 local function get_parametres(template, line)
-	local indentation_string = "\t"
-	if not template["param_indent"] then
-		indentation_string = ""
+	if line and not string.match(line, template["func"]) then
+		return nil
 	end
-
-	if line and string.match(line, template["func"]) then
-		local params_string = string.match(line, "%((.-)%)")
-		local params = vim.split(params_string, ", ")
-
-		for i = 1, #params do
-			params[i] = indentation_string .. params[i]
-		end
-		return params
-	end
-	return nil
+	local params_string = string.match(line, "%((.-)%)")
+	return vim.split(params_string, ", ")
 end
 
 --- Returns a docstring with content or an empty one.
@@ -92,13 +91,16 @@ end
 -- @param line (string) The line under the cursor containing the function signature.
 -- @return (table) The updated docstring or the original one.
 local function get_final_docstring(template, line)
-	local detected_params = get_parametres(template, line)
+	local params = get_parametres(template, line)
 
 	local final_docstring = {}
-	if not detected_params then
+	if not params then
 		final_docstring = template["struct"]
+	elseif params and not template["param_indent"] then
+		final_docstring = update_docstring_content(template, params)
 	else
-		final_docstring = update_docstring_content(template, detected_params)
+		add_indentation_to_params(params)
+		final_docstring = update_docstring_content(template, params)
 	end
 	return get_indented_docstring(final_docstring, get_indentation_string(line))
 end
