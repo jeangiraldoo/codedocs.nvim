@@ -1,5 +1,11 @@
 # codedocs.nvim
 
+<p align="center">
+    <a href = "https://github.com/jeangiraldoo/codedocs.nvim/blob/main/LICENSE">
+        <img src="https://img.shields.io/github/license/jeangiraldoo/codedocs.nvim" alt="Latest version"/>
+    </a>
+</p>
+
 Codedocs.nvim automatically recognizes functions and methods in your code, creating structured documentation strings based on the programming language you are using (e.g., docstrings for Python, JSDoc for JavaScript, etc.).
 
 You can easily modify the structure of the documentation strings to suit your specific needs, add support for new languages by defining their documentation formats, or just use codedocs as it is! :)
