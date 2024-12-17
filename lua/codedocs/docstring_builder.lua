@@ -81,7 +81,7 @@ end
 -- @param template (table) Settings to configure the language's docstring.
 -- @param line (string) The line under the cursor containing the function signature.
 -- @return (table) The updated docstring or the original one.
-local function get_final_docstring(template, line)
+local function get_docstring(template, line)
 	local params = get_params(template, line)
 
 	local final_docstring = {}
@@ -97,5 +97,5 @@ local function get_final_docstring(template, line)
 end
 
 return {
-	get_final_docstring = get_final_docstring
+	get_docstring = get_docstring
 }

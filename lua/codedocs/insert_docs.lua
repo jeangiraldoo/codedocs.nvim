@@ -19,12 +19,12 @@ local function move_cursor_to_title(docstring_length, direction, title_pos)
 end
 
 --- Inserts a documentation string into the buffer relative to a function declaration.
--- This function places the given "final_docstring" either above or below a function
+-- This function places the given "docstring" either above or below a function
 -- declaration located at the specified "current_line_pos" in the buffer.
--- @param final_docstring (string) The string to be inserted into the buffer.
+-- @param docstring (string) The string to be inserted into the buffer.
 -- @param insertion_direction (string) Direction to insert the string relative to the function declaration.
 -- @param current_line_pos (number) The 1-based line number where the cursor is located.
-local function insert_into_buffer(final_docstring,  insertion_direction, current_line_pos)
+local function insert_into_buffer(docstring,  insertion_direction, current_line_pos)
 	if insertion_direction ~= "above" and insertion_direction ~= "below" then
 		error('\n\nYou can only insert a documentation string "above" or "below" a function. ' ..
 			'You used: ' .. insertion_direction .. '\n\n' ..
@@ -39,7 +39,7 @@ local function insert_into_buffer(final_docstring,  insertion_direction, current
 	elseif insertion_direction == "below" then
 		insertion_line_pos = current_line_pos
 	end
-	vim.api.nvim_buf_set_lines(0, insertion_line_pos, insertion_line_pos, false, final_docstring)
+	vim.api.nvim_buf_set_lines(0, insertion_line_pos, insertion_line_pos, false, docstring)
 end
 
 --- Inserts a documentation string for the function under the cursor.
@@ -51,12 +51,11 @@ local function insert_documentation(templates)
 	local line_content = vim.api.nvim_buf_get_lines(0, current_line_pos -1, current_line_pos, false)[1]
 	local filetype = vim.api.nvim_buf_get_option(0, "filetype")
 	local template = templates[filetype]
-	local struct = template["struct"]
-	if struct then
+	if template then
+		local docstring = require("codedocs.lua.codedocs.docstring_builder").get_docstring(template, line_content)
 		local direction = template["direction"]
-		local final_docstring = require("codedocs.lua.codedocs.docstring_builder").get_final_docstring(template, line_content)
-		insert_into_buffer(final_docstring, direction, current_line_pos)
-		move_cursor_to_title(#final_docstring, direction, template["title_pos"])
+		insert_into_buffer(docstring, direction, current_line_pos)
+		move_cursor_to_title(#docstring, direction, template["title_pos"])
 	else
 		print("There are no defined documentation strings for " .. filetype .. " files")
 	end
