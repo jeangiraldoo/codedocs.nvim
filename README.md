@@ -1,9 +1,5 @@
 # codedocs.nvim
 
-Document your code in a fun and efficient way!
-
-## What is the purpose of codedocs?
-
 Codedocs.nvim automatically recognizes functions and methods in your code, creating structured documentation strings based on the programming language you are using (e.g., docstrings for Python, JSDoc for JavaScript, etc.).
 
 You can easily modify the structure of the documentation strings to suit your specific needs, add support for new languages by defining their documentation formats, or just use codedocs as it is! :)
@@ -11,6 +7,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 # Table of contents
 - [Features](#features)
 - [Supported languages](#supported-languages)
+- [License](#license)
 
 ### Features
 
@@ -31,3 +28,6 @@ Feel free to create your own custom styles if the options provided here don't me
 | Python | Google docstrings | `function parameters` |
 | Javascript | JSDoc | `function parameters` |
 
+### License
+
+Codedocs is licensed under the MIT License. This means you are free to download, install, modify, share, and use the plugin for both personal and commercial purposes. The only requirement is that if you modify and redistribute the code, you must include the same LICENSE file found in this repository.
