@@ -7,6 +7,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 # Table of contents
 - [Features](#features)
 - [Supported languages](#supported-languages)
+- [Motivation](#motivation)
 - [License](#license)
 
 ### Features
@@ -27,6 +28,14 @@ Feel free to create your own custom styles if the options provided here don't me
 | Lua | LDoc | `function parameters` |
 | Python | Google docstrings | `function parameters` |
 | Javascript | JSDoc | `function parameters` |
+
+### Motivation
+
+I started workng on Codedocs because I wanted to enhance my experience with Neovim, which I started using daily for my side projects and university assignments. I wanted a tool to make documenting my code easier and to contribute something useful to the community! :D
+
+While I found a few plugins with similar functionality, none of them offered the level of customization and simplicity I was looking for. Sometimes, I feel that apps and plugins could be more intuitive and user-friendly while still providing the same powerful features.
+
+TL;DR: I built Codedocs to improve productivity by automatically generating documentation strings, allowing for easy customization, and providing a simple yet powerful solution for both personal and community use. Plus, it is a fun project to work on!
 
 ### License
 
