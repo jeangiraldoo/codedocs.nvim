@@ -56,7 +56,7 @@ local function insert_documentation(templates)
 		local direction = template["direction"]
 		local final_docstring = require("codedocs.lua.codedocs.docstring_builder").get_final_docstring(template, line_content)
 		insert_into_buffer(final_docstring, direction, current_line_pos)
-		move_cursor_to_title(#final_docstring, direction, template["title_pos"], line_content)
+		move_cursor_to_title(#final_docstring, direction, template["title_pos"])
 	else
 		print("There are no defined documentation strings for " .. filetype .. " files")
 	end
