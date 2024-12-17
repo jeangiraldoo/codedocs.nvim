@@ -8,7 +8,11 @@ Codedocs.nvim automatically recognizes functions and methods in your code, creat
 
 You can easily modify the structure of the documentation strings to suit your specific needs, add support for new languages by defining their documentation formats, or just use codedocs as it is! :)
 
-### Key Features
+# Table of contents
+- [Features](#features)
+- [Supported languages](#supported-languages)
+
+### Features
 
 - Automatic Recognition: Detects functions and methods in your codebase.
 - Multi-Language Support: Generates documentation strings for various programming languages.
