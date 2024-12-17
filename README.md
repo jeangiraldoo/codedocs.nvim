@@ -14,3 +14,16 @@ You can easily modify the structure of the documentation strings to suit your sp
 - Multi-Language Support: Generates documentation strings for various programming languages.
 - Customizable Structures: Modify existing documentation formats or define new ones for additional languages.
 - No Dependencies: Designed to be straightforward and self-contained, making integration seamless.
+
+### Supported languages
+
+This section lists the languages supported by Codedocs, along with the supported annotation styles and the automatic annotations that can be inserted into the documentation for each language.
+
+Feel free to create your own custom styles if the options provided here don't meet your needs! :)
+
+| Languages | Annonation styles | Supported automatic annotation |
+|----------|----------|----------|
+| Lua | LDoc | `function parameters` |
+| Python | Google docstrings | `function parameters` |
+| Javascript | JSDoc | `function parameters` |
+
