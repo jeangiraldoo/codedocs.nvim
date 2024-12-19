@@ -9,6 +9,11 @@
 ---
 --- func (string): The keyword used in the language to declare a function
 ---
+--- is_type_before_name (bool): Wether or not the parametre type is to the left (before the name)
+--- in the function declaration, the parametre name will be on the opposite side.
+---
+--- param_type_separator (string): The separator found in between the parametre name and type
+---
 --- direction (string): Specifies where to place the docstring relative to the function declaration
 ---   Valid values are:
 ---     - "above": Place the docstring before the function declaration
@@ -27,34 +32,48 @@
 ---   to an empty string ("").
 ---
 --- param_indent (bool): Determines wether or not the parametres should be indented.
+---
+--- type_wrapper (string): Defines the characters that will surround the parametre type for each parametre within the docstring
 
 
 return {
 		python = {
 			struct = {'"""', "", '"""'},
 			func = "def",
+			is_type_before_name = false,
+			type_goes_before_name = false,
+			param_type_separator = ":",
 			direction = "below",
 			title_pos = 2,
 			params_title = "Args:",
 			param_keyword = "",
-			param_indent = true
+			param_indent = true,
+			type_wrapper = "()"
 		},
 		javascript = {
 			struct = {"/**", " * ", " */"},
 			func = "function",
+			is_type_before_name = false,
+			type_goes_before_name = true,
+			param_type_separator = ":",
 			direction = "above",
 			title_pos = 2,
 			params_title = "",
-			param_keyword = "@param {} ",
-			param_indent = false
+			param_keyword = "@param",
+			param_indent = false,
+			type_wrapper = "{}"
 		},
 		lua = {
 			struct = {"--- ", "-- "},
 			func = "function",
+			is_type_before_name = false,
+			type_goes_before_name = false,
+			param_type_separator = "",
 			direction = "above",
 			title_pos = 1,
 			params_title = "",
-			param_keyword = "@param ",
-			param_indent = false
+			param_keyword = "@param",
+			param_indent = false,
+			type_wrapper = ""
 		}
 }

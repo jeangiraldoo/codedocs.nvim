@@ -37,6 +37,56 @@ local function add_indent_to_docstring(lines, indentation_string)
 	return indented_lines
 end
 
+--- 
+-- @param template (table) Settings to configure the language's docstring.
+-- @param param (table | string) Either a parametre name and a parametre type, or just a parametre name
+-- @param pos_name The position of the param name in the param table
+-- @param pos_type The position of the param type in the param table
+local function get_param_data(template, param, pos_name, pos_type)
+	local base_param = template["struct"][2] .. template["param_keyword"]
+	if template["param_indent"] then
+		base_param = "\t" .. base_param
+	end
+	local param_name = param[pos_name]
+	local type_wrapper = template["type_wrapper"]
+	if #type_wrapper ~= 2 and type_wrapper ~= "" then
+		error("The 'type_wrapper' setting for " .. vim.api.nvim_buf_get_option(0, "filetype") .. "can only have 2 characters. It has " .. #type_wrapper .. " characters (" .. type_wrapper .. ")")
+	end
+	local open_wrapper = template["type_wrapper"]:sub(1, 1)
+	local close_wrapper = template["type_wrapper"]:sub(2, 2)
+	local type_goes_before_name = template["type_goes_before_name"]
+
+	if type_goes_before_name and type(param) == "table" then
+		Param_data = base_param .. " " .. open_wrapper .. param[pos_type] .. close_wrapper .. " " .. param_name
+	elseif not type_goes_before_name and type(param) == "table" then
+		Param_data = base_param .. param_name .. " " .. open_wrapper .. param[pos_type] .. close_wrapper
+	elseif type_goes_before_name then
+		Param_data = base_param .. " " .. type_wrapper .. " " .. param
+	else
+		Param_data = base_param .. " " .. param .. " " .. type_wrapper
+	end
+	return Param_data
+end
+
+--- Adds formatted parametres to the docstring
+-- @param template (table) Settings to configure the language's docstring.
+-- @param params (table) A table of parameters to be inserted into the docstring
+-- @param docstring (table) The docstring base structure
+local function add_params_to_docstring(template, params, docstring)
+	if template["is_type_before_name"] then
+		Pos_name = 2
+		Pos_type = 1
+	else
+		Pos_name = 1
+		Pos_type = 2
+	end
+	for i = 1, #params do
+		local current_param = params[i]
+		local param_data = get_param_data(template, current_param, Pos_name, Pos_type)
+		table.insert(docstring, i + 3, param_data)
+	end
+end
+
 --- Inserts a leader and parameters into the docstring
 -- Adds a title (args_title) before the parameters (if applicable) and inserts the parameters into the docstring
 -- @param template (table) Settings to configure the language's docstring
@@ -46,22 +96,11 @@ local function generate_docstring(template, params)
 	local docstring_copy = copy_docstring(template["struct"])
 	local line_start = template["struct"][2]
 	table.insert(docstring_copy, 3, line_start)
+	add_params_to_docstring(template, params, docstring_copy)
 	if template["params_title"] ~= "" then
-		table.insert(params, 1, template["params_title"])
-	end
-	for i = 1, #params do
-		table.insert(docstring_copy, i + 3, line_start .. template["param_keyword"] .. params[i])
+		table.insert(docstring_copy, 4, template["params_title"])
 	end
 	return docstring_copy
-end
-
---- Adds a tab character ("\t") to the beginning of each string in a table
--- This function modifies the input table in-place, prepending a "\t" to each element
--- @param params (table) A table of strings, where each string represents a parameter
-local function add_indent_to_params(params)
-	for i = 1, #params do
-		params[i] = "\t" .. params[i]
-	end
 end
 
 --- Returns the parametres found in the function under the cursor
@@ -73,7 +112,27 @@ local function get_params(template, line)
 		return nil
 	end
 	local params_string = string.match(line, "%((.-)%)")
-	return vim.split(params_string, ", ")
+	local params_without_spaces = string.gsub(params_string, "%s+", "")
+	local params = vim.split(params_without_spaces, ",")
+
+	local params_with_types = {}
+	local separator = template["param_type_separator"]
+
+	for i = 1, #params do
+		if separator ~= "" then
+			if string.find(params[i], separator) then
+				local split_param = vim.split(params[i], separator)
+				string.gsub(split_param[1], ",%s+", ",")
+				string.gsub(split_param[2], ",%s+", ",")
+				table.insert(params_with_types, i, split_param)
+			else
+				table.insert(params_with_types, i, params[i])
+			end
+		else
+			table.insert(params_with_types, i, params[i])
+		end
+	end
+	return params_with_types
 end
 
 --- Returns a docstring with content or an empty one.
@@ -90,7 +149,6 @@ local function get_docstring(template, line)
 	elseif params and not template["param_indent"] then
 		final_docstring = generate_docstring(template, params)
 	else
-		add_indent_to_params(params)
 		final_docstring = generate_docstring(template, params)
 	end
 	return add_indent_to_docstring(final_docstring, get_indent_from_line(line))
