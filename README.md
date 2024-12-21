@@ -1,6 +1,7 @@
 # codedocs.nvim
 
 <p align="center">
+    <img src="https://img.shields.io/badge/Neovim-v0.10.0%2B-green?logo=neovim" alt="Neovim version 0.10.0 and up"/>
     <a href = "https://github.com/jeangiraldoo/codedocs.nvim/blob/main/LICENSE">
         <img src="https://img.shields.io/github/license/jeangiraldoo/codedocs.nvim" alt="Latest version"/>
     </a>
