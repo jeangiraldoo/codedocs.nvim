@@ -50,9 +50,6 @@ local function get_param_data(settings, template, param, pos_name, pos_type)
 	end
 	local param_name = param[pos_name]
 	local type_wrapper = template[settings.type_wrapper.val]
-	if #type_wrapper ~= 2 and type_wrapper ~= "" then
-		error("The 'type_wrapper' setting for " .. vim.api.nvim_buf_get_option(0, "filetype") .. "can only have 2 characters. It has " .. #type_wrapper .. " characters (" .. type_wrapper .. ")")
-	end
 	local open_wrapper = template[settings.type_wrapper.val]:sub(1, 1)
 	local close_wrapper = template[settings.type_wrapper.val]:sub(2, 2)
 	local type_goes_before_name = template[settings.type_goes_before_name.val]

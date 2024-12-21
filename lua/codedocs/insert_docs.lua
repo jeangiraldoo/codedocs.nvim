@@ -25,13 +25,6 @@ end
 -- @param insertion_direction (string) Direction to insert the string relative to the function declaration.
 -- @param current_line_pos (number) The 1-based line number where the cursor is located.
 local function insert_into_buffer(docstring,  insertion_direction, current_line_pos)
-	if insertion_direction ~= "above" and insertion_direction ~= "below" then
-		error('\n\nYou can only insert a documentation string "above" or "below" a function. ' ..
-			'You used: ' .. insertion_direction .. '\n\n' ..
-			'To fix this issue, please verify the "pos" setting in your config file for the Codedocs plugin. ' ..
-			'Ensure that the "pos" setting is assigned a valid value for the language you want to use.\n'
-		)
-	end
 	local insertion_line_pos = 0
 
 	if insertion_direction == "above" then
