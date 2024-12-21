@@ -11,7 +11,7 @@ local settings = {
 			  params_title = {val = "params_title", type = "string"}, -- Title displayed before the parameters section in the docstring. 
 			  param_keyword = {val = "param_keyword", type = "string"}, -- Keyword prefixed to each parameter in the docstring
 			  param_indent = {val = "param_indent", type = "boolean"}, -- Determines wether or not the parameters should be indented.
-			  type_wrapper = {val = "type_wrapper", type = "string"} -- Characters that will surround every parameter type within the docstring
+			  type_wrapper = {val = "type_wrapper", type = "table"} -- Strings that will surround every parameter type within the docstring
 			}
 
 local templates = {
@@ -26,7 +26,7 @@ local templates = {
 			[settings.params_title.val] = "Args:",
 			[settings.param_keyword.val] = "",
 			[settings.param_indent.val] = true,
-			[settings.type_wrapper.val] = "()"
+			[settings.type_wrapper.val] = {"(", ")"}
 		},
 		javascript = {
 			[settings.structure.val] = {"/**", " * ", " */"},
@@ -39,7 +39,7 @@ local templates = {
 			[settings.params_title.val] = "",
 			[settings.param_keyword.val] = "@param",
 			[settings.param_indent.val] = false,
-			[settings.type_wrapper.val] = "{}"
+			[settings.type_wrapper.val] = {"{", "}"}
 		},
 		lua = {
 			[settings.structure.val] = {"--- ", "-- "},
@@ -52,7 +52,7 @@ local templates = {
 			[settings.params_title.val] = "",
 			[settings.param_keyword.val] = "@param",
 			[settings.param_indent.val] = false,
-			[settings.type_wrapper.val] = ""
+			[settings.type_wrapper.val] = {"", ""}
 		}
 }
 

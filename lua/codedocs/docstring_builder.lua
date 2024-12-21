@@ -50,8 +50,8 @@ local function get_param_data(settings, template, param, pos_name, pos_type)
 	end
 	local param_name = param[pos_name]
 	local type_wrapper = template[settings.type_wrapper.val]
-	local open_wrapper = template[settings.type_wrapper.val]:sub(1, 1)
-	local close_wrapper = template[settings.type_wrapper.val]:sub(2, 2)
+	local open_wrapper = type_wrapper[1]
+	local close_wrapper = type_wrapper[2]
 	local type_goes_before_name = template[settings.type_goes_before_name.val]
 
 	if type_goes_before_name and type(param) == "table" then
@@ -59,9 +59,9 @@ local function get_param_data(settings, template, param, pos_name, pos_type)
 	elseif not type_goes_before_name and type(param) == "table" then
 		Param_data = base_param .. param_name .. " " .. open_wrapper .. param[pos_type] .. close_wrapper
 	elseif type_goes_before_name then
-		Param_data = base_param .. " " .. type_wrapper .. " " .. param
+		Param_data = base_param .. " " .. open_wrapper .. close_wrapper .. " " .. param
 	else
-		Param_data = base_param .. " " .. param .. " " .. type_wrapper
+		Param_data = base_param .. " " .. param .. " " .. open_wrapper .. close_wrapper
 	end
 	return Param_data
 end
