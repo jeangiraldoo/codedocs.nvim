@@ -4,7 +4,8 @@ local insert_documentation = require("codedocs.lua.codedocs.insert_docs")
 local M = {}
 
 M.config = {
-	default_templates = defaults
+	settings = defaults[1],
+	default_templates = defaults[2]
 }
 
 function M.setup()
@@ -12,7 +13,7 @@ function M.setup()
 end
 
 function M.insert_docs()
-	insert_documentation.insert_docs(defaults)
+	insert_documentation.insert_docs(M.config.settings, M.config.default_templates)
 end
 
 vim.api.nvim_set_keymap('n', "<Plug>Codedocs", "<cmd>lua require('codedocs').insert_docs()<CR>", { noremap = true, silent = true })
@@ -20,7 +21,7 @@ vim.api.nvim_set_keymap('n', "<Plug>Codedocs", "<cmd>lua require('codedocs').ins
 vim.api.nvim_create_user_command(
 	"Codedocs",
 	function()
-		insert_documentation.insert_docs(defaults)
+		insert_documentation.insert_docs(M.config.settings, M.config.default_templates)
 	end,
 	{}
 )

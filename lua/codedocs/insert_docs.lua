@@ -46,16 +46,17 @@ end
 -- Retrieves a docstring structure based on the current filetype, parses the function 
 -- signature, and inserts the docstring into the buffer.
 -- @param templates (table) A map of languages to docstring configurations:
-local function insert_documentation(templates)
+local function insert_documentation(settings, templates)
 	local current_line_pos = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line (1-based index)
 	local line_content = vim.api.nvim_buf_get_lines(0, current_line_pos -1, current_line_pos, false)[1]
 	local filetype = vim.api.nvim_buf_get_option(0, "filetype")
 	local template = templates[filetype]
 	if template then
-		local docstring = require("codedocs.lua.codedocs.docstring_builder").get_docstring(template, line_content)
-		local direction = template["direction"]
+		require("codedocs.lua.codedocs.template_validations").validate_template_integrity(settings, template, filetype)
+		local docstring = require("codedocs.lua.codedocs.docstring_builder").get_docstring(settings, template, line_content)
+		local direction = template[settings.direction.val]
 		insert_into_buffer(docstring, direction, current_line_pos)
-		move_cursor_to_title(#docstring, direction, template["title_pos"])
+		move_cursor_to_title(#docstring, direction, template[settings.title_pos.val])
 	else
 		print("There are no defined documentation strings for " .. filetype .. " files")
 	end

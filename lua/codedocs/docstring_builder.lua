@@ -42,19 +42,19 @@ end
 -- @param param (table | string) Either a parametre name and a parametre type, or just a parametre name
 -- @param pos_name The position of the param name in the param table
 -- @param pos_type The position of the param type in the param table
-local function get_param_data(template, param, pos_name, pos_type)
-	local base_param = template["struct"][2] .. template["param_keyword"]
-	if template["param_indent"] then
+local function get_param_data(settings, template, param, pos_name, pos_type)
+	local base_param = template[settings.structure.val][2] .. template[settings.param_keyword.val]
+	if template[settings.param_indent.val] then
 		base_param = "\t" .. base_param
 	end
 	local param_name = param[pos_name]
-	local type_wrapper = template["type_wrapper"]
+	local type_wrapper = template[settings.type_wrapper.val]
 	if #type_wrapper ~= 2 and type_wrapper ~= "" then
 		error("The 'type_wrapper' setting for " .. vim.api.nvim_buf_get_option(0, "filetype") .. "can only have 2 characters. It has " .. #type_wrapper .. " characters (" .. type_wrapper .. ")")
 	end
-	local open_wrapper = template["type_wrapper"]:sub(1, 1)
-	local close_wrapper = template["type_wrapper"]:sub(2, 2)
-	local type_goes_before_name = template["type_goes_before_name"]
+	local open_wrapper = template[settings.type_wrapper.val]:sub(1, 1)
+	local close_wrapper = template[settings.type_wrapper.val]:sub(2, 2)
+	local type_goes_before_name = template[settings.type_goes_before_name.val]
 
 	if type_goes_before_name and type(param) == "table" then
 		Param_data = base_param .. " " .. open_wrapper .. param[pos_type] .. close_wrapper .. " " .. param_name
@@ -72,8 +72,8 @@ end
 -- @param template (table) Settings to configure the language's docstring.
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @param docstring (table) The docstring base structure
-local function add_params_to_docstring(template, params, docstring)
-	if template["is_type_before_name"] then
+local function add_params_to_docstring(settings, template, params, docstring)
+	if template[settings.is_type_before_name.val] then
 		Pos_name = 2
 		Pos_type = 1
 	else
@@ -82,7 +82,7 @@ local function add_params_to_docstring(template, params, docstring)
 	end
 	for i = 1, #params do
 		local current_param = params[i]
-		local param_data = get_param_data(template, current_param, Pos_name, Pos_type)
+		local param_data = get_param_data(settings, template, current_param, Pos_name, Pos_type)
 		table.insert(docstring, i + 3, param_data)
 	end
 end
@@ -92,13 +92,13 @@ end
 -- @param template (table) Settings to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @return (table) A new table with the updated docstring content
-local function generate_docstring(template, params)
-	local docstring_copy = copy_docstring(template["struct"])
-	local line_start = template["struct"][2]
+local function generate_docstring(settings, template, params)
+	local docstring_copy = copy_docstring(template[settings.structure.val])
+	local line_start = template[settings.structure.val][2]
 	table.insert(docstring_copy, 3, line_start)
-	add_params_to_docstring(template, params, docstring_copy)
-	if template["params_title"] ~= "" then
-		table.insert(docstring_copy, 4, template["params_title"])
+	add_params_to_docstring(settings, template, params, docstring_copy)
+	if template[settings.params_title.val] ~= "" then
+		table.insert(docstring_copy, 4, template[settings.params_title.val])
 	end
 	return docstring_copy
 end
@@ -107,8 +107,8 @@ end
 -- @param template (table) Settings to configure the language's docstring.
 -- @param line (string) The line under the cursor containing the function signature
 -- @return (table|nil) A table with each parametre as an element, or nil if no parametres are found
-local function get_params(template, line)
-	if line and not string.match(line, template["func"]) then
+local function get_params(settings, template, line)
+	if line and not string.match(line, template[settings.param_keyword.val]) then
 		return nil
 	end
 	local params_string = string.match(line, "%((.-)%)")
@@ -116,7 +116,7 @@ local function get_params(template, line)
 	local params = vim.split(params_without_spaces, ",")
 
 	local params_with_types = {}
-	local separator = template["param_type_separator"]
+	local separator = template[settings.param_type_separator.val]
 
 	for i = 1, #params do
 		if separator ~= "" then
@@ -140,16 +140,16 @@ end
 -- @param template (table) Settings to configure the language's docstring.
 -- @param line (string) The line under the cursor containing the function signature.
 -- @return (table) The updated docstring or the original one.
-local function get_docstring(template, line)
-	local params = get_params(template, line)
+local function get_docstring(settings, template, line)
+	local params = get_params(settings, template, line)
 
 	local final_docstring = {}
 	if not params then
-		final_docstring = template["struct"]
-	elseif params and not template["param_indent"] then
-		final_docstring = generate_docstring(template, params)
+		final_docstring = template[settings.structure.val]
+	elseif params and not template[settings.param_indent.val] then
+		final_docstring = generate_docstring(settings, template, params)
 	else
-		final_docstring = generate_docstring(template, params)
+		final_docstring = generate_docstring(settings, template, params)
 	end
 	return add_indent_to_docstring(final_docstring, get_indent_from_line(line))
 end

@@ -1,79 +1,59 @@
---- Language-specific settings for generating docstrings.
----
---- The available settings for each language are as follows:
----
---- struct (table): The base structure of a docstring, represented as a table with three elements:
----   1. The first element is the opening line of the docstring
----   2. The middle element is the string prefixed to every line within the docstring body
----   3. The third element is the closing line of the docstring
----
---- func (string): The keyword used in the language to declare a function
----
---- is_type_before_name (bool): Wether or not the parametre type is to the left (before the name)
---- in the function declaration, the parametre name will be on the opposite side.
----
---- param_type_separator (string): The separator found in between the parametre name and type
----
---- direction (string): Specifies where to place the docstring relative to the function declaration
----   Valid values are:
----     - "above": Place the docstring before the function declaration
----     - "below": Place the docstring after the function declaration
----
---- title_pos (number): The line offset of the title within the docstring, relative to its start
----
---- params_title (string): The title displayed before the parametres section in the docstring. 
----   Some languages or docstring styles include a title for the parametres (e.g., "Args:" in Python),
----   while others list parametres directly without a title. For the latter case, set "params_title"
----   to an empty string ("").
----
---- param_keyword (string): The keyword prefixed to each parametre in the docstring. 
----   For instance, some languages (e.g., JavaScript) use a specific keyword like "@param" before each
----   parametre, while others list parametres without a keyword. For the latter case, set "param_keyword"
----   to an empty string ("").
----
---- param_indent (bool): Determines wether or not the parametres should be indented.
----
---- type_wrapper (string): Defines the characters that will surround the parametre type for each parametre within the docstring
+--- Here are all the available settings for all languages
+--- A setting is composed of 2 parts: Its value or name, and the data type it expects
+local settings = {
+			  structure = {val = "struct", type = "table"}, -- Base structure of a docstring, represented as a table with 2 or more elements
+			  func_keyword = {val = "func", type = "string"}, -- Keyword used in the language to declare a function
+			  is_type_before_name = {val = "is_type_before_name", type = "boolean"}, --- Wether or not the parameter type is to the left (before the name) in the function declaration, the parameter name will be on the opposite side.
+			  type_goes_before_name = {val = "type_before_name", type = "boolean"},
+			  param_type_separator = {val = "param_type_separator", type = "string"}, --- Separator in between the parameter name and type
+			  direction = {val = "direction", type = "string"}, -- Position to place the docstring relative to the function declaration. Either "above" and "below"
+			  title_pos = {val = "title_pos", type = "number"}, -- Line offset of the title within the docstring, relative to its start
+			  params_title = {val = "params_title", type = "string"}, -- Title displayed before the parameters section in the docstring. 
+			  param_keyword = {val = "param_keyword", type = "string"}, -- Keyword prefixed to each parameter in the docstring
+			  param_indent = {val = "param_indent", type = "boolean"}, -- Determines wether or not the parameters should be indented.
+			  type_wrapper = {val = "type_wrapper", type = "string"} -- Characters that will surround every parameter type within the docstring
+			}
 
-
-return {
+local templates = {
 		python = {
-			struct = {'"""', "", '"""'},
-			func = "def",
-			is_type_before_name = false,
-			type_goes_before_name = false,
-			param_type_separator = ":",
-			direction = "below",
-			title_pos = 2,
-			params_title = "Args:",
-			param_keyword = "",
-			param_indent = true,
-			type_wrapper = "()"
+			[settings.structure.val] = {'"""', "", '"""'},
+			[settings.func_keyword.val] = "def",
+			[settings.is_type_before_name.val] = false,
+			[settings.type_goes_before_name.val] = false,
+			[settings.param_type_separator.val] = ":",
+			[settings.direction.val] = "below",
+			[settings.title_pos.val] = 2,
+			[settings.params_title.val] = "Args:",
+			[settings.param_keyword.val] = "",
+			[settings.param_indent.val] = true,
+			[settings.type_wrapper.val] = "()"
 		},
 		javascript = {
-			struct = {"/**", " * ", " */"},
-			func = "function",
-			is_type_before_name = false,
-			type_goes_before_name = true,
-			param_type_separator = ":",
-			direction = "above",
-			title_pos = 2,
-			params_title = "",
-			param_keyword = "@param",
-			param_indent = false,
-			type_wrapper = "{}"
+			[settings.structure.val] = {"/**", " * ", " */"},
+			[settings.func_keyword.val] = "function",
+			[settings.is_type_before_name.val] = false,
+			[settings.type_goes_before_name.val] = true,
+			[settings.param_type_separator.val] = ":",
+			[settings.direction.val] = "above",
+			[settings.title_pos.val] = 2,
+			[settings.params_title.val] = "",
+			[settings.param_keyword.val] = "@param",
+			[settings.param_indent.val] = false,
+			[settings.type_wrapper.val] = "{}"
 		},
 		lua = {
-			struct = {"--- ", "-- "},
-			func = "function",
-			is_type_before_name = false,
-			type_goes_before_name = false,
-			param_type_separator = "",
-			direction = "above",
-			title_pos = 1,
-			params_title = "",
-			param_keyword = "@param",
-			param_indent = false,
-			type_wrapper = ""
+			[settings.structure.val] = {"--- ", "-- "},
+			[settings.func_keyword.val] = "function",
+			[settings.is_type_before_name.val] = false,
+			[settings.type_goes_before_name.val] = false,
+			[settings.param_type_separator.val] = "",
+			[settings.direction.val] = "above",
+			[settings.title_pos.val] = 1,
+			[settings.params_title.val] = "",
+			[settings.param_keyword.val] = "@param",
+			[settings.param_indent.val] = false,
+			[settings.type_wrapper.val] = ""
 		}
 }
+
+return {settings, templates}
