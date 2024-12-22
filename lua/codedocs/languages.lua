@@ -6,7 +6,7 @@ local settings = {
 			  is_type_before_name = {val = "is_type_before_name", type = "boolean"}, --- Wether or not the parameter type is to the left (before the name) in the function declaration, the parameter name will be on the opposite side.
 			  type_goes_before_name = {val = "type_before_name", type = "boolean"},
 			  param_type_separator = {val = "param_type_separator", type = "string"}, --- Separator in between the parameter name and type
-			  direction = {val = "direction", type = "string"}, -- Position to place the docstring relative to the function declaration. Either "above" and "below"
+			  direction = {val = "direction", type = "boolean"}, -- Position to place the docstring relative to the function declaration. Either true (above) or false (below)
 			  title_pos = {val = "title_pos", type = "number"}, -- Line offset of the title within the docstring, relative to its start
 			  params_title = {val = "params_title", type = "string"}, -- Title displayed before the parameters section in the docstring. 
 			  param_keyword = {val = "param_keyword", type = "string"}, -- Keyword prefixed to each parameter in the docstring
@@ -21,7 +21,7 @@ local templates = {
 			[settings.is_type_before_name.val] = false,
 			[settings.type_goes_before_name.val] = false,
 			[settings.param_type_separator.val] = ":",
-			[settings.direction.val] = "below",
+			[settings.direction.val] = false,
 			[settings.title_pos.val] = 2,
 			[settings.params_title.val] = "Args:",
 			[settings.param_keyword.val] = "",
@@ -34,7 +34,7 @@ local templates = {
 			[settings.is_type_before_name.val] = false,
 			[settings.type_goes_before_name.val] = true,
 			[settings.param_type_separator.val] = ":",
-			[settings.direction.val] = "above",
+			[settings.direction.val] = true,
 			[settings.title_pos.val] = 2,
 			[settings.params_title.val] = "",
 			[settings.param_keyword.val] = "@param",
@@ -47,7 +47,7 @@ local templates = {
 			[settings.is_type_before_name.val] = false,
 			[settings.type_goes_before_name.val] = false,
 			[settings.param_type_separator.val] = "",
-			[settings.direction.val] = "above",
+			[settings.direction.val] = true,
 			[settings.title_pos.val] = 1,
 			[settings.params_title.val] = "",
 			[settings.param_keyword.val] = "@param",
