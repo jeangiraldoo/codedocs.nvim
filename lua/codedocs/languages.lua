@@ -4,7 +4,7 @@ local settings = {
 			  structure = {val = "struct", type = "table"}, -- Base structure of a docstring, represented as a table with 2 or more elements
 			  func_keyword = {val = "func", type = "string"}, -- Keyword used in the language to declare a function
 			  type_pos_in_func = {val = "type_pos_in_func", type = "boolean"}, -- Parameter type's positon in function signature. true is before the name, false is after it. The name will be on the opposite side
-			  type_goes_before_name = {val = "type_before_name", type = "boolean"},
+			  type_pos_in_docs = {val = "type_before_name", type = "boolean"},
 			  param_type_separator = {val = "param_type_separator", type = "string"}, --- Separator in between the parameter name and type
 			  direction = {val = "direction", type = "boolean"}, -- Position to place the docstring relative to the function declaration. Either true (above) or false (below)
 			  title_pos = {val = "title_pos", type = "number"}, -- Line offset of the title within the docstring, relative to its start
@@ -19,7 +19,7 @@ local templates = {
 			[settings.structure.val] = {'"""', "", '"""'},
 			[settings.func_keyword.val] = "def",
 			[settings.type_pos_in_func.val] = false,
-			[settings.type_goes_before_name.val] = false,
+			[settings.type_pos_in_docs.val] = false,
 			[settings.param_type_separator.val] = ":",
 			[settings.direction.val] = false,
 			[settings.title_pos.val] = 2,
@@ -32,7 +32,7 @@ local templates = {
 			[settings.structure.val] = {"/**", " * ", " */"},
 			[settings.func_keyword.val] = "function",
 			[settings.type_pos_in_func.val] = false,
-			[settings.type_goes_before_name.val] = true,
+			[settings.type_pos_in_docs.val] = true,
 			[settings.param_type_separator.val] = ":",
 			[settings.direction.val] = true,
 			[settings.title_pos.val] = 2,
@@ -45,7 +45,7 @@ local templates = {
 			[settings.structure.val] = {"--- ", "-- "},
 			[settings.func_keyword.val] = "function",
 			[settings.type_pos_in_func.val] = false,
-			[settings.type_goes_before_name.val] = false,
+			[settings.type_pos_in_docs.val] = false,
 			[settings.param_type_separator.val] = "",
 			[settings.direction.val] = true,
 			[settings.title_pos.val] = 1,
