@@ -72,7 +72,7 @@ end
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @param docstring (table) The docstring base structure
 local function add_params_to_docstring(settings, template, params, docstring)
-	if template[settings.is_type_before_name.val] then
+	if template[settings.type_pos_in_func.val] then
 		Pos_name = 2
 		Pos_type = 1
 	else
