@@ -22,17 +22,11 @@ end
 -- This function places the given "docstring" either above or below a function
 -- declaration located at the specified "current_line_pos" in the buffer
 -- @param docstring (string) The string to be inserted into the buffer
--- @param insertion_direction (boolean) Represents the direction to insert the string relative to the function declaration. True for above and false for below
--- @param current_line_pos (number) The 1-based line number where the cursor is located.
-local function insert_into_buffer(docstring,  insertion_direction, current_line_pos)
-	local insertion_line_pos = 0
-	print(insertion_direction)
-	if insertion_direction then
-		insertion_line_pos = current_line_pos - 1
-	else
-		insertion_line_pos = current_line_pos
-	end
-	vim.api.nvim_buf_set_lines(0, insertion_line_pos, insertion_line_pos, false, docstring)
+-- @param insert_direction (boolean) Defines where to insert the docstring. Above the function declaration if true, below it if false
+-- @param cursor_pos (number) The 1-based line number where the cursor is located
+local function insert_into_buffer(docstring,  insert_direction, cursor_pos)
+	local insert_pos = (insert_direction) and cursor_pos - 1 or cursor_pos
+	vim.api.nvim_buf_set_lines(0, insert_pos, insert_pos, false, docstring)
 end
 
 --- Inserts a documentation string for the function under the cursor.
