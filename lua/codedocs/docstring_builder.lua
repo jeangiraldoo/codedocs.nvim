@@ -75,7 +75,7 @@ end
 -- @param template (table) Settings to configure the language's docstring.
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @param docstring (table) The docstring base structure
-local function add_params_to_docstring(settings, template, params, docstring)
+local function add_param_section_to_docstring(settings, template, params, docstring)
 	if template[settings.type_pos_in_func.val] then
 		Pos_name = 2
 		Pos_type = 1
@@ -83,11 +83,16 @@ local function add_params_to_docstring(settings, template, params, docstring)
 		Pos_name = 1
 		Pos_type = 2
 	end
+	if template[settings.params_title.val] ~= "" then
+		table.insert(docstring, #docstring, template[settings.params_title.val])
+	end
+
 	for i = 1, #params do
 		local current_param = params[i]
 		local param_data = get_param_data(settings, template, current_param, Pos_name, Pos_type)
-		table.insert(docstring, i + 3, param_data)
+		table.insert(docstring, #docstring, param_data)
 	end
+	print(vim.inspect(docstring))
 end
 
 --- Inserts a leader and parameters into the docstring
@@ -99,11 +104,10 @@ end
 local function generate_docstring(settings, template, params)
 	local docstring_copy = copy_docstring(template[settings.structure.val])
 	local line_start = template[settings.structure.val][2]
-	table.insert(docstring_copy, 3, line_start)
-	add_params_to_docstring(settings, template, params, docstring_copy)
-	if template[settings.params_title.val] ~= "" then
-		table.insert(docstring_copy, 4, template[settings.params_title.val])
+	if template[settings.empty_line_after_title.val] then
+		table.insert(docstring_copy, template[settings.title_pos.val] + 1, line_start)
 	end
+	add_param_section_to_docstring(settings, template, params, docstring_copy)
 	return docstring_copy
 end
 

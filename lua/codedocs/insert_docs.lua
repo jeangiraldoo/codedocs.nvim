@@ -49,7 +49,6 @@ local function insert_documentation(settings, templates)
 		require("codedocs.lua.codedocs.template_validations").validate_template_integrity(settings, template, filetype)
 		local docstring = require("codedocs.lua.codedocs.docstring_builder").get_docstring(settings, template, line_content)
 		local direction = template[settings.direction.val]
-		print(direction)
 		insert_into_buffer(docstring, direction, current_line_pos)
 		move_cursor_to_title(#docstring, direction, template[settings.title_pos.val])
 	else

@@ -5,9 +5,10 @@ local settings = {
 			  func_keyword = {val = "func", type = "string"}, -- Keyword used in the language to declare a function
 			  type_pos_in_func = {val = "type_pos_in_func", type = "boolean"}, -- Parameter type's positon in function signature. true is before the name, false is after it. The name will be on the opposite side
 			  type_pos_in_docs = {val = "type_before_name", type = "boolean"},
-			  param_type_separator = {val = "param_type_separator", type = "string"}, --- Separator in between the parameter name and type
+			  param_type_separator = {val = "param_type_separator", type = "string"}, -- Separator in between the parameter name and type
 			  direction = {val = "direction", type = "boolean"}, -- Position to place the docstring relative to the function declaration. Either true (above) or false (below)
 			  title_pos = {val = "title_pos", type = "number"}, -- Line offset of the title within the docstring, relative to its start
+			  empty_line_after_title = {val = "empty_line_after_title", type = "boolean"}, -- Inserts an empty line after the title if true
 			  params_title = {val = "params_title", type = "string"}, -- Title displayed before the parameters section in the docstring. 
 			  param_keyword = {val = "param_keyword", type = "string"}, -- Keyword prefixed to each parameter in the docstring
 			  param_indent = {val = "param_indent", type = "boolean"}, -- Determines wether or not the parameters should be indented.
@@ -23,6 +24,7 @@ local templates = {
 			[settings.param_type_separator.val] = ":",
 			[settings.direction.val] = false,
 			[settings.title_pos.val] = 2,
+			[settings.empty_line_after_title.val] = true,
 			[settings.params_title.val] = "Args:",
 			[settings.param_keyword.val] = "",
 			[settings.param_indent.val] = true,
@@ -36,6 +38,7 @@ local templates = {
 			[settings.param_type_separator.val] = ":",
 			[settings.direction.val] = true,
 			[settings.title_pos.val] = 2,
+			[settings.empty_line_after_title.val] = true,
 			[settings.params_title.val] = "",
 			[settings.param_keyword.val] = "@param",
 			[settings.param_indent.val] = false,
@@ -49,6 +52,7 @@ local templates = {
 			[settings.param_type_separator.val] = "",
 			[settings.direction.val] = true,
 			[settings.title_pos.val] = 1,
+			[settings.empty_line_after_title.val] = false,
 			[settings.params_title.val] = "",
 			[settings.param_keyword.val] = "@param",
 			[settings.param_indent.val] = false,
