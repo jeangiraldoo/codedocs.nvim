@@ -18,15 +18,22 @@ local function move_cursor_to_title(docstring_length, direction, title_pos)
 	vim.api.nvim_input('<Right>')
 end
 
---- Inserts a documentation string into the buffer relative to a function declaration
--- This function places the given "docstring" either above or below a function
--- declaration located at the specified "current_line_pos" in the buffer
--- @param docstring (string) The string to be inserted into the buffer
--- @param insert_direction (boolean) Defines where to insert the docstring. Above the function declaration if true, below it if false
--- @param cursor_pos (number) The 1-based line number where the cursor is located
-local function insert_into_buffer(docstring,  insert_direction, cursor_pos)
-	local insert_pos = (insert_direction) and cursor_pos - 1 or cursor_pos
+--- Inserts a docstring either above or below the function signature and moves the cursor where the title goes
+-- @param settings (table) Keys used to access setting values in a template
+-- @param template (table) Settings used to configure a language's docstring
+-- @param filetype The name of the programming language that corresponds with the current filetype
+local function start_docstring_insertion(settings, template, filetype)
+	require("codedocs.lua.codedocs.template_validations").validate_template_integrity(settings, template, filetype)
+	local cursor_pos = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line (1-based index)
+	local line_content = vim.api.nvim_buf_get_lines(0, cursor_pos - 1, cursor_pos, false)[1]
+
+	local docstring = require("codedocs.lua.codedocs.docstring_builder").get_docstring(settings, template, line_content)
+	local direction = template[settings.direction.val]
+
+	local insert_pos = (direction) and cursor_pos - 1 or cursor_pos
 	vim.api.nvim_buf_set_lines(0, insert_pos, insert_pos, false, docstring)
+
+	move_cursor_to_title(#docstring, direction, template[settings.title_pos.val])
 end
 
 --- Inserts a documentation string for the function under the cursor.
@@ -35,16 +42,10 @@ end
 -- @param settings (table) Keys used to access setting values in a template
 -- @param templates (table) A map of languages to docstring configurations
 local function insert_documentation(settings, templates)
-	local current_line_pos = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line (1-based index)
-	local line_content = vim.api.nvim_buf_get_lines(0, current_line_pos -1, current_line_pos, false)[1]
 	local filetype = vim.api.nvim_buf_get_option(0, "filetype")
 	local template = templates[filetype]
 	if template then
-		require("codedocs.lua.codedocs.template_validations").validate_template_integrity(settings, template, filetype)
-		local docstring = require("codedocs.lua.codedocs.docstring_builder").get_docstring(settings, template, line_content)
-		local direction = template[settings.direction.val]
-		insert_into_buffer(docstring, direction, current_line_pos)
-		move_cursor_to_title(#docstring, direction, template[settings.title_pos.val])
+		start_docstring_insertion(settings, template, filetype)
 	else
 		print("There are no defined documentation strings for " .. filetype .. " files")
 	end
