@@ -26,10 +26,7 @@ end
 -- @param indentation_string (string) The string to prepend to each line for indentation
 -- @return (table) A list of indented lines
 local function add_indent_to_docstring(lines, indentation_string, direction)
-	local direction_based_indent = "" -- No extra identation if the docstring is to be inserted above
-	if not direction then
-		direction_based_indent = "\t"
-	end
+	local direction_based_indent = (direction) and "" or "\t"
 	local indented_lines = {}
 	for _, line in pairs(lines) do
 		for idx = 1, #indentation_string do
@@ -53,15 +50,16 @@ local function get_param_data(settings, template, param, pos_name, pos_type)
 		base_param = "\t" .. base_param
 	end
 	local param_name = param[pos_name]
+	local param_type = param[pos_type]
 	local type_wrapper = template[settings.type_wrapper.val]
 	local open_wrapper = type_wrapper[1]
 	local close_wrapper = type_wrapper[2]
 	local type_pos_in_docs = template[settings.type_pos_in_docs.val]
 
 	if type_pos_in_docs and type(param) == "table" then
-		Param_data = base_param .. " " .. open_wrapper .. param[pos_type] .. close_wrapper .. " " .. param_name
+		Param_data = base_param .. " " .. open_wrapper .. param_type .. close_wrapper .. " " .. param_name
 	elseif not type_pos_in_docs and type(param) == "table" then
-		Param_data = base_param .. param_name .. " " .. open_wrapper .. param[pos_type] .. close_wrapper
+		Param_data = base_param .. param_name .. " " .. open_wrapper .. param_type .. close_wrapper
 	elseif type_pos_in_docs then
 		Param_data = base_param .. " " .. open_wrapper .. close_wrapper .. " " .. param
 	else
@@ -108,7 +106,7 @@ end
 -- @return (table) A new table with the updated docstring content
 local function generate_docstring(settings, template, params)
 	local docstring_copy = copy_docstring(template[settings.structure.val])
-	local line_start = template[settings.structure.val][2]
+	local line_start = docstring_copy[2]
 	if template[settings.empty_line_after_title.val] then
 		table.insert(docstring_copy, template[settings.title_pos.val] + 1, line_start)
 	end
