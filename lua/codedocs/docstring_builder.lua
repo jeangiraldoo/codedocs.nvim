@@ -11,17 +11,15 @@ local function copy_docstring(docstring_struct)
 end
 
 --- Indents each line of a docstring by prepending an indentation string
--- Appends the specified indentation string to the beginning of each line
--- in the provided docstring
--- @param lines (table) A list of strings representing the lines of the docstring
+-- @param docstring (table) A list of strings representing the lines of the docstring
 -- @param indentation_string (string) The string to prepend to each line for indentation
 -- @return (table) A list of indented lines
-local function add_indent_to_docstring(lines, indentation_string, direction)
+local function add_indent_to_docstring(docstring, indent_string, direction)
 	local direction_based_indent = (direction) and "" or "\t"
 	local indented_lines = {}
-	for _, line in pairs(lines) do
-		for idx = 1, #indentation_string do
-			local char = string.sub(indentation_string, idx, idx)
+	for _, line in pairs(docstring) do
+		for idx = 1, #indent_string do
+			local char = string.sub(indent_string, idx, idx)
 			line = char .. line
 		end
 		table.insert(indented_lines, direction_based_indent .. line)
