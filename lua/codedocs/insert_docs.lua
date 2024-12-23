@@ -1,19 +1,12 @@
---- Moves the cursor to the docstring title's position and enters insert mode
--- Adjusts the cursor based on the docstring's placement relative to the function 
--- and positions it at the title location. Automatically starts insert mode for 
--- immediate typing.
--- @param docstring_length (number) Total number of lines in the inserted docstring
+--- Moves the cursor to the docstring title and enters insert mode for immediate typing
+-- @param doc_len (number) Number of lines in the inserted docstring
 -- @param direction (boolean) Direction of the docstring insertion. True for above, false for below
 -- @param title_pos (number) Line offset of the title within the docstring structure
-local function move_cursor_to_title(docstring_length, direction, title_pos)
-	local current_line_pos = vim.api.nvim_win_get_cursor(0)[1] -- (1-based index)
-	local line_length = #vim.api.nvim_buf_get_lines(0, current_line_pos - 1, current_line_pos, false)[1]
-	local target_line_pos = current_line_pos - (docstring_length - title_pos) - 1 -- If direction is above
-
-	if not direction then -- if direction is below (false)
-		target_line_pos = current_line_pos + title_pos
-	end
-	vim.api.nvim_win_set_cursor(0, {target_line_pos, line_length})
+local function move_cursor_to_title(doc_len, direction, title_pos)
+	local cursor_pos = vim.api.nvim_win_get_cursor(0)[1] -- (1-based index)
+	local line_length = #vim.api.nvim_buf_get_lines(0, cursor_pos - 1, cursor_pos, false)[1]
+	local new_pos = (direction) and cursor_pos - doc_len - title_pos - 1 or cursor_pos + title_pos
+	vim.api.nvim_win_set_cursor(0, {new_pos, line_length})
 	vim.cmd('startinsert')
 	vim.api.nvim_input('<Right>')
 end
