@@ -147,24 +147,19 @@ local function get_params(settings, template, line)
 	return params_with_types
 end
 
---- Returns a docstring with content or an empty one.
--- If parameters and/or title are detected, updates the docstring with them; otherwise, returns the original docstring.
+--- Returns a docstring with content or an empty one
+-- If parameters are detected, returns a docstring with them; else, returns its base structure
 -- @param settings (table) Keys used to access setting values in a template
--- @param template (table) Settings to configure the language's docstring.
--- @param line (string) The line under the cursor containing the function signature.
--- @return (table) The updated docstring or the original one.
+-- @param template (table) Settings to configure the language's docstring
+-- @param line (string) The line under the cursor containing the function signature
+-- @return (table) The updated docstring or the original one
 local function get_docstring(settings, template, line)
+	local docs_struct = template[settings.structure.val]
+	local direction = template[settings.direction.val]
 	local params = get_params(settings, template, line)
 
-	local final_docstring = {}
-	if not params then
-		final_docstring = template[settings.structure.val]
-	elseif params and not template[settings.param_indent.val] then
-		final_docstring = generate_docstring(settings, template, params)
-	else
-		final_docstring = generate_docstring(settings, template, params)
-	end
-	return add_indent_to_docstring(final_docstring, get_indent_from_line(line), template[settings.direction.val])
+	local docs = (params) and generate_docstring(settings, template, params) or docs_struct
+	return add_indent_to_docstring(docs, get_indent_from_line(line), direction)
 end
 
 return {
