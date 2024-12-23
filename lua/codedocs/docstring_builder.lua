@@ -10,15 +10,6 @@ local function copy_docstring(docstring_struct)
 	return copied_docstring
 end
 
---- Extracts the indentation string from a line
--- Captures all leading non-alphanumeric characters (e.g., spaces or tabs) before
--- the first alphanumeric character, representing the line's indentation
--- @param line (string) The line of code to analyze
--- @return (string) The extracted indentation string
-local function get_indent_from_line(line)
-	return line:match("^[^%w]*")
-end
-
 --- Indents each line of a docstring by prepending an indentation string
 -- Appends the specified indentation string to the beginning of each line
 -- in the provided docstring
@@ -145,9 +136,10 @@ local function get_docstring(settings, template, line)
 	local docs_struct = template[settings.structure.val]
 	local direction = template[settings.direction.val]
 	local params = get_params(settings, template, line)
+	local line_indentation = line:match("^[^%w]*")
 
 	local docs = (params) and generate_docstring(settings, template, params) or docs_struct
-	return add_indent_to_docstring(docs, get_indent_from_line(line), direction)
+	return add_indent_to_docstring(docs, line_indentation, direction)
 end
 
 return {
