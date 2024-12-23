@@ -83,6 +83,7 @@ local function add_param_section_to_docstring(settings, template, params, docstr
 		Pos_name = 1
 		Pos_type = 2
 	end
+
 	if template[settings.params_title.val] ~= "" then
 		table.insert(docstring, #docstring, template[settings.params_title.val])
 	end
@@ -92,11 +93,15 @@ local function add_param_section_to_docstring(settings, template, params, docstr
 		local param_data = get_param_data(settings, template, current_param, Pos_name, Pos_type)
 		table.insert(docstring, #docstring, param_data)
 	end
-	print(vim.inspect(docstring))
+
+	if #template[settings.structure.val] == 2 then
+		table.remove(docstring, #docstring)
+	end
 end
 
---- Inserts a leader and parameters into the docstring
--- Adds a title (args_title) before the parameters (if applicable) and inserts the parameters into the docstring
+--- Generates a docstring full of content
+-- Adds an empty line in between the title position and the parameters (if applicable)
+-- and inserts the parameters into the docstring
 -- @param settings (table) Keys used to access setting values in a template
 -- @param template (table) Settings to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
