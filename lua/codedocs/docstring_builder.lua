@@ -63,7 +63,7 @@ local function get_param_data(settings, template, param, pos_name, pos_type)
 	elseif type_pos_in_docs then
 		Param_data = base_param .. " " .. open_wrapper .. close_wrapper .. " " .. param
 	else
-		Param_data = base_param .. " " .. param .. " " .. open_wrapper .. close_wrapper
+		Param_data = base_param .. param .. " " .. open_wrapper .. close_wrapper
 	end
 	return Param_data
 end
@@ -106,35 +106,31 @@ local function generate_docstring(settings, template, params)
 	return docs_copy
 end
 
---- Returns the parametres found in the function under the cursor
+--- Returns a table of parameters, which may include names with types, names without types, or both
 -- @param settings (table) Keys used to access setting values in a template
--- @param template (table) Settings to configure the language's docstring.
--- @param line (string) The line under the cursor containing the function signature
--- @return (table|nil) A table with each parametre as an element, or nil if no parametres are found
+-- @param template (table) Settings to configure the language's docstring
+-- @param line (string) Text on the line under the cursor containing the function signature
+-- @return (table | nil) A table with parameters as elements, nil if no parameters are found
 local function get_params(settings, template, line)
 	if line and not string.match(line, template[settings.func_keyword.val]) then
 		return nil
 	end
+	local separator = template[settings.param_type_separator.val]
+
 	local params_string = string.match(line, "%((.-)%)")
 	local params_without_spaces = string.gsub(params_string, "%s+", "")
 	local params = vim.split(params_without_spaces, ",")
-
 	local params_with_types = {}
-	local separator = template[settings.param_type_separator.val]
 
+	local final_param_to_insert
 	for i = 1, #params do
-		if separator ~= "" then
-			if string.find(params[i], separator) then
-				local split_param = vim.split(params[i], separator)
-				string.gsub(split_param[1], ",%s+", ",")
-				string.gsub(split_param[2], ",%s+", ",")
-				table.insert(params_with_types, i, split_param)
-			else
-				table.insert(params_with_types, i, params[i])
-			end
+		local current_param = params[i]
+		if separator ~= "" and string.find(current_param, separator) then
+			final_param_to_insert = vim.split(current_param, separator)
 		else
-			table.insert(params_with_types, i, params[i])
+			final_param_to_insert = current_param
 		end
+		table.insert(params_with_types, i, final_param_to_insert)
 	end
 	return params_with_types
 end
