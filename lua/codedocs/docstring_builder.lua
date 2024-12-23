@@ -68,33 +68,25 @@ local function get_param_data(settings, template, param, pos_name, pos_type)
 	return Param_data
 end
 
---- Adds formatted parametres to the docstring
+--- Adds a parameter section (title + parameters) to a docstring
 -- @param settings (table) Keys used to access setting values in a template
 -- @param template (table) Settings to configure the language's docstring.
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @param docstring (table) The docstring base structure
 local function add_param_section_to_docstring(settings, template, params, docstring)
-	if template[settings.type_pos_in_func.val] then
-		Pos_name = 2
-		Pos_type = 1
-	else
-		Pos_name = 1
-		Pos_type = 2
-	end
+	local type_pos_in_func = template[settings.type_pos_in_func.val]
+	local params_title = template[settings.params_title.val]
+	local name_pos, type_pos = (type_pos_in_func) and 2 or 1, (type_pos_in_func) and 1 or 2
 
-	if template[settings.params_title.val] ~= "" then
-		table.insert(docstring, #docstring, template[settings.params_title.val])
-	end
+	if params_title ~= "" then table.insert(docstring, #docstring, params_title) end
 
 	for i = 1, #params do
 		local current_param = params[i]
-		local param_data = get_param_data(settings, template, current_param, Pos_name, Pos_type)
+		local param_data = get_param_data(settings, template, current_param, name_pos, type_pos)
 		table.insert(docstring, #docstring, param_data)
 	end
 
-	if #template[settings.structure.val] == 2 then
-		table.remove(docstring, #docstring)
-	end
+	if #template[settings.structure.val] == 2 then table.remove(docstring, #docstring) end
 end
 
 --- Generates a docstring full of content
