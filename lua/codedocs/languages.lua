@@ -15,49 +15,75 @@ local settings = {
 			  type_wrapper = {val = "type_wrapper", type = "table"} -- Strings that will surround every parameter type within the docstring
 			}
 
+local default_lang_styles = {
+			python = "Google",
+			javascript = "JSDoc",
+			lua = "LDoc"
+			}
+
 local templates = {
 		python = {
-			[settings.structure.val] = {'"""', "", '"""'},
-			[settings.func_keyword.val] = "def",
-			[settings.type_pos_in_func.val] = false,
-			[settings.type_pos_in_docs.val] = false,
-			[settings.param_type_separator.val] = ":",
-			[settings.direction.val] = false,
-			[settings.title_pos.val] = 2,
-			[settings.empty_line_after_title.val] = true,
-			[settings.params_title.val] = "Args:",
-			[settings.param_keyword.val] = "",
-			[settings.param_indent.val] = true,
-			[settings.type_wrapper.val] = {"(", ")"}
+			Google = {
+				[settings.structure.val] = {'"""', "", '"""'},
+				[settings.func_keyword.val] = "def",
+				[settings.type_pos_in_func.val] = false,
+				[settings.type_pos_in_docs.val] = false,
+				[settings.param_type_separator.val] = ":",
+				[settings.direction.val] = false,
+				[settings.title_pos.val] = 2,
+				[settings.empty_line_after_title.val] = true,
+				[settings.params_title.val] = "Args:",
+				[settings.param_keyword.val] = "",
+				[settings.param_indent.val] = true,
+				[settings.type_wrapper.val] = {"(", ")"}
+				},
+			Numpy = {
+				[settings.structure.val] = {'"""', "", '"""'},
+				[settings.func_keyword.val] = "def",
+				[settings.type_pos_in_func.val] = false,
+				[settings.type_pos_in_docs.val] = false,
+				[settings.param_type_separator.val] = ":",
+				[settings.direction.val] = false,
+				[settings.title_pos.val] = 2,
+				[settings.empty_line_after_title.val] = true,
+				[settings.params_title.val] = "Parameters:",
+				[settings.param_keyword.val] = "",
+				[settings.param_indent.val] = false,
+				[settings.type_wrapper.val] = {": ", ""}
+				}
 		},
 		javascript = {
-			[settings.structure.val] = {"/**", " * ", " */"},
-			[settings.func_keyword.val] = "function",
-			[settings.type_pos_in_func.val] = false,
-			[settings.type_pos_in_docs.val] = true,
-			[settings.param_type_separator.val] = ":",
-			[settings.direction.val] = true,
-			[settings.title_pos.val] = 2,
-			[settings.empty_line_after_title.val] = true,
-			[settings.params_title.val] = "",
-			[settings.param_keyword.val] = "@param",
-			[settings.param_indent.val] = false,
-			[settings.type_wrapper.val] = {"{", "}"}
+			JSDoc = {
+				[settings.structure.val] = {"/**", " * ", " */"},
+				[settings.func_keyword.val] = "function",
+				[settings.type_pos_in_func.val] = false,
+				[settings.type_pos_in_docs.val] = true,
+				[settings.param_type_separator.val] = ":",
+				[settings.direction.val] = true,
+				[settings.title_pos.val] = 2,
+				[settings.empty_line_after_title.val] = true,
+				[settings.params_title.val] = "",
+				[settings.param_keyword.val] = "@param",
+				[settings.param_indent.val] = false,
+				[settings.type_wrapper.val] = {"{", "}"}
+				}
 		},
 		lua = {
-			[settings.structure.val] = {"--- ", "-- "},
-			[settings.func_keyword.val] = "function",
-			[settings.type_pos_in_func.val] = false,
-			[settings.type_pos_in_docs.val] = false,
-			[settings.param_type_separator.val] = "",
-			[settings.direction.val] = true,
-			[settings.title_pos.val] = 1,
-			[settings.empty_line_after_title.val] = false,
-			[settings.params_title.val] = "",
-			[settings.param_keyword.val] = "@param",
-			[settings.param_indent.val] = false,
-			[settings.type_wrapper.val] = {"", ""}
+			LDoc = {
+				[settings.structure.val] = {"--- ", "-- "},
+				[settings.func_keyword.val] = "function",
+				[settings.type_pos_in_func.val] = false,
+				[settings.type_pos_in_docs.val] = false,
+				[settings.param_type_separator.val] = "",
+				[settings.direction.val] = true,
+				[settings.title_pos.val] = 1,
+				[settings.empty_line_after_title.val] = false,
+				[settings.params_title.val] = "",
+				[settings.param_keyword.val] = "@param",
+				[settings.param_indent.val] = false,
+				[settings.type_wrapper.val] = {"", ""}
+				}
 		}
 }
 
-return {settings, templates}
+return {settings, default_lang_styles, templates}
