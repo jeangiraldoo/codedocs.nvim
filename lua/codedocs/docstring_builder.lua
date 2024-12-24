@@ -30,31 +30,33 @@ end
 --- Formats and returns a parameter ready to be inserted into a docstring
 -- @param settings (table) Keys used to access setting values in a template
 -- @param template (table) Settings to configure the language's docstring.
--- @param param (table | string) Either a parametre name and a parametre type, or just a parametre name
+-- @param param (table | string) Either a parameter name and a parameter type, or just a parameter name
 -- @param pos_name The position of the param name in the param table
 -- @param pos_type The position of the param type in the param table
 local function get_param_data(settings, template, param, pos_name, pos_type)
-	local base_param = template[settings.structure.val][2] .. template[settings.param_keyword.val]
-	if template[settings.param_indent.val] then
-		base_param = "\t" .. base_param
-	end
-	local param_name = param[pos_name]
-	local param_type = param[pos_type]
-	local type_wrapper = template[settings.type_wrapper.val]
-	local open_wrapper = type_wrapper[1]
-	local close_wrapper = type_wrapper[2]
-	local type_pos_in_docs = template[settings.type_pos_in_docs.val]
+	local line_start = template[settings.structure.val][2]
+	local param_keyword = template[settings.param_keyword.val]
+	local param_indent = template[settings.param_indent.val]
+	local is_type_before_name_in_docs = template[settings.type_pos_in_docs.val]
 
-	if type_pos_in_docs and type(param) == "table" then
-		Param_data = base_param .. " " .. open_wrapper .. param_type .. close_wrapper .. " " .. param_name
-	elseif not type_pos_in_docs and type(param) == "table" then
-		Param_data = base_param .. param_name .. " " .. open_wrapper .. param_type .. close_wrapper
-	elseif type_pos_in_docs then
-		Param_data = base_param .. " " .. open_wrapper .. close_wrapper .. " " .. param
+	local type_wrapper = template[settings.type_wrapper.val]
+	local open_wrapper, close_wrapper = type_wrapper[1], type_wrapper[2]
+
+	local param_name, wrapped_type
+	if type(param) == "table" then
+		param_name = param[pos_name]
+		wrapped_type = open_wrapper .. param[pos_type] .. close_wrapper
 	else
-		Param_data = base_param .. param .. " " .. open_wrapper .. close_wrapper
+		param_name = param
+		wrapped_type = open_wrapper .. close_wrapper
 	end
-	return Param_data
+	local name_before_type = param_name .. " " .. wrapped_type
+	local type_before_name = wrapped_type .. " " .. param_name
+
+	local base_param = (param_indent) and ("\t" .. line_start .. param_keyword) or (line_start .. param_keyword)
+	local arranged_data = (is_type_before_name_in_docs) and type_before_name or name_before_type
+
+	return base_param .. arranged_data
 end
 
 --- Adds a parameter section (title + parameters) to a docstring
