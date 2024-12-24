@@ -16,7 +16,7 @@ end
 -- @param template (table) Settings used to configure a language's docstring
 -- @param filetype The name of the programming language that corresponds with the current filetype
 local function start_docstring_insertion(settings, template, filetype)
-	require("codedocs.lua.codedocs.template_validations").validate_template(settings, template, filetype)
+	require("codedocs.lua.codedocs.template_validations").validate_template(settings, template)
 	local cursor_pos = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line (1-based index)
 	local line_content = vim.api.nvim_buf_get_lines(0, cursor_pos - 1, cursor_pos, false)[1]
 
