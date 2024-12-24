@@ -5,7 +5,7 @@
 local function move_cursor_to_title(doc_len, direction, title_pos)
 	local cursor_pos = vim.api.nvim_win_get_cursor(0)[1] -- (1-based index)
 	local line_length = #vim.api.nvim_buf_get_lines(0, cursor_pos - 1, cursor_pos, false)[1]
-	local new_pos = (direction) and cursor_pos - doc_len - title_pos - 1 or cursor_pos + title_pos
+	local new_pos = (direction) and (cursor_pos - doc_len + title_pos - 1) or (cursor_pos + title_pos)
 	vim.api.nvim_win_set_cursor(0, {new_pos, line_length})
 	vim.cmd('startinsert')
 	vim.api.nvim_input('<Right>')
