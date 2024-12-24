@@ -51,7 +51,7 @@ end
 -- @param settings (table) Keys used to access setting values in a template
 -- @param template (table) Settings to configure the language's docstring
 -- @param filetype (string) Name of the programming language used in the current file
-local function validate_template_integrity(settings, template, filetype)
+local function validate_template(settings, template, filetype)
 	for _, setting_values in pairs(settings) do
 		local setting_name = setting_values.val
 		local setting_type = setting_values.type
@@ -72,5 +72,5 @@ local function validate_template_integrity(settings, template, filetype)
 end
 
 return {
-	validate_template_integrity = validate_template_integrity
+	validate_template = validate_template
 }
