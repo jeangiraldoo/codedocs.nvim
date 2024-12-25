@@ -59,6 +59,18 @@ local function get_param_data(settings, template, param, pos_name, pos_type)
 	return base_param .. arranged_data
 end
 
+--- Inserts a section title and an underline (if applicable)
+-- @param underline_char Character to create a string from
+-- @param title The title of the section
+-- @param docstring Docstring to insert the section title into
+local function add_section_title(underline_char, title, docstring)
+	if title ~= "" then table.insert(docstring, #docstring, title) end
+
+	if underline_char ~= "" then
+		table.insert(docstring, #docstring, string.rep(underline_char, #title))
+	end
+end
+
 --- Adds a parameter section (title + parameters) to a docstring
 -- @param settings (table) Keys used to access setting values in a template
 -- @param template (table) Settings to configure the language's docstring.
@@ -69,7 +81,7 @@ local function add_param_section_to_docstring(settings, template, params, docstr
 	local params_title = template[settings.params_title.val]
 	local name_pos, type_pos = (type_pos_in_func) and 2 or 1, (type_pos_in_func) and 1 or 2
 
-	if params_title ~= "" then table.insert(docstring, #docstring, params_title) end
+	add_section_title(template[settings.section_underline.val], params_title, docstring)
 
 	for i = 1, #params do
 		local current_param = params[i]
