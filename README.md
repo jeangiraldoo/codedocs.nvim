@@ -33,9 +33,63 @@ Feel free to create your own custom styles if the options provided here don't me
 
 | Languages | Annonation styles | Supported automatic annotation |
 |----------|----------|----------|
-| Lua | LDoc | `function parameters` |
+| Lua | [LDoc](#lua-ldoc) | `function parameters` |
 | Python | Google, NumPy/SciPy | `function parameters` |
-| Javascript | JSDoc | `function parameters` |
+| Javascript | [JSDoc](#javascript-jsdoc) | `function parameters` |
+
+#### Styles per language:
+
+##### Lua (LDoc):
+```lua
+--- <title goes here>
+-- param_1
+-- param_2
+local function cool_function(param_1, param_2)
+    <code here>
+end
+```
+
+##### Javascript (JSDoc):
+```javascript
+/*
+ * <title goes here>
+ *
+ * @param {} param_1
+ * @param {} param_2
+*/
+function cool_function(param_1, param_2){
+    <code here>
+}
+```
+
+##### Python:
+
+- Google:
+```python
+def cool_function(param_1: int, param_2: bool):
+    """
+        <title goes here>
+
+        Args:
+            param_1 (int)
+            param_2 (bool)
+    """
+    <code here>
+```
+
+- NumPy/SciPy:
+```python
+def cool_function(param_1: list, param_2: str):
+    """
+        <title goes here>
+
+        Parameters
+        ----------
+        param_1 : list
+        param_2 : str
+    """
+    <code here>
+```
 
 ### Motivation
 
