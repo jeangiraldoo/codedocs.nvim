@@ -27,38 +27,6 @@ local function add_indent_to_docstring(docstring, indent_string, direction)
 	return indented_lines
 end
 
---- Formats and returns a parameter ready to be inserted into a docstring
--- @param settings (table) Keys used to access setting values in a template
--- @param template (table) Settings to configure the language's docstring.
--- @param param (table | string) Either a parameter name and a parameter type, or just a parameter name
--- @param pos_name The position of the param name in the param table
--- @param pos_type The position of the param type in the param table
-local function get_param_data(settings, template, param, pos_name, pos_type)
-	local line_start = template[settings.structure.val][2]
-	local param_keyword = template[settings.param_keyword.val]
-	local param_indent = template[settings.param_indent.val]
-	local is_type_before_name_in_docs = template[settings.type_pos_in_docs.val]
-
-	local type_wrapper = template[settings.type_wrapper.val]
-	local open_wrapper, close_wrapper = type_wrapper[1], type_wrapper[2]
-
-	local param_name, wrapped_type
-	if type(param) == "table" then
-		param_name = param[pos_name]
-		wrapped_type = open_wrapper .. param[pos_type] .. close_wrapper
-	else
-		param_name = param
-		wrapped_type = open_wrapper .. close_wrapper
-	end
-	local name_before_type = param_name .. " " .. wrapped_type
-	local type_before_name = wrapped_type .. " " .. param_name
-
-	local base_param = (param_indent) and ("\t" .. line_start .. param_keyword) or (line_start .. param_keyword)
-	local arranged_data = (is_type_before_name_in_docs) and type_before_name or name_before_type
-
-	return base_param .. arranged_data
-end
-
 --- Inserts a section title and an underline (if applicable)
 -- @param underline_char Character to create a string from
 -- @param title The title of the section
@@ -71,23 +39,106 @@ local function add_section_title(underline_char, title, docstring)
 	end
 end
 
---- Adds a parameter section (title + parameters) to a docstring
+--- Returns a line with formatted parameter info ready to be inserted into the docstring
 -- @param settings (table) Keys used to access setting values in a template
--- @param template (table) Settings to configure the language's docstring.
+-- @param template (table) Settings to configure the language's docstring
+-- @param wrapped_param (table) Wrapped param name and type
+-- @param is_type_before_name (boolean) Determines if the param type goes before the name or not
+-- @return string
+local function get_single_line_param_data(settings, template, wrapped_param, is_type_before_name)
+	local name_before_type = wrapped_param[1] .. wrapped_param[2]
+	local type_before_name = wrapped_param[2] .. wrapped_param[1]
+
+	return (is_type_before_name) and type_before_name or name_before_type
+end
+
+--- Returns 2 lines with formatted info about a parameter, one with its name and the other with its type
+-- @param settings (table) Keys used to access setting values in a template
+-- @param template (table) Settings to configure the language's docstring
+-- @param wrapped_param (table) Wrapped param name and type
+-- @param is_type_before_name (boolean) Determines if the param type goes a line above the name or not
+-- @return table
+local function get_multi_line_param_data(settings, template, wrapped_param, is_type_before_name)
+	local name_line = wrapped_param[1]
+	local type_line = wrapped_param[2]
+
+	local type_above_name = {type_line, name_line}
+	local name_above_type = {name_line, type_line}
+
+	return (is_type_before_name) and type_above_name or name_above_type
+end
+
+--- Returns the wrapped parameter name and type, with their respective keywords prepended
+-- @param settings (table) Keys used to access setting values in a template
+-- @param template (table) Settings to configure the language's docstring
+-- @param param (table | string) Parameter found in the function declaration. A table if it has a type, a string otherwise
+-- @return table
+local function get_wrapped_param_data(settings, template, param)
+	local type_pos_in_func = template[settings.type_pos_in_func.val]
+	local name_wrapper = template[settings.name_wrapper.val]
+	local type_wrapper = template[settings.type_wrapper.val]
+	local param_keyword = template[settings.param_keyword.val]
+	local type_keyword = template[settings.type_keyword.val]
+
+	local name_pos, type_pos = (type_pos_in_func) and 2 or 1, (type_pos_in_func) and 1 or 2
+	local open_name_wrapper, close_name_wrapper = name_wrapper[1], name_wrapper[2]
+	local open_type_wrapper, close_type_wrapper = type_wrapper[1], type_wrapper[2]
+
+	local wrapped_name, wrapped_type
+	if type(param) == "table" then
+		wrapped_name = open_name_wrapper .. param[name_pos] .. close_name_wrapper
+		wrapped_type = open_type_wrapper .. param[type_pos] .. close_type_wrapper
+	else
+		wrapped_name = open_name_wrapper .. param .. close_name_wrapper
+		wrapped_type = open_type_wrapper .. close_type_wrapper
+	end
+	local final_name = param_keyword .. " " .. wrapped_name
+	local final_type = type_keyword .. " " .. wrapped_type
+	return {final_name, final_type}
+end
+
+--- Inserts a section with content related to parameters into the docstring
+-- @param settings (table) Keys used to access setting values in a template
+-- @param template (table) Settings to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @param docstring (table) The docstring base structure
-local function add_param_section_to_docstring(settings, template, params, docstring)
-	local type_pos_in_func = template[settings.type_pos_in_func.val]
-	local params_title = template[settings.params_title.val]
-	local name_pos, type_pos = (type_pos_in_func) and 2 or 1, (type_pos_in_func) and 1 or 2
-
-	add_section_title(template[settings.section_underline.val], params_title, docstring)
+local function add_section_params(settings, template, params, docstring)
+	local line_start = template[settings.structure.val][2]
+	local param_indent = template[settings.param_indent.val]
+	local base_line = (param_indent) and ("\t" .. line_start) or (line_start)
+	local is_type_before_name_in_docs = template[settings.type_pos_in_docs.val]
 
 	for i = 1, #params do
 		local current_param = params[i]
-		local param_data = get_param_data(settings, template, current_param, name_pos, type_pos)
-		table.insert(docstring, #docstring, param_data)
+		local wrapped_param_data = get_wrapped_param_data(settings, template, current_param)
+		local param_data
+		if template[settings.is_param_data_one_line.val] then
+			param_data = get_single_line_param_data(settings, template, wrapped_param_data, is_type_before_name_in_docs)
+		else
+			param_data = get_multi_line_param_data(settings, template, wrapped_param_data, is_type_before_name_in_docs)
+		end
+
+		if type(param_data) == "string" then
+			table.insert(docstring, #docstring, base_line .. param_data)
+		elseif type(param_data) == "table" then
+			for _, value in pairs(param_data) do
+				table.insert(docstring, #docstring, base_line .. value)
+			end
+		end
 	end
+end
+
+--- Adds a parameter section (title + parameters) to a docstring
+-- @param settings (table) Keys used to access setting values in a template
+-- @param template (table) Settings to configure the language's docstring
+-- @param params (table) A table of parameters to be inserted into the docstring
+-- @param docstring (table) The docstring base structure
+local function add_param_section_to_docstring(settings, template, params, docstring)
+	local params_title = template[settings.params_title.val]
+	local title_underline = template[settings.section_underline.val]
+
+	add_section_title(title_underline, params_title, docstring)
+	add_section_params(settings, template, params, docstring)
 
 	if #template[settings.structure.val] == 2 then table.remove(docstring, #docstring) end
 end
