@@ -34,7 +34,7 @@ Feel free to create your own custom styles if the options provided here don't me
 | Languages | Annonation styles | Supported automatic annotation |
 |----------|----------|----------|
 | Lua | [LDoc](#lua-ldoc) | `function parameters` |
-| Python | Google, NumPy/SciPy | `function parameters` |
+| Python | [Google](#google), [NumPy/SciPy](#numpy-scipy), [reST](#restructuredtext-rest) | `function parameters` |
 | Javascript | [JSDoc](#javascript-jsdoc) | `function parameters` |
 
 #### Styles per language:
@@ -45,7 +45,7 @@ Feel free to create your own custom styles if the options provided here don't me
 -- param_1
 -- param_2
 local function cool_function(param_1, param_2)
-    <code here>
+    <code goes here>
 end
 ```
 
@@ -58,7 +58,7 @@ end
  * @param {} param_2
 */
 function cool_function(param_1, param_2){
-    <code here>
+    <code goes here>
 }
 ```
 
@@ -71,10 +71,10 @@ def cool_function(param_1: int, param_2: bool):
         <title goes here>
 
         Args:
-            param_1 (int)
-            param_2 (bool)
+            param_1 (int):
+            param_2 (bool):
     """
-    <code here>
+    <code goes here>
 ```
 
 - NumPy/SciPy:
@@ -88,7 +88,21 @@ def cool_function(param_1: list, param_2: str):
         param_1 : list
         param_2 : str
     """
-    <code here>
+    <code goes here>
+```
+
+- reStructuredText (reST):
+```python
+def cool_function(param_1: list, param_2: str):
+    """
+        <title goes here>
+
+        :param param_1:
+        :type param_1: list
+        :param param_2:
+        :type param_2: str
+    """
+    <code goes here>
 ```
 
 ### Motivation
