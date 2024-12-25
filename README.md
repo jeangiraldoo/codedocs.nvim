@@ -34,7 +34,7 @@ Feel free to create your own custom styles if the options provided here don't me
 | Languages | Annonation styles | Supported automatic annotation |
 |----------|----------|----------|
 | Lua | LDoc | `function parameters` |
-| Python | Google docstrings | `function parameters` |
+| Python | Google, NumPy/SciPy | `function parameters` |
 | Javascript | JSDoc | `function parameters` |
 
 ### Motivation
