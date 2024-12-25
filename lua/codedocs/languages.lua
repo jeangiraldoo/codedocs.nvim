@@ -62,6 +62,24 @@ local templates = {
 				[settings.param_indent.val] = false,
 				[settings.name_wrapper.val] = {"", ""},
 				[settings.type_wrapper.val] = {": ", ""}
+				},
+			reST = {
+				[settings.structure.val] = {'"""', "", '"""'},
+				[settings.func_keyword.val] = "def",
+				[settings.type_pos_in_func.val] = false,
+				[settings.type_pos_in_docs.val] = false,
+				[settings.param_type_separator.val] = ":",
+				[settings.direction.val] = false,
+				[settings.title_pos.val] = 2,
+				[settings.empty_line_after_title.val] = true,
+				[settings.section_underline.val] = "",
+				[settings.params_title.val] = "",
+				[settings.is_param_data_one_line.val] = false,
+				[settings.param_keyword.val] = ":param",
+				[settings.type_keyword.val] = ":type",
+				[settings.param_indent.val] = false,
+				[settings.name_wrapper.val] = {"", ":"},
+				[settings.type_wrapper.val] = {"", ":"}
 				}
 		},
 		javascript = {
