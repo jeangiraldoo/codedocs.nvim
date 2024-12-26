@@ -31,7 +31,7 @@ local function get_table_length(table)
 end
 
 --- Validates if a table is valid in terms of its content and length
--- @param settings (table) Keys used to access setting values in a template
+-- @param settings (table) Keys used to access setting values in a style
 -- @param setting_name The name of the setting that contains the table to validate
 -- @param table The table to validate
 local function validate_table(settings, setting_name, table)
@@ -39,7 +39,7 @@ local function validate_table(settings, setting_name, table)
 	local table_length = get_table_length(table)
 	if table_length < 2 then
 		display_error(setting_name, "contain at least 2 items. Received " .. table_length)
-	elseif setting_name == settings.structure.val and table_length > 3 then
+	elseif setting_name == settings.struct.val and table_length > 3 then
 		display_error(setting_name, "contain either 2 or 3 items. Received " .. table_length)
 	elseif not res_items[1] then
 		display_error(setting_name, "contain a table with strings. Received a table with at least a " .. type(res_items[2]))
@@ -72,13 +72,13 @@ local function validate_type(setting_type, actual_value)
 end
 
 --- Validates if all of the settings contain the expected data types and values
--- @param settings (table) Keys used to access setting values in a template
--- @param template (table) Settings to configure the language's docstring
-local function validate_template(settings, template)
+-- @param settings (table) Keys used to access setting values in a style
+-- @param style (table) Settings to configure the language's docstring
+local function validate_style(settings, style)
 	for _, setting_values in pairs(settings) do
 		local setting_name = setting_values.val
 		local setting_type = setting_values.type
-		local value_received = template[setting_name]
+		local value_received = style[setting_name]
 
 		if not validate_type(setting_type, value_received) then
 			display_error(setting_name, "be a " .. setting_type .. ". Received " .. type(value_received))
@@ -88,5 +88,5 @@ local function validate_template(settings, template)
 end
 
 return {
-	validate_template = validate_template
+	validate_style = validate_style
 }
