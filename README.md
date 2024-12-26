@@ -6,6 +6,7 @@
     <a href = "https://github.com/jeangiraldoo/codedocs.nvim/blob/main/LICENSE">
         <img src="https://img.shields.io/github/license/jeangiraldoo/codedocs.nvim?color=red" alt="Latest version"/>
     </a>
+    <img src="https://img.shields.io/github/repo-size/jeangiraldoo/codedocs.nvim?style=for-the-badge&logo=files&logoColor=yellow&label=SIZE&labelColor=%232E3A59&color=%23A8D8A1">
 </p>
 
 Codedocs.nvim automatically recognizes functions and methods in your code, creating structured documentation strings based on the programming language you are using (e.g., docstrings for Python, JSDoc for JavaScript, etc.).
