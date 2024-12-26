@@ -92,8 +92,11 @@ local function get_wrapped_param_data(settings, template, param)
 		wrapped_name = open_name_wrapper .. param .. close_name_wrapper
 		wrapped_type = open_type_wrapper .. close_type_wrapper
 	end
+	local is_param_data_one_line = template[settings.is_param_data_one_line.val]
 	local final_name = param_keyword .. " " .. wrapped_name
-	local final_type = type_keyword .. " " .. wrapped_type
+	local simple_type = type_keyword .. " " .. wrapped_type
+	local type_in_own_line = type_keyword .. " " .. wrapped_name .. " " .. wrapped_type
+	local final_type = is_param_data_one_line and simple_type or type_in_own_line
 	return {final_name, final_type}
 end
 

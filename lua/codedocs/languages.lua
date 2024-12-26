@@ -43,7 +43,7 @@ local templates = {
 				[settings.type_keyword.val] = "",
 				[settings.param_indent.val] = true,
 				[settings.name_wrapper.val] = {"", ""},
-				[settings.type_wrapper.val] = {"(", ")"}
+				[settings.type_wrapper.val] = {"(", "):"}
 				},
 			Numpy = {
 				[settings.structure.val] = {'"""', "", '"""'},
@@ -79,7 +79,7 @@ local templates = {
 				[settings.type_keyword.val] = ":type",
 				[settings.param_indent.val] = false,
 				[settings.name_wrapper.val] = {"", ":"},
-				[settings.type_wrapper.val] = {"", ":"}
+				[settings.type_wrapper.val] = {"", ""}
 				}
 		},
 		javascript = {
