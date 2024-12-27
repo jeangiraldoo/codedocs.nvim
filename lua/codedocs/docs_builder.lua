@@ -14,7 +14,7 @@ end
 -- @param docs (table) A list of strings representing the lines of the docstring
 -- @param indent_string (string) The string to prepend to each line for indentation
 -- @return (table) A list of indented lines
-local function add_indent_to_docstring(docs, indent_string, direction)
+local function add_indent_to_docs(docs, indent_string, direction)
 	local direction_based_indent = (direction) and "" or "\t"
 	local indented_lines = {}
 	for _, line in pairs(docs) do
@@ -104,13 +104,13 @@ local function add_section_params(settings, style, params, docs)
 
 	for i = 1, #params do
 		local param = params[i]
-		local wrapped_param_data = get_formatted_param_info(settings, style, param)
-		local param_data = get_arranged_param(wrapped_param_data, type_goes_first, is_param_one_line)
+		local formatted_param_info = get_formatted_param_info(settings, style, param)
+		local arranged_param_info = get_arranged_param(formatted_param_info, type_goes_first, is_param_one_line)
 
-		if type(param_data) == "string" then
-			table.insert(docs, #docs, base_line .. param_data)
-		elseif type(param_data) == "table" then
-			for _, value in pairs(param_data) do
+		if type(arranged_param_info) == "string" then
+			table.insert(docs, #docs, base_line .. arranged_param_info)
+		elseif type(arranged_param_info) == "table" then
+			for _, value in pairs(arranged_param_info) do
 				table.insert(docs, #docs, base_line .. value)
 			end
 		end
@@ -193,7 +193,7 @@ local function get_docstring(settings, style, line)
 	local line_indentation = line:match("^[^%w]*")
 
 	local docs = (params) and generate_docs(settings, style, params) or docs_struct
-	return add_indent_to_docstring(docs, line_indentation, direction)
+	return add_indent_to_docs(docs, line_indentation, direction)
 end
 
 return {
