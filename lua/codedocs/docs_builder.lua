@@ -170,10 +170,14 @@ local function extract_function_params(settings, style, line)
 	local param_info
 	for i = 1, #params do
 		local param = params[i]
-		if separator ~= "" and string.find(param, separator) then
+		local has_separator = separator ~= "" and string.find(param, separator)
+		if not has_separator then
+			param_info = param
+		elseif has_separator and style[settings.is_type_in_docs.val] then
 			param_info = vim.split(param, separator)
 		else
-			param_info = param
+			local name_pos = (style[settings.is_type_first.val]) and 2 or 1
+			param_info = vim.split(param, separator)[name_pos]
 		end
 		table.insert(params_info, i, param_info)
 	end
