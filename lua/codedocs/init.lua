@@ -6,7 +6,7 @@ local M = {}
 M.config = {
 	settings = defaults[1],
 	default_lang_styles = defaults[2],
-	lang_templates = defaults[3]
+	lang_styles = defaults[3]
 }
 
 function M.setup()
@@ -16,13 +16,13 @@ end
 function M.insert_docs()
 	local langs = vim.api.nvim_buf_get_option(0, "filetype")
 	local default_lang_style = M.config.default_lang_styles[langs]
-	local template = M.config.lang_templates[langs]
-	local template_style = template[default_lang_style]
-	insert_documentation.insert_docs(M.config.settings, template_style, langs)
+	local lang_styles = M.config.lang_styles[langs]
+	local lang_style = lang_styles[default_lang_style]
+	insert_documentation.insert_docs(M.config.settings, lang_style, langs)
 end
 
 function M.set_default_style(lang, style_name)
-	local chosen_lang_styles = M.config.lang_templates[lang]
+	local chosen_lang_styles = M.config.lang_styles[lang]
 	if not chosen_lang_styles then
 		error("There is no language called " .. lang .. " available in codedocs")
 	end
