@@ -39,35 +39,6 @@ local function add_section_title(underline_char, title, docs)
 	end
 end
 
---- Returns a line with formatted parameter info ready to be inserted into the docstring
--- @param settings (table) Keys used to access setting values in a style
--- @param style (table) Settings to configure the language's docstring
--- @param wrapped_param (table) Wrapped param name and type
--- @param is_type_before_name (boolean) Determines if the param type goes before the name or not
--- @return string
-local function get_single_line_param_data(settings, style, wrapped_param, is_type_before_name)
-	local name_before_type = wrapped_param[1] .. wrapped_param[2]
-	local type_before_name = wrapped_param[2] .. wrapped_param[1]
-
-	return (is_type_before_name) and type_before_name or name_before_type
-end
-
---- Returns 2 lines with formatted info about a parameter, one with its name and the other with its type
--- @param settings (table) Keys used to access setting values in a style
--- @param style (table) Settings to configure the language's docstring
--- @param wrapped_param (table) Wrapped param name and type
--- @param is_type_before_name (boolean) Determines if the param type goes a line above the name or not
--- @return table
-local function get_multi_line_param_data(settings, style, wrapped_param, is_type_before_name)
-	local name_line = wrapped_param[1]
-	local type_line = wrapped_param[2]
-
-	local type_above_name = {type_line, name_line}
-	local name_above_type = {name_line, type_line}
-
-	return (is_type_before_name) and type_above_name or name_above_type
-end
-
 --- Returns the wrapped parameter name and type, with their respective keywords prepended
 -- @param settings (table) Keys used to access setting values in a style
 -- @param style (table) Settings to configure the language's docstring
@@ -100,6 +71,25 @@ local function get_wrapped_param_data(settings, style, param)
 	return {final_name, final_type}
 end
 
+--- Returns a parameter's data arranged either across a single line or 2
+-- @param wrapped_param (table) Contains the parameter's name and type ready to be arranged
+-- @param type_goes_first (boolean) Determines if the parameter's type goes before the name in the docstring
+-- @param is_param_one_line (boolean) Determines if the parameter's name and type are arranged in 1 line or 2
+local function get_arranged_param(wrapped_param, type_goes_first, is_param_one_line)
+	local param_name = wrapped_param[1]
+	local param_type = wrapped_param[2]
+
+	local name_first, type_first
+	if is_param_one_line then
+		name_first = param_name .. param_type
+		type_first = param_type .. param_name
+	else
+		name_first = {param_name, param_type}
+		type_first = {param_type, param_name}
+	end
+	return (type_goes_first) and type_first or name_first
+end
+
 --- Inserts a section with content related to parameters into the docstring
 -- @param settings (table) Keys used to access setting values in a style
 -- @param style (table) Settings to configure the language's docstring
@@ -109,17 +99,13 @@ local function add_section_params(settings, style, params, docs)
 	local line_start = style[settings.struct.val][2]
 	local param_indent = style[settings.param_indent.val]
 	local base_line = (param_indent) and ("\t" .. line_start) or (line_start)
-	local type_goes_first_in_docs = style[settings.type_goes_first.val]
+	local type_goes_first = style[settings.type_goes_first.val]
+	local is_param_one_line = style[settings.is_param_one_line.val]
 
 	for i = 1, #params do
-		local current_param = params[i]
-		local wrapped_param_data = get_wrapped_param_data(settings, style, current_param)
-		local param_data
-		if style[settings.is_param_one_line.val] then
-			param_data = get_single_line_param_data(settings, style, wrapped_param_data, type_goes_first_in_docs)
-		else
-			param_data = get_multi_line_param_data(settings, style, wrapped_param_data, type_goes_first_in_docs)
-		end
+		local param = params[i]
+		local wrapped_param_data = get_wrapped_param_data(settings, style, param)
+		local param_data = get_arranged_param(wrapped_param_data, type_goes_first, is_param_one_line)
 
 		if type(param_data) == "string" then
 			table.insert(docs, #docs, base_line .. param_data)
