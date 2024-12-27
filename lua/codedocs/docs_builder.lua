@@ -122,11 +122,11 @@ end
 -- @param style (table) Settings to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @param docs (table) The docstring base structure
-local function add_param_section_to_docstring(settings, style, params, docs)
-	local params_title = style[settings.params_title.val]
-	local title_underline = style[settings.section_underline.val]
+local function insert_param_section(settings, style, params, docs)
+	local title = style[settings.params_title.val]
+	local title_underline_char = style[settings.section_underline.val]
 
-	add_section_title(title_underline, params_title, docs)
+	add_section_title(title_underline_char, title, docs)
 	add_section_params(settings, style, params, docs)
 
 	if #style[settings.struct.val] == 2 then table.remove(docs, #docs) end
@@ -145,37 +145,38 @@ local function generate_docstring(settings, style, params)
 	local line_start = docs_copy[2]
 
 	if is_empty_line_after_title then table.insert(docs_copy, empty_line_pos, line_start) end
-	add_param_section_to_docstring(settings, style, params, docs_copy)
+	insert_param_section(settings, style, params, docs_copy)
 	return docs_copy
 end
 
---- Returns a table of parameters, which may include names with types, names without types, or both
+--- Extracts function parameters as strings if no type is found, or as a table with name and type
+---
 -- @param settings (table) Keys used to access setting values in a style
 -- @param style (table) Settings to configure the language's docstring
 -- @param line (string) Text on the line under the cursor containing the function signature
 -- @return (table | nil) A table with parameters as elements, nil if no parameters are found
-local function get_params(settings, style, line)
+local function extract_function_params(settings, style, line)
 	if line and not string.match(line, style[settings.func_keyword.val]) then
 		return nil
 	end
+
+	local param_list = string.match(line, "%((.-)%)")
+	local param_list_without_spaces = string.gsub(param_list, "%s+", "")
+	local params = vim.split(param_list_without_spaces, ",")
+
 	local separator = style[settings.param_type_separator.val]
-
-	local params_string = string.match(line, "%((.-)%)")
-	local params_without_spaces = string.gsub(params_string, "%s+", "")
-	local params = vim.split(params_without_spaces, ",")
-	local params_with_types = {}
-
-	local final_param_to_insert
+	local params_info = {}
+	local param_info
 	for i = 1, #params do
-		local current_param = params[i]
-		if separator ~= "" and string.find(current_param, separator) then
-			final_param_to_insert = vim.split(current_param, separator)
+		local param = params[i]
+		if separator ~= "" and string.find(param, separator) then
+			param_info = vim.split(param, separator)
 		else
-			final_param_to_insert = current_param
+			param_info = param
 		end
-		table.insert(params_with_types, i, final_param_to_insert)
+		table.insert(params_info, i, param_info)
 	end
-	return params_with_types
+	return params_info
 end
 
 --- Returns a docstring with content or an empty one
@@ -187,7 +188,7 @@ end
 local function get_docstring(settings, style, line)
 	local docs_struct = style[settings.struct.val]
 	local direction = style[settings.direction.val]
-	local params = get_params(settings, style, line)
+	local params = extract_function_params(settings, style, line)
 	local line_indentation = line:match("^[^%w]*")
 
 	local docs = (params) and generate_docstring(settings, style, params) or docs_struct
