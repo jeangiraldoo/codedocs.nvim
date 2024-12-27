@@ -39,17 +39,15 @@ local function add_section_title(underline_char, title, docs)
 	end
 end
 
---- Returns the wrapped parameter name and type, with their respective keywords prepended
+--- Formats the parameter's name and type (if available), wrapping them and prepending keywords
 -- @param settings (table) Keys used to access setting values in a style
 -- @param style (table) Settings to configure the language's docstring
 -- @param param (table | string) Parameter found in the function declaration. A table if it has a type, a string otherwise
 -- @return table
-local function get_wrapped_param_data(settings, style, param)
-	local is_type_first = style[settings.is_type_first.val]
+local function get_formatted_param_info(settings, style, param)
 	local name_wrapper = style[settings.name_wrapper.val]
 	local type_wrapper = style[settings.type_wrapper.val]
-	local param_keyword = style[settings.param_keyword.val]
-	local type_keyword = style[settings.type_keyword.val]
+	local is_type_first = style[settings.is_type_first.val]
 
 	local name_pos, type_pos = (is_type_first) and 2 or 1, (is_type_first) and 1 or 2
 	local open_name_wrapper, close_name_wrapper = name_wrapper[1], name_wrapper[2]
@@ -63,12 +61,14 @@ local function get_wrapped_param_data(settings, style, param)
 		wrapped_name = open_name_wrapper .. param .. close_name_wrapper
 		wrapped_type = open_type_wrapper .. close_type_wrapper
 	end
-	local is_param_one_line = style[settings.is_param_one_line.val]
-	local final_name = param_keyword .. " " .. wrapped_name
-	local simple_type = type_keyword .. " " .. wrapped_type
-	local type_in_own_line = type_keyword .. " " .. wrapped_name .. " " .. wrapped_type
-	local final_type = is_param_one_line and simple_type or type_in_own_line
-	return {final_name, final_type}
+
+	local type_keyword = style[settings.type_keyword.val]
+	local standalone_type = type_keyword .. " " .. wrapped_type
+	local type_with_name = type_keyword .. " " .. wrapped_name .. " " .. wrapped_type
+
+	local formatted_type = style[settings.is_param_one_line.val] and standalone_type or type_with_name
+	local formatted_name = style[settings.param_keyword.val] .. " " .. wrapped_name
+	return {formatted_name, formatted_type}
 end
 
 --- Returns a parameter's data arranged either across a single line or 2
@@ -104,7 +104,7 @@ local function add_section_params(settings, style, params, docs)
 
 	for i = 1, #params do
 		local param = params[i]
-		local wrapped_param_data = get_wrapped_param_data(settings, style, param)
+		local wrapped_param_data = get_formatted_param_info(settings, style, param)
 		local param_data = get_arranged_param(wrapped_param_data, type_goes_first, is_param_one_line)
 
 		if type(param_data) == "string" then
