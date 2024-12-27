@@ -29,12 +29,11 @@ local function start_docstring_insertion(settings, style)
 	move_cursor_to_title(#docstring, direction, style[settings.title_pos.val])
 end
 
---- Inserts a documentation string for the function under the cursor.
--- Retrieves a docstring structure based on the current filetype, parses the function 
--- signature, and inserts the docstring into the buffer.
+--- Inserts a docstring for the function under the cursor
 -- @param settings (table) Keys used to access setting values in a style
 -- @param styles (table) A map of languages to docstring configurations
-local function insert_documentation(settings, style, filetype)
+-- @param filetype (string) The name of the programming language used in the current file
+local function insert_docs(settings, style, filetype)
 	if style then
 		start_docstring_insertion(settings, style)
 	else
@@ -43,5 +42,5 @@ local function insert_documentation(settings, style, filetype)
 end
 
 return {
-	insert_docs = insert_documentation
+	insert_docs = insert_docs
 }
