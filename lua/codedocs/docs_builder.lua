@@ -132,19 +132,20 @@ local function insert_param_section(settings, style, params, docs)
 	if #style[settings.struct.val] == 2 then table.remove(docs, #docs) end
 end
 
---- Fills a docstring with a parameter section and an empty line (if applicable)
--- and inserts the parameters into the docstring
+--- Inserts a parameter section into the docstring and an empty line (if applicable)
 -- @param settings (table) Keys used to access setting values in a style
 -- @param style (table) Settings to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @return (table) A new table with the updated docstring content
 local function generate_docstring(settings, style, params)
-	local is_empty_line_after_title = style[settings.empty_line_after_title.val]
-	local empty_line_pos = style[settings.title_pos.val] + 1
 	local docs_copy = copy_docstring(style[settings.struct.val])
-	local line_start = docs_copy[2]
+	local is_empty_line_after_title = style[settings.empty_line_after_title.val]
 
-	if is_empty_line_after_title then table.insert(docs_copy, empty_line_pos, line_start) end
+	if is_empty_line_after_title then
+		local empty_line_pos = style[settings.title_pos.val] + 1
+		local line_start = docs_copy[2]
+		table.insert(docs_copy, empty_line_pos, line_start)
+	end
 	insert_param_section(settings, style, params, docs_copy)
 	return docs_copy
 end
