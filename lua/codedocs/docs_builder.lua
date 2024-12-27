@@ -117,7 +117,7 @@ local function add_section_params(settings, style, params, docs)
 	end
 end
 
---- Adds a parameter section (title + parameters) to a docstring
+--- Adds a parameter section, composed of a title and parameters, to a docstring
 -- @param settings (table) Keys used to access setting values in a style
 -- @param style (table) Settings to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
@@ -137,7 +137,7 @@ end
 -- @param style (table) Settings to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @return (table) A new table with the updated docstring content
-local function generate_docstring(settings, style, params)
+local function generate_docs(settings, style, params)
 	local docs_copy = copy_docstring(style[settings.struct.val])
 	local is_empty_line_after_title = style[settings.empty_line_after_title.val]
 
@@ -192,7 +192,7 @@ local function get_docstring(settings, style, line)
 	local params = extract_function_params(settings, style, line)
 	local line_indentation = line:match("^[^%w]*")
 
-	local docs = (params) and generate_docstring(settings, style, params) or docs_struct
+	local docs = (params) and generate_docs(settings, style, params) or docs_struct
 	return add_indent_to_docstring(docs, line_indentation, direction)
 end
 
