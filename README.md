@@ -39,6 +39,7 @@ Feel free to create your own custom styles if the options provided here don't me
 | Python | [Google](#google), [NumPy/SciPy](#numpy-scipy), [reST](#restructuredtext-rest) | `function parameters` |
 | JavaScript | [JSDoc](#javascript-jsdoc) | `function parameters` |
 | TypeScript | [TSDoc](#typescript-tsdoc) | `function parameters` |
+| Ruby | [YARD](#ruby-yard) | `function parameters` |
 
 #### Styles per language:
 
@@ -140,6 +141,21 @@ def cool_function(param_1: list, param_2: str):
         :type param_2: str
     """
     <code goes here>
+```
+
+##### Ruby (YARD):
+
+[Official YARD documentation for Ruby](https://rubydoc.info/gems/yard/file/docs/GettingStarted.md#documenting-code-with-yard)
+
+Example:
+```ruby
+ #
+ #
+ # @param param_1 []
+ # @param param_2 []
+def cool_function(param_1, param_2)
+    <code goes here>
+end
 ```
 
 ### Motivation
