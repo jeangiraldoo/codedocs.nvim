@@ -39,12 +39,12 @@ local function add_section_title(underline_char, title, docs)
 	end
 end
 
---- Formats the parameter's name and type (if available), wrapping them and prepending keywords
+--- Wraps the parameter's name and type
 -- @param settings (table) Keys used to access setting values in a style
 -- @param style (table) Settings to configure the language's docstring
 -- @param param (table | string) Parameter found in the function declaration. A table if it has a type, a string otherwise
 -- @return table
-local function get_formatted_param_info(settings, style, param)
+local function get_wrapped_param_info(settings, style, param)
 	local name_wrapper = style[settings.name_wrapper.val]
 	local type_wrapper = style[settings.type_wrapper.val]
 	local is_type_first = style[settings.is_type_first.val]
@@ -61,38 +61,31 @@ local function get_formatted_param_info(settings, style, param)
 		wrapped_name = open_name_wrapper .. param .. close_name_wrapper
 		wrapped_type = open_type_wrapper .. close_type_wrapper
 	end
-
-	local type_keyword = style[settings.type_keyword.val]
-	local is_type_below_name_first = style[settings.is_type_below_name_first.val]
-	local is_param_one_line = style[settings.is_param_one_line.val]
-	local formatted_type
-	if is_param_one_line then
-		formatted_type = type_keyword .. " " .. wrapped_type
-	elseif not is_param_one_line and is_type_below_name_first then
-		formatted_type = type_keyword .. " " .. wrapped_name .. " " .. wrapped_type
-	elseif not is_param_one_line and not is_type_below_name_first then
-		formatted_type = type_keyword .. " " .. wrapped_type
-	end
-
-	local formatted_name = style[settings.param_keyword.val] .. " " .. wrapped_name
-	return {formatted_name, formatted_type}
+	return {wrapped_name, wrapped_type}
 end
 
 --- Returns a parameter's data arranged either across a single line or 2
 -- @param wrapped_param (table) Contains the parameter's name and type ready to be arranged
 -- @param type_goes_first (boolean) Determines if the parameter's type goes before the name in the docstring
 -- @param is_param_one_line (boolean) Determines if the parameter's name and type are arranged in 1 line or 2
-local function get_arranged_param(wrapped_param, type_goes_first, is_param_one_line)
+local function get_arranged_param_info(settings, style, wrapped_param, type_goes_first, is_param_one_line)
 	local param_name = wrapped_param[1]
 	local param_type = wrapped_param[2]
+	local type_keyword = style[settings.type_keyword.val]
+	local is_type_below_name_first = style[settings.is_type_below_name_first.val]
 
-	local name_first, type_first
+	local final_name = style[settings.param_keyword.val] .. " " .. param_name
+	local final_type, name_first, type_first
 	if is_param_one_line then
-		name_first = param_name .. param_type
-		type_first = param_type .. param_name
+		final_type = type_keyword .. " " .. param_type
+		name_first = final_name .. final_type
+		type_first = final_type .. final_name
 	else
-		name_first = {param_name, param_type}
-		type_first = {param_type, param_name}
+		local standalone_type = type_keyword .. " " .. param_type
+		local type_with_name = type_keyword .. " " .. param_name .. " " .. param_type
+		final_type = (is_type_below_name_first) and type_with_name or standalone_type
+		name_first = {final_name, final_type}
+		type_first = {final_type, final_name}
 	end
 	return (type_goes_first) and type_first or name_first
 end
@@ -104,20 +97,19 @@ end
 -- @param docs (table) The docstring base structure
 local function add_section_params(settings, style, params, docs)
 	local line_start = style[settings.struct.val][2]
-	local param_indent = style[settings.param_indent.val]
-	local base_line = (param_indent) and ("\t" .. line_start) or (line_start)
+	local base_line = (style[settings.param_indent.val]) and ("\t" .. line_start) or (line_start)
 	local type_goes_first = style[settings.type_goes_first.val]
 	local is_param_one_line = style[settings.is_param_one_line.val]
 
 	for i = 1, #params do
 		local param = params[i]
-		local formatted_param_info = get_formatted_param_info(settings, style, param)
-		local arranged_param_info = get_arranged_param(formatted_param_info, type_goes_first, is_param_one_line)
+		local wrapped_info = get_wrapped_param_info(settings, style, param)
+		local final_info = get_arranged_param_info(settings, style, wrapped_info, type_goes_first, is_param_one_line)
 
-		if type(arranged_param_info) == "string" then
-			table.insert(docs, #docs, base_line .. arranged_param_info)
-		elseif type(arranged_param_info) == "table" then
-			for _, value in pairs(arranged_param_info) do
+		if type(final_info) == "string" then
+			table.insert(docs, #docs, base_line .. final_info)
+		elseif type(final_info) == "table" then
+			for _, value in pairs(final_info) do
 				table.insert(docs, #docs, base_line .. value)
 			end
 		end
