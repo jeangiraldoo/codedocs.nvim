@@ -149,7 +149,7 @@ def cool_function(param_1: list, param_2: str):
 
 Example:
 ```ruby
- #
+ # <title goes here>
  #
  # @param param_1 []
  # @param param_2 []
