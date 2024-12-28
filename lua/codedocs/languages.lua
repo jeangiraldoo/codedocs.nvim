@@ -26,7 +26,7 @@ local default_lang_styles = {
 			javascript = "JSDoc",
 			typescript = "TSDoc",
 			lua = "LDoc",
-			java = "JavaDoc"
+			ruby = "YARD"
 			}
 
 local styles = {
@@ -158,16 +158,16 @@ local styles = {
 				[settings.type_wrapper.val] = {"", ""}
 				}
 		},
-		java = {
-			JavaDoc = {
-				[settings.struct.val] = {"/**", " * ", " */"},
-				[settings.func_keyword.val] = "function",
-				[settings.is_type_first.val] = true,
-				[settings.is_type_in_docs.val] = true,
+		ruby = {
+			YARD = {
+				[settings.struct.val] = {" # ", " # "},
+				[settings.func_keyword.val] = "def",
+				[settings.is_type_first.val] = false,
+				[settings.is_type_in_docs.val] = false,
 				[settings.type_goes_first.val] = false,
 				[settings.param_type_separator.val] = ":",
 				[settings.direction.val] = true,
-				[settings.title_pos.val] = 2,
+				[settings.title_pos.val] = 1,
 				[settings.empty_line_after_title.val] = true,
 				[settings.section_underline.val] = "",
 				[settings.params_title.val] = "",
@@ -176,8 +176,8 @@ local styles = {
 				[settings.param_keyword.val] = "@param",
 				[settings.type_keyword.val] = "",
 				[settings.param_indent.val] = false,
-				[settings.name_wrapper.val] = {"", " "},
-				[settings.type_wrapper.val] = {"", ""}
+				[settings.name_wrapper.val] = {"", ""},
+				[settings.type_wrapper.val] = {"[", "]"}
 				}
 		}
 }
