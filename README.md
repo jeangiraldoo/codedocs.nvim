@@ -43,6 +43,9 @@ Feel free to create your own custom styles if the options provided here don't me
 #### Styles per language:
 
 ##### Lua (LDoc):
+[Official LDoc documentation](https://lunarmodules.github.io/ldoc/manual/manual.md.html#Introduction)
+
+Example:
 ```lua
 --- <title goes here>
 -- param_1
@@ -53,6 +56,9 @@ end
 ```
 
 ##### JavaScript (JSDoc):
+[Official JSDoc documentation](https://jsdoc.app/)
+
+Example:
 ```javascript
 /*
  * <title goes here>
@@ -66,6 +72,9 @@ function cool_function(param_1, param_2){
 ```
 
 ##### TypeScript (TSDoc):
+[Official TSDoc documentation](https://tsdoc.org/)
+
+Example:
 ```typescript
 /*
  * <title goes here>
@@ -81,6 +90,10 @@ function cool_function(param_1: number, param_2: string){
 ##### Python:
 
 - Google:
+
+[Official Google documentation for Python](https://google.github.io/styleguide/pyguide.html#38-Comments-and-Documentation)
+
+Example:
 ```python
 def cool_function(param_1: int, param_2: bool):
     """
@@ -94,6 +107,10 @@ def cool_function(param_1: int, param_2: bool):
 ```
 
 - NumPy/SciPy:
+
+[Official Numpy documentation for Python](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard)
+
+Example:
 ```python
 def cool_function(param_1: list, param_2: str):
     """
@@ -108,6 +125,10 @@ def cool_function(param_1: list, param_2: str):
 ```
 
 - reStructuredText (reST):
+
+[Official reST documentation for Python](https://docutils.sourceforge.io/rst.html)
+
+Example:
 ```python
 def cool_function(param_1: list, param_2: str):
     """
