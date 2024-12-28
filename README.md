@@ -38,7 +38,7 @@ Feel free to create your own custom styles if the options provided here don't me
 | Lua | [LDoc](#lua-ldoc) | `function parameters` |
 | Python | [Google](#google), [NumPy/SciPy](#numpy-scipy), [reST](#restructuredtext-rest) | `function parameters` |
 | JavaScript | [JSDoc](#javascript-jsdoc) | `function parameters` |
-| TypeScript | [TSDoc](#typecript-tsdoc) | `function parameters` |
+| TypeScript | [TSDoc](#typescript-tsdoc) | `function parameters` |
 
 #### Styles per language:
 
