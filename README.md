@@ -37,7 +37,8 @@ Feel free to create your own custom styles if the options provided here don't me
 |----------|----------|----------|
 | Lua | [LDoc](#lua-ldoc) | `function parameters` |
 | Python | [Google](#google), [NumPy/SciPy](#numpy-scipy), [reST](#restructuredtext-rest) | `function parameters` |
-| Javascript | [JSDoc](#javascript-jsdoc) | `function parameters` |
+| JavaScript | [JSDoc](#javascript-jsdoc) | `function parameters` |
+| TypeScript | [TSDoc](#typecript-tsdoc) | `function parameters` |
 
 #### Styles per language:
 
@@ -51,7 +52,7 @@ local function cool_function(param_1, param_2)
 end
 ```
 
-##### Javascript (JSDoc):
+##### JavaScript (JSDoc):
 ```javascript
 /*
  * <title goes here>
@@ -60,6 +61,19 @@ end
  * @param {} param_2
 */
 function cool_function(param_1, param_2){
+    <code goes here>
+}
+```
+
+##### TypeScript (TSDoc):
+```typescript
+/*
+ * <title goes here>
+ *
+ * @param param_1 -
+ * @param param_2 -
+*/
+function cool_function(param_1: number, param_2: string){
     <code goes here>
 }
 ```
