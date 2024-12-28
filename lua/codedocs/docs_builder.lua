@@ -63,10 +63,17 @@ local function get_formatted_param_info(settings, style, param)
 	end
 
 	local type_keyword = style[settings.type_keyword.val]
-	local standalone_type = type_keyword .. " " .. wrapped_type
-	local type_with_name = type_keyword .. " " .. wrapped_name .. " " .. wrapped_type
+	local is_type_below_name_first = style[settings.is_type_below_name_first.val]
+	local is_param_one_line = style[settings.is_param_one_line.val]
+	local formatted_type
+	if is_param_one_line then
+		formatted_type = type_keyword .. " " .. wrapped_type
+	elseif not is_param_one_line and is_type_below_name_first then
+		formatted_type = type_keyword .. " " .. wrapped_name .. " " .. wrapped_type
+	elseif not is_param_one_line and not is_type_below_name_first then
+		formatted_type = type_keyword .. " " .. wrapped_type
+	end
 
-	local formatted_type = style[settings.is_param_one_line.val] and standalone_type or type_with_name
 	local formatted_name = style[settings.param_keyword.val] .. " " .. wrapped_name
 	return {formatted_name, formatted_type}
 end

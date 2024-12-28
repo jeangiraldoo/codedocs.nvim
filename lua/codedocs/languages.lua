@@ -12,6 +12,7 @@ local settings = {
 		  	section_underline = {val = "section_underline", type = "string"}, -- Creates a string of the specified char to underline the section title
 		  	params_title = {val = "params_title", type = "string"}, -- Title displayed before the parameters section in the docstring
 		  	is_param_one_line = {val = "is_param_one_line", type = "boolean"}, -- Determines if the param name and type go on the same line or not
+			is_type_below_name_first = {val = "is_type_below_name_first", type = "boolean"}, -- Determines if the type below starts with the param name or just the type. This setting is used whenever is_param_one_line is false
 			is_type_in_docs = {val = "is_type_in_docs", type = "boolean"}, -- Determines wether or not to document the parameter type in the docstring
 		  	param_keyword = {val = "param_keyword", type = "string"}, -- Keyword prefixed to each parameter name in the docstring
 			type_keyword = {val = "type_keyword", type = "string"}, -- Keyword prefixed to each parameter type in the docstring
@@ -40,6 +41,7 @@ local styles = {
 				[settings.section_underline.val] = "",
 				[settings.params_title.val] = "Args:",
 				[settings.is_param_one_line.val] = true,
+				[settings.is_type_below_name_first.val] = false,
 				[settings.is_type_in_docs.val] = true,
 				[settings.param_keyword.val] = "",
 				[settings.type_keyword.val] = "",
@@ -59,6 +61,7 @@ local styles = {
 				[settings.section_underline.val] = "-",
 				[settings.params_title.val] = "Parameters:",
 				[settings.is_param_one_line.val] = true,
+				[settings.is_type_below_name_first.val] = false,
 				[settings.is_type_in_docs.val] = true,
 				[settings.param_keyword.val] = "",
 				[settings.type_keyword.val] = "",
@@ -78,6 +81,7 @@ local styles = {
 				[settings.section_underline.val] = "",
 				[settings.params_title.val] = "",
 				[settings.is_param_one_line.val] = false,
+				[settings.is_type_below_name_first.val] = true,
 				[settings.is_type_in_docs.val] = true,
 				[settings.param_keyword.val] = ":param",
 				[settings.type_keyword.val] = ":type",
@@ -99,6 +103,7 @@ local styles = {
 				[settings.section_underline.val] = "",
 				[settings.params_title.val] = "",
 				[settings.is_param_one_line.val] = true,
+				[settings.is_type_below_name_first.val] = false,
 				[settings.is_type_in_docs.val] = true,
 				[settings.param_keyword.val] = "",
 				[settings.type_keyword.val] = "@param",
@@ -120,6 +125,7 @@ local styles = {
 				[settings.section_underline.val] = "",
 				[settings.params_title.val] = "",
 				[settings.is_param_one_line.val] = true,
+				[settings.is_type_below_name_first.val] = false,
 				[settings.is_type_in_docs.val] = true,
 				[settings.param_keyword.val] = "@param",
 				[settings.type_keyword.val] = "",
