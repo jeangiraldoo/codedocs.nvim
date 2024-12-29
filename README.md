@@ -40,6 +40,7 @@ Feel free to create your own custom styles if the options provided here don't me
 | JavaScript | [JSDoc](#javascript-jsdoc) | `function parameters` |
 | TypeScript | [TSDoc](#typescript-tsdoc) | `function parameters` |
 | Ruby | [YARD](#ruby-yard) | `function parameters` |
+| PHP | [PHPDoc](#php-phpdoc) | `function parameters` |
 
 #### Styles per language:
 
@@ -156,6 +157,23 @@ Example:
 def cool_function(param_1, param_2)
     <code goes here>
 end
+```
+
+##### PHP (PHPDoc):
+
+[Official PHPDoc documentation for PHP](https://docs.phpdoc.org/guide/getting-started/what-is-a-docblock.html#what-is-a-docblock)
+
+Example:
+```php
+/**
+ * <title goes here>
+ *
+ * @param int $param_1
+ * @param int $param_2
+ */
+function cool_function(int $param_1, int $param_2){
+    <code goes here>
+}
 ```
 
 ### Motivation
