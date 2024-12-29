@@ -183,7 +183,7 @@ local styles = {
 		},
 		php = {
 			PHPDoc = {
-				[settings.struct.val] = {"/**", " * ", "*/"},
+				[settings.struct.val] = {"/**", " * ", " */"},
 				[settings.func_keyword.val] = "function",
 				[settings.is_type_first.val] = true,
 				[settings.is_type_in_docs.val] = true,
