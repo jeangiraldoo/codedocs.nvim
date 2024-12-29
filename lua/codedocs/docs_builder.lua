@@ -136,7 +136,7 @@ end
 -- @param style (table) Settings to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @return (table) A new table with the updated docstring content
-local function generate_docs(settings, style, params)
+local function generate_function_docs(settings, style, params)
 	local docs_copy = copy_docstring(style[settings.struct.val])
 	local is_empty_line_after_title = style[settings.empty_line_after_title.val]
 
@@ -149,22 +149,12 @@ local function generate_docs(settings, style, params)
 	return docs_copy
 end
 
---- Extracts function parameters as strings if no type is found, or as a table with name and type
----
--- @param settings (table) Keys used to access setting values in a style
--- @param style (table) Settings to configure the language's docstring
--- @param line (string) Text on the line under the cursor containing the function signature
--- @return (table | nil) A table with parameters as elements, nil if no parameters are found
-local function extract_function_params(settings, style, line)
-	if line and not string.match(line, style[settings.func_keyword.val]) then
-		return nil
-	end
-
-	local param_list = string.match(line, "%((.-)%)")
-	local param_list_without_spaces = string.gsub(param_list, "%s+", "")
-	local params = vim.split(param_list_without_spaces, ",")
-
-	local separator = style[settings.param_type_separator.val]
+--- Parses each parameter to determine its name and type (if applicable)
+-- @param params Table containing the parameters to parse
+-- @param separator A string that separates the parameter name from its type (if present)
+-- @param is_type_in_docs A style setting that determines whether the parameter's type should be included
+-- @param is_type_first A style setting that determines which part of the parameter is considered the name (applies only when is_type_in_docs is false)
+local function get_params_with_info(params, separator, is_type_in_docs, is_type_first)
 	local params_info = {}
 	local param_info
 	for i = 1, #params do
@@ -172,15 +162,51 @@ local function extract_function_params(settings, style, line)
 		local has_separator = separator ~= "" and string.find(param, separator)
 		if not has_separator then
 			param_info = param
-		elseif has_separator and style[settings.is_type_in_docs.val] then
+		elseif has_separator and is_type_in_docs then
 			param_info = vim.split(param, separator)
 		else
-			local name_pos = (style[settings.is_type_first.val]) and 2 or 1
+			local name_pos = (is_type_first) and 2 or 1
 			param_info = vim.split(param, separator)[name_pos]
+		end
+
+		-- Removes trailing spaces in between the param name and type when the separator is not whitespace, 
+		-- ensuring such spaces are not considered part of the right-hand side of the parameter.
+		if type(param_info) == "table" then
+			for key, value in pairs(param_info) do
+				param_info[key] = string.gsub(value, "%s+", "")
+			end
 		end
 		table.insert(params_info, i, param_info)
 	end
 	return params_info
+
+end
+
+local function extract_comma_separated_params(line)
+	local param_list = string.match(line, "%((.-)%)")
+	local param_list_without_spaces = string.gsub(param_list, "%s*,%s*", ",")  -- Remove spaces around commas
+	param_list_without_spaces = string.gsub(param_list_without_spaces, "%s+", " ")  -- Collapse multiple spaces into a single space
+	param_list_without_spaces = string.gsub(param_list_without_spaces, "^%s*(.-)%s*$", "%1")  -- Trim leading and trailing spaces
+
+	return vim.split(param_list_without_spaces, ",")
+end
+
+local function insert_function_docs(settings, style, line)
+	local param_info_separator = style[settings.param_type_separator.val]
+	local is_type_in_docs = style[settings.is_type_in_docs.val]
+	local is_type_first = style[settings.is_type_first.val]
+	local raw_params = extract_comma_separated_params(line)
+	local params = get_params_with_info(raw_params, param_info_separator, is_type_in_docs, is_type_first)
+
+	return generate_function_docs(settings, style, params)
+end
+
+local function get_docs_type(settings, style, line)
+	if line and string.match(line, style[settings.func_keyword.val]) then
+		return "function"
+	else
+		return nil
+	end
 end
 
 --- Returns a docstring with content or an empty one
@@ -192,10 +218,16 @@ end
 local function get_docstring(settings, style, line)
 	local docs_struct = style[settings.struct.val]
 	local direction = style[settings.direction.val]
-	local params = extract_function_params(settings, style, line)
+	local docs_type = get_docs_type(settings, style, line)
 	local line_indentation = line:match("^[^%w]*")
 
-	local docs = (params) and generate_docs(settings, style, params) or docs_struct
+	local docs
+	if docs_type == "function" then
+		docs = insert_function_docs(settings, style, line)
+	else
+		docs = docs_struct
+	end
+	
 	return add_indent_to_docs(docs, line_indentation, direction)
 end
 

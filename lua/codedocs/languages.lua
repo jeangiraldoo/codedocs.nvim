@@ -26,7 +26,8 @@ local default_lang_styles = {
 			javascript = "JSDoc",
 			typescript = "TSDoc",
 			lua = "LDoc",
-			ruby = "YARD"
+			ruby = "YARD",
+			php = "PHPDoc"
 			}
 
 local styles = {
@@ -69,7 +70,7 @@ local styles = {
 				[settings.type_keyword.val] = "",
 				[settings.param_indent.val] = false,
 				[settings.name_wrapper.val] = {"", ""},
-				[settings.type_wrapper.val] = {": ", ""}
+				[settings.type_wrapper.val] = {":", ""}
 				},
 			reST = {
 				[settings.struct.val] = {'"""', "", '"""'},
@@ -178,6 +179,28 @@ local styles = {
 				[settings.param_indent.val] = false,
 				[settings.name_wrapper.val] = {"", ""},
 				[settings.type_wrapper.val] = {"[", "]"}
+				}
+		},
+		php = {
+			PHPDoc = {
+				[settings.struct.val] = {"/**", " * ", "*/"},
+				[settings.func_keyword.val] = "function",
+				[settings.is_type_first.val] = true,
+				[settings.is_type_in_docs.val] = true,
+				[settings.type_goes_first.val] = true,
+				[settings.param_type_separator.val] = " ",
+				[settings.direction.val] = true,
+				[settings.title_pos.val] = 2,
+				[settings.empty_line_after_title.val] = true,
+				[settings.section_underline.val] = "",
+				[settings.params_title.val] = "",
+				[settings.is_param_one_line.val] = true,
+				[settings.is_type_below_name_first.val] = false,
+				[settings.param_keyword.val] = "",
+				[settings.type_keyword.val] = "@param",
+				[settings.param_indent.val] = false,
+				[settings.name_wrapper.val] = {"", ""},
+				[settings.type_wrapper.val] = {"", ""}
 				}
 		}
 }
