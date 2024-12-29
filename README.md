@@ -41,6 +41,7 @@ Feel free to create your own custom styles if the options provided here don't me
 | TypeScript | [TSDoc](#typescript-tsdoc) | `function parameters` |
 | Ruby | [YARD](#ruby-yard) | `function parameters` |
 | PHP | [PHPDoc](#php-phpdoc) | `function parameters` |
+| Java | [JavaDoc](#java-javadoc) | `function parameters` |
 
 #### Styles per language:
 
@@ -67,7 +68,7 @@ Example:
  *
  * @param {} param_1
  * @param {} param_2
-*/
+ */
 function cool_function(param_1, param_2){
     <code goes here>
 }
@@ -83,7 +84,7 @@ Example:
  *
  * @param param_1 -
  * @param param_2 -
-*/
+ */
 function cool_function(param_1: number, param_2: string){
     <code goes here>
 }
@@ -172,6 +173,22 @@ Example:
  * @param int $param_2
  */
 function cool_function(int $param_1, int $param_2){
+    <code goes here>
+}
+```
+
+##### Java (JavaDoc):
+[Official JavaDoc documentation](https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#format)
+
+Example:
+```java
+/*
+ * <title goes here>
+ *
+ * @param param_1
+ * @param param_2
+ */
+public void cool_function(int param_1, String param_2){
     <code goes here>
 }
 ```
