@@ -1,5 +1,5 @@
-local defaults = require("codedocs.lua.codedocs.languages")
-local insert_documentation = require("codedocs.lua.codedocs.insert_docs")
+local defaults = require("codedocs.languages")
+local insert_documentation = require("codedocs.insert_docs")
 
 local M = {}
 

@@ -16,11 +16,11 @@ end
 -- @param style (table) Settings used to configure a language's docstring style
 -- @param filetype The name of the programming language that corresponds with the current filetype
 local function start_docstring_insertion(settings, style)
-	require("codedocs.lua.codedocs.style_validations").validate_style(settings, style)
+	require("codedocs.style_validations").validate_style(settings, style)
 	local cursor_pos = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line (1-based index)
 	local line_content = vim.api.nvim_buf_get_lines(0, cursor_pos - 1, cursor_pos, false)[1]
 
-	local docstring = require("codedocs.lua.codedocs.docs_builder").get_docstring(settings, style, line_content)
+	local docstring = require("codedocs.docs_builder").get_docstring(settings, style, line_content)
 	local direction = style[settings.direction.val]
 
 	local insert_pos = (direction) and cursor_pos - 1 or cursor_pos
