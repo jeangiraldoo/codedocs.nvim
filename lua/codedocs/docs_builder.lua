@@ -201,8 +201,26 @@ local function insert_function_docs(settings, style, line)
 	return generate_function_docs(settings, style, params)
 end
 
-local function get_docs_type(settings, style, line)
-	if line and string.match(line, style[settings.func_keyword.val]) then
+local function has_access_modifier(line)
+	if string.match(line, "public") then
+		return true
+	end
+
+	if string.match(line, "private") then
+		return true
+	end
+
+	if string.match(line, "protected") then
+		return true
+	end
+
+	return false
+end
+
+local function get_docs_type(func_kw, line)
+	local is_func_without_kw = func_kw == "null" and has_access_modifier and string.match(line, "%(.*%)")
+	local is_func_with_kw = func_kw ~= "null" and string.match(line, func_kw) and string.match(line, "%(.*%)")
+	if is_func_with_kw or is_func_without_kw then
 		return "function"
 	else
 		return nil
@@ -218,7 +236,7 @@ end
 local function get_docstring(settings, style, line)
 	local docs_struct = style[settings.struct.val]
 	local direction = style[settings.direction.val]
-	local docs_type = get_docs_type(settings, style, line)
+	local docs_type = get_docs_type(style[settings.func_keyword.val], line)
 	local line_indentation = line:match("^[^%w]*")
 
 	local docs
@@ -227,7 +245,7 @@ local function get_docstring(settings, style, line)
 	else
 		docs = docs_struct
 	end
-	
+
 	return add_indent_to_docs(docs, line_indentation, direction)
 end
 
