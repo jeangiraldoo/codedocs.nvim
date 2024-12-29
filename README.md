@@ -16,6 +16,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 
 # Table of contents
 - [Features](#features)
+- [Installation](#installation)
 - [Supported languages](#supported-languages)
 - [Motivation](#motivation)
 - [License](#license)
@@ -26,6 +27,25 @@ You can easily modify the structure of the documentation strings to suit your sp
 - Multi-Language Support: Generates documentation strings for various programming languages.
 - Customizable Structures: Modify existing documentation formats or define new ones for additional languages.
 - No Dependencies: Designed to be straightforward and self-contained, making integration seamless.
+
+### Installation
+
+To install Codedocs with your plugin manager, follow these steps:
+
+1. Install the plugin using the appropriate syntax for your plugin manager.
+
+#### [lazy.nvim](http://www.lazyvim.org/)
+```lua
+require("lazy").setup({
+    "jeangiraldoo/codedocs.nvim"
+})
+```
+
+2. After adding the above code to your init.lua file, run the following command in Neovim to install the plugin:
+#### [lazy.nvim](http://www.lazyvim.org/)
+```lua
+:Lazy sync
+```
 
 ### Supported languages
 
