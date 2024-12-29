@@ -9,8 +9,19 @@ M.config = {
 	lang_styles = defaults[3]
 }
 
-function M.setup()
-    print("Codedocs has been set up!")
+function M.setup(config)
+	if config and config.default_lang_styles then
+		for key, value in pairs(config.default_lang_styles) do
+			if not M.config.default_lang_styles[key] then
+				error("There is no language called " .. key .. " available in codedocs")
+			elseif type(value) ~= "string" then
+				error("The value assigned as the default docstring style for " .. key .. " must be a string")
+			elseif not M.config.lang_styles[key][value] then
+				error(key .. " does not have a docstring style called " .. value)
+			end
+			M.config.default_lang_styles[key] = value
+		end
+	end
 end
 
 function M.insert_docs()
@@ -22,18 +33,6 @@ function M.insert_docs()
 	end
 	local lang_style = lang_styles[default_lang_style]
 	insert_documentation.insert_docs(M.config.settings, lang_style, lang)
-end
-
-function M.set_default_style(lang, style_name)
-	local chosen_lang_styles = M.config.lang_styles[lang]
-	if not chosen_lang_styles then
-		error("There is no language called " .. lang .. " available in codedocs")
-	end
-	local new_default_style = chosen_lang_styles[style_name]
-	if not new_default_style then
-		error("There is no style for " .. lang .. " called " .. style_name)
-	end
-	M.config.default_lang_styles[lang] = style_name
 end
 
 vim.api.nvim_set_keymap('n', "<Plug>Codedocs", "<cmd>lua require('codedocs').insert_docs()<CR>", { noremap = true, silent = true })
