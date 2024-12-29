@@ -70,7 +70,7 @@ local styles = {
 				[settings.type_keyword.val] = "",
 				[settings.param_indent.val] = false,
 				[settings.name_wrapper.val] = {"", ""},
-				[settings.type_wrapper.val] = {":", ""}
+				[settings.type_wrapper.val] = {": ", ""}
 				},
 			reST = {
 				[settings.struct.val] = {'"""', "", '"""'},
