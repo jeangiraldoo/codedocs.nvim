@@ -17,6 +17,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 # Table of contents
 - [Features](#features)
 - [Installation](#installation)
+- [Usage](#usage)
 - [Supported languages](#supported-languages)
 - [Motivation](#motivation)
 - [License](#license)
@@ -46,6 +47,31 @@ require("lazy").setup({
 ```lua
 :Lazy sync
 ```
+
+### Usage
+
+When your cursor is placed on top of a language's structure (e.g., a function declaration, class, etc.) that you want to document and you trigger the docstring insertion, Codedocs will check if it has a [docstring style for such structure in the programming language you are using](#supported-languages). If a docstring style is available, it will generate and insert a docstring above or below the structure, depending on the language's docstring style.
+
+If the structure under the cursor is not supported by Codedocs, a multi-line string will be inserted based on the syntax used by the programming language.
+
+You can start the docstring insertion either by using a command or a keymap:
+
+##### Command:
+
+Codedocs creates the `:Codedocs` command, which can be called manually like this:
+
+```lua
+:Codedocs
+```
+
+##### Keymap:
+
+For a more convenient experience, you can bind the docstring insertion to a keymap. For example:
+
+```lua
+vim.keymap.set("n", "<leader>k", require('codedocs').insert_docs, { desc = "Inserts a docstring into the buffer" })
+```
+This keymap will insert a docstring when pressing ```<leader>k```. Feel free to customize the key combination to your liking.
 
 ### Supported languages
 
