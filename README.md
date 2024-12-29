@@ -42,6 +42,7 @@ Feel free to create your own custom styles if the options provided here don't me
 | Ruby | [YARD](#ruby-yard) | `function parameters` |
 | PHP | [PHPDoc](#php-phpdoc) | `function parameters` |
 | Java | [JavaDoc](#java-javadoc) | `function parameters` |
+| Kotlin | [KDoc](#kotlin-kdoc) | `function parameters` |
 
 #### Styles per language:
 
@@ -189,6 +190,22 @@ Example:
  * @param param_2
  */
 public void cool_function(int param_1, String param_2){
+    <code goes here>
+}
+```
+
+##### Kotlin (KDoc):
+[Official KDoc documentation](https://kotlinlang.org/docs/kotlin-doc.html)
+
+Example:
+```kotlin
+/*
+ * <title goes here>
+ *
+ * @param param_1
+ * @param param_2
+ */
+fun cool_function(param_1: Int, param_2: String){
     <code goes here>
 }
 ```
