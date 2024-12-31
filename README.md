@@ -16,6 +16,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 
 # Table of contents
 - [Features](#features)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Supported languages](#supported-languages)
@@ -27,7 +28,12 @@ You can easily modify the structure of the documentation strings to suit your sp
 - Automatic Recognition: Detects functions and methods in your codebase.
 - Multi-Language Support: Generates documentation strings for various programming languages.
 - Customizable Structures: Modify existing documentation formats or define new ones for additional languages.
-- No Dependencies: Designed to be straightforward and self-contained, making integration seamless.
+
+### Requirements
+
+Codedocs relies on Treesitter for its core functionality. The easiest way to install Treesitter parsers is by using [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter). Simply install **nvim-treesitter** and the parsers for the programming languages you use, and you're ready to install Codedocs.
+
+If you already have the Treesitter parsers you want installed, you can proceed with installing Codedocs directly.
 
 ### Installation
 
