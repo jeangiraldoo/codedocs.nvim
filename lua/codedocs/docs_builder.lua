@@ -47,20 +47,15 @@ end
 local function get_wrapped_param_info(settings, style, param)
 	local name_wrapper = style[settings.name_wrapper.val]
 	local type_wrapper = style[settings.type_wrapper.val]
-	local is_type_first = style[settings.is_type_first.val]
 
-	local name_pos, type_pos = (is_type_first) and 2 or 1, (is_type_first) and 1 or 2
+	local param_name = param.name
+	local param_type = (param.type) and param.type or ""
+
 	local open_name_wrapper, close_name_wrapper = name_wrapper[1], name_wrapper[2]
 	local open_type_wrapper, close_type_wrapper = type_wrapper[1], type_wrapper[2]
 
-	local wrapped_name, wrapped_type
-	if type(param) == "table" then
-		wrapped_name = open_name_wrapper .. param[name_pos] .. close_name_wrapper
-		wrapped_type = open_type_wrapper .. param[type_pos] .. close_type_wrapper
-	else
-		wrapped_name = open_name_wrapper .. param .. close_name_wrapper
-		wrapped_type = open_type_wrapper .. close_type_wrapper
-	end
+	local wrapped_name = open_name_wrapper .. param_name .. close_name_wrapper
+	local wrapped_type = open_type_wrapper .. param_type .. close_type_wrapper
 	return {wrapped_name, wrapped_type}
 end
 
@@ -154,77 +149,114 @@ end
 -- @param separator A string that separates the parameter name from its type (if present)
 -- @param is_type_in_docs A style setting that determines whether the parameter's type should be included
 -- @param is_type_first A style setting that determines which part of the parameter is considered the name (applies only when is_type_in_docs is false)
-local function get_params_with_info(params, separator, is_type_in_docs, is_type_first)
-	local params_info = {}
-	local param_info
-	for i = 1, #params do
-		local param = params[i]
-		local has_separator = separator ~= "" and string.find(param, separator)
-		if not has_separator then
-			param_info = param
-		elseif has_separator and is_type_in_docs then
-			param_info = vim.split(param, separator)
-		else
-			local name_pos = (is_type_first) and 2 or 1
-			param_info = vim.split(param, separator)[name_pos]
-		end
 
-		-- Removes trailing spaces in between the param name and type when the separator is not whitespace, 
-		-- ensuring such spaces are not considered part of the right-hand side of the parameter.
-		if type(param_info) == "table" then
-			for key, value in pairs(param_info) do
-				param_info[key] = string.gsub(value, "%s+", "")
-			end
+local function get_typed_param_data(ts_utils, is_type_in_docs, param)
+	local type_identifiers = {
+		type = true,
+		integral_type = true,
+		type_annotation = true,
+		type_identifier = true,
+		user_type = true
+	}
+	local name_identifiers = {
+		identifier = true,
+		simple_identifier = true
+	}
+	local param_data = ts_utils.get_named_children(param)
+	local param_name, param_type
+	for _, info in ipairs(param_data) do
+		local is_name = name_identifiers[info:type()]
+		local is_type = type_identifiers[info:type()]
+		if is_name then
+			param_name = ts_utils.get_node_text(info)[1]
+		elseif is_type_in_docs and (is_type or string.match(info:type(), "_type")) then
+			param_type = ts_utils.get_node_text(info)[1]
 		end
-		table.insert(params_info, i, param_info)
 	end
-	return params_info
-
+	return {param_name, param_type}
 end
 
-local function extract_comma_separated_params(line)
-	local param_list = string.match(line, "%((.-)%)")
-	local param_list_without_spaces = string.gsub(param_list, "%s*,%s*", ",")  -- Remove spaces around commas
-	param_list_without_spaces = string.gsub(param_list_without_spaces, "%s+", " ")  -- Collapse multiple spaces into a single space
-	param_list_without_spaces = string.gsub(param_list_without_spaces, "^%s*(.-)%s*$", "%1")  -- Trim leading and trailing spaces
-
-	return vim.split(param_list_without_spaces, ",")
+local function extract_function_params(node, ts_utils, is_type_in_docs)
+	local param_section_identifiers = {
+		formal_parameters = true,
+		function_value_parameters = true,
+		parameters = true,
+		method_parameters = true
+	}
+	local typed_param_identifiers = {
+		typed_parameter = true,
+		required_parameter = true,
+		formal_parameter = true,
+		parameter = true
+	}
+	local untyped_param_identifiers = {
+		identifier = true,
+		simple_parameter = true
+	}
+	local func_sections = ts_utils.get_named_children(node)
+  	local params = {}
+	for _, func_section in ipairs(func_sections) do
+		local is_param_section = param_section_identifiers[func_section:type()]
+    	if is_param_section then
+      		local param_section = ts_utils.get_named_children(func_section)
+      		for _, param in ipairs(param_section) do
+				local is_param_untyped = untyped_param_identifiers[param:type()]
+				local is_param_typed = typed_param_identifiers[param:type()]
+				local param_name, param_type
+				if param and is_param_untyped then
+					param_name = ts_utils.get_node_text(param)[1]
+				elseif param and is_param_typed then
+					local typed_param = get_typed_param_data(ts_utils, is_type_in_docs, param)
+					param_name, param_type = typed_param[1], typed_param[2]
+				end
+			table.insert(params, {name = param_name, type = param_type})
+    		end
+    	end
+	end
+	return params
 end
 
-local function insert_function_docs(settings, style, line)
-	local param_info_separator = style[settings.param_type_separator.val]
+local function insert_function_docs(settings, style, node, ts_utils)
 	local is_type_in_docs = style[settings.is_type_in_docs.val]
-	local is_type_first = style[settings.is_type_first.val]
-	local raw_params = extract_comma_separated_params(line)
-	local params = get_params_with_info(raw_params, param_info_separator, is_type_in_docs, is_type_first)
+	local params = extract_function_params(node, ts_utils, is_type_in_docs)
 
 	return generate_function_docs(settings, style, params)
 end
 
-local function has_access_modifier(line)
-	if string.match(line, "public") then
-		return true
-	end
+local function is_node_a_function(node_type)
+local identifiers = {
+		function_definition = true,
+		method_definition = true,
+		function_declarations = true,
+		method_declaration = true,
+		method = true
+	}
 
-	if string.match(line, "private") then
-		return true
-	end
-
-	if string.match(line, "protected") then
-		return true
-	end
-
-	return false
+	return (identifiers[node_type]) and true or false
 end
 
-local function get_docs_type(func_kw, line)
-	local is_func_without_kw = func_kw == "null" and has_access_modifier and string.match(line, "%(.*%)")
-	local is_func_with_kw = func_kw ~= "null" and string.match(line, func_kw) and string.match(line, "%(.*%)")
-	if is_func_with_kw or is_func_without_kw then
-		return "function"
-	else
+local function get_docs_type(node_at_cursor)
+	if node_at_cursor == nil then
 		return nil
 	end
+
+	if is_node_a_function(node_at_cursor) then
+		return node_at_cursor
+  	end
+
+  -- Traverse upwards through parent nodes to find a function or method declaration
+  	while node_at_cursor do
+
+    	if is_node_a_function(node_at_cursor:type()) then
+      		return node_at_cursor
+    	end
+
+    -- If it's a module or another node, continue traversing upwards
+    	node_at_cursor = node_at_cursor:parent()
+  end
+
+  -- If no function or method node is found, return nil
+  return nil
 end
 
 --- Returns a docstring with content or an empty one
@@ -234,16 +266,19 @@ end
 -- @param line (string) The line under the cursor containing the function signature
 -- @return (table) The updated docstring or the original one
 local function get_docstring(settings, style, line)
+	local ts_utils = require'nvim-treesitter.ts_utils'
+	local node = ts_utils.get_node_at_cursor()
+
 	local docs_struct = style[settings.struct.val]
 	local direction = style[settings.direction.val]
-	local docs_type = get_docs_type(style[settings.func_keyword.val], line)
+	local docs_type = get_docs_type(node)
 	local line_indentation = line:match("^[^%w]*")
 
 	local docs
-	if docs_type == "function" then
-		docs = insert_function_docs(settings, style, line)
-	else
+	if docs_type == nil then
 		docs = docs_struct
+	elseif is_node_a_function(docs_type:type()) then
+		docs = insert_function_docs(settings, style, docs_type, ts_utils)
 	end
 
 	return add_indent_to_docs(docs, line_indentation, direction)
