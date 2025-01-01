@@ -37,21 +37,21 @@ If you already have the Treesitter parsers you want installed, you can proceed w
 
 ### Installation
 
-To install Codedocs with your plugin manager, follow these steps:
+To install Codedocs with your plugin manager, follow the instructions for the relevant manager below:
 
-1. Install the plugin using the appropriate syntax for your plugin manager.
 
 #### [lazy.nvim](http://www.lazyvim.org/)
 ```lua
-require("lazy").setup({
+{
     "jeangiraldoo/codedocs.nvim"
-})
+}
 ```
 
-2. After adding the above code to your init.lua file, run the following command in Neovim to install the plugin:
-#### [lazy.nvim](http://www.lazyvim.org/)
+#### [packer.nvim](https://github.com/wbthomason/packer.nvim)
 ```lua
-:Lazy sync
+use {
+    "jeangiraldoo/codedocs.nvim"
+}
 ```
 
 ### Usage
