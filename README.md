@@ -87,16 +87,23 @@ Feel free to create your own custom styles if the options provided here don't me
 
 | Languages | Annonation styles | Supported automatic annotation |
 |----------|----------|----------|
-| Lua | [LDoc](#lua-ldoc) | `function parameters` |
-| Python | [Google](#google), [NumPy/SciPy](#numpy-scipy), [reST](#restructuredtext-rest) | `function parameters` |
-| JavaScript | [JSDoc](#javascript-jsdoc) | `function parameters` |
-| TypeScript | [TSDoc](#typescript-tsdoc) | `function parameters` |
-| Ruby | [YARD](#ruby-yard) | `function parameters` |
-| PHP | [PHPDoc](#php-phpdoc) | `function parameters` |
-| Java | [JavaDoc](#java-javadoc) | `function parameters` |
-| Kotlin | [KDoc](#kotlin-kdoc) | `function parameters` |
+| Lua | [LDoc](#lua-ldoc) | `function (parameters, return)` |
+| Python | [Google](#google), [NumPy/SciPy](#numpy-scipy), [reST](#restructuredtext-rest) | `function (parameters, return)` |
+| JavaScript | [JSDoc](#javascript-jsdoc) | `function (parameters, return)` |
+| TypeScript | [TSDoc](#typescript-tsdoc) | `function (parameters, return)` |
+| Ruby | [YARD](#ruby-yard) | `function (parameters, return)` |
+| PHP | [PHPDoc](#php-phpdoc) | `function (parameters, return)` |
+| Java | [JavaDoc](#java-javadoc) | `function (parameters, return)` |
+| Kotlin | [KDoc](#kotlin-kdoc) | `function (parameters, return)` |
 
 #### Styles per language:
+
+Below are examples of the docstring styles for different languages under various conditions.
+
+Keep in mind that the information displayed in the docstring may vary depending on the following circumstances:
+
+- Return type annotation: A return section will only be added if Codedocs detects a return type in the function declaration or finds a return statement anywhere within the function's body.
+- Parameter type: The parameter type will only be included if specified through a type hint or if the language is statically typed. The parameter name, however, will always be included, regardless of type.
 
 ##### Lua (LDoc):
 [Official LDoc documentation](https://lunarmodules.github.io/ldoc/manual/manual.md.html#Introduction)
@@ -104,10 +111,12 @@ Feel free to create your own custom styles if the options provided here don't me
 Example:
 ```lua
 --- <title goes here>
--- param_1
--- param_2
+-- @param param_1
+-- @param param_2
+-- @return
 local function cool_function(param_1, param_2)
     <code goes here>
+    return <value>
 end
 ```
 
@@ -121,9 +130,11 @@ Example:
  *
  * @param {} param_1
  * @param {} param_2
+ * @returns
  */
 function cool_function(param_1, param_2){
     <code goes here>
+    return <value>
 }
 ```
 
@@ -137,9 +148,11 @@ Example:
  *
  * @param param_1 -
  * @param param_2 -
+ * @returns
  */
-function cool_function(param_1: number, param_2: string){
+function cool_function(param_1: number, param_2: string): number{
     <code goes here>
+    return <value>
 }
 ```
 
@@ -149,26 +162,44 @@ function cool_function(param_1: number, param_2: string){
 
 [Official Google documentation for Python](https://google.github.io/styleguide/pyguide.html#38-Comments-and-Documentation)
 
-Example:
+Example with type hints:
 ```python
-def cool_function(param_1: int, param_2: bool):
+def cool_function(param_1: int, param_2: bool) -> str:
     """
         <title goes here>
 
         Args:
             param_1 (int):
             param_2 (bool):
+        Returns:
+            str:
     """
     <code goes here>
+    return <value>
+```
+
+Example without type hints:
+```python
+def cool_function(param_1, param_2):
+    """
+        <title goes here>
+
+        Args:
+            param_1 ():
+            param_2 ():
+        Returns:
+    """
+    <code goes here>
+    return <value>
 ```
 
 - NumPy/SciPy:
 
 [Official Numpy documentation for Python](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard)
 
-Example:
+Example with type hints:
 ```python
-def cool_function(param_1: list, param_2: str):
+def cool_function(param_1: list, param_2: str) -> bool:
     """
         <title goes here>
 
@@ -176,17 +207,40 @@ def cool_function(param_1: list, param_2: str):
         ----------
         param_1 : list
         param_2 : str
+
+        Returns
+        ------
+        bool
     """
     <code goes here>
+    return <value>
+```
+
+Example without type hints:
+```python
+def cool_function(param_1, param_2):
+    """
+        <title goes here>
+
+        Parameters
+        ----------
+        param_1 :
+        param_2 :
+
+        Returns
+        ------
+    """
+    <code goes here>
+    return <value>
 ```
 
 - reStructuredText (reST):
 
 [Official reST documentation for Python](https://docutils.sourceforge.io/rst.html)
 
-Example:
+Example with type hints:
 ```python
-def cool_function(param_1: list, param_2: str):
+def cool_function(param_1: list, param_2: str) -> bool:
     """
         <title goes here>
 
@@ -194,8 +248,28 @@ def cool_function(param_1: list, param_2: str):
         :type param_1: list
         :param param_2:
         :type param_2: str
+        :return:
+        :rtype: bool
     """
     <code goes here>
+    return <value>
+```
+
+Example without type hints:
+```python
+def cool_function(param_1, param_2):
+    """
+        <title goes here>
+
+        :param param_1:
+        :type param_1:
+        :param param_2:
+        :type param_2:
+        :return:
+        :rtype:
+    """
+    <code goes here>
+    return <value>
 ```
 
 ##### Ruby (YARD):
@@ -208,8 +282,10 @@ Example:
  #
  # @param param_1 []
  # @param param_2 []
+ # @return
 def cool_function(param_1, param_2)
     <code goes here>
+    return <value>
 end
 ```
 
@@ -217,16 +293,33 @@ end
 
 [Official PHPDoc documentation for PHP](https://docs.phpdoc.org/guide/getting-started/what-is-a-docblock.html#what-is-a-docblock)
 
-Example:
+Example with type hints:
 ```php
 /**
  * <title goes here>
  *
  * @param int $param_1
  * @param int $param_2
+ @ @return bool
  */
-function cool_function(int $param_1, int $param_2){
+function cool_function(int $param_1, int $param_2): bool {
     <code goes here>
+    return <value>
+}
+```
+
+Example without type hints:
+```php
+/**
+ * <title goes here>
+ *
+ * @param $param_1
+ * @param $param_2
+ @ @return
+ */
+function cool_function($param_1, $param_2) {
+    <code goes here>
+    return <value>
 }
 ```
 
@@ -240,9 +333,11 @@ Example:
  *
  * @param param_1
  * @param param_2
+ * @return
  */
 public void cool_function(int param_1, String param_2){
     <code goes here>
+    return <value>
 }
 ```
 
@@ -256,9 +351,11 @@ Example:
  *
  * @param param_1
  * @param param_2
+ * @return
  */
-fun cool_function(param_1: Int, param_2: String){
+fun cool_function(param_1: Int, param_2: String): Boolean {
     <code goes here>
+    return <value>
 }
 ```
 
