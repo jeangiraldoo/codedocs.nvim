@@ -116,14 +116,49 @@ end
 -- @param style (table) Settings to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @param docs (table) The docstring base structure
-local function insert_param_section(settings, style, params, docs)
+local function insert_param_section(settings, style, params, title_underline_char, docs)
 	local title = style[settings.params_title.val]
-	local title_underline_char = style[settings.section_underline.val]
+	-- local title_underline_char = style[settings.section_underline.val]
 
 	add_section_title(title_underline_char, title, docs)
 	add_section_params(settings, style, params, docs)
 
-	if #style[settings.struct.val] == 2 then table.remove(docs, #docs) end
+end
+
+local function insert_return_section(settings, style, return_type, title_underline_char, docs)
+	local title = style[settings.return_title.val]
+	add_section_title(title_underline_char, title, docs)
+	local line_start = style[settings.struct.val][2]
+
+	local is_return_one_line = style[settings.is_param_one_line.val]
+	local return_keyword = style[settings.return_keyword.val]
+	local return_type_keyword = style[settings.return_type_keyword.val]
+	local type_wrapper = style[settings.return_type_wrapper.val]
+	local is_type_in_docs = style[settings.is_return_type_in_docs.val]
+	local wrapped_type = (is_type_in_docs) and type_wrapper[1] .. return_type .. type_wrapper[2] or type_wrapper
+
+	local is_return_line_present = true
+	local is_return_indented = style[settings.param_indent.val]
+	local indent = (is_return_indented) and "\t" or ""
+
+	local return_line
+	if (not is_type_in_docs and return_keyword == "") or (return_keyword == "" and return_type == "unknown") then
+		is_return_line_present = false
+	elseif return_keyword == "" and (is_type_in_docs and return_type ~= "unknown") then
+		return_line = (is_return_one_line) and indent .. line_start .. wrapped_type or {indent .. line_start .. return_keyword, indent .. return_type_keyword .. return_type}
+	elseif return_keyword ~= "" and (not is_type_in_docs or return_type == "unknown") then
+		return_line = (is_return_one_line) and indent .. line_start .. return_keyword or {indent .. line_start .. return_keyword, indent ..return_type_keyword .. ""}
+	else
+		return_line = (is_return_one_line) and indent .. line_start .. return_keyword .. " " .. wrapped_type or {indent .. line_start .. return_keyword, indent .. return_type_keyword .. " " .. return_type}
+	end
+	if is_return_line_present and type(return_line) == "string" then
+		table.insert(docs, #docs, return_line)
+	elseif is_return_line_present and type(return_line) == "table" then
+		for _, value in pairs(return_line) do
+			table.insert(docs, #docs, value)
+		end
+
+	end
 end
 
 --- Inserts a parameter section into the docstring and an empty line (if applicable)
@@ -131,16 +166,21 @@ end
 -- @param style (table) Settings to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @return (table) A new table with the updated docstring content
-local function generate_function_docs(settings, style, params)
+local function generate_function_docs(settings, style, params, return_type)
 	local docs_copy = copy_docstring(style[settings.struct.val])
 	local is_empty_line_after_title = style[settings.empty_line_after_title.val]
+	local title_underline_char = style[settings.section_underline.val]
 
 	if is_empty_line_after_title then
 		local empty_line_pos = style[settings.title_pos.val] + 1
 		local line_start = docs_copy[2]
 		table.insert(docs_copy, empty_line_pos, line_start)
 	end
-	insert_param_section(settings, style, params, docs_copy)
+	insert_param_section(settings, style, params, title_underline_char, docs_copy)
+	if return_type ~= nil then
+		insert_return_section(settings, style, return_type, title_underline_char, docs_copy)
+	end
+	if #style[settings.struct.val] == 2 then table.remove(docs_copy, #docs_copy) end
 	return docs_copy
 end
 
@@ -176,6 +216,68 @@ local function get_typed_param_data(ts_utils, is_type_in_docs, param)
 	return {param_name, param_type}
 end
 
+local function search_return_recursively(ts_utils, child_nodes)
+	local return_identifier = {
+		return_statement = true
+	}
+	for _, node in ipairs(child_nodes) do
+		local node_is_return = return_identifier[node:type()] or node:type() == "return"
+		if node_is_return then
+			return "unknown"
+		elseif ts_utils.get_named_children(node) ~= nil then
+			local result = search_return_recursively(ts_utils, ts_utils.get_named_children(node))
+			if result then
+				return result
+			end
+		end
+	end
+end
+
+local function get_sig_return_type(ts_utils, func_sections)
+	local type_identifier = {
+		integral_type = true,
+		type = true,
+		type_annotation = true
+	}
+
+	local return_type
+	for _, section in ipairs(func_sections) do
+		local is_type_in_signature = type_identifier[section:type()] or string.match(section:type(), "_type")
+		if is_type_in_signature then
+			return_type = ts_utils.get_node_text(section)[1]
+		end
+	end
+	return return_type
+end
+
+local function get_block_return_type(ts_utils, func_sections)
+	local block_identifier = {
+		block = true,
+		statement_block = true,
+		compound_statement = true,
+		body_statement = true
+	}
+
+	local return_type
+	for _, section in ipairs(func_sections) do
+			local is_section_block = block_identifier[section:type()]
+			if is_section_block then
+				local block_children = ts_utils.get_named_children(section)
+				return_type = search_return_recursively(ts_utils, block_children)
+			end
+		end
+	return return_type
+end
+
+local function get_function_return_type(ts_utils, node)
+	local func_sections = ts_utils.get_named_children(node)
+	local return_type = get_sig_return_type(ts_utils, func_sections)
+	if not return_type then
+		return_type = get_block_return_type(ts_utils, func_sections)
+	end
+	return return_type
+end
+
 local function extract_function_params(node, ts_utils, is_type_in_docs)
 	local param_section_identifiers = {
 		formal_parameters = true,
@@ -194,6 +296,7 @@ local function extract_function_params(node, ts_utils, is_type_in_docs)
 		simple_parameter = true
 	}
 	local func_sections = ts_utils.get_named_children(node)
+
   	local params = {}
 	for _, func_section in ipairs(func_sections) do
 		local is_param_section = param_section_identifiers[func_section:type()]
@@ -219,15 +322,15 @@ end
 local function insert_function_docs(settings, style, node, ts_utils)
 	local is_type_in_docs = style[settings.is_type_in_docs.val]
 	local params = extract_function_params(node, ts_utils, is_type_in_docs)
-
-	return generate_function_docs(settings, style, params)
+	local return_type = get_function_return_type(ts_utils, node)
+	return generate_function_docs(settings, style, params, return_type)
 end
 
 local function is_node_a_function(node_type)
 local identifiers = {
 		function_definition = true,
 		method_definition = true,
-		function_declarations = true,
+		function_declaration = true,
 		method_declaration = true,
 		method = true
 	}
@@ -240,13 +343,12 @@ local function get_docs_type(node_at_cursor)
 		return nil
 	end
 
-	if is_node_a_function(node_at_cursor) then
+	if is_node_a_function(node_at_cursor:type()) then
 		return node_at_cursor
   	end
 
   -- Traverse upwards through parent nodes to find a function or method declaration
   	while node_at_cursor do
-
     	if is_node_a_function(node_at_cursor:type()) then
       		return node_at_cursor
     	end
