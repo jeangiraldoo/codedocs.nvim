@@ -12,30 +12,30 @@ local function move_cursor_to_title(doc_len, direction, title_pos)
 end
 
 --- Inserts a docstring either above or below the function signature and moves the cursor where the title goes
--- @param settings (table) Keys used to access setting values in a style
--- @param style (table) Settings used to configure a language's docstring style
+-- @param opts (table) Keys used to access opt values in a style
+-- @param style (table) Options used to configure a language's docstring style
 -- @param filetype The name of the programming language that corresponds with the current filetype
-local function start_docstring_insertion(settings, style)
-	require("codedocs.style_validations").validate_style(settings, style)
+local function start_docstring_insertion(opts, style)
+	require("codedocs.style_validations").validate_style(opts, style)
 	local cursor_pos = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line (1-based index)
 	local line_content = vim.api.nvim_buf_get_lines(0, cursor_pos - 1, cursor_pos, false)[1]
 
-	local docstring = require("codedocs.docs_builder").get_docstring(settings, style, line_content)
-	local direction = style[settings.direction.val]
+	local docstring = require("codedocs.docs_builder").get_docstring(opts, style, line_content)
+	local direction = style[opts.direction.val]
 
 	local insert_pos = (direction) and cursor_pos - 1 or cursor_pos
 	vim.api.nvim_buf_set_lines(0, insert_pos, insert_pos, false, docstring)
 
-	move_cursor_to_title(#docstring, direction, style[settings.title_pos.val])
+	move_cursor_to_title(#docstring, direction, style[opts.title_pos.val])
 end
 
 --- Inserts a docstring for the function under the cursor
--- @param settings (table) Keys used to access setting values in a style
+-- @param opts (table) Keys used to access opt values in a style
 -- @param styles (table) A map of languages to docstring configurations
 -- @param filetype (string) The name of the programming language used in the current file
-local function insert_docs(settings, style, filetype)
+local function insert_docs(opts, style, filetype)
 	if style then
-		start_docstring_insertion(settings, style)
+		start_docstring_insertion(opts, style)
 	else
 		print("There are no defined documentation strings for " .. filetype .. " files")
 	end

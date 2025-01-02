@@ -40,13 +40,13 @@ local function add_section_title(underline_char, title, docs)
 end
 
 --- Wraps the parameter's name and type
--- @param settings (table) Keys used to access setting values in a style
--- @param style (table) Settings to configure the language's docstring
+-- @param opts (table) Keys used to access option values in a style
+-- @param style (table) Options to configure the language's docstring
 -- @param param (table | string) Parameter found in the function declaration. A table if it has a type, a string otherwise
 -- @return table
-local function get_wrapped_param_info(settings, style, param)
-	local name_wrapper = style[settings.name_wrapper.val]
-	local type_wrapper = style[settings.type_wrapper.val]
+local function get_wrapped_param_info(opts, style, param)
+	local name_wrapper = style[opts.name_wrapper.val]
+	local type_wrapper = style[opts.type_wrapper.val]
 
 	local param_name = param.name
 	local param_type = (param.type) and param.type or ""
@@ -63,13 +63,13 @@ end
 -- @param wrapped_param (table) Contains the parameter's name and type ready to be arranged
 -- @param type_goes_first (boolean) Determines if the parameter's type goes before the name in the docstring
 -- @param is_param_one_line (boolean) Determines if the parameter's name and type are arranged in 1 line or 2
-local function get_arranged_param_info(settings, style, wrapped_param, type_goes_first, is_param_one_line)
+local function get_arranged_param_info(opts, style, wrapped_param, type_goes_first, is_param_one_line)
 	local param_name = wrapped_param[1]
 	local param_type = wrapped_param[2]
-	local type_keyword = style[settings.type_keyword.val]
-	local is_type_below_name_first = style[settings.is_type_below_name_first.val]
+	local type_keyword = style[opts.type_keyword.val]
+	local is_type_below_name_first = style[opts.is_type_below_name_first.val]
 
-	local final_name = style[settings.param_keyword.val] .. " " .. param_name
+	local final_name = style[opts.param_keyword.val] .. " " .. param_name
 	local final_type, name_first, type_first
 	if is_param_one_line then
 		final_type = type_keyword .. " " .. param_type
@@ -86,20 +86,20 @@ local function get_arranged_param_info(settings, style, wrapped_param, type_goes
 end
 
 --- Inserts a section with content related to parameters into the docstring
--- @param settings (table) Keys used to access setting values in a style
--- @param style (table) Settings to configure the language's docstring
+-- @param opts (table) Keys used to access option values in a style
+-- @param style (table) Options to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @param docs (table) The docstring base structure
-local function add_section_params(settings, style, params, docs)
-	local line_start = style[settings.struct.val][2]
-	local base_line = (style[settings.param_indent.val]) and ("\t" .. line_start) or (line_start)
-	local type_goes_first = style[settings.type_goes_first.val]
-	local is_param_one_line = style[settings.is_param_one_line.val]
+local function add_section_params(opts, style, params, docs)
+	local line_start = style[opts.struct.val][2]
+	local base_line = (style[opts.param_indent.val]) and ("\t" .. line_start) or (line_start)
+	local type_goes_first = style[opts.type_goes_first.val]
+	local is_param_one_line = style[opts.is_param_one_line.val]
 
 	for i = 1, #params do
 		local param = params[i]
-		local wrapped_info = get_wrapped_param_info(settings, style, param)
-		local final_info = get_arranged_param_info(settings, style, wrapped_info, type_goes_first, is_param_one_line)
+		local wrapped_info = get_wrapped_param_info(opts, style, param)
+		local final_info = get_arranged_param_info(opts, style, wrapped_info, type_goes_first, is_param_one_line)
 
 		if type(final_info) == "string" then
 			table.insert(docs, #docs, base_line .. final_info)
@@ -112,33 +112,33 @@ local function add_section_params(settings, style, params, docs)
 end
 
 --- Adds a parameter section, composed of a title and parameters, to a docstring
--- @param settings (table) Keys used to access setting values in a style
--- @param style (table) Settings to configure the language's docstring
+-- @param opts (table) Keys used to access option values in a style
+-- @param style (table) Options to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @param docs (table) The docstring base structure
-local function insert_param_section(settings, style, params, title_underline_char, docs)
-	local title = style[settings.params_title.val]
-	-- local title_underline_char = style[settings.section_underline.val]
+local function insert_param_section(opts, style, params, title_underline_char, docs)
+	local title = style[opts.params_title.val]
+	-- local title_underline_char = style[opts.section_underline.val]
 
 	add_section_title(title_underline_char, title, docs)
-	add_section_params(settings, style, params, docs)
+	add_section_params(opts, style, params, docs)
 
 end
 
-local function insert_return_section(settings, style, return_type, title_underline_char, docs)
-	local title = style[settings.return_title.val]
+local function insert_return_section(opts, style, return_type, title_underline_char, docs)
+	local title = style[opts.return_title.val]
 	add_section_title(title_underline_char, title, docs)
-	local line_start = style[settings.struct.val][2]
+	local line_start = style[opts.struct.val][2]
 
-	local is_return_one_line = style[settings.is_param_one_line.val]
-	local return_keyword = style[settings.return_keyword.val]
-	local return_type_keyword = style[settings.return_type_keyword.val]
-	local type_wrapper = style[settings.return_type_wrapper.val]
-	local is_type_in_docs = style[settings.is_return_type_in_docs.val]
+	local is_return_one_line = style[opts.is_param_one_line.val]
+	local return_keyword = style[opts.return_keyword.val]
+	local return_type_keyword = style[opts.return_type_keyword.val]
+	local type_wrapper = style[opts.return_type_wrapper.val]
+	local is_type_in_docs = style[opts.is_return_type_in_docs.val]
 	local wrapped_type = (is_type_in_docs) and type_wrapper[1] .. return_type .. type_wrapper[2] or type_wrapper
 
 	local is_return_line_present = true
-	local is_return_indented = style[settings.param_indent.val]
+	local is_return_indented = style[opts.param_indent.val]
 	local indent = (is_return_indented) and "\t" or ""
 
 	local return_line
@@ -162,34 +162,34 @@ local function insert_return_section(settings, style, return_type, title_underli
 end
 
 --- Inserts a parameter section into the docstring and an empty line (if applicable)
--- @param settings (table) Keys used to access setting values in a style
--- @param style (table) Settings to configure the language's docstring
+-- @param opts (table) Keys used to access option values in a style
+-- @param style (table) Options to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @return (table) A new table with the updated docstring content
-local function generate_function_docs(settings, style, params, return_type)
-	local docs_copy = copy_docstring(style[settings.struct.val])
-	local is_empty_line_after_title = style[settings.empty_line_after_title.val]
-	local title_underline_char = style[settings.section_underline.val]
+local function generate_function_docs(opts, style, params, return_type)
+	local docs_copy = copy_docstring(style[opts.struct.val])
+	local is_empty_line_after_title = style[opts.empty_line_after_title.val]
+	local title_underline_char = style[opts.section_underline.val]
 
 	if is_empty_line_after_title then
-		local empty_line_pos = style[settings.title_pos.val] + 1
+		local empty_line_pos = style[opts.title_pos.val] + 1
 		local line_start = docs_copy[2]
 		table.insert(docs_copy, empty_line_pos, line_start)
 	end
-	insert_param_section(settings, style, params, title_underline_char, docs_copy)
+	insert_param_section(opts, style, params, title_underline_char, docs_copy)
 	if return_type ~= nil then
-		insert_return_section(settings, style, return_type, title_underline_char, docs_copy)
+		insert_return_section(opts, style, return_type, title_underline_char, docs_copy)
 	end
-	if #style[settings.struct.val] == 2 then table.remove(docs_copy, #docs_copy) end
+	if #style[opts.struct.val] == 2 then table.remove(docs_copy, #docs_copy) end
 	return docs_copy
 end
 
-local function insert_function_docs(settings, style, node, ts_utils)
-	local is_type_in_docs = style[settings.is_type_in_docs.val]
+local function insert_function_docs(opts, style, node, ts_utils)
+	local is_type_in_docs = style[opts.is_type_in_docs.val]
 	local struct_parser = require("codedocs.struct_parser")
 	local params = struct_parser.extract_func_params(node, ts_utils, is_type_in_docs)
 	local return_type = struct_parser.get_func_return_type(ts_utils, node)
-	return generate_function_docs(settings, style, params, return_type)
+	return generate_function_docs(opts, style, params, return_type)
 end
 
 local function is_node_a_function(node_type)
@@ -229,16 +229,16 @@ end
 
 --- Returns a docstring with content or an empty one
 -- If parameters are detected, returns a docstring with them; else, returns its base structure
--- @param settings (table) Keys used to access setting values in a style
--- @param style (table) Settings to configure the language's docstring style
+-- @param opts (table) Keys used to access opt values in a style
+-- @param style (table) Options to configure the language's docstring style
 -- @param line (string) The line under the cursor containing the function signature
 -- @return (table) The updated docstring or the original one
-local function get_docstring(settings, style, line)
+local function get_docstring(opts, style, line)
 	local ts_utils = require'nvim-treesitter.ts_utils'
 	local node = ts_utils.get_node_at_cursor()
 
-	local docs_struct = style[settings.struct.val]
-	local direction = style[settings.direction.val]
+	local docs_struct = style[opts.struct.val]
+	local direction = style[opts.direction.val]
 	local docs_type = get_docs_type(node)
 	local line_indentation = line:match("^[^%w]*")
 
@@ -246,7 +246,7 @@ local function get_docstring(settings, style, line)
 	if docs_type == nil then
 		docs = docs_struct
 	elseif is_node_a_function(docs_type:type()) then
-		docs = insert_function_docs(settings, style, docs_type, ts_utils)
+		docs = insert_function_docs(opts, style, docs_type, ts_utils)
 	end
 
 	return add_indent_to_docs(docs, line_indentation, direction)

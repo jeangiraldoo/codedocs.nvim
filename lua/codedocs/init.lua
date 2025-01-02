@@ -4,14 +4,13 @@ local insert_documentation = require("codedocs.insert_docs")
 local M = {}
 
 M.config = {
-	settings = defaults[1],
+	opts = defaults[1],
 	default_lang_styles = defaults[2],
 	lang_styles = defaults[3]
 }
 
 function M.setup(config)
 	if config and config.default_lang_styles then
-		print("change")
 		for key, value in pairs(config.default_lang_styles) do
 			if not M.config.default_lang_styles[key] then
 				error("There is no language called " .. key .. " available in codedocs")
@@ -42,9 +41,8 @@ function M.insert_docs()
     	vim.notify("The treesitter parser for " .. lang .. " is not installed")
     	return true
 	end
-	print(default_lang_style)
 	local lang_style = lang_styles[default_lang_style]
-	insert_documentation.insert_docs(M.config.settings, lang_style, lang)
+	insert_documentation.insert_docs(M.config.opts, lang_style, lang)
 end
 
 vim.api.nvim_set_keymap('n', "<Plug>Codedocs", "<cmd>lua require('codedocs').insert_docs()<CR>", { noremap = true, silent = true })
