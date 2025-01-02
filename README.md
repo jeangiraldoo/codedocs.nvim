@@ -18,6 +18,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Configuration](#configuration)
 - [Usage](#usage)
 - [Supported languages](#supported-languages)
 - [Motivation](#motivation)
