@@ -116,16 +116,14 @@ end
 -- @param style (table) Options to configure the language's docstring
 -- @param params (table) A table of parameters to be inserted into the docstring
 -- @param docs (table) The docstring base structure
-local function insert_param_section(opts, style, params, title_underline_char, docs)
+local function add_param_section(opts, style, params, title_underline_char, docs)
 	local title = style[opts.params_title.val]
-	-- local title_underline_char = style[opts.section_underline.val]
-
 	add_section_title(title_underline_char, title, docs)
 	add_section_params(opts, style, params, docs)
 
 end
 
-local function insert_return_section(opts, style, return_type, title_underline_char, docs)
+local function add_return_section(opts, style, return_type, title_underline_char, docs)
 	local title = style[opts.return_title.val]
 	add_section_title(title_underline_char, title, docs)
 	local line_start = style[opts.struct.val][2]
@@ -161,97 +159,35 @@ local function insert_return_section(opts, style, return_type, title_underline_c
 	end
 end
 
---- Inserts a parameter section into the docstring and an empty line (if applicable)
--- @param opts (table) Keys used to access option values in a style
--- @param style (table) Options to configure the language's docstring
--- @param params (table) A table of parameters to be inserted into the docstring
--- @return (table) A new table with the updated docstring content
-local function generate_function_docs(opts, style, params, return_type)
-	local docs_copy = copy_docstring(style[opts.struct.val])
-	local is_empty_line_after_title = style[opts.empty_line_after_title.val]
+local function add_sections(opts, style, params, return_type, docs)
 	local title_underline_char = style[opts.section_underline.val]
 
+	add_param_section(opts, style, params, title_underline_char, docs)
+	if return_type ~= nil then
+		add_return_section(opts, style, return_type, title_underline_char, docs)
+	end
+
+	if #style[opts.struct.val] == 2 then table.remove(docs, #docs) end
+	return docs
+end
+
+local function get_docs(opts, style, node, ts_utils)
+	local docs_copy = copy_docstring(style[opts.struct.val])
+	local is_type_in_docs = style[opts.is_type_in_docs.val]
+	local struct_parser = require("codedocs.struct_parser")
+	local params = struct_parser.extract_func_params(node, ts_utils, is_type_in_docs)
+	local return_type = struct_parser.get_func_return_type(ts_utils, node)
+
+	local is_empty_line_after_title = style[opts.empty_line_after_title.val]
 	if is_empty_line_after_title then
 		local empty_line_pos = style[opts.title_pos.val] + 1
 		local line_start = docs_copy[2]
 		table.insert(docs_copy, empty_line_pos, line_start)
 	end
-	insert_param_section(opts, style, params, title_underline_char, docs_copy)
-	if return_type ~= nil then
-		insert_return_section(opts, style, return_type, title_underline_char, docs_copy)
-	end
-	if #style[opts.struct.val] == 2 then table.remove(docs_copy, #docs_copy) end
-	return docs_copy
-end
 
-local function insert_function_docs(opts, style, node, ts_utils)
-	local is_type_in_docs = style[opts.is_type_in_docs.val]
-	local struct_parser = require("codedocs.struct_parser")
-	local params = struct_parser.extract_func_params(node, ts_utils, is_type_in_docs)
-	local return_type = struct_parser.get_func_return_type(ts_utils, node)
-	return generate_function_docs(opts, style, params, return_type)
-end
-
-local function is_node_a_function(node_type)
-local identifiers = {
-		function_definition = true,
-		method_definition = true,
-		function_declaration = true,
-		method_declaration = true,
-		method = true
-	}
-
-	return (identifiers[node_type]) and true or false
-end
-
-local function get_docs_type(node_at_cursor)
-	if node_at_cursor == nil then
-		return nil
-	end
-
-	if is_node_a_function(node_at_cursor:type()) then
-		return node_at_cursor
-  	end
-
-  -- Traverse upwards through parent nodes to find a function or method declaration
-  	while node_at_cursor do
-    	if is_node_a_function(node_at_cursor:type()) then
-      		return node_at_cursor
-    	end
-
-    -- If it's a module or another node, continue traversing upwards
-    	node_at_cursor = node_at_cursor:parent()
-  end
-
-  -- If no function or method node is found, return nil
-  return nil
-end
-
---- Returns a docstring with content or an empty one
--- If parameters are detected, returns a docstring with them; else, returns its base structure
--- @param opts (table) Keys used to access opt values in a style
--- @param style (table) Options to configure the language's docstring style
--- @param line (string) The line under the cursor containing the function signature
--- @return (table) The updated docstring or the original one
-local function get_docstring(opts, style, line)
-	local ts_utils = require'nvim-treesitter.ts_utils'
-	local node = ts_utils.get_node_at_cursor()
-
-	local docs_struct = style[opts.struct.val]
-	local direction = style[opts.direction.val]
-	local docs_type = get_docs_type(node)
-	local line_indentation = line:match("^[^%w]*")
-
-	local docs
-	if docs_type == nil then
-		docs = docs_struct
-	elseif is_node_a_function(docs_type:type()) then
-		docs = insert_function_docs(opts, style, docs_type, ts_utils)
-	end
-
-	return add_indent_to_docs(docs, line_indentation, direction)
+	return add_sections(opts, style, params, return_type, docs_copy)
 end
 
 return {
-	get_docstring = get_docstring
+	get_docs = get_docs
 }

@@ -1,5 +1,5 @@
 local defaults = require("codedocs.languages")
-local insert_documentation = require("codedocs.insert_docs")
+local insert_docs = require("codedocs.insert_docs")
 
 local M = {}
 
@@ -42,7 +42,7 @@ function M.insert_docs()
     	return true
 	end
 	local lang_style = lang_styles[default_lang_style]
-	insert_documentation.insert_docs(M.config.opts, lang_style, lang)
+	insert_docs.start(M.config.opts, lang_style, lang)
 end
 
 vim.api.nvim_set_keymap('n', "<Plug>Codedocs", "<cmd>lua require('codedocs').insert_docs()<CR>", { noremap = true, silent = true })
