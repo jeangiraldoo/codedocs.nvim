@@ -23,7 +23,7 @@ local opts = {
 			return_type_wrapper = {val = "return_type_wrapper", type = "table"} -- Strings that will surround the return type
 			}
 
-local default_lang_styles = {
+local default_styles = {
 			python = "Google",
 			javascript = "JSDoc",
 			typescript = "TSDoc",
@@ -273,4 +273,4 @@ local styles = {
 			}
 }
 
-return {opts, default_lang_styles, styles}
+return {opts, default_styles, styles}

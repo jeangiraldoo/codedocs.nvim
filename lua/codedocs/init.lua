@@ -5,21 +5,21 @@ local M = {}
 
 M.config = {
 	opts = defaults[1],
-	default_lang_styles = defaults[2],
+	default_styles = defaults[2],
 	lang_styles = defaults[3]
 }
 
 function M.setup(config)
-	if config and config.default_lang_styles then
-		for key, value in pairs(config.default_lang_styles) do
-			if not M.config.default_lang_styles[key] then
+	if config and config.default_styles then
+		for key, value in pairs(config.default_styles) do
+			if not M.config.default_styles[key] then
 				error("There is no language called " .. key .. " available in codedocs")
 			elseif type(value) ~= "string" then
 				error("The value assigned as the default docstring style for " .. key .. " must be a string")
 			elseif not M.config.lang_styles[key][value] then
 				error(key .. " does not have a docstring style called " .. value)
 			end
-			M.config.default_lang_styles[key] = value
+			M.config.default_styles[key] = value
 		end
 	end
 end
@@ -32,7 +32,7 @@ function M.insert_docs()
 	local parsers = require "nvim-treesitter.parsers"
 	local lang = vim.api.nvim_buf_get_option(0, "filetype")
 
-	local default_lang_style = M.config.default_lang_styles[lang]
+	local default_lang_style = M.config.default_styles[lang]
 	local lang_styles = M.config.lang_styles[lang]
 	if not default_lang_style or not lang_styles then
 		error("There is no language called " .. lang .. " available in Codedocs")
