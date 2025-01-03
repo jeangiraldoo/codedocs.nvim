@@ -304,6 +304,33 @@ local styles = {
 				[opts.type_wrapper.val] = {"", ""},
 				[opts.return_type_wrapper.val] = {"", ""}
 				}
+			},
+		rust = {
+			RustDoc = {
+				[opts.struct.val] = {"///", "///"},
+				[opts.is_type_in_docs.val] = false,
+				[opts.is_return_type_in_docs.val] = false,
+				[opts.type_goes_first.val] = false,
+				[opts.direction.val] = true,
+				[opts.title_pos.val] = 1,
+				[opts.empty_line_after_title.val] = true,
+				[opts.empty_line_after_section_title.val] = true,
+				[opts.empty_line_between_sections.val] = true,
+				[opts.empty_line_after_section_item.val] = false,
+				[opts.section_underline.val] = "",
+				[opts.params_title.val] = " # Arguments",
+				[opts.return_title.val] = " # Returns",
+				[opts.is_param_one_line.val] = true,
+				[opts.is_type_below_name_first.val] = false,
+				[opts.param_keyword.val] = "",
+				[opts.type_keyword.val] = "",
+				[opts.return_keyword.val] = "",
+				[opts.return_type_keyword.val] = "",
+				[opts.param_indent.val] = false,
+				[opts.name_wrapper.val] = {"* `", "`"},
+				[opts.type_wrapper.val] = {"", ""},
+				[opts.return_type_wrapper.val] = {"", ""}
+				}
 			}
 }
 
