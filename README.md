@@ -116,6 +116,7 @@ Feel free to create your own custom styles if the options provided here don't me
 | PHP | [PHPDoc](#php-phpdoc) | `function (parameters, return)` |
 | Java | [JavaDoc](#java-javadoc) | `function (parameters, return)` |
 | Kotlin | [KDoc](#kotlin-kdoc) | `function (parameters, return)` |
+| Rust | [RustDoc](#rust-kdoc) | `function (parameters, return)` |
 
 #### Styles per language:
 
@@ -377,6 +378,25 @@ Example:
 fun cool_function(param_1: Int, param_2: String): Boolean {
     <code goes here>
     return <value>
+}
+```
+
+##### Rust (RustDoc):
+[Official RustDoc documentation](https://doc.rust-lang.org/rust-by-example/meta/doc.html)
+
+Example:
+```rust
+/// <title goes here>
+///
+/// # Arguments
+///
+/// * `param_1`
+/// * `param_2`
+///
+/// # Returns
+///
+fn add(param_1: i32, param_2: i32) -> i32 {
+    a + b
 }
 ```
 
