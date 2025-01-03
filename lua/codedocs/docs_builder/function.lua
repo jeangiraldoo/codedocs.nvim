@@ -196,7 +196,7 @@ end
 local function get_docs(opts, style, node, ts_utils)
 	local docs_copy = copy_docstring(style[opts.struct.val])
 	local is_type_in_docs = style[opts.is_type_in_docs.val]
-	local struct_parser = require("codedocs.struct_parser")
+	local struct_parser = require("codedocs.struct_parser.function")
 	local params = struct_parser.extract_func_params(node, ts_utils, is_type_in_docs)
 	local return_type = struct_parser.get_func_return_type(ts_utils, node)
 
