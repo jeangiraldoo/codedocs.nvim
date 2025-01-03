@@ -6,9 +6,12 @@ local opts = {
 		  	direction = {val = "direction", type = "boolean"}, -- Position to place the docstring relative to the function declaration. Either true (above) or false (below)
 		  	title_pos = {val = "title_pos", type = "number"}, -- Line offset of the title within the docstring, relative to its start
 		  	empty_line_after_title = {val = "empty_line_after_title", type = "boolean"}, -- Inserts an empty line after the title if true
+			empty_line_between_sections = {val = "empty_line_between_sections", type = "boolean"},
+			empty_line_after_section_item = {val = "empty_line_after_section_item", type = "boolean"},
 		  	section_underline = {val = "section_underline", type = "string"}, -- Creates a string of the specified char to underline the section title
 		  	params_title = {val = "params_title", type = "string"}, -- Title displayed before the parameters section in the docstring
 			return_title = {val = "return_title", type = "string"}, -- Ttitle displayed at the beggining of the return section
+			empty_line_after_section_title = {val = "empty_line_after_section_title", type = "boolean"},
 		  	is_param_one_line = {val = "is_param_one_line", type = "boolean"}, -- Determines if the param name and type go on the same line or not
 			is_type_below_name_first = {val = "is_type_below_name_first", type = "boolean"}, -- Determines if the type below starts with the param name or just the type. This setting is used whenever is_param_one_line is false
 			is_type_in_docs = {val = "is_type_in_docs", type = "boolean"}, -- Determines wether or not to document the parameter type in the docstring
@@ -31,7 +34,8 @@ local default_styles = {
 			ruby = "YARD",
 			php = "PHPDoc",
 			java = "JavaDoc",
-			kotlin = "KDoc"
+			kotlin = "KDoc",
+			rust = "RustDoc"
 			}
 
 local styles = {
@@ -44,6 +48,9 @@ local styles = {
 				[opts.direction.val] = false,
 				[opts.title_pos.val] = 2,
 				[opts.empty_line_after_title.val] = true,
+				[opts.empty_line_after_section_title.val] = false,
+				[opts.empty_line_between_sections.val] = false,
+				[opts.empty_line_after_section_item] = false,
 				[opts.section_underline.val] = "",
 				[opts.params_title.val] = "Args:",
 				[opts.return_title.val] = "Returns:",
@@ -66,6 +73,9 @@ local styles = {
 				[opts.direction.val] = false,
 				[opts.title_pos.val] = 2,
 				[opts.empty_line_after_title.val] = true,
+				[opts.empty_line_after_section_title.val] = false,
+				[opts.empty_line_between_sections.val] = false,
+				[opts.empty_line_after_section_item.val] = false,
 				[opts.section_underline.val] = "-",
 				[opts.params_title.val] = "Parameters",
 				[opts.return_title.val] = "Returns",
@@ -88,6 +98,9 @@ local styles = {
 				[opts.direction.val] = false,
 				[opts.title_pos.val] = 2,
 				[opts.empty_line_after_title.val] = true,
+				[opts.empty_line_after_section_title.val] = false,
+				[opts.empty_line_between_sections.val] = false,
+				[opts.empty_line_after_section_item.val] = false,
 				[opts.section_underline.val] = "",
 				[opts.params_title.val] = "",
 				[opts.return_title.val] = "",
@@ -112,6 +125,9 @@ local styles = {
 				[opts.direction.val] = true,
 				[opts.title_pos.val] = 2,
 				[opts.empty_line_after_title.val] = true,
+				[opts.empty_line_after_section_title.val] = false,
+				[opts.empty_line_between_sections.val] = false,
+				[opts.empty_line_after_section_item.val] = false,
 				[opts.section_underline.val] = "",
 				[opts.params_title.val] = "",
 				[opts.return_title.val] = "",
@@ -136,6 +152,9 @@ local styles = {
 				[opts.direction.val] = true,
 				[opts.title_pos.val] = 2,
 				[opts.empty_line_after_title.val] = true,
+				[opts.empty_line_after_section_title.val] = false,
+				[opts.empty_line_between_sections.val] = false,
+				[opts.empty_line_after_section_item.val] = false,
 				[opts.section_underline.val] = "",
 				[opts.params_title.val] = "",
 				[opts.return_title.val] = "",
@@ -160,6 +179,9 @@ local styles = {
 				[opts.direction.val] = true,
 				[opts.title_pos.val] = 1,
 				[opts.empty_line_after_title.val] = false,
+				[opts.empty_line_after_section_title.val] = false,
+				[opts.empty_line_between_sections.val] = false,
+				[opts.empty_line_after_section_item.val] = false,
 				[opts.section_underline.val] = "",
 				[opts.params_title.val] = "",
 				[opts.return_title.val] = "",
@@ -184,6 +206,9 @@ local styles = {
 				[opts.direction.val] = true,
 				[opts.title_pos.val] = 1,
 				[opts.empty_line_after_title.val] = true,
+				[opts.empty_line_after_section_title.val] = false,
+				[opts.empty_line_between_sections.val] = false,
+				[opts.empty_line_after_section_item.val] = false,
 				[opts.section_underline.val] = "",
 				[opts.params_title.val] = "",
 				[opts.return_title.val] = "",
@@ -208,6 +233,9 @@ local styles = {
 				[opts.direction.val] = true,
 				[opts.title_pos.val] = 2,
 				[opts.empty_line_after_title.val] = true,
+				[opts.empty_line_after_section_title.val] = false,
+				[opts.empty_line_between_sections.val] = false,
+				[opts.empty_line_after_section_item.val] = false,
 				[opts.section_underline.val] = "",
 				[opts.params_title.val] = "",
 				[opts.return_title.val] = "",
@@ -232,6 +260,9 @@ local styles = {
 				[opts.direction.val] = true,
 				[opts.title_pos.val] = 2,
 				[opts.empty_line_after_title.val] = true,
+				[opts.empty_line_after_section_title.val] = false,
+				[opts.empty_line_between_sections.val] = false,
+				[opts.empty_line_after_section_item.val] = false,
 				[opts.section_underline.val] = "",
 				[opts.params_title.val] = "",
 				[opts.return_title.val] = "",
@@ -256,6 +287,9 @@ local styles = {
 				[opts.direction.val] = true,
 				[opts.title_pos.val] = 2,
 				[opts.empty_line_after_title.val] = true,
+				[opts.empty_line_after_section_title.val] = false,
+				[opts.empty_line_between_sections.val] = false,
+				[opts.empty_line_after_section_item.val] = false,
 				[opts.section_underline.val] = "",
 				[opts.params_title.val] = "",
 				[opts.return_title.val] = "",

@@ -17,7 +17,8 @@ local identifiers = {
 		method_definition = true,
 		function_declaration = true,
 		method_declaration = true,
-		method = true
+		method = true,
+		function_item = true
 	}
 
 	return (identifiers[node_type]) and true or false

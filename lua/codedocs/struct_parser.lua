@@ -38,7 +38,8 @@ local function get_sig_return_type(ts_utils, func_sections)
 	local type_identifier = {
 		integral_type = true,
 		type = true,
-		type_annotation = true
+		type_annotation = true,
+		type_identifier = true
 	}
 
 	local return_type
@@ -120,7 +121,9 @@ local function extract_func_params(node, ts_utils, is_type_in_docs)
 					local typed_param = get_typed_param_data(ts_utils, is_type_in_docs, param)
 					param_name, param_type = typed_param[1], typed_param[2]
 				end
-			table.insert(params, {name = param_name, type = param_type})
+			if param_name ~= nil or param_type ~= nil then
+				table.insert(params, {name = param_name, type = param_type})
+			end
     		end
     	end
 	end
