@@ -38,6 +38,8 @@ local function get_supported_node(node_at_cursor)
 
   -- Traverse upwards through parent nodes to find a function or method declaration
   	while node_at_cursor do
+		print("NODE")
+		print(node_at_cursor:type())
     	if is_node_a_function(node_at_cursor:type()) then
       		return node_at_cursor
     	end
@@ -50,10 +52,21 @@ local function get_supported_node(node_at_cursor)
   return nil
 end
 
-local function get_docs(opts, style)
-	local ts_utils = require'nvim-treesitter.ts_utils'
+local function get_docs_style(style, node)
+	local docs_style
+	if node == nil then
+		docs_style = style["unknown"]
+		print("UNKNOWN")
+	elseif is_node_a_function(node:type()) then
+		print("FUNCION")
+		docs_style = style["func"]
+	end
+	return docs_style
+end
+
+local function get_docs(opts, style, valid_node, ts_utils)
 	local docs_builder = require("codedocs.docs_builder.init")
-	local valid_node = get_supported_node(ts_utils.get_node_at_cursor())
+	-- local valid_node = get_supported_node(ts_utils.get_node_at_cursor())
 	local docs
 	if valid_node == nil then
 		docs = style[opts.struct.val]
@@ -61,7 +74,21 @@ local function get_docs(opts, style)
 		docs = docs_builder.func.get_docs(opts, style, valid_node, ts_utils)
 	end
 	return docs
+
 end
+
+-- local function get_docs(opts, style)
+-- 	local ts_utils = require'nvim-treesitter.ts_utils'
+-- 	local docs_builder = require("codedocs.docs_builder.init")
+-- 	local valid_node = get_supported_node(ts_utils.get_node_at_cursor())
+-- 	local docs
+-- 	if valid_node == nil then
+-- 		docs = style[opts.struct.val]
+-- 	elseif is_node_a_function(valid_node:type()) then
+-- 		docs = docs_builder.func.get_docs(opts, style.func, valid_node, ts_utils)
+-- 	end
+-- 	return docs
+-- end
 
 --- Indents each line of a docstring by prepending an indentation string
 -- @param docs (table) A list of strings representing the lines of the docstring
@@ -84,21 +111,42 @@ end
 -- @param opts (table) Keys used to access opt values in a style
 -- @param style (table) Options used to configure a language's docstring style
 -- @param filetype The name of the programming language that corresponds with the current filetype
+-- local function insert_docs(opts, style)
+-- 	-- require("codedocs.style_validations").validate_style(opts, style)
+-- 	local cursor_pos = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line (1-based index)
+-- 	local line_content = vim.api.nvim_buf_get_lines(0, cursor_pos - 1, cursor_pos, false)[1]
+-- 	local line_indentation = line_content:match("^[^%w]*")
+--
+-- 	local docs = get_docs(opts, style)
+--
+-- 	local direction = style[opts.direction.val]
+-- 	docs = add_indent_to_docs(docs, line_indentation, direction)
+--
+-- 	local insert_pos = (direction) and cursor_pos - 1 or cursor_pos
+-- 	vim.api.nvim_buf_set_lines(0, insert_pos, insert_pos, false, docs)
+--
+-- 	move_cursor_to_title(#docs, direction, style[opts.title_pos.val])
+-- end
 local function insert_docs(opts, style)
-	require("codedocs.style_validations").validate_style(opts, style)
+	local ts_utils = require'nvim-treesitter.ts_utils'
+	-- require("codedocs.style_validations").validate_style(opts, style)
 	local cursor_pos = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line (1-based index)
 	local line_content = vim.api.nvim_buf_get_lines(0, cursor_pos - 1, cursor_pos, false)[1]
 	local line_indentation = line_content:match("^[^%w]*")
 
-	local docs = get_docs(opts, style)
+	local valid_node = get_supported_node(ts_utils.get_node_at_cursor())
+	local docs_style = get_docs_style(style, valid_node)
+	print("DOCS STYLE")
+	print(vim.inspect(docs_style))
+	local docs = get_docs(opts, docs_style, valid_node, ts_utils)
 
-	local direction = style[opts.direction.val]
+	local direction = docs_style[opts.direction.val]
 	docs = add_indent_to_docs(docs, line_indentation, direction)
 
 	local insert_pos = (direction) and cursor_pos - 1 or cursor_pos
 	vim.api.nvim_buf_set_lines(0, insert_pos, insert_pos, false, docs)
 
-	move_cursor_to_title(#docs, direction, style[opts.title_pos.val])
+	move_cursor_to_title(#docs, direction, docs_style[opts.title_pos.val])
 end
 
 --- Inserts a docstring for the function under the cursor

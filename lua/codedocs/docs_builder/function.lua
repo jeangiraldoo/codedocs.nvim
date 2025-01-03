@@ -71,10 +71,10 @@ end
 local function get_arranged_param_info(opts, style, wrapped_param, type_goes_first, is_param_one_line)
 	local param_name = wrapped_param[1]
 	local param_type = wrapped_param[2]
-	local type_keyword = style[opts.type_keyword.val]
+	local type_keyword = style[opts.type_kw.val]
 	local is_type_below_name_first = style[opts.is_type_below_name_first.val]
 
-	local final_name = style[opts.param_keyword.val] .. " " .. param_name
+	local final_name = style[opts.param_kw.val] .. " " .. param_name
 	local final_type, name_first, type_first
 	if is_param_one_line then
 		final_type = type_keyword .. " " .. param_type
@@ -99,7 +99,7 @@ local function add_section_params(opts, style, params, section_insertion_pos, do
 	local line_start = style[opts.struct.val][2]
 	local base_line = (style[opts.param_indent.val]) and ("\t" .. line_start) or (line_start)
 	local type_goes_first = style[opts.type_goes_first.val]
-	local is_param_one_line = style[opts.is_param_one_line.val]
+	local is_param_one_line = style[opts.is_param_one_ln.val]
 
 	for i = 1, #params do
 		local param = params[i]
@@ -114,7 +114,7 @@ local function add_section_params(opts, style, params, section_insertion_pos, do
 				table.insert(docs, #docs, base_line .. value)
 			end
 		end
-		if style[opts.empty_line_after_section_item.val] and i < #params then
+		if style[opts.empty_ln_after_section_item.val] and i < #params then
 			table.insert(docs, #docs, base_line)
 		end
 	end
@@ -137,9 +137,9 @@ local function add_return_section(opts, style, return_type, title_underline_char
 	local line_start = style[opts.struct.val][2]
 	add_section_title(title_underline_char, title, is_empty_line_under_title, line_start, section_insertion_pos, docs)
 
-	local is_return_one_line = style[opts.is_param_one_line.val]
-	local return_keyword = style[opts.return_keyword.val]
-	local return_type_keyword = style[opts.return_type_keyword.val]
+	local is_return_one_line = style[opts.is_param_one_ln.val]
+	local return_keyword = style[opts.return_kw.val]
+	local return_type_keyword = style[opts.return_type_kw.val]
 	local type_wrapper = style[opts.return_type_wrapper.val]
 	local is_type_in_docs = style[opts.is_return_type_in_docs.val]
 	local wrapped_type = (is_type_in_docs) and type_wrapper[1] .. return_type .. type_wrapper[2] or type_wrapper
@@ -171,8 +171,8 @@ local function add_return_section(opts, style, return_type, title_underline_char
 end
 
 local function add_sections(opts, style, params, return_type, docs)
-	local is_empty_line_under_title = style[opts.empty_line_after_section_title.val]
-	local is_empty_line_after_title = style[opts.empty_line_after_title.val]
+	local is_empty_line_under_title = style[opts.empty_ln_after_section_title.val]
+	local is_empty_line_after_title = style[opts.empty_ln_after_title.val]
 	local title_underline_char = style[opts.section_underline.val]
 	local line_start = style[opts.struct.val][2]
 
@@ -185,7 +185,7 @@ local function add_sections(opts, style, params, return_type, docs)
 
 	add_param_section(opts, style, params, title_underline_char, is_empty_line_under_title, section_insertion_pos, docs)
 	if return_type ~= nil then
-		if style[opts.empty_line_between_sections.val] then table.insert(docs, #docs, line_start) end
+		if style[opts.empty_ln_between_sections.val] then table.insert(docs, #docs, line_start) end
 		add_return_section(opts, style, return_type, title_underline_char, is_empty_line_under_title, section_insertion_pos, docs)
 	end
 
