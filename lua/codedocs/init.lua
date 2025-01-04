@@ -33,7 +33,6 @@ function M.insert_docs()
 	local lang = vim.api.nvim_buf_get_option(0, "filetype")
 
 	local default_lang_style = M.config.default_styles[lang]
-	print(vim.inspect(defaults))
 	local lang_styles = M.config.lang_styles[lang]
 	if not default_lang_style or not lang_styles then
 		error("There is no language called " .. lang .. " available in Codedocs")

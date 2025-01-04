@@ -26,6 +26,7 @@ local func = {
 	-- },
 	-- returns = {
 			return_title = {val = "return_title", type = "string"}, -- Ttitle displayed at the beggining of the return section
+			is_return_one_ln = {val = "is_return_one_ln", type = "boolean"},
 			return_kw = {val = "return_kw", type = "string"}, -- Keyword prefixed to the return line
 			return_type_kw = {val = "return_type_kw", type = "string"},
 			is_return_type_in_docs = {val = "is_return_type_in_docs", type = "boolean"}, -- Determines wether or not to include the return type
@@ -33,4 +34,4 @@ local func = {
 	-- }
 }
 
-return func
+return {func = func}

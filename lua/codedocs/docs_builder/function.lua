@@ -10,23 +10,6 @@ local function copy_docstring(docs_struct)
 	return copied_docs_struct
 end
 
---- Indents each line of a docstring by prepending an indentation string
--- @param docs (table) A list of strings representing the lines of the docstring
--- @param indent_string (string) The string to prepend to each line for indentation
--- @return (table) A list of indented lines
-local function add_indent_to_docs(docs, indent_string, direction)
-	local direction_based_indent = (direction) and "" or "\t"
-	local indented_lines = {}
-	for _, line in pairs(docs) do
-		for idx = 1, #indent_string do
-			local char = string.sub(indent_string, idx, idx)
-			line = char .. line
-		end
-		table.insert(indented_lines, direction_based_indent .. line)
-	end
-	return indented_lines
-end
-
 --- Inserts a section title and an underline (if applicable)
 -- @param underline_char Character to create a string from
 -- @param title The title of the section
@@ -184,7 +167,7 @@ local function add_return_ln(opts, style, r_data, docs)
 	local r_kw, r_type_kw, r_type = r_data[1], r_data[2], r_data[3]
 	local is_type_in_docs = style[opts.is_return_type_in_docs.val]
 	local is_r_indented = style[opts.param_indent.val]
-	local is_one_ln = style[opts.is_param_one_ln.val]
+	local is_one_ln = style[opts.is_return_one_ln.val]
 
 	local ln_start = style[opts.struct.val][2]
 	local indent = (is_r_indented) and "\t" or ""
