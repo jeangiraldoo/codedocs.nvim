@@ -52,7 +52,7 @@ local function get_sig_return_type(ts_utils, func_sections)
 	return return_type
 end
 
-local function get_func_return_type(ts_utils, node)
+local function get_return_type(node, ts_utils)
 	local func_sections = ts_utils.get_named_children(node)
 	local return_type = get_sig_return_type(ts_utils, func_sections)
 	if not return_type then
@@ -87,13 +87,7 @@ local function get_typed_param_data(ts_utils, is_type_in_docs, param)
 	return {param_name, param_type}
 end
 
-local function extract_func_params(node, ts_utils, is_type_in_docs)
-	local param_section_identifiers = {
-		formal_parameters = true,
-		function_value_parameters = true,
-		parameters = true,
-		method_parameters = true
-	}
+local function extract_params(params_node, ts_utils, is_type_in_docs)
 	local typed_param_identifiers = {
 		typed_parameter = true,
 		required_parameter = true,
@@ -104,33 +98,49 @@ local function extract_func_params(node, ts_utils, is_type_in_docs)
 		identifier = true,
 		simple_parameter = true
 	}
-	local func_sections = ts_utils.get_named_children(node)
 
+	local param_section = ts_utils.get_named_children(params_node)
   	local params = {}
-	for _, func_section in ipairs(func_sections) do
-		local is_param_section = param_section_identifiers[func_section:type()]
-    	if is_param_section then
-      		local param_section = ts_utils.get_named_children(func_section)
-      		for _, param in ipairs(param_section) do
-				local is_param_untyped = untyped_param_identifiers[param:type()]
-				local is_param_typed = typed_param_identifiers[param:type()]
-				local param_name, param_type
-				if param and is_param_untyped then
-					param_name = ts_utils.get_node_text(param)[1]
-				elseif param and is_param_typed then
-					local typed_param = get_typed_param_data(ts_utils, is_type_in_docs, param)
-					param_name, param_type = typed_param[1], typed_param[2]
-				end
-			if param_name ~= nil or param_type ~= nil then
-				table.insert(params, {name = param_name, type = param_type})
-			end
-    		end
-    	end
+	for _, param in ipairs(param_section) do
+		local is_param_untyped = untyped_param_identifiers[param:type()]
+		local is_param_typed = typed_param_identifiers[param:type()]
+		local param_name, param_type
+		if param and is_param_untyped then
+			param_name = ts_utils.get_node_text(param)[1]
+		elseif param and is_param_typed then
+			local typed_param = get_typed_param_data(ts_utils, is_type_in_docs, param)
+			param_name, param_type = typed_param[1], typed_param[2]
+		end
+	if param_name ~= nil or param_type ~= nil then
+		table.insert(params, {name = param_name, type = param_type})
+	end
 	end
 	return params
+
+end
+
+local function get_params_node(func_node, ts_utils)
+	local param_section_identifiers = {
+		formal_parameters = true,
+		function_value_parameters = true,
+		parameters = true,
+		method_parameters = true
+	}
+	local func_sections = ts_utils.get_named_children(func_node)
+
+	for _, func_section in ipairs(func_sections) do
+		local is_param_section = param_section_identifiers[func_section:type()]
+    	if is_param_section then return func_section end
+	end
+end
+
+local function get_data(node, ts_utils, is_type_in_docs)
+	local params_node = get_params_node(node, ts_utils)
+	local params = extract_params(params_node, ts_utils, is_type_in_docs)
+	local return_type = get_return_type(node, ts_utils)
+	return {params = params, return_type = return_type}
 end
 
 return {
-	extract_func_params = extract_func_params,
-	get_func_return_type = get_func_return_type
+	get_data = get_data
 }
