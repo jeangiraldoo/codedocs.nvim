@@ -132,41 +132,88 @@ local function add_param_section(opts, style, params, title_underline_char, is_e
 	add_section_params(opts, style, params, section_insertion_pos, docs)
 end
 
-local function add_return_section(opts, style, return_type, title_underline_char, is_empty_line_under_title, section_insertion_pos, docs)
-	local title = style[opts.return_title.val]
-	local line_start = style[opts.struct.val][2]
-	add_section_title(title_underline_char, title, is_empty_line_under_title, line_start, section_insertion_pos, docs)
-
-	local is_return_one_line = style[opts.is_param_one_ln.val]
-	local return_keyword = style[opts.return_kw.val]
-	local return_type_keyword = style[opts.return_type_kw.val]
-	local type_wrapper = style[opts.return_type_wrapper.val]
-	local is_type_in_docs = style[opts.is_return_type_in_docs.val]
-	local wrapped_type = (is_type_in_docs) and type_wrapper[1] .. return_type .. type_wrapper[2] or type_wrapper
-
-	local is_return_line_present = true
-	local is_return_indented = style[opts.param_indent.val]
-	local indent = (is_return_indented) and "\t" or ""
-
-	local return_line
-	if (not is_type_in_docs and return_keyword == "") or (return_keyword == "" and return_type == "unknown") then
-		is_return_line_present = false
-	elseif return_keyword == "" and (is_type_in_docs and return_type ~= "unknown") then
-		return_line = (is_return_one_line) and indent .. line_start .. wrapped_type or {indent .. line_start .. return_keyword, indent .. return_type_keyword .. return_type}
-	elseif return_keyword ~= "" and (not is_type_in_docs or return_type == "unknown") then
-		return_line = (is_return_one_line) and indent .. line_start .. return_keyword or {indent .. line_start .. return_keyword, indent ..return_type_keyword .. ""}
-	else
-		return_line = (is_return_one_line) and indent .. line_start .. return_keyword .. " " .. wrapped_type or {indent .. line_start .. return_keyword, indent .. return_type_keyword .. " " .. return_type}
-	end
-	if is_return_line_present and type(return_line) == "string" then
-		-- table.insert(docs, #docs, return_line)
-		table.insert(docs, #docs, return_line)
-	elseif is_return_line_present and type(return_line) == "table" then
-		for _, value in pairs(return_line) do
-			-- table.insert(docs, #docs, value)
+local function insert_return_ln(docs, r_ln)
+	if type(r_ln) == "string" then
+		table.insert(docs, #docs, r_ln)
+	elseif type(r_ln) == "table" then
+		for _, value in pairs(r_ln) do
 			table.insert(docs, #docs, value)
 		end
+	end
+end
 
+local function get_single_return_ln(base_ln, r_data)
+	local r_kw, r_type_kw, wrapped_type = r_data[1], r_data[2], r_data[3]
+	local r_ln
+	if r_kw == "" and r_type_kw == "" then
+		r_ln = wrapped_type
+	elseif r_kw == "" and r_type_kw ~= "" then
+		r_ln = r_type_kw .. " " .. wrapped_type
+	elseif r_kw ~= "" and r_type_kw == "" then
+		r_ln = r_kw .. " " .. wrapped_type
+	else
+		r_ln = r_kw .. " " .. r_type_kw .. " " .. wrapped_type
+	end
+	return base_ln .. r_ln
+end
+
+local function get_split_return_ln(base_ln, r_data)
+	local r_kw, r_type_kw, wrapped_type = r_data[1], r_data[2], r_data[3]
+	local upper_ln = base_ln .. r_kw
+	local lower_ln
+	if r_type_kw == "" then
+		lower_ln = wrapped_type
+	else
+		lower_ln = r_type_kw .. " " .. wrapped_type
+	end
+	lower_ln = base_ln .. lower_ln
+	return {upper_ln, lower_ln}
+end
+
+local function get_return_ln(is_one_line, base_ln, r_data)
+	local r_ln
+	if is_one_line then
+		r_ln = get_single_return_ln(base_ln, r_data)
+	else
+		r_ln = get_split_return_ln(base_ln, r_data)
+	end
+	return r_ln
+end
+
+local function add_return_ln(opts, style, r_data, docs)
+	local r_kw, r_type_kw, r_type = r_data[1], r_data[2], r_data[3]
+	local is_type_in_docs = style[opts.is_return_type_in_docs.val]
+	local is_r_indented = style[opts.param_indent.val]
+	local is_one_ln = style[opts.is_param_one_ln.val]
+
+	local ln_start = style[opts.struct.val][2]
+	local indent = (is_r_indented) and "\t" or ""
+	local base_ln = indent .. ln_start
+
+	local type_wrapper = style[opts.return_type_wrapper.val]
+	local full_type_wrapper = type_wrapper[1] .. r_type .. type_wrapper[2]
+	local empty_type_wrapper = type_wrapper[1] .. type_wrapper[2]
+	local wrapped_type = (is_type_in_docs and r_type ~= "unknown") and full_type_wrapper or empty_type_wrapper
+
+	local updated_r_data = {r_kw, r_type_kw, wrapped_type}
+	local r_ln = get_return_ln(is_one_ln, base_ln, updated_r_data)
+
+	insert_return_ln(docs, r_ln)
+end
+
+local function add_return_section(opts, style, r_type, title_underline_char, is_empty_line_under_title, section_insertion_pos, docs)
+	local title = style[opts.return_title.val]
+	local ln_start = style[opts.struct.val][2]
+	add_section_title(title_underline_char, title, is_empty_line_under_title, ln_start, section_insertion_pos, docs)
+
+	local r_kw = style[opts.return_kw.val]
+	local r_type_kw = style[opts.return_type_kw.val]
+	local is_type_in_docs = style[opts.is_return_type_in_docs.val]
+
+	local is_return_line_present = r_kw ~= "" or r_type_kw ~= "" or (is_type_in_docs and r_type ~= "unknown")
+	if is_return_line_present then
+		local r_data = {r_kw, r_type_kw, r_type}
+		add_return_ln(opts, style, r_data, docs)
 	end
 end
 
