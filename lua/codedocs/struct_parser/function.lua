@@ -34,7 +34,7 @@ local function get_block_return_type(ts_utils, func_sections)
 	return return_type
 end
 
-local function get_sig_return_type(ts_utils, func_sections)
+local function get_sig_return_type(func_sections)
 	local type_identifier = {
 		integral_type = true,
 		type = true,
@@ -46,7 +46,7 @@ local function get_sig_return_type(ts_utils, func_sections)
 	for _, section in ipairs(func_sections) do
 		local is_type_in_signature = type_identifier[section:type()] or string.match(section:type(), "_type")
 		if is_type_in_signature then
-			return_type = ts_utils.get_node_text(section)[1]
+			return_type = vim.treesitter.get_node_text(section, 0)
 		end
 	end
 	return return_type
@@ -54,7 +54,7 @@ end
 
 local function get_return_type(node, ts_utils)
 	local func_sections = ts_utils.get_named_children(node)
-	local return_type = get_sig_return_type(ts_utils, func_sections)
+	local return_type = get_sig_return_type(func_sections)
 	if not return_type then
 		return_type = get_block_return_type(ts_utils, func_sections)
 	end
@@ -79,9 +79,9 @@ local function get_typed_param_data(ts_utils, is_type_in_docs, param)
 		local is_name = name_identifiers[info:type()]
 		local is_type = type_identifiers[info:type()]
 		if is_name then
-			param_name = ts_utils.get_node_text(info)[1]
+			param_name = vim.treesitter.get_node_text(info, 0)
 		elseif is_type_in_docs and (is_type or string.match(info:type(), "_type")) then
-			param_type = ts_utils.get_node_text(info)[1]
+			param_type = vim.treesitter.get_node_text(info, 0)
 		end
 	end
 	return {param_name, param_type}
@@ -106,7 +106,7 @@ local function extract_params(params_node, ts_utils, is_type_in_docs)
 		local is_param_typed = typed_param_identifiers[param:type()]
 		local param_name, param_type
 		if param and is_param_untyped then
-			param_name = ts_utils.get_node_text(param)[1]
+			param_name = vim.treesitter.get_node_text(param, 0)
 		elseif param and is_param_typed then
 			local typed_param = get_typed_param_data(ts_utils, is_type_in_docs, param)
 			param_name, param_type = typed_param[1], typed_param[2]
