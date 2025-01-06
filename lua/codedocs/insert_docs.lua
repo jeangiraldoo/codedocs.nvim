@@ -2,10 +2,9 @@
 -- @param doc_len (number) Number of lines in the inserted docstring
 -- @param direction (boolean) Direction of the docstring insertion. True for above, false for below
 -- @param title_pos (number) Line offset of the title within the docstring structure
-local function move_cursor_to_title(doc_len, direction, title_pos)
-	local cursor_pos = vim.api.nvim_win_get_cursor(0)[1] -- (1-based index)
-	local line_length = #vim.api.nvim_buf_get_lines(0, cursor_pos - 1, cursor_pos, false)[1]
-	local new_pos = (direction) and (cursor_pos - doc_len + title_pos - 1) or (cursor_pos + title_pos)
+local function move_cursor_to_title(node_pos, direction, title_pos)
+	local line_length = #vim.api.nvim_buf_get_lines(0, node_pos, node_pos + 1, false)[1]
+	local new_pos = (direction) and (node_pos + title_pos) or (node_pos + title_pos + 1)
 	vim.api.nvim_win_set_cursor(0, {new_pos, line_length})
 	vim.cmd('startinsert')
 	vim.api.nvim_input('<Right>')
@@ -74,13 +73,17 @@ local function get_docs(opts, style, valid_node, ts_utils)
 	end
 	return docs
 end
+-- Function to convert tabs to spaces based on the tabstop value
+local function convert_tabs_to_spaces(indentation, tabstop)
+    return indentation:gsub("\t", string.rep(" ", tabstop))
+end
 
 --- Indents each line of a docstring by prepending an indentation string
 -- @param docs (table) A list of strings representing the lines of the docstring
 -- @param indent_string (string) The string to prepend to each line for indentation
 -- @return (table) A list of indented lines
-local function add_indent_to_docs(docs, indent_string, direction)
-	local direction_based_indent = (direction) and "" or "\t"
+local function add_indent_to_docs(docs, indent_string, tabstop, direction)
+	local direction_based_indent = (direction) and "" or convert_tabs_to_spaces("\t", tabstop)
 	local indented_lines = {}
 	for _, line in pairs(docs) do
 		for idx = 1, #indent_string do
@@ -92,25 +95,32 @@ local function add_indent_to_docs(docs, indent_string, direction)
 	return indented_lines
 end
 
+local function get_line_indentation(line_content, tabstop)
+    local indentation = line_content:match("^[^%w]*")
+    return convert_tabs_to_spaces(indentation, tabstop)
+end
+
 local function insert_docs(opts, style)
 	local ts_utils = require'nvim-treesitter.ts_utils'
-	local cursor_pos = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line (1-based index)
-	local line_content = vim.api.nvim_buf_get_lines(0, cursor_pos - 1, cursor_pos, false)[1]
-	local line_indentation = line_content:match("^[^%w]*")
-
 	local valid_node = get_supported_node(ts_utils.get_node_at_cursor())
 	local docs_settings = get_docs_settings(opts, style, valid_node)
 	local docs_opts, docs_style = docs_settings[1], docs_settings[2]
 	require("codedocs.style_validations").validate_style(docs_opts, docs_style)
 	local docs = get_docs(docs_opts, docs_style, valid_node, ts_utils)
 
+	local node_pos = valid_node:range()
+
+	local line_content = vim.api.nvim_buf_get_lines(0, node_pos, node_pos + 1, false)[1]
+
 	local direction = docs_style[docs_opts.direction.val]
-	docs = add_indent_to_docs(docs, line_indentation, direction)
+    local tabstop = vim.api.nvim_buf_get_option(0, "tabstop")
+	local indent_spaces = get_line_indentation(line_content, tabstop)
+	docs = add_indent_to_docs(docs, indent_spaces, tabstop, direction)
 
-	local insert_pos = (direction) and cursor_pos - 1 or cursor_pos
-	vim.api.nvim_buf_set_lines(0, insert_pos, insert_pos, false, docs)
-
-	move_cursor_to_title(#docs, direction, docs_style[docs_opts.title_pos.val])
+	local insert_pos = (direction) and node_pos or node_pos + 1
+	vim.api.nvim_buf_set_text(0, insert_pos, 0, insert_pos, 0, {"", ""})
+	vim.api.nvim_buf_set_text(0, insert_pos, 0, insert_pos, 0, docs)
+	move_cursor_to_title(node_pos, direction, docs_style[docs_opts.title_pos.val])
 end
 
 --- Inserts a docstring for the function under the cursor
