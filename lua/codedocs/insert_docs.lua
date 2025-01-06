@@ -50,16 +50,17 @@ local function get_supported_node(node_at_cursor)
 end
 
 local function get_docs_settings(opts, style, node)
-	local docs_style
-	local docs_opts
+	local docs_style, docs_opts, struct_name
 	if node == nil then
-		docs_style = style["unknown"]
-		docs_opts = opts[""]
+		docs_style = style["generic"]
+		docs_opts = opts["generic"]
+		struct_name = "generic"
 	elseif is_node_a_function(node:type()) then
 		docs_style = style["func"]
 		docs_opts = opts["func"]
+		struct_name = "func"
 	end
-	return {docs_opts, docs_style}
+	return {docs_opts, docs_style, struct_name}
 end
 
 local function get_docs(opts, style, valid_node, ts_utils)
@@ -104,8 +105,8 @@ local function insert_docs(opts, style)
 	local ts_utils = require'nvim-treesitter.ts_utils'
 	local valid_node = get_supported_node(ts_utils.get_node_at_cursor())
 	local docs_settings = get_docs_settings(opts, style, valid_node)
-	local docs_opts, docs_style = docs_settings[1], docs_settings[2]
-	require("codedocs.style_validations").validate_style(docs_opts, docs_style)
+	local docs_opts, docs_style, struct_name = docs_settings[1], docs_settings[2], docs_settings[3]
+	require("codedocs.style_validations").validate_style(docs_opts, docs_style, struct_name)
 	local docs = get_docs(docs_opts, docs_style, valid_node, ts_utils)
 
 	local node_pos = valid_node:range()
@@ -116,7 +117,6 @@ local function insert_docs(opts, style)
     local tabstop = vim.api.nvim_buf_get_option(0, "tabstop")
 	local indent_spaces = get_line_indentation(line_content, tabstop)
 	docs = add_indent_to_docs(docs, indent_spaces, tabstop, direction)
-
 	local insert_pos = (direction) and node_pos or node_pos + 1
 	vim.api.nvim_buf_set_text(0, insert_pos, 0, insert_pos, 0, {"", ""})
 	vim.api.nvim_buf_set_text(0, insert_pos, 0, insert_pos, 0, docs)

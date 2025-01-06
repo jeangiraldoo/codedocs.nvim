@@ -16,14 +16,20 @@ end
 -- @param docs Docstring to insert the section title into
 local function add_section_title(underline_char, title, is_empty_line_around_title, line_start, section_insertion_pos, docs)
 	local final_title = line_start .. title
-	if title ~= "" then table.insert(docs, #docs, final_title) end
+	-- if title ~= "" then table.insert(docs, #docs, final_title) end
+	if title ~= "" then
+		table.insert(docs, section_insertion_pos[1], final_title)
+		section_insertion_pos[1] = section_insertion_pos[1] + 1
+	end
 
 	if underline_char ~= "" then
 		table.insert(docs, #docs, line_start .. string.rep(underline_char, #title))
+		section_insertion_pos[1] = section_insertion_pos[1] + 1
 	end
 
 	if is_empty_line_around_title then
 		table.insert(docs, #docs, line_start .. "")
+		section_insertion_pos[1] = section_insertion_pos[1] + 1
 	end
 end
 
@@ -91,14 +97,18 @@ local function add_section_params(opts, style, params, section_insertion_pos, do
 
 		if type(final_info) == "string" then
 			-- table.insert(docs, #docs, base_line .. final_info)
-			table.insert(docs, #docs, base_line .. final_info)
+			table.insert(docs, section_insertion_pos[1], base_line .. final_info)
+			section_insertion_pos[1] = section_insertion_pos[1] + 1
 		elseif type(final_info) == "table" then
 			for _, value in pairs(final_info) do
-				table.insert(docs, #docs, base_line .. value)
+				-- table.insert(docs, #docs, base_line .. value)
+				table.insert(docs, section_insertion_pos[1], base_line .. value)
+				section_insertion_pos[1] = section_insertion_pos[1] + 1
 			end
 		end
 		if style[opts.empty_ln_after_section_item.val] and i < #params then
 			table.insert(docs, #docs, base_line)
+			section_insertion_pos[1] = section_insertion_pos[1] + 1
 		end
 	end
 end
@@ -115,12 +125,14 @@ local function add_param_section(opts, style, params, title_underline_char, is_e
 	add_section_params(opts, style, params, section_insertion_pos, docs)
 end
 
-local function insert_return_ln(docs, r_ln)
+local function insert_return_ln(docs, r_ln, section_insertion_pos)
 	if type(r_ln) == "string" then
-		table.insert(docs, #docs, r_ln)
+		table.insert(docs, section_insertion_pos[1], r_ln)
+		section_insertion_pos[1] = section_insertion_pos[1] + 1
 	elseif type(r_ln) == "table" then
 		for _, value in pairs(r_ln) do
-			table.insert(docs, #docs, value)
+			table.insert(docs, section_insertion_pos[1], value)
+			section_insertion_pos[1] = section_insertion_pos[1] + 1
 		end
 	end
 end
@@ -163,7 +175,7 @@ local function get_return_ln(is_one_line, base_ln, r_data)
 	return r_ln
 end
 
-local function add_return_ln(opts, style, r_data, docs)
+local function add_return_ln(opts, style, r_data, section_insertion_pos, docs)
 	local r_kw, r_type_kw, r_type = r_data[1], r_data[2], r_data[3]
 	local is_type_in_docs = style[opts.is_return_type_in_docs.val]
 	local is_r_indented = style[opts.param_indent.val]
@@ -181,7 +193,7 @@ local function add_return_ln(opts, style, r_data, docs)
 	local updated_r_data = {r_kw, r_type_kw, wrapped_type}
 	local r_ln = get_return_ln(is_one_ln, base_ln, updated_r_data)
 
-	insert_return_ln(docs, r_ln)
+	insert_return_ln(docs, r_ln, section_insertion_pos)
 end
 
 local function add_return_section(opts, style, r_type, title_underline_char, is_empty_line_under_title, section_insertion_pos, docs)
@@ -196,7 +208,7 @@ local function add_return_section(opts, style, r_type, title_underline_char, is_
 	local is_return_line_present = r_kw ~= "" or r_type_kw ~= "" or (is_type_in_docs and r_type ~= "unknown")
 	if is_return_line_present then
 		local r_data = {r_kw, r_type_kw, r_type}
-		add_return_ln(opts, style, r_data, docs)
+		add_return_ln(opts, style, r_data, section_insertion_pos, docs)
 	end
 end
 
@@ -206,16 +218,18 @@ local function add_sections(opts, style, params, return_type, docs)
 	local title_underline_char = style[opts.section_underline.val]
 	local line_start = style[opts.struct.val][2]
 
-	local section_insertion_pos = 0
+	local section_insertion_pos = {style[opts.title_pos.val] + 1}
 	if is_empty_line_after_title then
-		section_insertion_pos = section_insertion_pos + 2
-		local empty_line_pos = style[opts.title_pos.val] + 1
-		table.insert(docs, empty_line_pos, line_start)
+		table.insert(docs, section_insertion_pos[1], line_start)
+		section_insertion_pos[1] = section_insertion_pos[1] + 1
 	end
 
 	add_param_section(opts, style, params, title_underline_char, is_empty_line_under_title, section_insertion_pos, docs)
 	if return_type ~= nil then
-		if style[opts.empty_ln_between_sections.val] then table.insert(docs, #docs, line_start) end
+		if style[opts.empty_ln_between_sections.val] then
+			table.insert(docs, section_insertion_pos[1], line_start)
+			section_insertion_pos[1] = section_insertion_pos[1] + 1
+		end
 		add_return_section(opts, style, return_type, title_underline_char, is_empty_line_under_title, section_insertion_pos, docs)
 	end
 
