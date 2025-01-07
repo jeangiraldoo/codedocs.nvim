@@ -79,7 +79,7 @@ require("codedocs").setup {
 
 When your cursor is placed on top of a language's structure (e.g., a function declaration, class, etc.) that you want to document and you trigger the docstring insertion, Codedocs will check if it has a [docstring style for such structure in the programming language you are using](#supported-languages). If a docstring style is available, it will generate and insert a docstring above or below the structure, depending on the language's docstring style.
 
-If the structure under the cursor is not supported by Codedocs, a multi-line string will be inserted based on the syntax used by the programming language.
+If the structure under the cursor isn't supported by Codedocs, an empty single-line comment will be inserted.
 
 You can start the docstring insertion either by using a command or a keymap:
 
