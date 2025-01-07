@@ -27,6 +27,11 @@ return {
 			[opts.func.type_wrapper.val] = {"{", "}"},
 			[opts.func.is_return_one_ln.val] = true,
 			[opts.func.return_type_wrapper.val] = {"{", "}"}
+		},
+		generic = {
+			[opts.func.struct.val] = {"// "},
+			[opts.func.title_pos.val] = 1,
+			[opts.generic.direction.val] = true
 		}
 	}
 }

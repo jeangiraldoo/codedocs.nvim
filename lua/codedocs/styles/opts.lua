@@ -34,4 +34,13 @@ local func = {
 	-- }
 }
 
-return {func = func}
+local generic = {
+	struct = {val = "structure", type = "table"},
+	title_pos = {val = "title_pos", type = "number"},
+	direction = {val = "direction", type = "boolean"}
+}
+
+return {
+	func = func,
+	generic = generic
+}

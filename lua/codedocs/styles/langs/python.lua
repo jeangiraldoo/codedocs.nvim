@@ -27,6 +27,11 @@ return {
 			[opts.func.is_return_type_in_docs.val] = true,
 			[opts.func.is_return_one_ln.val] = true,
 			[opts.func.return_type_wrapper.val] = {"", ":"}
+		},
+		generic = {
+			[opts.func.struct.val] = {"# "},
+			[opts.func.title_pos.val] = 1,
+			[opts.generic.direction.val] = true
 		}
 	},
 	Numpy = {
@@ -56,6 +61,11 @@ return {
 			[opts.func.is_return_type_in_docs.val] = true,
 			[opts.func.is_return_one_ln.val] = true,
 			[opts.func.return_type_wrapper.val] = {"", ""}
+		},
+		generic = {
+			[opts.func.struct.val] = {"# "},
+			[opts.func.title_pos.val] = 1,
+			[opts.generic.direction.val] = true
 		}
 	},
 	reST = {
@@ -86,9 +96,10 @@ return {
 			[opts.func.is_return_one_ln.val] = false,
 			[opts.func.type_wrapper.val] = {"", ""}
 		},
-		unknown = {
-			[opts.func.struct.val] = {'"""', "", '"""'},
-			[opts.func.title_pos.val] = 1
+		generic = {
+			[opts.generic.struct.val] = {"# "},
+			[opts.generic.title_pos.val] = 1,
+			[opts.generic.direction.val] = true
 		}
 	}
 }

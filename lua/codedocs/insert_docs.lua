@@ -53,7 +53,7 @@ local function get_docs_settings(opts, style, node)
 	local docs_style, docs_opts, struct_name
 	if node == nil then
 		docs_style = style["generic"]
-		docs_opts = opts["generic"]
+	docs_opts = opts["generic"]
 		struct_name = "generic"
 	elseif is_node_a_function(node:type()) then
 		docs_style = style["func"]
@@ -65,7 +65,6 @@ end
 
 local function get_docs(opts, style, valid_node, ts_utils)
 	local docs_builder = require("codedocs.docs_builder.init")
-	-- local valid_node = get_supported_node(ts_utils.get_node_at_cursor())
 	local docs
 	if valid_node == nil then
 		docs = style[opts.struct.val]
@@ -109,7 +108,12 @@ local function insert_docs(opts, style)
 	require("codedocs.style_validations").validate_style(docs_opts, docs_style, struct_name)
 	local docs = get_docs(docs_opts, docs_style, valid_node, ts_utils)
 
-	local node_pos = valid_node:range()
+	local node_pos
+	if valid_node == nil then
+		node_pos = vim.api.nvim_win_get_cursor(0)[1] - 1
+	else
+		node_pos = valid_node:range()
+	end
 
 	local line_content = vim.api.nvim_buf_get_lines(0, node_pos, node_pos + 1, false)[1]
 
