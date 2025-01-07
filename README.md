@@ -322,7 +322,7 @@ Example with type hints:
  *
  * @param int $param_1
  * @param int $param_2
- @ @return bool
+ * @return bool
  */
 function cool_function(int $param_1, int $param_2): bool {
     <code goes here>
@@ -337,7 +337,7 @@ Example without type hints:
  *
  * @param $param_1
  * @param $param_2
- @ @return
+ * @return
  */
 function cool_function($param_1, $param_2) {
     <code goes here>
