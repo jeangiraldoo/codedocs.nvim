@@ -1,3 +1,15 @@
+--- Creates a copy of a language's docstring structure
+-- @param docs_struct (table) The original table representing the docstring structure
+-- @return (table) A new table that is a copy of "docstring_struct"
+local function copy_docstring(docs_struct)
+	local copied_docs_struct = {}
+	for i = 1, #docs_struct do
+		local copied_elem = docs_struct[i]
+		table.insert(copied_docs_struct, i, copied_elem)
+	end
+	return copied_docs_struct
+end
+
 --- Moves the cursor to the docstring title and enters insert mode for immediate typing
 -- @param doc_len (number) Number of lines in the inserted docstring
 -- @param direction (boolean) Direction of the docstring insertion. True for above, false for below
@@ -65,11 +77,12 @@ end
 
 local function get_docs(opts, style, valid_node, ts_utils)
 	local docs_builder = require("codedocs.docs_builder.init")
+	local docs_copy = copy_docstring(style[opts.struct.val])
 	local docs
 	if valid_node == nil then
 		docs = style[opts.struct.val]
 	elseif is_node_a_function(valid_node:type()) then
-		docs = docs_builder.func.get_docs(opts, style, valid_node, ts_utils)
+		docs = docs_builder.func.get_docs(opts, style, valid_node, ts_utils, docs_copy)
 	end
 	return docs
 end

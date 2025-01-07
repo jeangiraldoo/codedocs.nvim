@@ -1,15 +1,3 @@
---- Creates a copy of a language's docstring structure
--- @param docs_struct (table) The original table representing the docstring structure
--- @return (table) A new table that is a copy of "docstring_struct"
-local function copy_docstring(docs_struct)
-	local copied_docs_struct = {}
-	for i = 1, #docs_struct do
-		local copied_elem = docs_struct[i]
-		table.insert(copied_docs_struct, i, copied_elem)
-	end
-	return copied_docs_struct
-end
-
 --- Inserts a section title and an underline (if applicable)
 -- @param underline_char Character to create a string from
 -- @param title The title of the section
@@ -237,8 +225,7 @@ local function add_sections(opts, style, params, return_type, docs)
 	return docs
 end
 
-local function get_docs(opts, style, node, ts_utils)
-	local docs_copy = copy_docstring(style[opts.struct.val])
+local function get_docs(opts, style, node, ts_utils, docs_struct)
 	local is_type_in_docs = style[opts.is_type_in_docs.val]
 	local func_parser = require("codedocs.struct_parser.function")
 	local func_data = func_parser.get_data(node, ts_utils, is_type_in_docs)
@@ -246,7 +233,7 @@ local function get_docs(opts, style, node, ts_utils)
 	local return_type = func_data["return_type"]
 
 
-	return add_sections(opts, style, params, return_type, docs_copy)
+	return add_sections(opts, style, params, return_type, docs_struct)
 end
 
 return {
