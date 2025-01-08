@@ -108,9 +108,7 @@ local function insert_return_ln(docs, r_ln)
 end
 
 local function insert_return_ln_into_section(opts, style, r_data, section)
-	print("r_data")
 	local r_kw, r_type_kw, r_type = r_data[1], r_data[2], r_data[3]
-	print(r_type)
 	local is_type_in_docs = style[opts.is_return_type_in_docs.val]
 	local is_r_indented = style[opts.param_indent.val]
 	local is_one_ln = style[opts.is_return_one_ln.val]
@@ -147,6 +145,8 @@ local function get_return_section(opts, style, r_type)
 	if is_return_line_present then
 		local r_data = {r_kw, r_type_kw, r_type}
 		insert_return_ln_into_section(opts, style, r_data, section)
+	else
+		table.insert(section, ln_start)
 	end
 	return section
 end
@@ -197,7 +197,7 @@ local function get_docs_with_sections(opts, style, sections, docs)
 	local is_empty_line_after_title = style[opts.empty_ln_after_title.val]
 	local line_start = style[opts.struct.val][2]
 
-	if is_empty_line_after_title then
+	if #sections > 0 and is_empty_line_after_title then
 		table.insert(docs, style[opts.title_pos.val], line_start)
 	end
 	for i = 1, #sections do
@@ -208,7 +208,9 @@ local function get_docs_with_sections(opts, style, sections, docs)
 			table.insert(docs, #docs, line_start)
 		end
 	end
-	if #style[opts.struct.val] == 2 then table.remove(docs, #docs) end
+	if #style[opts.struct.val] == 2 then
+		table.remove(docs, #docs)
+	end
 	return docs
 end
 
