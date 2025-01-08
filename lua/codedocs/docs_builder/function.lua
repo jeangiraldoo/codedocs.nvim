@@ -1,23 +1,15 @@
---- Inserts a section title and an underline (if applicable)
--- @param underline_char Character to create a string from
--- @param title The title of the section
--- @param docs Docstring to insert the section title into
-local function add_section_title(underline_char, title, is_empty_line_around_title, line_start, section_insertion_pos, docs)
+local function insert_title_into_section(underline_char, title, is_empty_line_under_title, line_start, docs)
 	local final_title = line_start .. title
-	-- if title ~= "" then table.insert(docs, #docs, final_title) end
 	if title ~= "" then
-		table.insert(docs, section_insertion_pos[1], final_title)
-		section_insertion_pos[1] = section_insertion_pos[1] + 1
+		table.insert(docs, final_title)
 	end
 
 	if underline_char ~= "" then
-		table.insert(docs, #docs, line_start .. string.rep(underline_char, #title))
-		section_insertion_pos[1] = section_insertion_pos[1] + 1
+		table.insert(docs, line_start .. string.rep(underline_char, #title))
 	end
 
-	if is_empty_line_around_title then
-		table.insert(docs, #docs, line_start .. "")
-		section_insertion_pos[1] = section_insertion_pos[1] + 1
+	if is_empty_line_under_title then
+		table.insert(docs, line_start .. "")
 	end
 end
 
@@ -67,64 +59,6 @@ local function get_arranged_param_info(opts, style, wrapped_param, type_goes_fir
 	return (type_goes_first) and type_first or name_first
 end
 
---- Inserts a section with content related to parameters into the docstring
--- @param opts (table) Keys used to access option values in a style
--- @param style (table) Options to configure the language's docstring
--- @param params (table) A table of parameters to be inserted into the docstring
--- @param docs (table) The docstring base structure
-local function add_section_params(opts, style, params, section_insertion_pos, docs)
-	local line_start = style[opts.struct.val][2]
-	local base_line = (style[opts.param_indent.val]) and ("\t" .. line_start) or (line_start)
-	local type_goes_first = style[opts.type_goes_first.val]
-	local is_param_one_line = style[opts.is_param_one_ln.val]
-
-	for i = 1, #params do
-		local param = params[i]
-		local wrapped_info = get_wrapped_param_info(opts, style, param)
-		local final_info = get_arranged_param_info(opts, style, wrapped_info, type_goes_first, is_param_one_line)
-
-		if type(final_info) == "string" then
-			-- table.insert(docs, #docs, base_line .. final_info)
-			table.insert(docs, section_insertion_pos[1], base_line .. final_info)
-			section_insertion_pos[1] = section_insertion_pos[1] + 1
-		elseif type(final_info) == "table" then
-			for _, value in pairs(final_info) do
-				-- table.insert(docs, #docs, base_line .. value)
-				table.insert(docs, section_insertion_pos[1], base_line .. value)
-				section_insertion_pos[1] = section_insertion_pos[1] + 1
-			end
-		end
-		if style[opts.empty_ln_after_section_item.val] and i < #params then
-			table.insert(docs, #docs, base_line)
-			section_insertion_pos[1] = section_insertion_pos[1] + 1
-		end
-	end
-end
-
---- Adds a parameter section, composed of a title and parameters, to a docstring
--- @param opts (table) Keys used to access option values in a style
--- @param style (table) Options to configure the language's docstring
--- @param params (table) A table of parameters to be inserted into the docstring
--- @param docs (table) The docstring base structure
-local function add_param_section(opts, style, params, title_underline_char, is_empty_line_under_title, section_insertion_pos, docs)
-	local title = style[opts.params_title.val]
-	local line_start = style[opts.struct.val][2]
-	add_section_title(title_underline_char, title, is_empty_line_under_title, line_start, section_insertion_pos, docs)
-	add_section_params(opts, style, params, section_insertion_pos, docs)
-end
-
-local function insert_return_ln(docs, r_ln, section_insertion_pos)
-	if type(r_ln) == "string" then
-		table.insert(docs, section_insertion_pos[1], r_ln)
-		section_insertion_pos[1] = section_insertion_pos[1] + 1
-	elseif type(r_ln) == "table" then
-		for _, value in pairs(r_ln) do
-			table.insert(docs, section_insertion_pos[1], value)
-			section_insertion_pos[1] = section_insertion_pos[1] + 1
-		end
-	end
-end
-
 local function get_single_return_ln(base_ln, r_data)
 	local r_kw, r_type_kw, wrapped_type = r_data[1], r_data[2], r_data[3]
 	local r_ln
@@ -163,8 +97,20 @@ local function get_return_ln(is_one_line, base_ln, r_data)
 	return r_ln
 end
 
-local function add_return_ln(opts, style, r_data, section_insertion_pos, docs)
+local function insert_return_ln(docs, r_ln)
+	if type(r_ln) == "string" then
+		table.insert(docs, r_ln)
+	elseif type(r_ln) == "table" then
+		for _, value in pairs(r_ln) do
+			table.insert(docs, value)
+		end
+	end
+end
+
+local function insert_return_ln_into_section(opts, style, r_data, section)
+	print("r_data")
 	local r_kw, r_type_kw, r_type = r_data[1], r_data[2], r_data[3]
+	print(r_type)
 	local is_type_in_docs = style[opts.is_return_type_in_docs.val]
 	local is_r_indented = style[opts.param_indent.val]
 	local is_one_ln = style[opts.is_return_one_ln.val]
@@ -181,13 +127,17 @@ local function add_return_ln(opts, style, r_data, section_insertion_pos, docs)
 	local updated_r_data = {r_kw, r_type_kw, wrapped_type}
 	local r_ln = get_return_ln(is_one_ln, base_ln, updated_r_data)
 
-	insert_return_ln(docs, r_ln, section_insertion_pos)
+	insert_return_ln(section, r_ln)
 end
 
-local function add_return_section(opts, style, r_type, title_underline_char, is_empty_line_under_title, section_insertion_pos, docs)
+local function get_return_section(opts, style, r_type)
+	local section = {}
+	local is_empty_line_under_title = style[opts.empty_ln_after_section_title.val]
+	local title_underline_char = style[opts.section_underline.val]
+
 	local title = style[opts.return_title.val]
 	local ln_start = style[opts.struct.val][2]
-	add_section_title(title_underline_char, title, is_empty_line_under_title, ln_start, section_insertion_pos, docs)
+	insert_title_into_section(title_underline_char, title, is_empty_line_under_title, ln_start, section)
 
 	local r_kw = style[opts.return_kw.val]
 	local r_type_kw = style[opts.return_type_kw.val]
@@ -196,33 +146,83 @@ local function add_return_section(opts, style, r_type, title_underline_char, is_
 	local is_return_line_present = r_kw ~= "" or r_type_kw ~= "" or (is_type_in_docs and r_type ~= "unknown")
 	if is_return_line_present then
 		local r_data = {r_kw, r_type_kw, r_type}
-		add_return_ln(opts, style, r_data, section_insertion_pos, docs)
+		insert_return_ln_into_section(opts, style, r_data, section)
+	end
+	return section
+end
+
+local function insert_params_into_section(opts, style, params, docs)
+	local line_start = style[opts.struct.val][2]
+	local base_line = (style[opts.param_indent.val]) and ("\t" .. line_start) or (line_start)
+	local type_goes_first = style[opts.type_goes_first.val]
+	local is_param_one_line = style[opts.is_param_one_ln.val]
+
+	for i = 1, #params do
+		local param = params[i]
+		local wrapped_info = get_wrapped_param_info(opts, style, param)
+		local final_info = get_arranged_param_info(opts, style, wrapped_info, type_goes_first, is_param_one_line)
+
+		if type(final_info) == "string" then
+			-- table.insert(docs, #docs, base_line .. final_info)
+			table.insert(docs, base_line .. final_info)
+		elseif type(final_info) == "table" then
+			for _, value in pairs(final_info) do
+				-- table.insert(docs, #docs, base_line .. value)
+				table.insert(docs, base_line .. value)
+			end
+		end
+		if style[opts.empty_ln_after_section_item.val] and i < #params then
+			table.insert(docs, base_line)
+		end
 	end
 end
 
-local function add_sections(opts, style, params, return_type, docs)
+--- Adds a parameter section, composed of a title and parameters, to a docstring
+-- @param opts (table) Keys used to access option values in a style
+-- @param style (table) Options to configure the language's docstring
+-- @param params (table) A table of parameters to be inserted into the docstring
+local function get_param_section(opts, style, params)
 	local is_empty_line_under_title = style[opts.empty_ln_after_section_title.val]
-	local is_empty_line_after_title = style[opts.empty_ln_after_title.val]
 	local title_underline_char = style[opts.section_underline.val]
+
+	local section = {}
+	local title = style[opts.params_title.val]
+	local line_start = style[opts.struct.val][2]
+	insert_title_into_section(title_underline_char, title, is_empty_line_under_title, line_start, section)
+	insert_params_into_section(opts, style, params, section)
+	return section
+end
+
+local function get_docs_with_sections(opts, style, sections, docs)
+	local is_empty_line_after_title = style[opts.empty_ln_after_title.val]
 	local line_start = style[opts.struct.val][2]
 
-	local section_insertion_pos = {style[opts.title_pos.val] + 1}
 	if is_empty_line_after_title then
-		table.insert(docs, section_insertion_pos[1], line_start)
-		section_insertion_pos[1] = section_insertion_pos[1] + 1
+		table.insert(docs, style[opts.title_pos.val], line_start)
 	end
-
-	add_param_section(opts, style, params, title_underline_char, is_empty_line_under_title, section_insertion_pos, docs)
-	if return_type ~= nil then
-		if style[opts.empty_ln_between_sections.val] then
-			table.insert(docs, section_insertion_pos[1], line_start)
-			section_insertion_pos[1] = section_insertion_pos[1] + 1
+	for i = 1, #sections do
+		for _, item in pairs(sections[i]) do
+			table.insert(docs, #docs, item)
 		end
-		add_return_section(opts, style, return_type, title_underline_char, is_empty_line_under_title, section_insertion_pos, docs)
+		if style[opts.empty_ln_between_sections.val] and i < #sections then
+			table.insert(docs, #docs, line_start)
+		end
 	end
-
 	if #style[opts.struct.val] == 2 then table.remove(docs, #docs) end
 	return docs
+end
+
+local function get_sections(opts, style, params, return_type)
+	local sections = {}
+	if #params > 0 then
+		local param_section = get_param_section(opts, style, params)
+		table.insert(sections, param_section)
+	end
+	if return_type ~= nil then
+		local return_section = get_return_section(opts, style, return_type)
+		table.insert(sections, return_section)
+	end
+	return sections
 end
 
 local function get_docs(opts, style, node, ts_utils, docs_struct)
@@ -231,9 +231,8 @@ local function get_docs(opts, style, node, ts_utils, docs_struct)
 	local func_data = func_parser.get_data(node, ts_utils, is_type_in_docs)
 	local params = func_data["params"]
 	local return_type = func_data["return_type"]
-
-
-	return add_sections(opts, style, params, return_type, docs_struct)
+	local sections = get_sections(opts, style, params, return_type)
+	return get_docs_with_sections(opts, style, sections, docs_struct)
 end
 
 return {
