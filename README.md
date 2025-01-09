@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/github/repo-size/jeangiraldoo/codedocs.nvim?style=for-the-badge&logo=files&logoColor=yellow&label=SIZE&labelColor=%232E3A59&color=%23A8D8A1" alt="Repository size in KB">
 </p>
 
-Codedocs.nvim automatically recognizes functions and methods in your code, creating structured documentation strings based on the programming language you are using (e.g., docstrings for Python, JSDoc for JavaScript, etc.).
+Codedocs.nvim automatically recognizes various language structures such as functions, classes, variables, and more, and inserts appropriate documentation strings based on the programming language you are using (e.g., docstrings for Python, JSDoc for JavaScript, etc.).
 
 You can easily modify the structure of the documentation strings to suit your specific needs, add support for new languages by defining their documentation formats, or just use codedocs as it is! :)
 
@@ -26,7 +26,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 
 ### Features
 
-- Automatic Recognition: Detects functions and methods in your codebase.
+- Automatic Recognition: Detects and documents the structure under the cursor using a keybind.
 - Multi-Language Support: Generates documentation strings for various programming languages.
 - Customizable Structures: Modify existing documentation formats or define new ones for additional languages.
 
