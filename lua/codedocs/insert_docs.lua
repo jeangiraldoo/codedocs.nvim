@@ -100,7 +100,7 @@ local function add_indent_to_docs(docs, indent_string, tabstop, direction)
 end
 
 local function get_line_indentation(line_content, tabstop)
-    local indentation = line_content:match("^[^%w]*")
+	local indentation = line_content:match("^%s*")
     return convert_tabs_to_spaces(indentation, tabstop)
 end
 
@@ -117,7 +117,8 @@ local function insert_docs(opts, style)
 	local indent_spaces = get_line_indentation(line_content, tabstop)
 	docs = add_indent_to_docs(docs, indent_spaces, tabstop, direction)
 	local insert_pos = (direction) and pos or pos + 1
-	vim.api.nvim_buf_set_text(0, insert_pos, 0, insert_pos, 0, {"", ""})
+
+	vim.api.nvim_buf_set_lines(0, insert_pos, insert_pos, false, {""})
 	vim.api.nvim_buf_set_text(0, insert_pos, 0, insert_pos, 0, docs)
 	move_cursor_to_title(pos, direction, docs_style[docs_opts.title_pos.val])
 end
