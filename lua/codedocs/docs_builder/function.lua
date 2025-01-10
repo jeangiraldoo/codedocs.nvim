@@ -33,30 +33,65 @@ local function get_wrapped_param_info(opts, style, param)
 	return {wrapped_name, wrapped_type}
 end
 
+local function get_inline_param_line(standalone_name, standalone_type, is_type_first)
+	local name_first = standalone_name .. " " .. standalone_type
+	local type_first = standalone_type .. " " .. standalone_name
+	return (is_type_first) and type_first or name_first
+end
+
+local function get_split_param_line(standalone_name, param_info, type_kw, is_type_first, is_type_below_name_first)
+	local p_name = param_info[1]
+	local p_type = param_info[2]
+	local type_with_name
+	if type_kw == "" and p_type == "" then
+		type_with_name = p_name
+	elseif type_kw ~= "" and p_type == "" then
+		type_with_name = type_kw .. " " .. p_name
+	elseif type_kw == "" and p_type ~= "" then
+		type_with_name = p_type .. " " .. p_name
+	else
+		type_with_name = type_kw .. " " .. p_name .. " " .. p_type
+	end
+	final_type = (is_type_below_name_first) and type_with_name or standalone_type
+	name_first = {standalone_name, final_type}
+	type_first = {final_type, standalone_name}
+
+	return (is_type_first) and type_first or name_first
+end
+
 --- Returns a parameter's data arranged either across a single line or 2
 -- @param wrapped_param (table) Contains the parameter's name and type ready to be arranged
 -- @param type_goes_first (boolean) Determines if the parameter's type goes before the name in the docstring
 -- @param param_inline (boolean) Determines if the parameter's name and type are arranged in 1 line or 2
 local function get_arranged_param_info(opts, style, wrapped_param, type_goes_first, param_inline)
-	local param_name = wrapped_param[1]
-	local param_type = wrapped_param[2]
-	local type_keyword = style[opts.param_type_kw.val]
+	local p_name = wrapped_param[1]
+	local p_type = wrapped_param[2]
+	local type_kw = style[opts.param_type_kw.val]
 	local is_type_below_name_first = style[opts.is_type_below_name_first.val]
 
-	local final_name = style[opts.param_kw.val] .. " " .. param_name
-	local final_type, name_first, type_first
+	local param_kw = style[opts.param_kw.val]
+	local standalone_name = (param_kw ~= "") and param_kw .. " " .. p_name or p_name
+	local standalone_type = (type_kw ~= "") and type_kw .. " " .. p_type or p_type
+
+	local line
 	if param_inline then
-		final_type = type_keyword .. " " .. param_type
-		name_first = final_name .. final_type
-		type_first = final_type .. final_name
+		line = get_inline_param_line(standalone_name, standalone_type, type_goes_first)
 	else
-		local standalone_type = type_keyword .. " " .. param_type
-		local type_with_name = type_keyword .. " " .. param_name .. " " .. param_type
-		final_type = (is_type_below_name_first) and type_with_name or standalone_type
-		name_first = {final_name, final_type}
-		type_first = {final_type, final_name}
+		line = get_split_param_line(standalone_name, wrapped_param, type_kw, type_goes_first, is_type_below_name_first)
 	end
-	return (type_goes_first) and type_first or name_first
+	
+	return line
+	-- local final_type, name_first, type_first
+	-- if param_inline then
+	-- 	name_first = standalone_name .. standalone_type
+	-- 	type_first = standalone_type .. standalone_name
+	-- else
+	-- 	local type_with_name = type_kw .. " " .. p_name .. " " .. p_type
+	-- 	final_type = (is_type_below_name_first) and type_with_name or standalone_type
+	-- 	name_first = {final_name, final_type}
+	-- 	type_first = {final_type, final_name}
+	-- end
+	-- return (type_goes_first) and type_first or name_first
 end
 
 local function get_single_return_ln(base_ln, r_data)
