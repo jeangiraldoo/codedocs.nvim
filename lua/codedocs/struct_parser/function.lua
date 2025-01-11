@@ -134,9 +134,10 @@ local function get_params_node(func_node, ts_utils)
 	end
 end
 
-local function get_data(node, ts_utils, is_type_in_docs)
+local function get_data(node, ts_utils, style, opts)
+	local include_type = style[opts.include_param_type.val]
 	local params_node = get_params_node(node, ts_utils)
-	local params = extract_params(params_node, ts_utils, is_type_in_docs)
+	local params = extract_params(params_node, ts_utils, include_type)
 	local return_type = get_return_type(node, ts_utils)
 	return {params = params, return_type = return_type}
 end

@@ -40,14 +40,16 @@ local function get_node_data(opts, style, ts_utils, node, struct_name)
 	local docs_opts = opts[struct_name]
 	local docs_copy = copy_docstring(docs_style[docs_opts.struct.val])
 
-	local docs_builder = require("codedocs.docs_builder.init")
+	local docs_builder = require("codedocs.docs_builder.init")[struct_name]
+	local struct_parser = require("codedocs.struct_parser.init")[struct_name]
 	local docs, pos
 
 	if struct_name == "generic" then
 		docs = docs_copy
 		pos = vim.api.nvim_win_get_cursor(0)[1] - 1
 	else
-		docs = docs_builder[struct_name].get_docs(docs_opts, docs_style, node, ts_utils, docs_copy)
+		local data = struct_parser.get_data(node, ts_utils, docs_style, docs_opts)
+		docs = docs_builder.get_docs(docs_opts, docs_style, data, docs_copy)
 		pos = node:range()
 	end
 	return docs_opts, docs_style, docs, pos, struct_name

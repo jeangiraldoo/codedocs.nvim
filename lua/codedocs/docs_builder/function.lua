@@ -262,12 +262,11 @@ local function get_sections(opts, style, params, return_type)
 	return sections
 end
 
-local function get_docs(opts, style, node, ts_utils, docs_struct)
-	local include_param_type = style[opts.include_param_type.val]
-	local func_parser = require("codedocs.struct_parser.function")
-	local func_data = func_parser.get_data(node, ts_utils, include_param_type)
-	local params = func_data["params"]
-	local return_type = func_data["return_type"]
+local function get_docs(opts, style, data, docs_struct)
+	-- local include_param_type = style[opts.include_param_type.val]
+	-- local func_parser = require("codedocs.struct_parser.function")
+	-- local func_data = func_parser.get_data(node, ts_utils, include_param_type)
+	local params, return_type = data["params"], data["return_type"]
 	local sections = get_sections(opts, style, params, return_type)
 	return get_docs_with_sections(opts, style, sections, docs_struct)
 end
