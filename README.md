@@ -21,6 +21,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Supported languages](#supported-languages)
+- [Roadmap](#roadmap)
 - [Codedocs under the hood](./lua/codedocs/README.md)
 - [Motivation](#motivation)
 - [License](#license)
@@ -400,6 +401,33 @@ fn add(param_1: i32, param_2: i32) -> i32 {
     a + b
 }
 ```
+
+### Roadmap
+
+This diagram outlines the features and improvements planned for the project at different stages. Please note that this roadmap is flexible and will be updated as the project evolves, reflecting its current state at any given time.
+
+```mermaid
+flowchart LR
+    0[Current stage] --> 1
+    1[Alpha
+    - General documentation
+    - Support for functions
+    - Support for classes
+    - Support for a generic style
+    - Full style customization]
+    2[Beta
+    - Support for documenting files/modules
+    - Support for documenting variables
+    - Unit tests]
+    3[Stable
+    - More unit tests
+    - Design a logo]
+    4[Beyond*
+    - Automatically updating docstrings when the structure they document changes, such as updating parameters when they are renamed or removed in a function declaration]
+    1 --> 2 --> 3 --> 4
+```
+
+*Beyond: Refers to all the features planned for Codedocs after the plugin reaches a stable and mature state. They will be appropriately split into stages when the moment comes.
 
 ### Motivation
 
