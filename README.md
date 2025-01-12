@@ -23,6 +23,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 - [Supported languages](#supported-languages)
 - [Roadmap](#roadmap)
 - [Codedocs under the hood](./lua/codedocs/README.md)
+- [Contributing](#contributing)
 - [Motivation](#motivation)
 - [License](#license)
 
@@ -428,6 +429,18 @@ flowchart LR
 ```
 
 *Beyond: Refers to all the features planned for Codedocs after the plugin reaches a stable and mature state. They will be appropriately split into stages when the moment comes.
+
+### Contributing
+
+Thank you for your interest in contributing to **Codedocs**! There are several ways you can help improve the project:
+
+- **Propose new features**: If you have an idea for a new feature, please open a discussion in the [Discussions section](https://github.com/jeangiraldoo/codedocs.nvim/discussions).
+- **Contribute to feature development**: You can help by working on features listed in the [Roadmap](#roadmap). For a deeper understanding of the codebase, check out the [documentation explaining how Codedocs works under the hood](./lua/codedocs/README.md).
+- **Report or fix bugs**: If you encounter a bug, you can report it by creating a new discussion or GitHub issue. If you're able to fix the bug yourself, your help in resolving it is greatly appreciated!
+- **Enhance the documentation**: If you spot any typos, outdated information, or areas where the documentation could be clearer, feel free to suggest improvements.
+
+Every contribution, no matter how big or small, is valuable and highly appreciated!
+
 
 ### Motivation
 
