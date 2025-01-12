@@ -21,6 +21,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Supported languages](#supported-languages)
+- [Codedocs under the hood](./lua/codedocs/README.md)
 - [Motivation](#motivation)
 - [License](#license)
 
