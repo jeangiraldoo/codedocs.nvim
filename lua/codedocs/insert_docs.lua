@@ -22,6 +22,14 @@ local function move_cursor_to_title(node_pos, direction, title_pos)
 	vim.api.nvim_input('<Right>')
 end
 
+local function is_node_a_class(node_type)
+	local identifiers = {
+		class_definition = true,
+		class_declaration = true
+	}
+	return (identifiers[node_type]) and true or false
+end
+
 local function is_node_a_function(node_type)
 	local identifiers = {
 		function_definition = true,
@@ -68,8 +76,11 @@ local function get_struct_data(opts, style, ts_utils, node_at_cursor)
 
   	-- Traverse upwards through parent nodes to find a function or method declaration
   	while node_at_cursor do
-    	if is_node_a_function(node_at_cursor:type()) then
+		local node_type = node_at_cursor:type()
+    	if is_node_a_function(node_type) then
       		return get_node_data(opts, style, ts_utils, node_at_cursor, "func")
+		elseif is_node_a_class(node_type) then
+			return get_node_data(opts, style, ts_utils, node_at_cursor, "class")
     	end
 
     -- If it's a module or another node, continue traversing upwards

@@ -1,6 +1,28 @@
 --- Here are all the available opts for all languages
 --- A setting is composed of 2 parts: Its value or name, and the data type it expects
 
+local class = {
+	struct = {val = "structure", type = "table"}, -- Base structure of a function docstring, with 2 or more parts
+	direction = {val = "direction", type = "boolean"}, -- True to place the docstring above, false for below
+	title_pos = {val = "title_pos", type = "number"}, -- Line offset of the title within the docstring, relative to its start
+	title_gap = {val = "title_gap", type = "boolean"}, -- Adds an empty line after the title if true, but only if there’s at least one section
+	section_gap = {val = "section_gap", type = "boolean"}, -- Adds a gap between sections if true and more than one section exists
+	section_underline = {val = "section_underline", type = "string"}, -- Character used to underline each letter in a section title
+	section_title_gap = {val = "section_title_gap", type = "boolean"}, -- Adds a gap after the title if true and there’s at least one item
+	item_gap = {val = "item_gap", type = "boolean"}, -- Adds a gap between items if true and there’s more than one item
+
+	attrs_title = {val = "attrs_title", type = "string"},
+	attr_inline = {val = "attrs_inline", type = "boolean"},
+	attr_indent = {val = "attrs_indent", type = "boolean"},
+	include_attr_type = {val = "include_attr_type", type = "boolean"},
+	attr_type_first = {val = "attr_type_first", type = "boolean"},
+	attr_kw = {val = "attr_kw", type = "string"},
+	attr_type_kw = {val = "attr_type_kw", type = "string"},
+	attr_name_wrapper = {val = "attr_name_wrapper", type = "table"},
+	attr_type_wrapper = {val = "attr_type_wrapper", type = "table"},
+	is_type_below_name_first = {val = "is_type_below_name_first", type = "boolean"},
+}
+
 local func = {
 		-- General settings used to configure the docstring structure as a whole
 		struct = {val = "structure", type = "table"}, -- Base structure of a function docstring, with 2 or more parts
@@ -41,5 +63,6 @@ local generic = {
 
 return {
 	func = func,
+	class = class,
 	generic = generic
 }
