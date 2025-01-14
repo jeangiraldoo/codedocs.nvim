@@ -121,7 +121,7 @@ local function insert_docs(opts, style)
 	local ts_utils = require'nvim-treesitter.ts_utils'
 	local node = ts_utils.get_node_at_cursor()
 	local docs_opts, docs_style, docs, pos, struct_name = get_struct_data(opts, style, ts_utils, node)
-	require("codedocs.style_validations").validate_style(docs_opts, docs_style, struct_name)
+	require("codedocs.styles.validations").validate_style(docs_opts, docs_style, struct_name)
 
 	local line_content = vim.api.nvim_buf_get_lines(0, pos, pos + 1, false)[1]
 
