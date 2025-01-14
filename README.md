@@ -112,13 +112,13 @@ Feel free to create your own custom styles if the options provided here don't me
 | Languages | Annonation styles | Supported automatic annotation |
 |----------|----------|----------|
 | Lua | [LDoc](#lua-ldoc) | `function (parameters, return)` |
-| Python | [Google](#google), [NumPy/SciPy](#numpy-scipy), [reST](#restructuredtext-rest) | `function (parameters, return)` |
-| JavaScript | [JSDoc](#javascript-jsdoc) | `function (parameters, return)` |
-| TypeScript | [TSDoc](#typescript-tsdoc) | `function (parameters, return)` |
+| Python | [Google](#google), [NumPy/SciPy](#numpy-scipy), [reST](#restructuredtext-rest) | `class (attributes)`, `function (parameters, return)` |
+| JavaScript | [JSDoc](#javascript-jsdoc) | `class (attributes)`, `function (parameters, return)` |
+| TypeScript | [TSDoc](#typescript-tsdoc) | `class (attributes)`, `function (parameters, return)` |
 | Ruby | [YARD](#ruby-yard) | `function (parameters, return)` |
 | PHP | [PHPDoc](#php-phpdoc) | `function (parameters, return)` |
-| Java | [JavaDoc](#java-javadoc) | `function (parameters, return)` |
-| Kotlin | [KDoc](#kotlin-kdoc) | `function (parameters, return)` |
+| Java | [JavaDoc](#java-javadoc) | `class (attributes)`, `function (parameters, return)`
+| Kotlin | [KDoc](#kotlin-kdoc) | `class (attributes)`, `function (parameters, return)` |
 | Rust | [RustDoc](#rust-kdoc) | `function (parameters, return)` |
 
 #### Styles per language:
