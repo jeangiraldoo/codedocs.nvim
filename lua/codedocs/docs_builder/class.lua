@@ -1,38 +1,6 @@
-local function insert_title_into_section(underline_char, title, gap, line_start, docs)
-	local final_title = line_start .. title
-	if title ~= "" then
-		table.insert(docs, final_title)
-	end
-
-	if underline_char ~= "" then
-		table.insert(docs, line_start .. string.rep(underline_char, #title))
-	end
-
-	if gap then
-		table.insert(docs, line_start .. "")
-	end
-end
-
-local function get_docs_with_sections(opts, style, sections, docs)
-	local title_gap = style[opts.title_gap.val]
-	local line_start = style[opts.struct.val][2]
-
-	if #sections > 0 and title_gap then
-		table.insert(docs, style[opts.title_pos.val], line_start)
-	end
-	for i = 1, #sections do
-		for _, item in pairs(sections[i]) do
-			table.insert(docs, #docs, item)
-		end
-		if style[opts.section_gap.val] and i < #sections then
-			table.insert(docs, #docs, line_start)
-		end
-	end
-	if #style[opts.struct.val] == 2 then
-		table.remove(docs, #docs)
-	end
-	return docs
-end
+local common_sections = require("codedocs.docs_builder.common.sections")
+local get_section = common_sections.get_section
+local get_docs_with_sections = common_sections.get_docs_with_sections
 
 local function get_wrapped_attr_info(opts, style, attr)
 	local name_wrapper = style[opts.attr_name_wrapper.val]
@@ -96,11 +64,12 @@ local function get_arranged_attr_info(opts, style, wrapped_attr, type_goes_first
 end
 
 
-local function insert_attrs_into_section(opts, style, attrs, docs)
+local function get_attr_items(opts, style, attrs)
 	local line_start = style[opts.struct.val][2]
 	local base_line = (style[opts.attr_indent.val]) and ("\t" .. line_start) or (line_start)
 	local type_first = style[opts.attr_type_first.val]
 	local attr_inline = style[opts.attr_inline.val]
+	local items = {}
 
 	for i = 1, #attrs do
 		local attr = attrs[i]
@@ -108,41 +77,24 @@ local function insert_attrs_into_section(opts, style, attrs, docs)
 		local final_info = get_arranged_attr_info(opts, style, wrapped_info, type_first, attr_inline)
 
 		if type(final_info) == "string" then
-			table.insert(docs, base_line .. final_info)
+			table.insert(items, base_line .. final_info)
 		elseif type(final_info) == "table" then
 			for _, value in pairs(final_info) do
-				table.insert(docs, base_line .. value)
+				table.insert(items, base_line .. value)
 			end
 		end
 		if style[opts.item_gap.val] and i < #attrs then
-			table.insert(docs, base_line)
+			table.insert(items, base_line)
 		end
 	end
-end
-
-
-local function get_attr_section(opts, style, attrs)
-	local title_gap = style[opts.section_title_gap.val]
-	local title_underline_char = style[opts.section_underline.val]
-	local section = {}
-	local title = style[opts.attrs_title.val]
-	local line_start = style[opts.struct.val][2]
-	insert_title_into_section(title_underline_char, title, title_gap, line_start, section)
-	insert_attrs_into_section(opts, style, attrs, section)
-	return section
-end
-
-local function get_sections(opts, style, attrs)
-	local sections = {}
-	if #attrs > 0 then
-		local attr_section = get_attr_section(opts, style, attrs)
-		table.insert(sections, attr_section)
-	end
-	return sections
+	return items
 end
 
 local function get_docs(opts, style, attrs, docs_struct)
-	local sections = get_sections(opts, style, attrs)
+	local attrs_title = style[opts.attrs_title.val]
+	local attr_items = get_attr_items(opts, style, attrs)
+	local attr_section = get_section(opts, style, attrs_title, attr_items)
+	local sections = {attr_section}
 	return get_docs_with_sections(opts, style, sections, docs_struct)
 end
 

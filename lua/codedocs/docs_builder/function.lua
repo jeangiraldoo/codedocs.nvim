@@ -1,17 +1,6 @@
-local function insert_title_into_section(underline_char, title, gap, line_start, docs)
-	local final_title = line_start .. title
-	if title ~= "" then
-		table.insert(docs, final_title)
-	end
-
-	if underline_char ~= "" then
-		table.insert(docs, line_start .. string.rep(underline_char, #title))
-	end
-
-	if gap then
-		table.insert(docs, line_start .. "")
-	end
-end
+local common_sections = require("codedocs.docs_builder.common.sections")
+local get_section = common_sections.get_section
+local get_docs_with_sections = common_sections.get_docs_with_sections
 
 --- Wraps the parameter's name and type
 -- @param opts (table) Keys used to access option values in a style
@@ -163,15 +152,8 @@ local function insert_return_ln_into_section(opts, style, r_data, section)
 	insert_return_ln(section, r_ln)
 end
 
-local function get_return_section(opts, style, r_type)
-	local section = {}
-	local title_gap = style[opts.section_title_gap.val]
-	local title_underline_char = style[opts.section_underline.val]
-
-	local title = style[opts.return_title.val]
-	local ln_start = style[opts.struct.val][2]
-	insert_title_into_section(title_underline_char, title, title_gap, ln_start, section)
-
+local function get_return_items(opts, style, r_type)
+	local items = {}
 	local r_kw = style[opts.return_kw.val]
 	local r_type_kw = style[opts.return_type_kw.val]
 	local include_type = style[opts.include_return_type.val]
@@ -179,18 +161,19 @@ local function get_return_section(opts, style, r_type)
 	local is_return_line_present = r_kw ~= "" or r_type_kw ~= "" or (include_type and r_type ~= "unknown")
 	if is_return_line_present then
 		local r_data = {r_kw, r_type_kw, r_type}
-		insert_return_ln_into_section(opts, style, r_data, section)
+		insert_return_ln_into_section(opts, style, r_data, items)
 	else
-		table.insert(section, ln_start)
+		table.insert(items, ln_start)
 	end
-	return section
+	return items
 end
 
-local function insert_params_into_section(opts, style, params, docs)
+local function get_param_items(opts, style, params)
 	local line_start = style[opts.struct.val][2]
 	local base_line = (style[opts.param_indent.val]) and ("\t" .. line_start) or (line_start)
 	local type_first = style[opts.param_type_first.val]
 	local param_inline = style[opts.param_inline.val]
+	local items = {}
 
 	for i = 1, #params do
 		local param = params[i]
@@ -199,75 +182,31 @@ local function insert_params_into_section(opts, style, params, docs)
 
 		if type(final_info) == "string" then
 			-- table.insert(docs, #docs, base_line .. final_info)
-			table.insert(docs, base_line .. final_info)
+			table.insert(items, base_line .. final_info)
 		elseif type(final_info) == "table" then
 			for _, value in pairs(final_info) do
 				-- table.insert(docs, #docs, base_line .. value)
-				table.insert(docs, base_line .. value)
+				table.insert(items, base_line .. value)
 			end
 		end
 		if style[opts.item_gap.val] and i < #params then
-			table.insert(docs, base_line)
+			table.insert(items, base_line)
 		end
 	end
-end
-
---- Adds a parameter section, composed of a title and parameters, to a docstring
--- @param opts (table) Keys used to access option values in a style
--- @param style (table) Options to configure the language's docstring
--- @param params (table) A table of parameters to be inserted into the docstring
-local function get_param_section(opts, style, params)
-	local title_gap = style[opts.section_title_gap.val]
-	local title_underline_char = style[opts.section_underline.val]
-
-	local section = {}
-	local title = style[opts.params_title.val]
-	local line_start = style[opts.struct.val][2]
-	insert_title_into_section(title_underline_char, title, title_gap, line_start, section)
-	insert_params_into_section(opts, style, params, section)
-	return section
-end
-
-local function get_docs_with_sections(opts, style, sections, docs)
-	local title_gap = style[opts.title_gap.val]
-	local line_start = style[opts.struct.val][2]
-
-	if #sections > 0 and title_gap then
-		table.insert(docs, style[opts.title_pos.val], line_start)
-	end
-	for i = 1, #sections do
-		for _, item in pairs(sections[i]) do
-			table.insert(docs, #docs, item)
-		end
-		if style[opts.section_gap.val] and i < #sections then
-			table.insert(docs, #docs, line_start)
-		end
-	end
-	if #style[opts.struct.val] == 2 then
-		table.remove(docs, #docs)
-	end
-	return docs
-end
-
-local function get_sections(opts, style, params, return_type)
-	local sections = {}
-	if #params > 0 then
-		local param_section = get_param_section(opts, style, params)
-		table.insert(sections, param_section)
-	end
-	if return_type ~= nil then
-		local return_section = get_return_section(opts, style, return_type)
-		table.insert(sections, return_section)
-	end
-	return sections
+	return items
 end
 
 local function get_docs(opts, style, data, docs_struct)
-	-- local include_param_type = style[opts.include_param_type.val]
-	-- local func_parser = require("codedocs.struct_parser.function")
-	-- local func_data = func_parser.get_data(node, ts_utils, include_param_type)
 	local params, return_type = data["params"], data["return_type"]
-	local sections = get_sections(opts, style, params, return_type)
+	local param_items = get_param_items(opts, style, params)
+	local param_title = style[opts.params_title.val]
+	local param_section = get_section(opts, style, param_title, param_items)
+
+	local return_items = get_return_items(opts, style, return_type)
+	local return_title = style[opts.return_title.val]
+	local return_section = get_section(opts, style, return_title, return_items)
+	local sections = {param_section, return_section, nil}
+	print(vim.inspect(sections))
 	return get_docs_with_sections(opts, style, sections, docs_struct)
 end
 
