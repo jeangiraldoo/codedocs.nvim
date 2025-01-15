@@ -1,60 +1,78 @@
 local opts = require("codedocs.styles.opts")
+local general = opts.general
+local item = opts.item
 
 return {
 	JavaDoc = {
 		class = {
-			[opts.func.struct.val] = {"/**", " * ", " */"},
-			[opts.func.direction.val] = true,
-			[opts.func.title_pos.val] = 2,
-			[opts.func.title_gap.val] = true,
-			[opts.func.section_gap.val] = false,
-			[opts.func.section_underline.val] = "",
-			[opts.func.section_title_gap.val] = false,
-			[opts.func.item_gap.val] = false,
-
-			[opts.class.attrs_title.val] = "",
-			[opts.class.attr_inline.val] = true,
-			[opts.class.attr_indent.val] = false,
-			[opts.class.include_attr_type.val] = false,
-			[opts.class.attr_type_first.val] = false,
-			[opts.class.attr_kw.val] = "@param",
-			[opts.class.attr_type_kw.val] = "",
-			[opts.class.attr_name_wrapper.val] = {"", ""},
-			[opts.class.attr_type_wrapper.val] = {"", ""},
-			[opts.class.is_type_below_name_first.val] = false,
+			general = {
+				[general.struct.val] = {"/**", " * ", " */"},
+				[general.direction.val] = true,
+				[general.title_pos.val] = 2,
+				[general.title_gap.val] = true,
+				[general.section_gap.val] = false,
+				[general.section_underline.val] = "",
+				[general.section_title_gap.val] = false,
+				[general.item_gap.val] = false,
+				[general.section_order.val] = {"attrs"}
+			},
+			attrs = {
+				[item.title.val] = "",
+				[item.inline.val] = true,
+				[item.indent.val] = false,
+				[item.include_type.val] = false,
+				[item.type_first.val] = false,
+				[item.kw.val] = "@param",
+				[item.type_kw.val] = "",
+				[item.name_wrapper.val] = {"", ""},
+				[item.type_wrapper.val] = {"", ""},
+				[item.is_type_below_name_first.val] = false,
+			}
 		},
 		func = {
-			[opts.func.struct.val] = {"/**", " * ", " */"},
-			[opts.func.direction.val] = true,
-			[opts.func.title_pos.val] = 2,
-			[opts.func.title_gap.val] = true,
-			[opts.func.section_gap.val] = false,
-			[opts.func.section_underline.val] = "",
-			[opts.func.section_title_gap.val] = false,
-			[opts.func.item_gap.val] = false,
+			general = {
+				[general.struct.val] = {"/**", " * ", " */"},
+				[general.direction.val] = true,
+				[general.title_pos.val] = 2,
+				[general.title_gap.val] = true,
+				[general.section_gap.val] = false,
+				[general.section_underline.val] = "",
+				[general.section_title_gap.val] = false,
+				[general.item_gap.val] = false,
+				[general.section_order.val] = {"params", "return_type"}
+			},
+			params = {
+				[item.title.val] = "",
+				[item.inline.val] = true,
+				[item.indent.val] = false,
+				[item.include_type.val] = false,
+				[item.type_first.val] = false,
+				[item.kw.val] = "@param",
+				[item.type_kw.val] = "",
+				[item.name_wrapper.val] = {"", ""},
+				[item.type_wrapper.val] = {"", ""},
+				[item.is_type_below_name_first.val] = false,
+			},
+			return_type = {
+				[item.title.val] = "",
+				[item.inline.val] = true,
+				[item.indent.val] = false,
+				[item.include_type.val] = false,
+				[item.type_first.val] = false,
+				[item.kw.val] = "@return",
+				[item.type_kw.val] = "",
+				[item.name_wrapper.val] = {"", ""},
+				[item.type_wrapper.val] = {"", ""},
+				[item.is_type_below_name_first.val] = false,
 
-			[opts.func.params_title.val] = "",
-			[opts.func.param_inline.val] = true,
-			[opts.func.param_indent.val] = false,
-			[opts.func.include_param_type.val] = false,
-			[opts.func.param_type_first.val] = false,
-			[opts.func.param_kw.val] = "@param",
-			[opts.func.param_type_kw.val] = "",
-			[opts.func.param_name_wrapper.val] = {"", ""},
-			[opts.func.param_type_wrapper.val] = {"", ""},
-			[opts.func.is_type_below_name_first.val] = false,
-
-			[opts.func.return_title.val] = "",
-			[opts.func.return_inline.val] = true,
-			[opts.func.include_return_type.val] = false,
-			[opts.func.return_kw.val] = "@return",
-			[opts.func.return_type_kw.val] = "",
-			[opts.func.return_type_wrapper.val] = {"", ""}
+			}
 		},
 		generic = {
-			[opts.func.struct.val] = {"// "},
-			[opts.func.title_pos.val] = 1,
-			[opts.generic.direction.val] = true
+			general = {
+				[general.struct.val] = {"// "},
+				[general.title_pos.val] = 1,
+				[general.direction.val] = true
+			}
 		}
 	}
 

@@ -83,13 +83,13 @@ local function get_attrs(class_attrs)
 end
 
 local function get_data(node, ts_utils, style, opts)
-	local include_type = style[opts.include_attr_type.val]
+	local include_type = style.general[opts.item.include_type.val]
 	local class_attrs = get_class_attrs(node, ts_utils, include_type)
 	local attrs = {}
 	if class_attrs ~= nil then
 		attrs = get_attrs(class_attrs)
 	end
-	return attrs
+	return {attrs = attrs}
 end
 
 return {

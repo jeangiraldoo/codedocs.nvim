@@ -45,22 +45,21 @@ end
 
 local function get_node_data(opts, style, ts_utils, node, struct_name)
 	local docs_style = style[struct_name]
-	local docs_opts = opts[struct_name]
-	local docs_copy = copy_docstring(docs_style[docs_opts.struct.val])
-
-	local docs_builder = require("codedocs.docs_builder.init")[struct_name]
+	local docs_builder = require("codedocs.builder")
 	local struct_parser = require("codedocs.struct_parser.init")[struct_name]
+
+	local docs_copy = copy_docstring(docs_style.general[opts.general.struct.val])
 	local docs, pos
 
 	if struct_name == "generic" then
 		docs = docs_copy
 		pos = vim.api.nvim_win_get_cursor(0)[1] - 1
 	else
-		local data = struct_parser.get_data(node, ts_utils, docs_style, docs_opts)
-		docs = docs_builder.get_docs(docs_opts, docs_style, data, docs_copy)
+		local data = struct_parser.get_data(node, ts_utils, docs_style, opts)
+		docs = docs_builder.get_docs(opts, docs_style, data, docs_copy)
 		pos = node:range()
 	end
-	return docs_opts, docs_style, docs, pos, struct_name
+	return opts, docs_style, docs, pos, struct_name
 end
 
 --- Traverses upwards through parent nodes to find a node of a supported type
@@ -121,11 +120,11 @@ local function insert_docs(opts, style)
 	local ts_utils = require'nvim-treesitter.ts_utils'
 	local node = ts_utils.get_node_at_cursor()
 	local docs_opts, docs_style, docs, pos, struct_name = get_struct_data(opts, style, ts_utils, node)
-	require("codedocs.styles.validations").validate_style(docs_opts, docs_style, struct_name)
+	-- require("codedocs.styles.validations").validate_style(docs_opts, docs_style, struct_name)
 
 	local line_content = vim.api.nvim_buf_get_lines(0, pos, pos + 1, false)[1]
 
-	local direction = docs_style[docs_opts.direction.val]
+	local direction = docs_style.general[docs_opts.general.direction.val]
     local tabstop = vim.api.nvim_buf_get_option(0, "tabstop")
 	local indent_spaces = get_line_indentation(line_content, tabstop)
 	docs = add_indent_to_docs(docs, indent_spaces, tabstop, direction)
@@ -133,7 +132,7 @@ local function insert_docs(opts, style)
 
 	vim.api.nvim_buf_set_lines(0, insert_pos, insert_pos, false, {""})
 	vim.api.nvim_buf_set_text(0, insert_pos, 0, insert_pos, 0, docs)
-	move_cursor_to_title(pos, direction, docs_style[docs_opts.title_pos.val])
+	move_cursor_to_title(pos, direction, docs_style.general[docs_opts.general.title_pos.val])
 end
 
 --- Inserts a docstring for the function under the cursor

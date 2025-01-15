@@ -53,11 +53,17 @@ local function get_sig_return_type(func_sections)
 end
 
 local function get_return_type(node, ts_utils)
+	local return_type = {}
 	local func_sections = ts_utils.get_named_children(node)
-	local return_type = get_sig_return_type(func_sections)
-	if not return_type then
-		return_type = get_block_return_type(ts_utils, func_sections)
+	local detected_type = get_sig_return_type(func_sections)
+	if not detected_type then
+		detected_type = get_block_return_type(ts_utils, func_sections)
 	end
+	if not detected_type then
+		return return_type
+	end
+
+	table.insert(return_type, {type = detected_type})
 	return return_type
 end
 
@@ -135,7 +141,7 @@ local function get_params_node(func_node, ts_utils)
 end
 
 local function get_data(node, ts_utils, style, opts)
-	local include_type = style[opts.include_param_type.val]
+	local include_type = style.params[opts.item.include_type.val]
 	local params_node = get_params_node(node, ts_utils)
 	local params = extract_params(params_node, ts_utils, include_type)
 	local return_type = get_return_type(node, ts_utils)
