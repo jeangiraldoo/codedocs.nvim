@@ -46,7 +46,7 @@ end
 local function get_node_data(opts, style, ts_utils, node, struct_name)
 	local docs_style = style[struct_name]
 	local docs_builder = require("codedocs.builder")
-	local struct_parser = require("codedocs.struct_parser.init")[struct_name]
+	local struct_parser = require("codedocs.node_parser.parser")
 
 	local docs_copy = copy_docstring(docs_style.general[opts.general.struct.val])
 	local docs, pos
@@ -55,7 +55,7 @@ local function get_node_data(opts, style, ts_utils, node, struct_name)
 		docs = docs_copy
 		pos = vim.api.nvim_win_get_cursor(0)[1] - 1
 	else
-		local data = struct_parser.get_data(node, ts_utils, docs_style, opts)
+		local data = struct_parser.get_data(node, docs_style, opts, struct_name)
 		docs = docs_builder.get_docs(opts, docs_style, data, docs_copy)
 		pos = node:range()
 	end

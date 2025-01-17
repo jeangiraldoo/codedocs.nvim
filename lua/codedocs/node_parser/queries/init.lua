@@ -1,5 +1,5 @@
 local function get_query(lang)
-	return require("codedocs.struct_parser.queries." .. lang)
+	return require("codedocs.node_parser.queries." .. lang)
 end
 
 return {
@@ -10,5 +10,6 @@ return {
 	kotlin = get_query("kotlin"),
 	php = get_query("php"),
 	ruby = get_query("ruby"),
-	lua = get_query("lua")
+	lua = get_query("lua"),
+	rust = get_query("rust")
 }
