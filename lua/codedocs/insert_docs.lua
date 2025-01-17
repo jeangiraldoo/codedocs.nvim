@@ -22,73 +22,6 @@ local function move_cursor_to_title(node_pos, direction, title_pos)
 	vim.api.nvim_input('<Right>')
 end
 
-local function is_node_a_class(node_type)
-	local identifiers = {
-		class_definition = true,
-		class_declaration = true
-	}
-	return (identifiers[node_type]) and true or false
-end
-
-local function is_node_a_function(node_type)
-	local identifiers = {
-		function_definition = true,
-		method_definition = true,
-		function_declaration = true,
-		method_declaration = true,
-		method = true,
-		function_item = true
-	}
-
-	return (identifiers[node_type]) and true or false
-end
-
-local function get_node_data(opts, style, ts_utils, node, struct_name)
-	local docs_style = style[struct_name]
-	local docs_builder = require("codedocs.builder")
-	local struct_parser = require("codedocs.node_parser.parser")
-
-	local docs_copy = copy_docstring(docs_style.general[opts.general.struct.val])
-	local docs, pos
-
-	if struct_name == "generic" then
-		docs = docs_copy
-		pos = vim.api.nvim_win_get_cursor(0)[1] - 1
-	else
-		local data = struct_parser.get_data(node, docs_style, opts, struct_name)
-		docs = docs_builder.get_docs(opts, docs_style, data, docs_copy)
-		pos = node:range()
-	end
-	return opts, docs_style, docs, pos, struct_name
-end
-
---- Traverses upwards through parent nodes to find a node of a supported type
--- @param node_at_cursor Node found at the cursor's position
-local function get_struct_data(opts, style, ts_utils, node_at_cursor)
-	if node_at_cursor == nil then
-		return get_node_data(opts, style, ts_utils, node_at_cursor, "generic")
-	end
-
-	if is_node_a_function(node_at_cursor:type()) then
-		return get_node_data(opts, style, ts_utils, node_at_cursor, "func")
-  	end
-
-  	-- Traverse upwards through parent nodes to find a function or method declaration
-  	while node_at_cursor do
-		local node_type = node_at_cursor:type()
-    	if is_node_a_function(node_type) then
-      		return get_node_data(opts, style, ts_utils, node_at_cursor, "func")
-		elseif is_node_a_class(node_type) then
-			return get_node_data(opts, style, ts_utils, node_at_cursor, "class")
-    	end
-
-    -- If it's a module or another node, continue traversing upwards
-    	node_at_cursor = node_at_cursor:parent()
-  	end
-
-  	return get_node_data(opts, style, ts_utils, node_at_cursor, "generic")
-end
-
 -- Function to convert tabs to spaces based on the tabstop value
 local function convert_tabs_to_spaces(indentation, tabstop)
     return indentation:gsub("\t", string.rep(" ", tabstop))
@@ -117,14 +50,21 @@ local function get_line_indentation(line_content, tabstop)
 end
 
 local function insert_docs(opts, style)
-	local ts_utils = require'nvim-treesitter.ts_utils'
-	local node = ts_utils.get_node_at_cursor()
-	local docs_opts, docs_style, docs, pos, struct_name = get_struct_data(opts, style, ts_utils, node)
-	-- require("codedocs.styles.validations").validate_style(docs_opts, docs_style, struct_name)
+	local filetype = vim.bo.filetype
+	local builder = require("codedocs.builder").get_docs
+	local parser = require("codedocs.node_parser.parser")
+
+	local struct_name, node = parser.get_node_type(filetype)
+	local docs_style = style[struct_name]
+	local sections = docs_style.general.section_order
+	local include_type = docs_style.general[opts.item.include_type.val]
+	local pos, data = parser.get_data(filetype, node, sections, struct_name, include_type)
+	local docs_copy = copy_docstring(docs_style.general[opts.general.struct.val])
+	local docs = (struct_name == "generic") and docs_copy or builder(opts, docs_style, data, docs_copy)
 
 	local line_content = vim.api.nvim_buf_get_lines(0, pos, pos + 1, false)[1]
 
-	local direction = docs_style.general[docs_opts.general.direction.val]
+	local direction = docs_style.general[opts.general.direction.val]
     local tabstop = vim.api.nvim_buf_get_option(0, "tabstop")
 	local indent_spaces = get_line_indentation(line_content, tabstop)
 	docs = add_indent_to_docs(docs, indent_spaces, tabstop, direction)
@@ -132,7 +72,7 @@ local function insert_docs(opts, style)
 
 	vim.api.nvim_buf_set_lines(0, insert_pos, insert_pos, false, {""})
 	vim.api.nvim_buf_set_text(0, insert_pos, 0, insert_pos, 0, docs)
-	move_cursor_to_title(pos, direction, docs_style.general[docs_opts.general.title_pos.val])
+	move_cursor_to_title(pos, direction, docs_style.general[opts.general.title_pos.val])
 end
 
 --- Inserts a docstring for the function under the cursor

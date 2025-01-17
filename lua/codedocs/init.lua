@@ -25,11 +25,11 @@ function M.setup(config)
 end
 
 function M.insert_docs()
-	if not pcall(require, "nvim-treesitter.configs") then
-  		vim.notify("Treesitter is not installed. Please install it.", vim.log.levels.ERROR)
-  		return
-	end
-	local parsers = require "nvim-treesitter.parsers"
+	-- if not pcall(require, "nvim-treesitter.configs") then
+	--  		vim.notify("Treesitter is not installed. Please install it.", vim.log.levels.ERROR)
+	--  		return
+	-- end
+	-- local parsers = require "nvim-treesitter.parsers"
 	local lang = vim.api.nvim_buf_get_option(0, "filetype")
 
 	local default_lang_style = M.config.default_styles[lang]
@@ -37,10 +37,10 @@ function M.insert_docs()
 	if not default_lang_style or not lang_styles then
 		error("There is no language called " .. lang .. " available in Codedocs")
 	end
-	if not parsers.has_parser(lang) then
-    	vim.notify("The treesitter parser for " .. lang .. " is not installed")
-    	return true
-	end
+	-- if not parsers.has_parser(lang) then
+	--    	vim.notify("The treesitter parser for " .. lang .. " is not installed")
+	--    	return true
+	-- end
 	local lang_style = lang_styles[default_lang_style]
 	insert_docs.start(M.config.opts, lang_style, lang)
 end

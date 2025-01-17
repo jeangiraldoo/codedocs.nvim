@@ -1,3 +1,17 @@
+local function validate_treesitter(lang)
+	if not pcall(require, "nvim-treesitter.configs") then
+  		vim.notify("Treesitter is not installed. Please install it.", vim.log.levels.ERROR)
+		return false
+	end
+	local parsers = require "nvim-treesitter.parsers"
+
+	if not parsers.has_parser(lang) then
+    	vim.notify("The treesitter parser for " .. lang .. " is not installed", vim.log.levels.ERROR)
+		return false
+	end
+	return true
+end
+
 local function parse_node_with_identifier_first(node, include_type, filetype, query, identifier_pos)
 	local first_capture_name = (identifier_pos) and "item_name" or "item_type"
 	local first_key_name = (identifier_pos) and "name" or "type"
@@ -54,13 +68,74 @@ local function get_node_data(node, struct_name, sections, filetype, include_type
 	return data
 end
 
-local function get_data(node, style, opts, struct_name)
-	local filetype = vim.bo.filetype
-	local sections = style.general.section_order
-	local include_type = style.general[opts.item.include_type.val]
-	return get_node_data(node, struct_name, style.general.section_order, filetype, include_type)
+local function is_node_a_class(node_type)
+	local identifiers = {
+		class_definition = true,
+		class_declaration = true
+	}
+	return (identifiers[node_type]) and true or false
+end
+
+local function is_node_a_function(node_type)
+	local identifiers = {
+		function_definition = true,
+		method_definition = true,
+		function_declaration = true,
+		method_declaration = true,
+		method = true,
+		function_item = true
+	}
+
+	return (identifiers[node_type]) and true or false
+end
+
+--- Traverses upwards through parent nodes to find a node of a supported type
+-- @param node_at_cursor Node found at the cursor's position
+local function get_struct_node_data(node_at_cursor)
+	if node_at_cursor == nil then
+		return "generic", node_at_cursor
+	end
+
+	if is_node_a_function(node_at_cursor:type()) then
+		return "func", node_at_cursor
+  	end
+
+  	-- Traverse upwards through parent nodes to find a function or method declaration
+  	while node_at_cursor do
+		local node_type = node_at_cursor:type()
+    	if is_node_a_function(node_type) then
+      		return "func", node_at_cursor
+		elseif is_node_a_class(node_type) then
+			return "class", node_at_cursor
+    	end
+
+    -- If it's a module or another node, continue traversing upwards
+    	node_at_cursor = node_at_cursor:parent()
+  	end
+
+  	return "generic", node_at_cursor
+end
+
+local function get_data(filetype, node, sections, struct_name, include_type)
+	local pos = vim.api.nvim_win_get_cursor(0)[1] - 1
+	if struct_name == "generic" then
+		return pos, {}
+	else
+		return node:range(), get_node_data(node, struct_name, sections, filetype, include_type)
+	end
+end
+
+local function get_node_type(filetype)
+	if not validate_treesitter(filetype) then
+		return "generic", nil
+	else
+		local node = require("nvim-treesitter.ts_utils").get_node_at_cursor()
+		return get_struct_node_data(node)
+	end
+
 end
 
 return {
-	get_data = get_data
+	get_data = get_data,
+	get_node_type = get_node_type
 }
