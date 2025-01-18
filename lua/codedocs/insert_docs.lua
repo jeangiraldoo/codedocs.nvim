@@ -10,13 +10,11 @@ local function copy_docstring(docs_struct)
 	return copied_docs_struct
 end
 
---- Moves the cursor to the docstring title and enters insert mode for immediate typing
--- @param doc_len (number) Number of lines in the inserted docstring
--- @param direction (boolean) Direction of the docstring insertion. True for above, false for below
--- @param title_pos (number) Line offset of the title within the docstring structure
-local function move_cursor_to_title(node_pos, direction, title_pos)
+local function move_cursor_to_title(docs_data)
+	local node_pos = docs_data.pos
+	local title_pos = docs_data.title_pos
 	local line_length = #vim.api.nvim_buf_get_lines(0, node_pos, node_pos + 1, false)[1]
-	local new_pos = (direction) and (node_pos + title_pos) or (node_pos + title_pos + 1)
+	local new_pos = (docs_data.direction) and (node_pos + title_pos) or (node_pos + title_pos + 1)
 	vim.api.nvim_win_set_cursor(0, {new_pos, line_length})
 	vim.cmd('startinsert')
 	vim.api.nvim_input('<Right>')
@@ -49,30 +47,46 @@ local function get_line_indentation(line_content, tabstop)
     return convert_tabs_to_spaces(indentation, tabstop)
 end
 
-local function insert_docs(opts, style)
-	local filetype = vim.bo.filetype
+local function get_docs(opts, style)
 	local builder = require("codedocs.builder").get_docs
 	local parser = require("codedocs.node_parser.parser")
+	local lang = vim.bo.filetype
 
-	local struct_name, node = parser.get_node_type(filetype)
+	local struct_name, node = parser.get_node_type(lang)
 	local docs_style = style[struct_name]
-	local sections = docs_style.general.section_order
-	local include_type = docs_style.general[opts.item.include_type.val]
-	local pos, data = parser.get_data(filetype, node, sections, struct_name, include_type)
-	local docs_copy = copy_docstring(docs_style.general[opts.general.struct.val])
-	local docs = (struct_name == "generic") and docs_copy or builder(opts, docs_style, data, docs_copy)
+	local general_style = docs_style.general
+	local sections = general_style.section_order
+	local include_type = general_style[opts.item.include_type.val]
+	local pos, data = parser.get_data(lang, node, sections, struct_name, include_type)
+	local docs_copy = copy_docstring(general_style[opts.general.struct.val])
 
+	local docs = (struct_name == "generic") and docs_copy or builder(opts, docs_style, data, docs_copy)
+	local docs_data = {
+		pos = pos,
+		direction = general_style[opts.general.direction.val],
+		title_pos = general_style[opts.general.title_pos.val]
+	}
+	return docs, docs_data
+end
+
+local function write_to_buffer(docs, docs_data)
+	local direction = docs_data.direction
+	local pos = docs_data.pos
 	local line_content = vim.api.nvim_buf_get_lines(0, pos, pos + 1, false)[1]
 
-	local direction = docs_style.general[opts.general.direction.val]
     local tabstop = vim.api.nvim_buf_get_option(0, "tabstop")
 	local indent_spaces = get_line_indentation(line_content, tabstop)
-	docs = add_indent_to_docs(docs, indent_spaces, tabstop, direction)
+	local indented_docs = add_indent_to_docs(docs, indent_spaces, tabstop, direction)
 	local insert_pos = (direction) and pos or pos + 1
 
 	vim.api.nvim_buf_set_lines(0, insert_pos, insert_pos, false, {""})
-	vim.api.nvim_buf_set_text(0, insert_pos, 0, insert_pos, 0, docs)
-	move_cursor_to_title(pos, direction, docs_style.general[opts.general.title_pos.val])
+	vim.api.nvim_buf_set_text(0, insert_pos, 0, insert_pos, 0, indented_docs)
+end
+
+local function setup_docs(opts, style)
+	local docs, docs_data = get_docs(opts, style)
+	write_to_buffer(docs, docs_data)
+	move_cursor_to_title(docs_data)
 end
 
 --- Inserts a docstring for the function under the cursor
@@ -81,7 +95,7 @@ end
 -- @param filetype (string) The name of the programming language used in the current file
 local function start(opts, style, filetype)
 	if style then
-		insert_docs(opts, style)
+		setup_docs(opts, style)
 	else
 		print("There are no defined documentation strings for " .. filetype .. " files")
 	end
