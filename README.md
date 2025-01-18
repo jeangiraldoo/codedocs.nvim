@@ -135,10 +135,10 @@ Keep in mind that the information displayed in the docstring may vary depending 
 
 ```lua
 --- <title goes here>
--- @param param_1
--- @param param_2
+-- @param a
+-- @param b
 -- @return
-local function cool_function(param_1, param_2)
+local function cool_function(a, b)
     <code goes here>
     return <value>
 end
@@ -151,11 +151,11 @@ end
 /*
  * <title goes here>
  *
- * @param {} param_1
- * @param {} param_2
+ * @param {} a
+ * @param {} b
  * @returns
  */
-function cool_function(param_1, param_2){
+function cool_function(a, b){
     <code goes here>
     return <value>
 }
@@ -168,11 +168,11 @@ function cool_function(param_1, param_2){
 /*
  * <title goes here>
  *
- * @param param_1 -
- * @param param_2 -
+ * @param a -
+ * @param b -
  * @returns
  */
-function cool_function(param_1: number, param_2: string): number{
+function cool_function(a: number, b: string): number{
     <code goes here>
     return <value>
 }
@@ -185,26 +185,26 @@ function cool_function(param_1: number, param_2: string): number{
 [Official Google documentation for Python](https://google.github.io/styleguide/pyguide.html#38-Comments-and-Documentation)
 
 ```python
-def cool_function_with_type_hints(param_1: int, param_2: bool) -> str:
+def cool_function_with_type_hints(a: int, b: bool) -> str:
     """
         <title goes here>
 
         Args:
-            param_1 (int):
-            param_2 (bool):
+            a (int):
+            b (bool):
         Returns:
             str:
     """
     <code goes here>
     return <value>
 
-def cool_function_without_type_hints(param_1, param_2):
+def cool_function_without_type_hints(a, b):
     """
         <title goes here>
 
         Args:
-            param_1 ():
-            param_2 ():
+            a ():
+            b ():
         Returns:
     """
     <code goes here>
@@ -216,14 +216,14 @@ def cool_function_without_type_hints(param_1, param_2):
 [Official Numpy documentation for Python](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard)
 
 ```python
-def cool_function_with_type_hints(param_1: list, param_2: str) -> bool:
+def cool_function_with_type_hints(a: list, b: str) -> bool:
     """
         <title goes here>
 
         Parameters
         ----------
-        param_1 : list
-        param_2 : str
+        a : list
+        b : str
 
         Returns
         ------
@@ -232,14 +232,14 @@ def cool_function_with_type_hints(param_1: list, param_2: str) -> bool:
     <code goes here>
     return <value>
 
-def cool_function_without_type_hints(param_1, param_2):
+def cool_function_without_type_hints(a, b):
     """
         <title goes here>
 
         Parameters
         ----------
-        param_1 :
-        param_2 :
+        a :
+        b :
 
         Returns
         ------
@@ -253,28 +253,28 @@ def cool_function_without_type_hints(param_1, param_2):
 [Official reST documentation for Python](https://docutils.sourceforge.io/rst.html)
 
 ```python
-def cool_function_with_type_hints(param_1: list, param_2: str) -> bool:
+def cool_function_with_type_hints(a: list, b: str) -> bool:
     """
         <title goes here>
 
-        :param param_1:
-        :type param_1: list
-        :param param_2:
-        :type param_2: str
+        :param a:
+        :type a: list
+        :param b:
+        :type b: str
         :return:
         :rtype: bool
     """
     <code goes here>
     return <value>
 
-def cool_function_without_type_hints(param_1, param_2):
+def cool_function_without_type_hints(a, b):
     """
         <title goes here>
 
-        :param param_1:
-        :type param_1:
-        :param param_2:
-        :type param_2:
+        :param a:
+        :type a:
+        :param b:
+        :type b:
         :return:
         :rtype:
     """
@@ -289,10 +289,10 @@ def cool_function_without_type_hints(param_1, param_2):
 ```ruby
  # <title goes here>
  #
- # @param param_1 []
- # @param param_2 []
+ # @param a []
+ # @param b []
  # @return
-def cool_function(param_1, param_2)
+def cool_function(a, b)
     <code goes here>
     return <value>
 end
@@ -306,11 +306,11 @@ end
 /**
  * <title goes here>
  *
- * @param int $param_1
- * @param int $param_2
+ * @param int $a
+ * @param int $b
  * @return bool
  */
-function cool_function_with_type_hints(int $param_1, int $param_2): bool {
+function cool_function_with_type_hints(int $a, int $b): bool {
     <code goes here>
     return <value>
 }
@@ -318,11 +318,11 @@ function cool_function_with_type_hints(int $param_1, int $param_2): bool {
 /**
  * <title goes here>
  *
- * @param $param_1
- * @param $param_2
+ * @param $a
+ * @param $b
  * @return
  */
-function cool_function_without_type_hints($param_1, $param_2) {
+function cool_function_without_type_hints($a, $b) {
     <code goes here>
     return <value>
 }
@@ -335,11 +335,11 @@ function cool_function_without_type_hints($param_1, $param_2) {
 /*
  * <title goes here>
  *
- * @param param_1
- * @param param_2
+ * @param a
+ * @param b
  * @return
  */
-public void cool_function(int param_1, String param_2){
+public void cool_function(int a, String b){
     <code goes here>
     return <value>
 }
@@ -352,11 +352,11 @@ public void cool_function(int param_1, String param_2){
 /*
  * <title goes here>
  *
- * @param param_1
- * @param param_2
+ * @param a
+ * @param b
  * @return
  */
-fun cool_function(param_1: Int, param_2: String): Boolean {
+fun cool_function(a: Int, b: String): Boolean {
     <code goes here>
     return <value>
 }
@@ -370,12 +370,12 @@ fun cool_function(param_1: Int, param_2: String): Boolean {
 ///
 /// # Arguments
 ///
-/// * `param_1`
-/// * `param_2`
+/// * `a`
+/// * `b`
 ///
 /// # Returns
 ///
-fn add(param_1: i32, param_2: i32) -> i32 {
+fn add(a: i32, b: i32) -> i32 {
     a + b
 }
 ```
