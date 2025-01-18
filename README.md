@@ -133,7 +133,6 @@ Keep in mind that the information displayed in the docstring may vary depending 
 ##### Lua (LDoc):
 [Official LDoc documentation](https://lunarmodules.github.io/ldoc/manual/manual.md.html#Introduction)
 
-Example:
 ```lua
 --- <title goes here>
 -- @param param_1
@@ -148,7 +147,6 @@ end
 ##### JavaScript (JSDoc):
 [Official JSDoc documentation](https://jsdoc.app/)
 
-Example:
 ```javascript
 /*
  * <title goes here>
@@ -166,7 +164,6 @@ function cool_function(param_1, param_2){
 ##### TypeScript (TSDoc):
 [Official TSDoc documentation](https://tsdoc.org/)
 
-Example:
 ```typescript
 /*
  * <title goes here>
@@ -187,9 +184,8 @@ function cool_function(param_1: number, param_2: string): number{
 
 [Official Google documentation for Python](https://google.github.io/styleguide/pyguide.html#38-Comments-and-Documentation)
 
-Example with type hints:
 ```python
-def cool_function(param_1: int, param_2: bool) -> str:
+def cool_function_with_type_hints(param_1: int, param_2: bool) -> str:
     """
         <title goes here>
 
@@ -201,11 +197,8 @@ def cool_function(param_1: int, param_2: bool) -> str:
     """
     <code goes here>
     return <value>
-```
 
-Example without type hints:
-```python
-def cool_function(param_1, param_2):
+def cool_function_without_type_hints(param_1, param_2):
     """
         <title goes here>
 
@@ -222,9 +215,8 @@ def cool_function(param_1, param_2):
 
 [Official Numpy documentation for Python](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard)
 
-Example with type hints:
 ```python
-def cool_function(param_1: list, param_2: str) -> bool:
+def cool_function_with_type_hints(param_1: list, param_2: str) -> bool:
     """
         <title goes here>
 
@@ -239,11 +231,8 @@ def cool_function(param_1: list, param_2: str) -> bool:
     """
     <code goes here>
     return <value>
-```
 
-Example without type hints:
-```python
-def cool_function(param_1, param_2):
+def cool_function_without_type_hints(param_1, param_2):
     """
         <title goes here>
 
@@ -263,9 +252,8 @@ def cool_function(param_1, param_2):
 
 [Official reST documentation for Python](https://docutils.sourceforge.io/rst.html)
 
-Example with type hints:
 ```python
-def cool_function(param_1: list, param_2: str) -> bool:
+def cool_function_with_type_hints(param_1: list, param_2: str) -> bool:
     """
         <title goes here>
 
@@ -278,11 +266,8 @@ def cool_function(param_1: list, param_2: str) -> bool:
     """
     <code goes here>
     return <value>
-```
 
-Example without type hints:
-```python
-def cool_function(param_1, param_2):
+def cool_function_without_type_hints(param_1, param_2):
     """
         <title goes here>
 
@@ -301,7 +286,6 @@ def cool_function(param_1, param_2):
 
 [Official YARD documentation for Ruby](https://rubydoc.info/gems/yard/file/docs/GettingStarted.md#documenting-code-with-yard)
 
-Example:
 ```ruby
  # <title goes here>
  #
@@ -318,7 +302,6 @@ end
 
 [Official PHPDoc documentation for PHP](https://docs.phpdoc.org/guide/getting-started/what-is-a-docblock.html#what-is-a-docblock)
 
-Example with type hints:
 ```php
 /**
  * <title goes here>
@@ -327,14 +310,11 @@ Example with type hints:
  * @param int $param_2
  * @return bool
  */
-function cool_function(int $param_1, int $param_2): bool {
+function cool_function_with_type_hints(int $param_1, int $param_2): bool {
     <code goes here>
     return <value>
 }
-```
 
-Example without type hints:
-```php
 /**
  * <title goes here>
  *
@@ -342,7 +322,7 @@ Example without type hints:
  * @param $param_2
  * @return
  */
-function cool_function($param_1, $param_2) {
+function cool_function_without_type_hints($param_1, $param_2) {
     <code goes here>
     return <value>
 }
@@ -351,7 +331,6 @@ function cool_function($param_1, $param_2) {
 ##### Java (JavaDoc):
 [Official JavaDoc documentation](https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html#format)
 
-Example:
 ```java
 /*
  * <title goes here>
@@ -369,7 +348,6 @@ public void cool_function(int param_1, String param_2){
 ##### Kotlin (KDoc):
 [Official KDoc documentation](https://kotlinlang.org/docs/kotlin-doc.html)
 
-Example:
 ```kotlin
 /*
  * <title goes here>
@@ -387,7 +365,6 @@ fun cool_function(param_1: Int, param_2: String): Boolean {
 ##### Rust (RustDoc):
 [Official RustDoc documentation](https://doc.rust-lang.org/rust-by-example/meta/doc.html)
 
-Example:
 ```rust
 /// <title goes here>
 ///
