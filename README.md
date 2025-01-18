@@ -20,7 +20,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
-- [Supported languages](#supported-languages)
+- [Supported languages/structures](#supported-languages-and-structures)
 - [Roadmap](#roadmap)
 - [Codedocs under the hood](./lua/codedocs/README.md)
 - [Contributing](#contributing)
@@ -103,32 +103,38 @@ vim.keymap.set("n", "<leader>k", require('codedocs').insert_docs, { desc = "Inse
 ```
 This keymap will insert a docstring when pressing ```<leader>k```. Feel free to customize the key combination to your liking.
 
-### Supported languages
+### Supported languages and structures
 
-This section lists the languages supported by Codedocs, along with the supported annotation styles and the automatic annotations that can be inserted into the documentation for each language.
+Codedocs supports a variety of programming languages and provides automatic annotations tailored to each language's style. Below is a breakdown of how Codedocs handles annotations for different code structures:  
 
-Feel free to create your own custom styles if the options provided here don't meet your needs! :)
+#### 1. **Function**  
+   - **Parameters**: Included if present in the function signature.  
+   - **Parameter Type**: Added if specified through a type hint or if the language is statically typed.  
+   - **Return Section**: Included only if a return type is explicitly defined in the function signature.  
+
+#### 2. **Class**  
+   - **Attributes**: Class attributes are documented when available.  
+
+#### 3. **Comment**
+   - If no supported structure is detected under the cursor, Codedocs will insert an empty inline comment as a shortcut for adding regular comments.
+
+This table lists the structures and their supported docstring styles for each language:
 
 | Languages | Annonation styles | Supported automatic annotation |
 |----------|----------|----------|
-| Lua | [LDoc](#lua-ldoc) | `function (parameters, return)` |
-| Python | [Google](#google), [NumPy/SciPy](#numpy-scipy), [reST](#restructuredtext-rest) | `class (attributes)`, `function (parameters, return)` |
-| JavaScript | [JSDoc](#javascript-jsdoc) | `class (attributes)`, `function (parameters, return)` |
-| TypeScript | [TSDoc](#typescript-tsdoc) | `class (attributes)`, `function (parameters, return)` |
-| Ruby | [YARD](#ruby-yard) | `function (parameters, return)` |
-| PHP | [PHPDoc](#php-phpdoc) | `function (parameters, return)` |
-| Java | [JavaDoc](#java-javadoc) | `class (attributes)`, `function (parameters, return)`
-| Kotlin | [KDoc](#kotlin-kdoc) | `class (attributes)`, `function (parameters, return)` |
-| Rust | [RustDoc](#rust-kdoc) | `function (parameters, return)` |
+| Lua | [LDoc](#lua-ldoc) | `function`, `comment`|
+| Python | [Google](#google), [NumPy/SciPy](#numpy-scipy), [reST](#restructuredtext-rest) | `class`, `function`, `comment` |
+| JavaScript | [JSDoc](#javascript-jsdoc) | `class`, `function`, `comment` |
+| TypeScript | [TSDoc](#typescript-tsdoc) | `class`, `function`, `comment` |
+| Ruby | [YARD](#ruby-yard) | `function`, `comment`|
+| PHP | [PHPDoc](#php-phpdoc) | `function`, `comment` |
+| Java | [JavaDoc](#java-javadoc) | `class`, `function`, `comment` |
+| Kotlin | [KDoc](#kotlin-kdoc) | `class`, `function`, `comment` |
+| Rust | [RustDoc](#rust-kdoc) | `function`, `comment` |
 
 #### Styles per language:
 
-Below are examples of the docstring styles for different languages under various conditions.
-
-Keep in mind that the information displayed in the docstring may vary depending on the following circumstances:
-
-- Return type annotation: A return section will only be added if Codedocs detects a return type in the function declaration or finds a return statement anywhere within the function's body.
-- Parameter type: The parameter type will only be included if specified through a type hint or if the language is statically typed. The parameter name, however, will always be included, regardless of type.
+Below are examples of the docstring styles for different languages under various conditions. Feel free to create your own custom styles if the options provided here don't meet your needs! :)
 
 ##### Lua (LDoc):
 [Official LDoc documentation](https://lunarmodules.github.io/ldoc/manual/manual.md.html#Introduction)
