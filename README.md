@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/github/repo-size/jeangiraldoo/codedocs.nvim?style=for-the-badge&logo=files&logoColor=yellow&label=SIZE&labelColor=%232E3A59&color=%23A8D8A1" alt="Repository size in KB">
 </p>
 
-Codedocs.nvim automatically recognizes various language structures such as functions, classes, variables, and more, and inserts appropriate documentation strings based on the programming language you are using (e.g., docstrings for Python, JSDoc for JavaScript, etc.).
+Codedocs.nvim automatically recognizes various language structures such as functions, classes, variables, and more, and inserts appropriate documentation strings based on the [programming language](#supported-languages) you are using.
 
 You can easily modify the structure of the documentation strings to suit your specific needs, add support for new languages by defining their documentation formats, or just use codedocs as it is! :)
 
@@ -66,7 +66,7 @@ Configuring Codedocs is not mandatory, as it works out of the box. However, if t
 
 You can change the docstring style for any language that supports more than one style.
 
-Keep in mind that the name of the docstring style must be spelled exactly as shown in the [table of supported languages](#supported-languages). For example, `reST` must be written as `reST` (not `ReST` or any other variation).
+Keep in mind that the name of the docstring style must be spelled exactly as shown in the table of [supported languages](#supported-languages). For example, `reST` must be written as `reST` (not `ReST` or any other variation).
 
 Although this example demonstrates changing the style for a single language, you can customize as many languages as you want by adding their names to the table and assigning the respective style names.
 
