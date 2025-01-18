@@ -1,15 +1,24 @@
 return {
 	identifier_pos = true,
 	class = {
-		attrs = ""
+		attrs = {""}
 	},
 	func = {
-		params = [[
-			(method
-				(method_parameters
-					(identifier) @item_name
+		params = {
+			[[
+				(method
+					(method_parameters
+						(identifier) @item_name
+					)
 				)
-			)
-		]]
+			]]
+		},
+		return_type = {
+			[[
+				(method
+					(_) @item_type
+				)
+			]]
+		}
 	}
 }
