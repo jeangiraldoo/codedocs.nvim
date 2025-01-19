@@ -27,10 +27,6 @@ local function search_node_recursively(node, node_type, def_val)
 end
 
 local function parse_node_with_identifier_first(node, include_type, filetype, queries, identifier_pos)
-	local first_capture_name = (identifier_pos) and "item_name" or "item_type"
-	local first_key_name = (identifier_pos) and "name" or "type"
-	local second_capture_name = (identifier_pos) and "item_type" or "item_name"
-	local second_key_name = (identifier_pos) and "type" or "name"
 	include_type = true
 	local data = {}
 	if queries == nil then
@@ -43,14 +39,26 @@ local function parse_node_with_identifier_first(node, include_type, filetype, qu
 		local capture_name = query_obj.captures[id]
 		local node_text = vim.treesitter.get_node_text(capture_node, 0)
 
-		if capture_name == first_capture_name then
-			if next(current_param) ~= nil then
+		if capture_name == "item_name" then
+			if current_param.name ~= nil then
 				table.insert(data, current_param)
+				current_param = {}
+				current_param.name = node_text
+			elseif not identifier_pos then
+				current_param.name = node_text
+				table.insert(data, current_param)
+				current_param = {}
+			elseif identifier_pos then
+				current_param.name = node_text
 			end
-			current_param = {}
-			current_param[first_key_name] = node_text
-		elseif capture_name == second_capture_name then
-			current_param[second_key_name] = node_text
+		elseif capture_name == "item_type" then
+			if not identifier_pos then
+				current_param.type = node_text
+			else
+				current_param.type = node_text
+				table.insert(data, current_param)
+				current_param = {}
+			end
 		end
 	end
 -- Add the leftover param to the list
