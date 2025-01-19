@@ -14,11 +14,7 @@ return {
 			]]
 		},
 		return_type = {
-			[[
-				(method
-					(_) @item_type
-				)
-			]]
+			{"return", ""}
 		}
 	}
 }

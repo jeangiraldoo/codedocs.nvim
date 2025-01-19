@@ -38,13 +38,7 @@ return {
 				)
 
 			]],
-			[[
-				(function_definition
-					(block
-						(return_statement) @item_type
-					)
-				)
-			]],
+			{"return_statement", ""}
 		}
 	}
 }

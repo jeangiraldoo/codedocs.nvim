@@ -12,6 +12,20 @@ local function validate_treesitter(lang)
 	return true
 end
 
+local function search_node_recursively(node, node_type, def_val)
+	local ts_utils = require("nvim-treesitter.ts_utils")
+	for _, child_node in ipairs(ts_utils.get_named_children(node)) do
+		if child_node:type() == node_type then
+			return {{type = def_val}}
+		elseif ts_utils.get_named_children(child_node) ~= nil then
+			local result = search_node_recursively(child_node, node_type, def_val)
+			if result then
+				return result
+			end
+		end
+	end
+end
+
 local function parse_node_with_identifier_first(node, include_type, filetype, queries, identifier_pos)
 	local first_capture_name = (identifier_pos) and "item_name" or "item_type"
 	local first_key_name = (identifier_pos) and "name" or "type"
@@ -23,28 +37,25 @@ local function parse_node_with_identifier_first(node, include_type, filetype, qu
 		return data
 	end
 
-	for _, query in pairs(queries) do
-		if #data > 0 then return data end
-		local query_obj = vim.treesitter.query.parse(filetype, query)
-		local current_param = {}
-		for id, capture_node, _ in query_obj:iter_captures(node, 0) do
-			local capture_name = query_obj.captures[id]
-			local node_text = vim.treesitter.get_node_text(capture_node, 0)
+	local query_obj = vim.treesitter.query.parse(filetype, queries)
+	local current_param = {}
+	for id, capture_node, _ in query_obj:iter_captures(node, 0) do
+		local capture_name = query_obj.captures[id]
+		local node_text = vim.treesitter.get_node_text(capture_node, 0)
 
-			if capture_name == first_capture_name then
-				if next(current_param) ~= nil then
-					table.insert(data, current_param)
-				end
-				current_param = {}
-				current_param[first_key_name] = node_text
-			elseif capture_name == second_capture_name then
-				current_param[second_key_name] = node_text
+		if capture_name == first_capture_name then
+			if next(current_param) ~= nil then
+				table.insert(data, current_param)
 			end
+			current_param = {}
+			current_param[first_key_name] = node_text
+		elseif capture_name == second_capture_name then
+			current_param[second_key_name] = node_text
 		end
-	-- Add the leftover param to the list
-		if next(current_param) ~= nil then
-			table.insert(data, current_param)
-		end
+	end
+-- Add the leftover param to the list
+	if next(current_param) ~= nil then
+		table.insert(data, current_param)
 	end
 
   	return data
@@ -56,9 +67,22 @@ local function get_node_data(node, struct_name, sections, filetype, include_type
 	local identifier_pos = lang_data["identifier_pos"]
 	local node_queries = lang_data[struct_name]
 	for _, section_name in pairs(sections) do
-		local section_query = node_queries[section_name]
+		local section_queries = node_queries[section_name]
 		local section_data
-		section_data = parse_node_with_identifier_first(node, include_type, filetype, section_query, identifier_pos)
+		for _, section_query in pairs(section_queries) do
+			if type(section_query) == "string" then
+				section_data = parse_node_with_identifier_first(node, include_type, filetype, section_query, identifier_pos)
+			else
+				local node_type = section_query[1]
+				local def_val = section_query[2]
+				section_data = search_node_recursively(node, node_type, def_val)
+				if section_data == nil then
+					section_data = {}
+				end
+			end
+
+			if #section_data > 0 then break end
+		end
 		data[section_name] = section_data
 	end
 	return data

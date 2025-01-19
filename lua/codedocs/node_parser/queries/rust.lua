@@ -23,7 +23,8 @@ return {
 						(generic_type) @item_type
 					]
 				)
-			]]
+			]],
+			{"return_expression", ""}
 		}
 	}
 }

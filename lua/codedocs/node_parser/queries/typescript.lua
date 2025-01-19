@@ -55,7 +55,8 @@ return {
 						)
 					)
 				]
-			]]
+			]],
+			{"return_statement", ""}
 		}
 	}
 }

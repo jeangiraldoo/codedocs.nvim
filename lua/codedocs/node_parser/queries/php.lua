@@ -35,6 +35,9 @@ return {
 					)
 				]
 			]]
+		},
+		return_type = {
+			{"return_statement", ""}
 		}
 	}
 }

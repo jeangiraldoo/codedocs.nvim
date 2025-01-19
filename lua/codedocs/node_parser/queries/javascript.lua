@@ -31,24 +31,7 @@ return {
 			]]
 		},
 		return_type = {
-			[[
-				(function_declaration
-					(statement_block
-				  		(return_statement) @item_type
-					)
-			  	)
-
-			  	(function_expression
-					(statement_block
-				  		(return_statement) @item_type
-					)
-			  	)
-				(method_definition
-					(statement_block
-						(return_statement) @item_type
-					)
-				)
-			]]
+			{"return_statement", ""}
 		}
 	}
 }

@@ -14,13 +14,7 @@ return {
 			]]
 		},
 		return_type = {
-			[[
-				(function_declaration
-					(block
-						(return_statement) @item_type
-					)
-				)
-			]]
+			{"return_statement", ""}
 		}
 	}
 }

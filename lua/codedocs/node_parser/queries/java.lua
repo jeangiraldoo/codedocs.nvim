@@ -34,7 +34,8 @@ return {
 				(method_declaration
 					(type_identifier) @item_type
 				)
-			]]
+			]],
+			{"return_statement", ""}
 		}
 	}
 }
