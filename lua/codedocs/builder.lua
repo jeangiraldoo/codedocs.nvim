@@ -105,7 +105,7 @@ local function get_item(wrapped_data, item_kw, item_type_kw, type_goes_first, is
 	return (type_goes_first) and type_first or name_first
 end
 
-local function get_wrapped_item_data(name_wrapper, type_wrapper, item, include_type)
+local function get_wrapped_item(name_wrapper, type_wrapper, item, include_type)
 	local item_name = (item.name) and item.name or ""
 	local item_type = (item.type and include_type) and item.type or ""
 
@@ -117,7 +117,7 @@ local function get_wrapped_item_data(name_wrapper, type_wrapper, item, include_t
 	return {wrapped_name, wrapped_type}
 end
 
-local function get_section_items(opts, general_style, section_style, raw_items)
+local function get_section_items(opts, general_style, section_style, items)
 	local line_start = general_style[opts.general.struct.val][2]
 	local base_line = (section_style[opts.item.indent.val]) and ("\t" .. line_start) or (line_start)
 	local type_first = section_style[opts.item.type_first.val]
@@ -130,25 +130,24 @@ local function get_section_items(opts, general_style, section_style, raw_items)
 	local include_type = section_style[opts.item.include_type.val]
 	local is_type_below_name_first = section_style[opts.item.is_type_below_name_first.val]
 
-	local items = {}
+	local final_items = {}
 
-	for i = 1, #raw_items do
-		local raw_item = raw_items[i]
-		local wrapped_info = get_wrapped_item_data(name_wrapper, type_wrapper, raw_item, include_type)
-		local final_info = get_item(wrapped_info, item_kw, item_type_kw, type_goes_first, is_type_below_name_first, item_inline)
+	for idx, item in ipairs(items) do
+		local wrapped_item = get_wrapped_item(name_wrapper, type_wrapper, item, include_type)
+		local final_item = get_item(wrapped_item, item_kw, item_type_kw, type_goes_first, is_type_below_name_first, item_inline)
 
-		if type(final_info) == "string" then
-			table.insert(items, base_line .. final_info)
-		elseif type(final_info) == "table" then
-			for _, value in pairs(final_info) do
-				table.insert(items, base_line .. value)
+		if type(final_item) == "string" then
+			table.insert(final_items, base_line .. final_item)
+		elseif type(final_item) == "table" then
+			for _, value in pairs(final_item) do
+				table.insert(final_items, base_line .. value)
 			end
 		end
-		if general_style[opts.general.item_gap.val] and i < #raw_items then
-			table.insert(items, base_line)
+		if general_style[opts.general.item_gap.val] and idx < #items then
+			table.insert(final_items, base_line)
 		end
 	end
-	return items
+	return final_items
 
 end
 
