@@ -106,9 +106,11 @@ local function get_item_line(opts, style, wrapped_item)
 	return (style[opts.item.type_first.val]) and type_first or name_first
 end
 
-local function get_wrapped_item(name_wrapper, type_wrapper, item, include_type)
+local function get_wrapped_item(opts, style, item)
+	local include_type = (item.type and style[opts.item.include_type.val])
 	local item_name = (item.name) and item.name or ""
-	local item_type = (item.type and include_type) and item.type or ""
+	local item_type = (include_type) and item.type or ""
+	local name_wrapper, type_wrapper = style[opts.item.name_wrapper.val], style[opts.item.type_wrapper.val]
 
 	local open_name_wrapper, close_name_wrapper = name_wrapper[1], name_wrapper[2]
 	local open_type_wrapper, close_type_wrapper = type_wrapper[1], type_wrapper[2]
@@ -121,14 +123,11 @@ end
 local function get_section_lines(opts, general_style, style, items)
 	local line_start = general_style[opts.general.struct.val][2]
 	local base_line = (style[opts.item.indent.val]) and ("\t" .. line_start) or (line_start)
-	local name_wrapper = style[opts.item.name_wrapper.val]
-	local type_wrapper = style[opts.item.type_wrapper.val]
-	local include_type = style[opts.item.include_type.val]
 
 	local lines = {}
 
 	for _, item in ipairs(items) do
-		local wrapped_item = get_wrapped_item(name_wrapper, type_wrapper, item, include_type)
+		local wrapped_item = get_wrapped_item(opts, style, item)
 		local item_line = get_item_line(opts, style, wrapped_item)
 
 		if type(item_line) == "string" then
@@ -140,7 +139,6 @@ local function get_section_lines(opts, general_style, style, items)
 		end
 	end
 	return lines
-
 end
 
 local function get_sections(opts, style, sections_items)
