@@ -85,24 +85,21 @@ local function get_split_item(standalone_name, param_info, type_kw, is_type_belo
 	return name_first, type_first
 end
 
-local function get_item(wrapped_data, item_kw, item_type_kw, type_goes_first, is_type_below_name_first, item_inline)
-	local item_name = wrapped_data[1]
-	local item_type = wrapped_data[2]
-	-- local item_type_kw = style[opts.param_type_kw.val]
-	-- local is_type_below_name_first = style[opts.is_type_below_name_first.val]
+local function get_item_line(opts, style, wrapped_item)
+	local item_name, item_type = wrapped_item[1], wrapped_item[2]
+	local item_kw, item_type_kw = style[opts.item.kw.val], style[opts.item.type_kw.val]
+	local is_type_below_name_first = style[opts.item.is_type_below_name_first.val]
 
-	-- local item_kw = style[opts.param_kw.val]
-	-- local standalone_name = (item_kw ~= "") and item_kw .. " " .. item_name or item_name
 	local standalone_name = get_formatted_item_info(item_kw, item_name, "", false)
 	local standalone_type = get_formatted_item_info(item_type_kw, item_type, "", false)
 
 	local name_first, type_first
-	if item_inline then
+	if style[opts.item.inline.val] then
 		name_first, type_first = get_inline_item(standalone_name, standalone_type)
 	else
-		name_first, type_first = get_split_item(standalone_name, wrapped_data, item_type_kw, is_type_below_name_first)
+		name_first, type_first = get_split_item(standalone_name, wrapped_item, item_type_kw, is_type_below_name_first)
 	end
-	return (type_goes_first) and type_first or name_first
+	return (style[opts.item.type_first.val]) and type_first or name_first
 end
 
 local function get_wrapped_item(name_wrapper, type_wrapper, item, include_type)
@@ -117,51 +114,46 @@ local function get_wrapped_item(name_wrapper, type_wrapper, item, include_type)
 	return {wrapped_name, wrapped_type}
 end
 
-local function get_section_items(opts, general_style, section_style, items)
+local function get_section_lines(opts, general_style, style, items)
 	local line_start = general_style[opts.general.struct.val][2]
-	local base_line = (section_style[opts.item.indent.val]) and ("\t" .. line_start) or (line_start)
-	local type_first = section_style[opts.item.type_first.val]
-	local item_inline = section_style[opts.item.inline.val]
-	local name_wrapper = section_style[opts.item.name_wrapper.val]
-	local type_wrapper = section_style[opts.item.type_wrapper.val]
-	local item_kw = section_style[opts.item.kw.val]
-	local item_type_kw = section_style[opts.item.type_kw.val]
-	local type_goes_first = section_style[opts.item.type_first.val]
-	local include_type = section_style[opts.item.include_type.val]
-	local is_type_below_name_first = section_style[opts.item.is_type_below_name_first.val]
+	local base_line = (style[opts.item.indent.val]) and ("\t" .. line_start) or (line_start)
+	local name_wrapper = style[opts.item.name_wrapper.val]
+	local type_wrapper = style[opts.item.type_wrapper.val]
+	local include_type = style[opts.item.include_type.val]
 
-	local final_items = {}
+	local lines = {}
 
 	for idx, item in ipairs(items) do
 		local wrapped_item = get_wrapped_item(name_wrapper, type_wrapper, item, include_type)
-		local final_item = get_item(wrapped_item, item_kw, item_type_kw, type_goes_first, is_type_below_name_first, item_inline)
+		-- local final_item = get_item(wrapped_item, item_kw, item_type_kw, type_goes_first, is_type_below_name_first, item_inline)
+		local item_line = get_item_line(opts, style, wrapped_item)
 
-		if type(final_item) == "string" then
-			table.insert(final_items, base_line .. final_item)
-		elseif type(final_item) == "table" then
-			for _, value in pairs(final_item) do
-				table.insert(final_items, base_line .. value)
+		if type(item_line) == "string" then
+			table.insert(lines, base_line .. item_line)
+		elseif type(item_line) == "table" then
+			for _, value in pairs(item_line) do
+				table.insert(lines, base_line .. value)
 			end
 		end
 		if general_style[opts.general.item_gap.val] and idx < #items then
-			table.insert(final_items, base_line)
+			table.insert(lines, base_line)
 		end
 	end
-	return final_items
+	return lines
 
 end
 
-local function get_sections(opts, style, sections_data)
+local function get_sections(opts, style, sections_items)
 	local general_style = style.general
 	local section_order = general_style[opts.general.section_order.val]
 	local sections = {}
 	for _, section_name in pairs(section_order) do
 		if section_name ~= "general" then
 			local section_style = style[section_name]
-			local section_data = sections_data[section_name]
-			local items = get_section_items(opts, general_style, section_style, section_data)
-			if #items > 0 then
-				local final_section = get_section(opts, general_style, section_style, items)
+			local section_items = sections_items[section_name]
+			local lines = get_section_lines(opts, general_style, section_style, section_items)
+			if #lines > 0 then
+				local final_section = get_section(opts, general_style, section_style, lines)
 				table.insert(sections, final_section)
 			end
 		end
