@@ -48,52 +48,42 @@ local function get_docs_with_sections(opts, style, sections, docs)
 	return docs
 end
 
-local function get_inline_item(standalone_name, standalone_type, is_type_first)
-	local name_first, type_first
-	if standalone_name == "" and standalone_type == "" then
-		name_first = ""
-		type_first = ""
-	elseif standalone_name ~= "" and standalone_type == "" then
-		name_first = standalone_name
-		type_first = standalone_name
-	elseif standalone_name == "" and standalone_type ~= "" then
-		name_first = standalone_type
-		type_first = standalone_type
+local function get_formatted_item_info(val_1, val_2, default_val, is_inverted)
+	local final_val
+	if val_1 == "" and val_2 == "" then
+		final_val = default_val
+	elseif val_1 ~= "" and val_2 == "" then
+		final_val = val_1
+	elseif val_1 == "" and val_2 ~= "" then
+		final_val = val_2
 	else
-		name_first = standalone_name .. " " .. standalone_type
-		type_first = standalone_type .. " " .. standalone_name
+		if not is_inverted then
+			final_val = val_1 .. " " .. val_2
+		else
+			final_val = val_2 .. " " .. val_1
+		end
 	end
-	-- local name_first = standalone_name .. " " .. standalone_type
-	-- local type_first = standalone_type .. " " .. standalone_name
-	return (is_type_first) and type_first or name_first
+	return final_val
 end
 
-local function get_split_item(standalone_name, param_info, type_kw, is_type_first, is_type_below_name_first)
+local function get_inline_item(standalone_name, standalone_type)
+	local name_first = get_formatted_item_info(standalone_name, standalone_type, "", false)
+	local type_first = get_formatted_item_info(standalone_name, standalone_type, "", true)
+	return name_first, type_first
+end
+
+local function get_split_item(standalone_name, param_info, type_kw, is_type_below_name_first)
 	local p_name = param_info[1]
 	local p_type = param_info[2]
-	local type_with_name
-	if type_kw == "" and p_type == "" then
-		type_with_name = p_name
-	elseif type_kw ~= "" and p_type == "" then
-		type_with_name = type_kw .. " " .. p_name
-	elseif type_kw == "" and p_type ~= "" then
-		type_with_name = p_type .. " " .. p_name
-	else
-		type_with_name = type_kw .. " " .. p_name .. " " .. p_type
-	end
-	final_type = (is_type_below_name_first) and type_with_name or standalone_type
-	name_first = {standalone_name, final_type}
-	type_first = {final_type, standalone_name}
+	local type_with_name = get_formatted_item_info(
+		type_kw ~= "" and (type_kw .. " " .. p_name) or p_name, p_type, p_name, false
+	)
+	local final_type = (is_type_below_name_first) and type_with_name or standalone_type
+	local name_first = {standalone_name, final_type}
+	local type_first = {final_type, standalone_name}
 
-	return (is_type_first) and type_first or name_first
+	return name_first, type_first
 end
-
--- local function get_standalone_item_data(kw, data)
--- 	local final_data
--- 	if kw == "" and data == "" then
--- 		final_data = 
--- 	end
--- end
 
 local function get_item(wrapped_data, item_kw, item_type_kw, type_goes_first, is_type_below_name_first, item_inline)
 	local item_name = wrapped_data[1]
@@ -102,16 +92,17 @@ local function get_item(wrapped_data, item_kw, item_type_kw, type_goes_first, is
 	-- local is_type_below_name_first = style[opts.is_type_below_name_first.val]
 
 	-- local item_kw = style[opts.param_kw.val]
-	local standalone_name = (item_kw ~= "") and item_kw .. " " .. item_name or item_name
-	local standalone_type = (item_type_kw ~= "") and item_type_kw .. " " .. item_type or item_type
+	-- local standalone_name = (item_kw ~= "") and item_kw .. " " .. item_name or item_name
+	local standalone_name = get_formatted_item_info(item_kw, item_name, "", false)
+	local standalone_type = get_formatted_item_info(item_type_kw, item_type, "", false)
 
-	local line
+	local name_first, type_first
 	if item_inline then
-		line = get_inline_item(standalone_name, standalone_type, type_goes_first)
+		name_first, type_first = get_inline_item(standalone_name, standalone_type)
 	else
-		line = get_split_item(standalone_name, wrapped_data, item_type_kw, type_goes_first, is_type_below_name_first)
+		name_first, type_first = get_split_item(standalone_name, wrapped_data, item_type_kw, is_type_below_name_first)
 	end
-	return line
+	return (type_goes_first) and type_first or name_first
 end
 
 local function get_wrapped_item_data(name_wrapper, type_wrapper, item, include_type)
@@ -147,11 +138,9 @@ local function get_section_items(opts, general_style, section_style, raw_items)
 		local final_info = get_item(wrapped_info, item_kw, item_type_kw, type_goes_first, is_type_below_name_first, item_inline)
 
 		if type(final_info) == "string" then
-			-- table.insert(docs, #docs, base_line .. final_info)
 			table.insert(items, base_line .. final_info)
 		elseif type(final_info) == "table" then
 			for _, value in pairs(final_info) do
-				-- table.insert(docs, #docs, base_line .. value)
 				table.insert(items, base_line .. value)
 			end
 		end
