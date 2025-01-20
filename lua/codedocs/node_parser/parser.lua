@@ -26,6 +26,13 @@ local function search_node_recursively(node, node_type, def_val)
 	end
 end
 
+local function get_child_data_if_present(node, query)
+	local node_type = query[1]
+	local def_val = query[2]
+	local child_data = search_node_recursively(node, node_type, def_val)
+	return (child_data) and child_data or {}
+end
+
 local function get_parsed_item_name_first(capture_name, items, current_item, node_text)
 	if capture_name == "item_name" then
 		if current_item.name ~= nil then
@@ -93,12 +100,7 @@ local function get_node_data(node, struct_name, sections, filetype, include_type
 			if type(section_query) == "string" then
 				items = get_parsed_items(node, include_type, filetype, section_query, identifier_pos)
 			else
-				local node_type = section_query[1]
-				local def_val = section_query[2]
-				items = search_node_recursively(node, node_type, def_val)
-				if items == nil then
-					items = {}
-				end
+				items = get_child_data_if_present(node, section_query)
 			end
 
 			if #items > 0 then break end
