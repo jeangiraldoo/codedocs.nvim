@@ -23,7 +23,7 @@ local function get_section(opts, general_style, style, items)
 	local base_line = (style[opts.item.indent.val]) and ("\t" .. line_start) or (line_start)
 	insert_title(title_underline_char, title, title_gap, line_start, section)
 	for idx, item in pairs(items) do
-		table.insert(section, item)
+		table.insert(section, base_line .. item)
 		if general_style[opts.general.item_gap.val] and idx < #items then
 			table.insert(section, base_line)
 		end
@@ -120,10 +120,7 @@ local function get_wrapped_item(opts, style, item)
 	return {wrapped_name, wrapped_type}
 end
 
-local function get_section_lines(opts, general_style, style, items)
-	local line_start = general_style[opts.general.struct.val][2]
-	local base_line = (style[opts.item.indent.val]) and ("\t" .. line_start) or (line_start)
-
+local function get_section_lines(opts, style, items)
 	local lines = {}
 
 	for _, item in ipairs(items) do
@@ -131,10 +128,10 @@ local function get_section_lines(opts, general_style, style, items)
 		local item_line = get_item_line(opts, style, wrapped_item)
 
 		if type(item_line) == "string" then
-			table.insert(lines, base_line .. item_line)
+			table.insert(lines, item_line)
 		elseif type(item_line) == "table" then
-			for _, value in pairs(item_line) do
-				table.insert(lines, base_line .. value)
+			for _, split_line in pairs(item_line) do
+				table.insert(lines, split_line)
 			end
 		end
 	end
@@ -149,7 +146,7 @@ local function get_sections(opts, style, sections_items)
 		if section_name ~= "general" then
 			local section_style = style[section_name]
 			local section_items = sections_items[section_name]
-			local lines = get_section_lines(opts, general_style, section_style, section_items)
+			local lines = get_section_lines(opts, section_style, section_items)
 			if #lines > 0 then
 				local final_section = get_section(opts, general_style, section_style, lines)
 				table.insert(sections, final_section)
