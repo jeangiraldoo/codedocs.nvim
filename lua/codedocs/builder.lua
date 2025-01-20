@@ -13,16 +13,20 @@ local function insert_title(underline_char, title, gap, line_start, docs)
 	end
 end
 
-local function get_section(opts, general_style, section_style, items)
-	local title = section_style[opts.item.title.val]
+local function get_section(opts, general_style, style, items)
+	local title = style[opts.item.title.val]
 	local title_gap = general_style[opts.general.section_title_gap.val]
 	local title_underline_char = general_style[opts.general.section_underline.val]
 
 	local section = {}
 	local line_start = general_style[opts.general.struct.val][2]
+	local base_line = (style[opts.item.indent.val]) and ("\t" .. line_start) or (line_start)
 	insert_title(title_underline_char, title, title_gap, line_start, section)
-	for _, item in pairs(items) do
+	for idx, item in pairs(items) do
 		table.insert(section, item)
+		if general_style[opts.general.item_gap.val] and idx < #items then
+			table.insert(section, base_line)
+		end
 	end
 	return section
 end
@@ -123,9 +127,8 @@ local function get_section_lines(opts, general_style, style, items)
 
 	local lines = {}
 
-	for idx, item in ipairs(items) do
+	for _, item in ipairs(items) do
 		local wrapped_item = get_wrapped_item(name_wrapper, type_wrapper, item, include_type)
-		-- local final_item = get_item(wrapped_item, item_kw, item_type_kw, type_goes_first, is_type_below_name_first, item_inline)
 		local item_line = get_item_line(opts, style, wrapped_item)
 
 		if type(item_line) == "string" then
@@ -134,9 +137,6 @@ local function get_section_lines(opts, general_style, style, items)
 			for _, value in pairs(item_line) do
 				table.insert(lines, base_line .. value)
 			end
-		end
-		if general_style[opts.general.item_gap.val] and idx < #items then
-			table.insert(lines, base_line)
 		end
 	end
 	return lines
