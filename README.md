@@ -23,7 +23,7 @@ You can easily modify the structure of the documentation strings to suit your sp
 - [Supported languages/structures](#supported-languages-and-structures)
 - [Docstring examples](#docstring-examples)
 - [Roadmap](#roadmap)
-- [Codedocs under the hood](./lua/codedocs/README.md)
+- [Technical documentation](./lua/codedocs/README.md)
 - [Contributing](#contributing)
 - [Motivation](#motivation)
 - [License](#license)
