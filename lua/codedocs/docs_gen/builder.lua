@@ -1,3 +1,14 @@
+local defaults = require("codedocs.docs_gen.styles.init")
+
+local function copy_docs(docs_struct)
+	local copied_docs_struct = {}
+	for i = 1, #docs_struct do
+		local copied_elem = docs_struct[i]
+		table.insert(copied_docs_struct, i, copied_elem)
+	end
+	return copied_docs_struct
+end
+
 local function insert_title(underline_char, title, gap, line_start, docs)
 	local final_title = line_start .. title
 	if title ~= "" then
@@ -156,11 +167,26 @@ local function get_sections(opts, style, sections_items)
 	return sections
 end
 
+local function get_opts_and_style(lang, struct_name)
+	local defaults = require("codedocs.docs_gen.styles.init")
+	local opts, default_styles, lang_styles = defaults.opts, defaults.default_styles, defaults.lang_styles
+	local default_lang_style = default_styles[lang]
+	local lang_specific_styles = lang_styles[lang]
+	if not (default_lang_style or lang_specific_styles) then
+		error("There is no language called " .. lang .. " available in Codedocs")
+	end
+
+	local lang_style = lang_specific_styles[default_lang_style]
+	local style = lang_style[struct_name]
+	return opts, style
+end
+
 local function get_docs(opts, style, data, docs_struct)
 	local sections = get_sections(opts, style, data)
-	return get_docs_with_sections(opts, style, sections, docs_struct)
+	return get_docs_with_sections(opts, style, sections, copy_docs(docs_struct))
 end
 
 return {
-	get_docs = get_docs
+	get_docs = get_docs,
+	get_opts_and_style = get_opts_and_style
 }

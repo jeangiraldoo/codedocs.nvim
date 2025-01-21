@@ -1,52 +1,36 @@
-local defaults = require("codedocs.styles.init")
-local insert_docs = require("codedocs.insert_docs")
-
 local M = {}
-
-M.config = {
-	opts = defaults[1],
-	default_styles = defaults[2],
-	lang_styles = defaults[3]
-}
+local docs_gen = require("codedocs.docs_gen.init")
 
 function M.setup(config)
+	local style_manager = docs_gen.style_manager
 	if config and config.default_styles then
-		for key, value in pairs(config.default_styles) do
-			if not M.config.default_styles[key] then
-				error("There is no language called " .. key .. " available in codedocs")
-			elseif type(value) ~= "string" then
-				error("The value assigned as the default docstring style for " .. key .. " must be a string")
-			elseif not M.config.lang_styles[key][value] then
-				error(key .. " does not have a docstring style called " .. value)
-			end
-			M.config.default_styles[key] = value
-		end
+		style_manager.set_default_lang_style(config.default_styles)
 	end
 end
 
 function M.insert_docs()
-	-- if not pcall(require, "nvim-treesitter.configs") then
-	--  		vim.notify("Treesitter is not installed. Please install it.", vim.log.levels.ERROR)
-	--  		return
-	-- end
-	-- local parsers = require "nvim-treesitter.parsers"
 	local lang = vim.api.nvim_buf_get_option(0, "filetype")
 
-	local default_lang_style = M.config.default_styles[lang]
-	local lang_styles = M.config.lang_styles[lang]
-	if not default_lang_style or not lang_styles then
-		error("There is no language called " .. lang .. " available in Codedocs")
-	end
-	-- if not parsers.has_parser(lang) then
-	--    	vim.notify("The treesitter parser for " .. lang .. " is not installed")
-	--    	return true
-	-- end
-	local lang_style = lang_styles[default_lang_style]
-	insert_docs.start(M.config.opts, lang_style, lang)
+	local builder = docs_gen.builder
+	local parser = require("codedocs.node_parser.parser")
+
+	local struct_name, node = parser.get_node_type(lang)
+	local opts, style = builder.get_opts_and_style(lang, struct_name)
+	local sections = style.general.section_order
+	local include_type = style.general[opts.item.include_type.val]
+	local pos, data = parser.get_data(lang, node, sections, struct_name, include_type)
+	local struct = style.general[opts.general.struct.val]
+
+	local docs = (struct_name == "generic") and struct or builder.get_docs(opts, style, data, struct)
+	local docs_data = {
+		pos = pos,
+		direction = style.general[opts.general.direction.val],
+		title_pos = style.general[opts.general.title_pos.val]
+	}
+	require("codedocs.writer").start(docs, docs_data)
 end
 
 vim.api.nvim_set_keymap('n', "<Plug>Codedocs", "<cmd>lua require('codedocs').insert_docs()<CR>", { noremap = true, silent = true })
-
 vim.api.nvim_create_user_command("Codedocs", M.insert_docs, {})
 
 return M

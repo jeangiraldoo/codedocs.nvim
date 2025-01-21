@@ -1,9 +1,9 @@
-local opts = require("codedocs.styles.opts")
+local opts = require("codedocs.docs_gen.styles.opts")
 local general = opts.general
 local item = opts.item
 
 return {
-	KDoc = {
+	JSDoc = {
 		class = {
 			general = {
 				[general.struct.val] = {"/**", " * ", " */"},
@@ -45,12 +45,12 @@ return {
 				[item.title.val] = "",
 				[item.inline.val] = true,
 				[item.indent.val] = false,
-				[item.include_type.val] = false,
-				[item.type_first.val] = false,
-				[item.kw.val] = "@param",
-				[item.type_kw.val] = "",
+				[item.include_type.val] = true,
+				[item.type_first.val] = true,
+				[item.kw.val] = "",
+				[item.type_kw.val] = "@param",
 				[item.name_wrapper.val] = {"", ""},
-				[item.type_wrapper.val] = {"", ""},
+				[item.type_wrapper.val] = {"{", "}"},
 				[item.is_type_below_name_first.val] = false,
 			},
 			return_type = {
@@ -58,11 +58,11 @@ return {
 				[item.inline.val] = true,
 				[item.indent.val] = false,
 				[item.include_type.val] = false,
-				[item.type_first.val] = false,
-				[item.kw.val] = "@return",
-				[item.type_kw.val] = "",
+				[item.type_first.val] = true,
+				[item.kw.val] = "",
+				[item.type_kw.val] = "@returns",
 				[item.name_wrapper.val] = {"", ""},
-				[item.type_wrapper.val] = {"", ""},
+				[item.type_wrapper.val] = {"{", "}"},
 				[item.is_type_below_name_first.val] = false,
 			}
 		},

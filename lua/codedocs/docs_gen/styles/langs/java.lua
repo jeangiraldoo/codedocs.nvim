@@ -1,4 +1,4 @@
-local opts = require("codedocs.styles.opts")
+local opts = require("codedocs.docs_gen.styles.opts")
 local general = opts.general
 local item = opts.item
 
