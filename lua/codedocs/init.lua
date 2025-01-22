@@ -8,6 +8,14 @@ function M.setup(config)
 	end
 end
 
+local function get_node_settings(style, opts, struct_name)
+	local settings = {
+		func = {},
+		class = {boolean = (style.attrs) and style.attrs[opts.class_item.include_non_constructor_attrs.val]},
+	}
+	return settings[struct_name]
+end
+
 function M.insert_docs()
 	local lang = vim.api.nvim_buf_get_option(0, "filetype")
 
@@ -18,7 +26,8 @@ function M.insert_docs()
 	local opts, style = builder.get_opts_and_style(lang, struct_name)
 	local sections = style.general.section_order
 	local include_type = style.general[opts.item.include_type.val]
-	local pos, data = parser.get_data(lang, node, sections, struct_name, include_type)
+	local parser_settings = get_node_settings(style, opts, struct_name)
+	local pos, data = parser.get_data(lang, node, sections, struct_name, include_type, parser_settings)
 	local struct = style.general[opts.general.struct.val]
 
 	local docs = (struct_name == "generic") and struct or builder.get_docs(opts, style, data, struct)

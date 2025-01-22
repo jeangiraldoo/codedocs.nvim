@@ -1,6 +1,7 @@
 local opts = require("codedocs.docs_gen.styles.opts")
 local general = opts.general
 local item = opts.item
+local class_item = opts.class_item
 
 return {
 	Google = {
@@ -27,6 +28,7 @@ return {
 				[item.name_wrapper.val] = {"", ""},
 				[item.type_wrapper.val] = {"(", "):"},
 				[item.is_type_below_name_first.val] = false,
+				[class_item.include_non_constructor_attrs.val] = true,
 			}
 		},
 		func = {
