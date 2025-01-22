@@ -70,9 +70,11 @@ return {
 			  			[
 							(typed_parameter
 				  				(identifier) @item_name
+								(#not-eq? @item_name "self")
 				  				(type) @item_type
 							)
 							(identifier) @item_name
+							(#not-eq? @item_name "self")
 			  			]
 					)
 		  		)
