@@ -1,5 +1,10 @@
 return {
 	identifier_pos = true,
+	nodes = {
+		class_declaration = "class",
+		method_definition = "func",
+		function_declaration = "func"
+	},
 	class = {
 		attrs = {
 			[[
@@ -56,7 +61,7 @@ return {
 					)
 				]
 			]],
-			{"return_statement", ""}
+			{find = {"return_statement", ""}}
 		}
 	}
 }

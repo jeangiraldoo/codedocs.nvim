@@ -1,5 +1,6 @@
 return {
 	identifier_pos = true,
+	nodes = {class_definition = "class", function_definition = "func"},
 	class = {
 		attrs =	{
 			{

@@ -1,5 +1,6 @@
 return {
 	identifier_pos = true,
+	nodes = {function_item = "func"},
 	class = {""},
 	func = {
 		params = {
@@ -24,7 +25,7 @@ return {
 					]
 				)
 			]],
-			{"return_expression", ""}
+			{find = "return_expression", ""}
 		}
 	}
 }

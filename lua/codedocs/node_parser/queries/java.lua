@@ -1,5 +1,6 @@
 return {
 	identifier_pos = false,
+	nodes = {class_declaration = "class", method_declaration = "func"},
 	class = {
 		attrs = {
 			[[
@@ -35,7 +36,7 @@ return {
 					(type_identifier) @item_type
 				)
 			]],
-			{"return_statement", ""}
+			{find = "return_statement", ""}
 		}
 	}
 }

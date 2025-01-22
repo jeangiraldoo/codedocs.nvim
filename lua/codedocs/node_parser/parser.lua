@@ -178,7 +178,7 @@ local function get_node_data(node, struct_name, sections, filetype, include_type
 	local node_queries = lang_data[struct_name]
 	for _, section_name in pairs(sections) do
 		local section_queries = node_queries[section_name]
-		local items
+		local items = {}
 		for _, section_query in pairs(section_queries) do
 			if type(section_query) == "string" then
 				items = parse_simple_query(node, include_type, filetype, section_query, identifier_pos)
@@ -193,46 +193,16 @@ local function get_node_data(node, struct_name, sections, filetype, include_type
 	return data
 end
 
-local function is_node_a_class(node_type)
-	local identifiers = {
-		class_definition = true,
-		class_declaration = true
-	}
-	return (identifiers[node_type]) and true or false
-end
-
-local function is_node_a_function(node_type)
-	local identifiers = {
-		function_definition = true,
-		method_definition = true,
-		function_declaration = true,
-		method_declaration = true,
-		method = true,
-		function_item = true
-	}
-
-	return (identifiers[node_type]) and true or false
-end
-
---- Traverses upwards through parent nodes to find a node of a supported type
--- @param node_at_cursor Node found at the cursor's position
-local function get_struct_node_data(node_at_cursor)
+local function get_supported_node_data(node_at_cursor, supported_nodes)
 	if node_at_cursor == nil then
 		return "generic", node_at_cursor
 	end
 
-	if is_node_a_function(node_at_cursor:type()) then
-		return "func", node_at_cursor
-  	end
-
-  	-- Traverse upwards through parent nodes to find a function or method declaration
   	while node_at_cursor do
-		local node_type = node_at_cursor:type()
-    	if is_node_a_function(node_type) then
-      		return "func", node_at_cursor
-		elseif is_node_a_class(node_type) then
-			return "class", node_at_cursor
-    	end
+		local detected_node = supported_nodes[node_at_cursor:type()]
+		if detected_node then
+			return detected_node, node_at_cursor
+		end
 
     -- If it's a module or another node, continue traversing upwards
     	node_at_cursor = node_at_cursor:parent()
@@ -253,10 +223,11 @@ end
 local function get_node_type(filetype)
 	if not validate_treesitter(filetype) then
 		return "generic", nil
-	else
-		local node = require("nvim-treesitter.ts_utils").get_node_at_cursor()
-		return get_struct_node_data(node)
 	end
+	local lang_data = require("codedocs.node_parser.queries.init")[filetype]
+	local supported_nodes = lang_data["nodes"]
+	local node = require("nvim-treesitter.ts_utils").get_node_at_cursor()
+	return get_supported_node_data(node, supported_nodes)
 
 end
 

@@ -1,5 +1,6 @@
 return {
 	identifier_pos = true,
+	nodes = {method = "func"},
 	class = {
 		attrs = {""}
 	},
@@ -14,7 +15,7 @@ return {
 			]]
 		},
 		return_type = {
-			{"return", ""}
+			{find = "return", ""}
 		}
 	}
 }
