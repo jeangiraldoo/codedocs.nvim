@@ -27,6 +27,10 @@ local item = {
 	is_type_below_name_first = {val = "is_type_below_name_first", type = "boolean"}, -- TODO: Check logic and add description accordingly
 }
 
+local class_general = {
+	include_attrs = {val = "include_attrs", type = "boolean"}
+}
+
 local class_item = {
 	include_non_constructor_attrs = {val = "include_non_constructor_attrs", type = "boolean"}
 }
@@ -47,5 +51,6 @@ return {
 	generic = generic,
 	item = item,
 	class_item = class_item,
+	class_general = class_general,
 	general = general
 }

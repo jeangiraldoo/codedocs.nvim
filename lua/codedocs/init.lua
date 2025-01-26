@@ -11,7 +11,12 @@ end
 local function get_node_settings(style, opts, struct_name)
 	local settings = {
 		func = {},
-		class = {boolean = (style.attrs) and style.attrs[opts.class_item.include_non_constructor_attrs.val]},
+		class = {
+			boolean_condition = {
+				style.general[opts.class_general.include_attrs.val],
+				(style.attrs) and style.attrs[opts.class_item.include_non_constructor_attrs.val]
+			}
+		}
 	}
 	return settings[struct_name]
 end

@@ -1,11 +1,10 @@
-return {
-	identifier_pos = false,
-	nodes = {method_declaration = "func", function_definition = "func"},
-	class = {
-		attrs = {""}
-	},
-	func = {
-		params = {
+local function get_tree(node_constructor)
+	local params_section = {
+		node_constructor(
+			{
+				type = "simple",
+				children = {
+					
 			[[
 				[
 					(method_declaration
@@ -36,9 +35,28 @@ return {
 					)
 				]
 			]]
-		},
-		return_type = {
-			{find = "return_statement", ""}
+				}
+			}
+		)
+	}
+
+	local return_type_section = {
+		node_constructor(
+			{
+				type = "finder",
+				children = {"return_statement", ""}
+			}
+		)
+	}
+	return {
+		node_identifiers = {"function_definition", "method_declaration"},
+		sections = {
+			params = params_section,
+			return_type = return_type_section
 		}
 	}
+end
+
+return {
+	get_tree = get_tree
 }
