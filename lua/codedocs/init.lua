@@ -1,10 +1,10 @@
 local M = {}
 local docs_gen = require("codedocs.docs_gen.init")
+local Styles_manager = docs_gen.style_manager
 
 function M.setup(config)
-	local style_manager = docs_gen.style_manager
 	if config and config.default_styles then
-		style_manager.set_default_lang_style(config.default_styles)
+		Styles_manager.set_default_lang_style(config.default_styles)
 	end
 end
 
@@ -28,7 +28,7 @@ function M.insert_docs()
 	local parser = require("codedocs.node_parser.parser")
 
 	local struct_name, node = parser.get_node_type(lang)
-	local opts, style = builder.get_opts_and_style(lang, struct_name)
+	local opts, style = Styles_manager.get_lang_data(lang, struct_name)
 	local sections = style.general.section_order
 	local include_type = style.general[opts.item.include_type.val]
 	local parser_settings = get_node_settings(style, opts, struct_name)
