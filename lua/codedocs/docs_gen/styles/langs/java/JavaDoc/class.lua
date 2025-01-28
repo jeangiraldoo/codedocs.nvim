@@ -14,7 +14,10 @@ local general_opts = {
 	[general.section_title_gap.val] = false,
 	[general.item_gap.val] = false,
 	[general.section_order.val] = {"attrs"},
-	[class_general.include_attrs.val] = false,
+	[class_general.include_class_body_attrs.val] = false,
+	[class_general.include_instance_attrs.val] = false,
+    -- Java attrs can only be declared in the class body
+	[class_general.include_only_constructor_instance_attrs.val] = nil
 }
 
 local attrs_opts = {
@@ -28,7 +31,6 @@ local attrs_opts = {
 	[item.name_wrapper.val] = {"- ", ": "},
 	[item.type_wrapper.val] = {"", ""},
 	[item.is_type_below_name_first.val] = false,
-	[class_item.include_non_constructor_attrs.val] = false,
 }
 
 return {

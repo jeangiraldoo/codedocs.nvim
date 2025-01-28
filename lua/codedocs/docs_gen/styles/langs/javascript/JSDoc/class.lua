@@ -2,7 +2,6 @@ local opts = require("codedocs.docs_gen.styles.opts")
 local general = opts.general
 local item = opts.item
 local class_general = opts.class_general
-local class_item = opts.class_item
 
 local general_opts = {
 	[general.struct.val] = {"/**", " * ", " */"},
@@ -14,7 +13,9 @@ local general_opts = {
 	[general.section_title_gap.val] = false,
 	[general.item_gap.val] = false,
 	[general.section_order.val] = {"attrs"},
-	[class_general.include_attrs.val] = false
+	[class_general.include_class_body_attrs.val] = false,
+	[class_general.include_instance_attrs.val] = false,
+	[class_general.include_only_constructor_instance_attrs.val] = false
 }
 
 local attrs_opts = {
@@ -28,7 +29,6 @@ local attrs_opts = {
 	[item.name_wrapper.val] = {"", ""},
 	[item.type_wrapper.val] = {"{", "}"},
 	[item.is_type_below_name_first.val] = false,
-	[class_item.include_non_constructor_attrs.val] = false,
 }
 
 return {

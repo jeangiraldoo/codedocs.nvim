@@ -28,11 +28,15 @@ local item = {
 }
 
 local class_general = {
-	include_attrs = {val = "include_attrs", type = "boolean"}
+	-- include_attrs = {val = "include_attrs", type = "boolean"}
+	include_class_body_attrs = {val = "include_attrs", type = "boolean"},
+	include_instance_attrs = {val = "include_non_constructor_attrs", type = "boolean"},
+	include_only_constructor_instance_attrs = {val = "lala", type = "boolean"}
 }
 
 local class_item = {
-	include_non_constructor_attrs = {val = "include_non_constructor_attrs", type = "boolean"}
+	-- include_non_constructor_attrs = {val = "include_non_constructor_attrs", type = "boolean"}
+	-- include_instance_attrs = {val = "include_non_constructor_attrs", type = "boolean"}
 }
 
 local generic = {

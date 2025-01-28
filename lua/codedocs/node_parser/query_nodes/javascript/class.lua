@@ -9,7 +9,7 @@ local get_methods = [[
 local get_constructor = [[
 	(class_body
 		(method_definition
-			(propery_identifier) @name
+			(property_identifier) @name
 			(#eq? @name "constructor")
 		) @target
 	)
@@ -23,85 +23,82 @@ local get_attrs_in_methods = [[
 	)
 ]]
 
+local get_class_attrs = [[
+	(class_body
+		(field_definition
+			"static"
+			(property_identifier) @item_name
+		)
+	)
+]]
+
 local function get_tree(node_constructor)
+	local regex = node_constructor({
+		type = "regex",
+		children = {pattern = "%f[%a]static%f[%A]", mode = false, query = [[(property_identifier) @item_name]]}
+	})
 
-	local class_fields_node = node_constructor(
-		{
-			type = "simple",
-			children = {
-				[[
-					(class_declaration
-						(class_body
-							[
-								(field_definition
-									(property_identifier) @item_name
-								)
-							]
-						)
-					)
-				]]
-			}
+	local get_body_instance_attrs = node_constructor({
+		type = "chain",
+		children = {[[(class_body) @target]], [[(field_definition) @target]], regex}
+	})
+
+	local no_attrs_node = node_constructor({
+		type = "simple",
+		children = {""}
+	})
+
+	local get_all_method_attrs = node_constructor({
+		type = "double_recursion",
+		children = {
+			first_query = get_methods,
+			second_query = get_attrs_in_methods,
+			target = "assignment_expression"
 		}
-	)
+	})
 
-	local get_all_attrs = node_constructor(
-		{
-			type = "double_recursion",
-			children = {
-				first_query = get_methods,
-				second_query = get_attrs_in_methods,
-				target = "assignment_expression"
-			}
+	local get_all_instance_attrs = node_constructor({
+		type = "accumulator",
+		children = {get_body_instance_attrs, get_all_method_attrs}
+	})
+
+	local get_only_constructor_attrs = node_constructor({
+		type = "double_recursion",
+		children = {
+			first_query = get_constructor,
+			second_query = get_attrs_in_methods,
+			target = "assignment_expression"
 		}
-	)
+	})
 
-	local get_only_constructor_attrs = node_constructor(
-		{
-			type = "double_recursion",
-			children = {
-				first_query = get_constructor,
-				second_query = get_attrs_in_methods,
-				target = "assignment_expression"
-			}
-		}
-	)
+	local get_instance_attrs = node_constructor({
+		type = "boolean",
+		children = {get_only_constructor_attrs, get_all_instance_attrs}
+	})
 
-	local include_all_attrs = node_constructor(
-		{
-			type = "boolean",
-			children = {get_all_attrs, get_only_constructor_attrs}
-		}
-	)
-
-	local acc = node_constructor(
-		{
-			type = "accumulator",
-			children = {class_fields_node, include_all_attrs}
-		}
-	)
-
-	local no_attrs_node = node_constructor(
-		{
-			type = "simple",
-			children = {""}
-		}
-	)
-
-	local include_attr_section = node_constructor(
+	local include_instance_attrs_or_not = node_constructor(
 		{
 			type = "boolean",
-			children = {acc, no_attrs_node}
+			children = {get_instance_attrs, no_attrs_node}
 		}
 	)
 
-	local attrs_section = {
-		include_attr_section
-	}
+	local include_class_fields = node_constructor({
+		type = "accumulator",
+		children = {get_class_attrs, include_instance_attrs_or_not}
+	})
+
+	local include_class_fields_or_not = node_constructor({
+		type = "boolean",
+		children = {include_class_fields, include_instance_attrs_or_not}
+	})
 
 	return {
 		node_identifiers = {"class_declaration"},
 		sections = {
-			attrs = attrs_section
+			attrs = {
+				include_class_fields_or_not
+			}
 		}
 	}
 end

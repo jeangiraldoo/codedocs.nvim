@@ -48,12 +48,67 @@ function double_recursion_node:process(settings)
 		end
 	end
 	local items = {}
+	local original_node = settings.node
 	for _, node_item in ipairs (nodes) do
 		settings.node = node_item
 		local result = process_query(second_query, settings)
 		table.insert(items, result)
 	end
+	settings.node = original_node
 	return get_trimmed_table(items)
+end
+
+local chain_node = query_node:new()
+function chain_node:process(settings)
+	local filetype = vim.bo.filetype
+	local original_node = settings.node
+	local result_nodes = {original_node}
+	for _, query in ipairs(self.children) do
+		if type(query) ~= "string" then
+			query.children.nodes = result_nodes
+			local result = process_query(query, settings)
+			settings.node = original_node
+			return result
+		else
+			local query_obj = vim.treesitter.query.parse(filetype, query)
+			local new_results = {}
+			local original_node = settings.node
+			for _, node in ipairs(result_nodes) do
+				settings.node = node
+				for id, capture_node, _ in query_obj:iter_captures(node, 0) do
+					local capture_name = query_obj.captures[id]
+					if capture_name ~= "target" then
+						settings.node = capture_node
+						local result = process_query(query, settings)
+						table.insert(new_results, result)
+					else
+						table.insert(new_results, capture_node)
+					end
+				end
+			end
+			result_nodes = new_results
+		end
+	end
+	settings.node = original_node
+	return get_trimmed_table(result_nodes)
+end
+
+local regex_node = query_node:new()
+function regex_node:process(settings)
+	local filetype = vim.bo.filetype
+	local pattern = self.children.pattern
+	local nodes = {}
+	for _, node, _ in ipairs(self.children.nodes) do
+		local node_text = vim.treesitter.get_node_text(node, 0)
+		local result = string.find(node_text, pattern)
+		local expected_result = (self.children.mode) and true or nil
+		if result == expected_result then
+			settings.node = node
+			local final = process_query(self.children.query, settings)
+			table.insert(nodes, final)
+		end
+	end
+	return get_trimmed_table(nodes)
 end
 
 local boolean_node = query_node:new()
@@ -68,7 +123,8 @@ local accumulator_node = query_node:new()
 function accumulator_node:process(settings)
     local results = {}
     for _, query in ipairs(self.children) do
-        table.insert(results, process_query(query, settings))
+		local result = process_query(query, settings)
+        table.insert(results, result)
     end
     return get_trimmed_table(results)
 end
@@ -89,6 +145,8 @@ local function node_constructor(data)
 		double_recursion = double_recursion_node,
 		accumulator = accumulator_node,
 		finder = finder_node,
+		chain = chain_node,
+		regex = regex_node
 	}
 	local node = query_nodes[node_type]:new(node_type, children)
 	return node
