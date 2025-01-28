@@ -6,6 +6,10 @@ function M.setup(config)
 	if config and config.default_styles then
 		Styles_manager.set_default_lang_style(config.default_styles)
 	end
+
+	if config and config.styles then
+		Styles_manager.update_style(config.styles)
+	end
 end
 
 local function get_node_settings(style, opts, struct_name)
