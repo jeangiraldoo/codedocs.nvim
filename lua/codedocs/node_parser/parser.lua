@@ -127,7 +127,7 @@ end
 
 local function get_supported_node_data(node_at_cursor, lang_tree)
 	if node_at_cursor == nil then
-		return "generic", node_at_cursor
+		return "comment", node_at_cursor
 	end
 	while node_at_cursor do
 		for struct_name, value in pairs(lang_tree) do
@@ -140,12 +140,12 @@ local function get_supported_node_data(node_at_cursor, lang_tree)
 		end
 		node_at_cursor = node_at_cursor:parent()
 	end
-  	return "generic", node_at_cursor
+  	return "comment", node_at_cursor
 end
 
 local function get_data(filetype, node, sections, struct_name, include_type, settings)
 	local pos = vim.api.nvim_win_get_cursor(0)[1] - 1
-	if struct_name == "generic" then
+	if struct_name == "comment" then
 		return pos, {}
 	else
 		return node:range(), get_node_data(node, struct_name, sections, filetype, include_type, settings)
@@ -154,7 +154,7 @@ end
 
 local function get_node_type(filetype)
 	if not validate_treesitter(filetype) then
-		return "generic", nil
+		return "comment", nil
 	end
 	local lang_data = get_lang_trees(filetype)
 	local lang_trees = lang_data["trees"]

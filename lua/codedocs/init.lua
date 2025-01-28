@@ -40,7 +40,7 @@ function M.insert_docs()
 	local pos, data = parser.get_data(lang, node, sections, struct_name, include_type, parser_settings)
 	local struct = style.general[opts.general.struct.val]
 
-	local docs = (struct_name == "generic") and struct or builder.get_docs(opts, style, data, struct)
+	local docs = (struct_name == "comment") and struct or builder.get_docs(opts, style, data, struct)
 	local docs_data = {
 		pos = pos,
 		direction = style.general[opts.general.direction.val],
