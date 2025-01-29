@@ -44,6 +44,7 @@ function M.insert_docs()
 
 	local struct_name, node = parser.get_node_type(lang)
 	local opts, style = Styles_manager.get_lang_data(lang, struct_name)
+	require("codedocs.docs_gen.styles.validations").validate_style(opts, style, struct_name)
 	local sections = style.general.section_order
 	local parser_settings = get_node_settings(style, opts, struct_name)
 	local pos, data = parser.get_data(lang, node, sections, struct_name, parser_settings)

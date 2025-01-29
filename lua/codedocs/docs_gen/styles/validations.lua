@@ -76,14 +76,20 @@ end
 -- @param style (table) Settings to configure the language's docstring
 local function validate_style(opts, style, struct_name)
 	for _, opt in pairs(opts) do
-		local opt_name = opt.val
-		local opt_type = opt.type
-		local value_received = style[opt_name]
-
-		if not validate_type(opt_type, value_received) then
-			display_error(opt_name, "be a " .. opt_type .. ". Received " .. type(value_received))
+		for _, opt_data in pairs(opt) do
+			local opt_name = opt_data.val
+			local opt_expected_type = opt_data.type
+			for _, section_opts in pairs(style) do
+				for section_opt_name, val in pairs(section_opts) do
+					if opt_name == section_opt_name then
+						if not validate_type(opt_expected_type, val) then
+							display_error(opt_name, "be a " .. opt_expected_type .. ". Received " .. type(val))
+						end
+						validate_value(opts, opt, val, struct_name)
+					end
+				end
+			end
 		end
-		validate_value(opts, opt, value_received, struct_name)
 	end
 end
 
