@@ -39,7 +39,7 @@ local function get_child_data_if_present(node, query)
 end
 
 
-local function get_parsed_item_name_first(capture_name, items, current_item, node_text)
+local function get_parsed_item_name_first(capture_name, items, current_item, node_text, include_type)
 	if capture_name == "item_name" then
 		if current_item.name ~= nil then
 			table.insert(items, current_item)
@@ -48,7 +48,7 @@ local function get_parsed_item_name_first(capture_name, items, current_item, nod
 		else
 			current_item.name = node_text
 		end
-	elseif capture_name == "item_type" then
+	elseif capture_name == "item_type" and include_type then
 		current_item.type = node_text
 		table.insert(items, current_item)
 		current_item = {}
@@ -56,19 +56,18 @@ local function get_parsed_item_name_first(capture_name, items, current_item, nod
 	return current_item
 end
 
-local function get_parsed_item_name_last(capture_name, items, current_item, node_text)
+local function get_parsed_item_name_last(capture_name, items, current_item, node_text, include_type)
 	if capture_name == "item_name" then
 		current_item.name = node_text
 		table.insert(items, current_item)
 		current_item = {}
-	elseif capture_name == "item_type" then
+	elseif capture_name == "item_type" and include_type then
 		current_item.type = node_text
 	end
 	return current_item
 end
 
 local function parse_simple_query(node, include_type, filetype, query, identifier_pos)
-	include_type = true
 	local items = {}
 	if query == nil then
 		return items
@@ -81,9 +80,9 @@ local function parse_simple_query(node, include_type, filetype, query, identifie
 		local node_text = vim.treesitter.get_node_text(capture_node, 0)
 
 		if identifier_pos then
-			current_item = get_parsed_item_name_first(capture_name, items, current_item, node_text)
+			current_item = get_parsed_item_name_first(capture_name, items, current_item, node_text, include_type)
 		else
-			current_item = get_parsed_item_name_last(capture_name, items, current_item, node_text)
+			current_item = get_parsed_item_name_last(capture_name, items, current_item, node_text, include_type)
 		end
 	end
 	-- Add the leftover param to the list
@@ -97,7 +96,7 @@ local function process_query(query, context)
 	local filetype = vim.bo.filetype
     -- Handle different types of queries
     if type(query) == "string" then
-        return parse_simple_query(context.node, include_type, filetype, query, context.identifier_pos)
+        return parse_simple_query(context.node, context.include_type, filetype, query, context.identifier_pos)
     elseif type(query) == "table" then
         -- Recursively process nested queries
         return query:process(context)
@@ -105,15 +104,17 @@ local function process_query(query, context)
 end
 
 
-local function get_node_data(node, struct_name, sections, filetype, include_type, settings)
+local function get_node_data(node, struct_name, sections, filetype, settings)
 	local data = {}
 	local lang_data = get_lang_trees(filetype)
 	local identifier_pos, lang_node_trees = lang_data["identifier_pos"], lang_data["trees"]
 	local struct_sections = lang_node_trees[struct_name].sections
 	for _, section_name in pairs(sections) do
+		local include_type = settings[section_name].include_type
 		local section_tree = struct_sections[section_name]
 		local items = {}
 		for _, tree_node in pairs(section_tree) do
+			settings.include_type = include_type
 			settings["node"] = node
 			settings.identifier_pos = identifier_pos
 			items = tree_node:process(settings)
@@ -143,12 +144,12 @@ local function get_supported_node_data(node_at_cursor, lang_tree)
   	return "comment", node_at_cursor
 end
 
-local function get_data(filetype, node, sections, struct_name, include_type, settings)
+local function get_data(filetype, node, sections, struct_name, settings)
 	local pos = vim.api.nvim_win_get_cursor(0)[1] - 1
 	if struct_name == "comment" then
 		return pos, {}
 	else
-		return node:range(), get_node_data(node, struct_name, sections, filetype, include_type, settings)
+		return node:range(), get_node_data(node, struct_name, sections, filetype, settings)
 	end
 end
 

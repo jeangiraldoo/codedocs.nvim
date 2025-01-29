@@ -14,8 +14,18 @@ end
 
 local function get_node_settings(style, opts, struct_name)
 	local settings = {
-		func = {},
+		func = {
+			params = {
+				include_type = (style.params) and style.params[opts.item.include_type.val]
+			},
+			return_type = {
+				include_type = (style.return_type) and style.return_type[opts.item.include_type.val]
+			}
+		},
 		class = {
+			attrs = {
+				include_type = (style.attrs) and style.attrs[opts.item.include_type.val]
+			},
 			boolean_condition = {
 				style.general[opts.class_general.include_class_body_attrs.val],
 				style.general[opts.class_general.include_instance_attrs.val],
@@ -35,9 +45,8 @@ function M.insert_docs()
 	local struct_name, node = parser.get_node_type(lang)
 	local opts, style = Styles_manager.get_lang_data(lang, struct_name)
 	local sections = style.general.section_order
-	local include_type = style.general[opts.item.include_type.val]
 	local parser_settings = get_node_settings(style, opts, struct_name)
-	local pos, data = parser.get_data(lang, node, sections, struct_name, include_type, parser_settings)
+	local pos, data = parser.get_data(lang, node, sections, struct_name, parser_settings)
 	local struct = style.general[opts.general.struct.val]
 
 	local docs = (struct_name == "comment") and struct or builder.get_docs(opts, style, data, struct)
