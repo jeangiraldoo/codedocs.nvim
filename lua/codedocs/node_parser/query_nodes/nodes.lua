@@ -136,6 +136,31 @@ function simple_query_node:process(settings)
 	return final
 end
 
+local group_node = query_node:new()
+function group_node:process(settings)
+	local items = process_query(self.children[1], settings)
+	local groups = {}
+	local name_group = {}
+	for _, item_data in pairs(items) do
+		local item_name = item_data.name
+		local item_type = item_data.type
+		if item_type ~= nil and item_name == nil then
+			for _, final_name in pairs(name_group) do
+				table.insert(groups, {name = final_name, type = item_type})
+			end
+			name_group = {}
+		elseif item_type ~= nil and item_name ~= nil then
+			table.insert(groups, {name = item_name, type = item_type})
+		else
+			table.insert(name_group, item_name)
+		end
+	end
+	if #groups == 0 then
+		return items
+	end
+	return groups
+end
+
 local function node_constructor(data)
 	local node_type = data.type
 	local children = data.children
@@ -146,7 +171,8 @@ local function node_constructor(data)
 		accumulator = accumulator_node,
 		finder = finder_node,
 		chain = chain_node,
-		regex = regex_node
+		regex = regex_node,
+		group = group_node
 	}
 	local node = query_nodes[node_type]:new(node_type, children)
 	return node
