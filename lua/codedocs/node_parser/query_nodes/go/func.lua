@@ -18,16 +18,16 @@ local function get_tree(node_constructor)
 	}
 
 	local return_type_section = {
-		-- node_constructor({
-		-- 	type = "simple",
-		-- 	children = {
-		-- 		[[
-		-- 			(function_declaration
-		-- 				(type_identifier) @item_type
-		-- 			)
-		-- 		]]
-		-- 	}
-		-- }),
+		node_constructor({
+			type = "simple",
+			children = {
+				[[
+					(function_declaration
+						(type_identifier) @item_type
+					)
+				]]
+			}
+		}),
 		node_constructor({
 			type = "finder",
 			children = {
