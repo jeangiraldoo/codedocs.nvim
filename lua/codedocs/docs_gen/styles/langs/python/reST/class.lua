@@ -2,7 +2,6 @@ local opts = require("codedocs.docs_gen.styles.opts")
 local general = opts.general
 local item = opts.item
 local class_general = opts.class_general
-local class_item = opts.class_item
 
 local general_opts = {
 				[general.struct.val] = {'"""', "", '"""'},
@@ -26,7 +25,7 @@ local attrs_opts = {
 				[item.indent.val] = false,
 				[item.include_type.val] = true,
 				[item.type_first.val] = false,
-				[item.kw.val] = ":param",
+				[item.name_kw.val] = ":param",
 				[item.type_kw.val] = ":type",
 				[item.name_wrapper.val] = {"", ":"},
 				[item.type_wrapper.val] = {"", ""},

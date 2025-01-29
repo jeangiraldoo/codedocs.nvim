@@ -102,7 +102,7 @@ end
 
 local function get_item_line(opts, style, wrapped_item)
 	local item_name, item_type = wrapped_item[1], wrapped_item[2]
-	local item_kw, item_type_kw = style[opts.item.kw.val], style[opts.item.type_kw.val]
+	local item_kw, item_type_kw = style[opts.item.name_kw.val], style[opts.item.type_kw.val]
 	local is_type_below_name_first = style[opts.item.is_type_below_name_first.val]
 
 	local standalone_name = get_formatted_item_info(item_kw, item_name, "", false)

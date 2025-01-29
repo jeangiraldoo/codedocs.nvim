@@ -20,7 +20,7 @@ local item = {
 	indent = {val = "indent", type = "boolean"}, -- Determines wether or not the items should be indented
 	include_type = {val = "include_type", type = "boolean"}, -- Determines if the item type is included
 	type_first = {val = "type_first", type = "boolean"}, -- Determines if the item type is placed before the name
-	kw = {val = "name_kw", type = "string"}, -- Keyword prefixed to each item name in the docstring
+	name_kw = {val = "name_kw", type = "string"}, -- Keyword prefixed to each item name in the docstring
 	type_kw = {val = "type_kw", type = "string"}, -- Keyword prefixed to each item type in the docstring
 	name_wrapper = {val = "name_wrapper", type = "table"}, -- Strings that surround each item name
 	type_wrapper = {val = "type_wrapper", type = "table"}, -- Strings that surround each item type
