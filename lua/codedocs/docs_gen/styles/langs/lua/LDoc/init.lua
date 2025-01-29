@@ -1,4 +1,4 @@
-local current_dir = "codedocs.docs_gen.styles.langs.lua.ldoc."
+local current_dir = "codedocs.docs_gen.styles.langs.lua.LDoc."
 
 return {
 	comment = require(current_dir .. "comment"),

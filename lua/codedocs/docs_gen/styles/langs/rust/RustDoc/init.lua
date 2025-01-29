@@ -1,4 +1,4 @@
-local current_dir = "codedocs.docs_gen.styles.langs.rust.rustdoc."
+local current_dir = "codedocs.docs_gen.styles.langs.rust.RustDoc."
 
 return {
 	comment = require(current_dir .. "comment"),

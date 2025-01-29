@@ -1,4 +1,4 @@
-local current_dir = "codedocs.docs_gen.styles.langs.typescript.tsdoc."
+local current_dir = "codedocs.docs_gen.styles.langs.typescript.TSDoc."
 
 return {
 	comment = require(current_dir .. "comment"),

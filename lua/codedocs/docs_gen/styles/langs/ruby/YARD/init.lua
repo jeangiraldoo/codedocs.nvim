@@ -1,4 +1,4 @@
-local current_dir = "codedocs.docs_gen.styles.langs.ruby.yard."
+local current_dir = "codedocs.docs_gen.styles.langs.ruby.YARD."
 
 return {
 	comment = require(current_dir .. "comment"),

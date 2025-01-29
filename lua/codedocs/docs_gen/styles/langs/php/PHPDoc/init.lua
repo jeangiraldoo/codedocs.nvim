@@ -1,4 +1,4 @@
-local current_dir = "codedocs.docs_gen.styles.langs.php.phpdoc."
+local current_dir = "codedocs.docs_gen.styles.langs.php.PHPDoc."
 
 return {
 	comment = require(current_dir .. "comment"),

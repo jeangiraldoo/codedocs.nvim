@@ -1,4 +1,4 @@
-local current_dir = "codedocs.docs_gen.styles.langs.python.google."
+local current_dir = "codedocs.docs_gen.styles.langs.python.Google."
 
 return {
 	comment = require(current_dir .. "comment"),
