@@ -614,13 +614,7 @@ This diagram outlines the features and improvements planned for the project at d
 
 ```mermaid
 flowchart LR
-    0[Current stage] --> 1
-    1[Alpha
-    - General documentation
-    - Support for functions
-    - Support for classes
-    - Support for a generic style
-    - Full style customization]
+    1[Current stage (Alpha)]
     2[Beta
     - Support for documenting files/modules
     - Support for documenting variables
