@@ -137,6 +137,9 @@ This table lists the structures and their supported docstring styles for each la
 | Java | [JavaDoc](#java-javadoc) | `class`, `function`, `comment` |
 | Kotlin | [KDoc](#kotlin-kdoc) | `class`, `function`, `comment` |
 | Rust | [RustDoc](#rust-kdoc) | `function`, `comment` |
+| Go | [Godoc](#go-godoc) | `function`, `comment` |
+| C | [Doxygen](#c-doxygen) | `function`, `comment` |
+| C++ | [Doxygen](#c&#43;&#43;-doxygen) | `function`, `comment` |
 
 ### Docstring examples:
 
@@ -450,6 +453,53 @@ class SomeClass {
 ///
 fn add(a: i32, b: i32) -> i32 {
     a + b
+}
+```
+
+##### Go (Godoc):
+[Official Godoc documentation](https://go.dev/doc/comment)
+
+```go
+// <title goes here>
+//
+// Parameters:
+// - a:
+// - b:
+//
+// Returns
+//
+func cool_function(a, b int) int {
+    a + b
+}
+```
+
+##### C (Doxygen):
+[Official Godoc documentation](https://go.dev/doc/comment)
+
+```c
+/**
+ *
+ *
+ * @param a
+ * @param b
+ */
+int cool_function(const char* a, int b) {
+    return b + c;
+}
+```
+
+##### C++ (Doxygen):
+[Official Godoc documentation](https://go.dev/doc/comment)
+
+```c++
+/**
+ *
+ *
+ * @param a
+ * @param b
+ */
+int cool_function(const std::string& a, int b) {
+    return b + c;
 }
 ```
 
