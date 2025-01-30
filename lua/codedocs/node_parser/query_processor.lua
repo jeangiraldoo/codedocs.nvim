@@ -15,8 +15,12 @@ local function get_parsed_item_name_first(capture_name, node_text, current_item,
 		else
 			return nil, {name = node_text}
 		end
-	elseif capture_name == "item_type" and include_type then
-		return {name = current_item.name, type = node_text}, {}
+	elseif capture_name == "item_type" then
+		if include_type then
+			return {name = current_item.name, type = node_text}, {}
+		else
+			return {name = current_item.name}, {}
+		end
 	end
 end
 
