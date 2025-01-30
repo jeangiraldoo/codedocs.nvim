@@ -1,3 +1,0 @@
-return {
-	get_data 
-}
