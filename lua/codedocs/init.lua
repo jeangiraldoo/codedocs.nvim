@@ -41,8 +41,9 @@ function M.insert_docs()
 
 	local builder = docs_gen.builder
 	local parser = require("codedocs.node_parser.parser")
+	local extractor = require("codedocs.node_parser.struct_finder")
 
-	local struct_name, node = parser.get_node_type(lang)
+	local struct_name, node = extractor.get_node_type(lang)
 	local opts, style = Styles_manager.get_lang_data(lang, struct_name)
 	require("codedocs.docs_gen.styles.validations").validate_style(opts, style, struct_name)
 	local sections = style.general.section_order
