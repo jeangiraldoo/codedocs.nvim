@@ -1,0 +1,47 @@
+name: Format Check
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  format-check:
+    name: Check formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Codedocs Repository
+        uses: actions/checkout@v4
+
+      - name: Install StyLua
+        run: |
+          curl -L https://github.com/JohnnyMorganz/StyLua/releases/download/v2.0.2/stylua-linux-x86_64.zip -o stylua.zip
+          unzip stylua.zip -d /usr/local/bin
+          chmod +x /usr/local/bin/stylua
+
+      - name: Check Formatting
+        run: |
+          if git rev-parse --verify HEAD~1 > /dev/null 2>&1; then
+              # If there's a previous commit, use HEAD~1
+              modified_files=$(git diff --name-only HEAD~1 HEAD -- '*.lua')
+          else
+              # Otherwise, only check the current HEAD (i.e., first commit)
+              modified_files=$(git diff --name-only HEAD -- '*.lua')
+          fi
+
+          if [ -n "$modified_files" ]; then
+              echo "$modified_files"
+              stylua --check $modified_files
+          else
+              echo "No Lua files were modified. Skipping formatting check."
+          fi
+
