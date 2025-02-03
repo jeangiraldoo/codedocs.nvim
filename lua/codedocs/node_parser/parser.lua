@@ -40,9 +40,8 @@ end
 
 local function get_node_data(node, struct_name, sections, filetype, settings)
 	local data = {}
-	local lang_data = get_lang_trees(filetype)
-	local identifier_pos, lang_node_trees = lang_data["identifier_pos"], lang_data["trees"]
-	local struct_sections = lang_node_trees[struct_name].sections
+	local lang_node_trees = settings.tree
+	local struct_sections = lang_node_trees.sections
 	for _, section_name in pairs(sections) do
 		local include_type = settings[section_name].include_type
 		local section_tree = struct_sections[section_name]
@@ -50,7 +49,6 @@ local function get_node_data(node, struct_name, sections, filetype, settings)
 		for _, tree_node in pairs(section_tree) do
 			settings.include_type = include_type
 			settings["node"] = node
-			settings.identifier_pos = identifier_pos
 			items = tree_node:process(settings)
 
 			if #items > 0 then break end

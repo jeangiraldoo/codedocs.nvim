@@ -1,4 +1,4 @@
-local defaults = require("codedocs.docs_gen.styles.init")
+-- local defaults = require("codedocs.docs_gen.styles.init")
 
 local function copy_docs(docs_struct)
 	local copied_docs_struct = {}
