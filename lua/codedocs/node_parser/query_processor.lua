@@ -1,8 +1,8 @@
 local function get_parsed_item_name_last(capture_name, node_text, current_item, include_type)
 	if capture_name == "item_name" then
-		return {name = node_text, type = current_item.type}, {}
+		return { name = node_text, type = current_item.type }, {}
 	elseif capture_name == "item_type" and include_type then
-		return nil, {name = current_item.name, type = node_text}
+		return nil, { name = current_item.name, type = node_text }
 	else
 		return nil, current_item
 	end
@@ -11,15 +11,15 @@ end
 local function get_parsed_item_name_first(capture_name, node_text, current_item, include_type)
 	if capture_name == "item_name" then
 		if current_item.name ~= nil then
-			return current_item, {name = node_text}
+			return current_item, { name = node_text }
 		else
-			return nil, {name = node_text}
+			return nil, { name = node_text }
 		end
 	elseif capture_name == "item_type" then
 		if include_type then
-			return {name = current_item.name, type = node_text}, {}
+			return { name = current_item.name, type = node_text }, {}
 		else
-			return {name = current_item.name}, {}
+			return { name = current_item.name }, {}
 		end
 	end
 end
@@ -49,5 +49,5 @@ local function parse_simple_query(node, include_type, filetype, query, identifie
 end
 
 return {
-	process_query = parse_simple_query
+	process_query = parse_simple_query,
 }

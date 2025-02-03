@@ -7,14 +7,12 @@ local path_formats = {
 	dir = current_dir .. "/langs/{lang_name}/{struct_name}",
 	struct_path = "langs.{lang_name}.{struct_name}",
 	tree = "codedocs.specs.{struct_path}.tree",
-	style = "codedocs.specs.{struct_path}.styles.{style_name}"
+	style = "codedocs.specs.{struct_path}.styles.{style_name}",
 }
 
-local function format_path(template, values)
-    return (template:gsub("{(.-)}", values))
-end
+local function format_path(template, values) return (template:gsub("{(.-)}", values)) end
 
 return {
 	path_formats = path_formats,
-	format_path = format_path
+	format_path = format_path,
 }

@@ -1,13 +1,13 @@
 return {
 	default_style = "JavaDoc",
 	identifier_pos = false,
-	styles = {JavaDoc = true},
+	styles = { JavaDoc = true },
 	structs = {
 		func = {
-			node_identifiers = {"method_declaration"}
+			node_identifiers = { "method_declaration" },
 		},
 		class = {
-			node_identifiers = {"class_declaration"}
+			node_identifiers = { "class_declaration" },
 		},
-	}
+	},
 }

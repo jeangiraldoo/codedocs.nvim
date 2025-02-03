@@ -51,30 +51,30 @@ local no_fields = ""
 local function get_tree(node_constructor)
 	local get_instance_attrs = node_constructor({
 		type = "boolean",
-		children = {get_constructor_instance_attrs, get_all_instance_attrs}
+		children = { get_constructor_instance_attrs, get_all_instance_attrs },
 	})
 	local include_instance_attrs = node_constructor({
 		type = "boolean",
-		children = {get_instance_attrs, no_fields}
+		children = { get_instance_attrs, no_fields },
 	})
 	local include_class_attrs = node_constructor({
 		type = "accumulator",
-		children = {get_companion_object_attrs, include_instance_attrs}
+		children = { get_companion_object_attrs, include_instance_attrs },
 	})
 	local include_attrs = node_constructor({
 		type = "boolean",
-		children = {include_class_attrs, include_instance_attrs}
+		children = { include_class_attrs, include_instance_attrs },
 	})
 
 	return {
 		sections = {
 			attrs = {
-				include_attrs
-			}
-		}
+				include_attrs,
+			},
+		},
 	}
 end
 
 return {
-		get_tree = get_tree
+	get_tree = get_tree,
 }

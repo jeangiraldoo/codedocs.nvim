@@ -1,5 +1,5 @@
 return {
 	styles = {
-		JavaDoc = require("codedocs.specs.java.comment.styles.JavaDoc")
-	}
+		JavaDoc = require("codedocs.specs.java.comment.styles.JavaDoc"),
+	},
 }

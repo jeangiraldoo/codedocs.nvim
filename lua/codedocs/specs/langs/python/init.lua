@@ -4,10 +4,10 @@ return {
 	styles = { Google = true, Numpy = true, reST = true },
 	structs = {
 		func = {
-			node_identifiers = {"function_definition"}
+			node_identifiers = { "function_definition" },
 		},
 		class = {
-			node_identifiers = {"class_definition"}
-		}
-	}
+			node_identifiers = { "class_definition" },
+		},
+	},
 }

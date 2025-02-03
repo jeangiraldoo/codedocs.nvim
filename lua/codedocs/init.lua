@@ -8,35 +8,31 @@ local spec_customizer, spec_reader = spec_manager.customizer, spec_manager.reade
 local M = {}
 
 function M.setup(config)
-	if config and config.default_styles then
-		spec_customizer.set_default_lang_style(config.default_styles)
-	end
+	if config and config.default_styles then spec_customizer.set_default_lang_style(config.default_styles) end
 
-	if config and config.styles then
-		spec_customizer.update_style(config.styles)
-	end
+	if config and config.styles then spec_customizer.update_style(config.styles) end
 end
 
 local function get_node_settings(style, opts, struct_name)
 	local settings = {
 		func = {
 			params = {
-				include_type = (style.params) and style.params[opts.item.include_type.val]
+				include_type = style.params and style.params[opts.item.include_type.val],
 			},
 			return_type = {
-				include_type = (style.return_type) and style.return_type[opts.item.include_type.val]
-			}
+				include_type = style.return_type and style.return_type[opts.item.include_type.val],
+			},
 		},
 		class = {
 			attrs = {
-				include_type = (style.attrs) and style.attrs[opts.item.include_type.val]
+				include_type = style.attrs and style.attrs[opts.item.include_type.val],
 			},
 			boolean_condition = {
 				style.general[opts.class_general.include_class_body_attrs.val],
 				style.general[opts.class_general.include_instance_attrs.val],
-				style.general[opts.class_general.include_only_constructor_instance_attrs.val]
-			}
-		}
+				style.general[opts.class_general.include_only_constructor_instance_attrs.val],
+			},
+		},
 	}
 	return settings[struct_name]
 end
@@ -65,12 +61,17 @@ function M.insert_docs()
 	local docs_data = {
 		pos = pos,
 		direction = style.general[opts.general.direction.val],
-		title_pos = style.general[opts.general.title_pos.val]
+		title_pos = style.general[opts.general.title_pos.val],
 	}
 	require("codedocs.writer").start(docs, docs_data)
 end
 
-vim.api.nvim_set_keymap('n', "<Plug>Codedocs", "<cmd>lua require('codedocs').insert_docs()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap(
+	"n",
+	"<Plug>Codedocs",
+	"<cmd>lua require('codedocs').insert_docs()<CR>",
+	{ noremap = true, silent = true }
+)
 vim.api.nvim_create_user_command("Codedocs", M.insert_docs, {})
 
 return M

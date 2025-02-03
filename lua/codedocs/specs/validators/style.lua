@@ -12,11 +12,9 @@ end
 -- @return boolean
 local function validate_table_items(table)
 	for _, item in pairs(table) do
-		if type(item) ~= "string" then
-			return {false, item}
-		end
+		if type(item) ~= "string" then return { false, item } end
 	end
-	return {true, ""}
+	return { true, "" }
 end
 
 --- Returns the length of a table
@@ -55,9 +53,7 @@ local function validate_value(opts, setting_values, value, struct_name)
 		display_error(setting_values.val, "contain a number higher than 0. Received " .. value)
 	end
 
-	if setting_values.type == "table" then
-		validate_table(opts, setting_values.val, value, struct_name)
-	end
+	if setting_values.type == "table" then validate_table(opts, setting_values.val, value, struct_name) end
 end
 
 --- Validates if the value assigned to a setting corresponds to its expected data type
@@ -65,9 +61,7 @@ end
 -- @param actual_value Value assigned to the setting
 -- @return boolean
 local function validate_type(opt_type, actual_value)
-	if type(actual_value) ~= opt_type then
-		return false
-	end
+	if type(actual_value) ~= opt_type then return false end
 	return true
 end
 
@@ -95,5 +89,5 @@ local function validate(opts, style, struct_name)
 end
 
 return {
-	validate = validate
+	validate = validate,
 }

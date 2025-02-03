@@ -12,9 +12,9 @@ local function get_tree(node_constructor)
 							)
 						)
 					)
-				]]
-			}
-		})
+				]],
+			},
+		}),
 	}
 
 	local return_type_section = {
@@ -29,23 +29,23 @@ local function get_tree(node_constructor)
 							(generic_type) @item_type
 						]
 					)
-				]]
-			}
+				]],
+			},
 		}),
 		node_constructor({
 			type = "finder",
-			children = {"return_expression", ""}
-		})
+			children = { "return_expression", "" },
+		}),
 	}
 
 	return {
 		sections = {
 			params = params_section,
-			return_type = return_type_section
-		}
+			return_type = return_type_section,
+		},
 	}
 end
 
 return {
-		get_tree = get_tree
+	get_tree = get_tree,
 }

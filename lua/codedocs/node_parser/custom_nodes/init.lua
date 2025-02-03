@@ -6,7 +6,7 @@ local function get_lang_trees(lang)
 
 	local data = {
 		identifier_pos = identifier_pos,
-		trees = {}
+		trees = {},
 	}
 	for _, struct_name in ipairs(supported_structs) do
 		local struct_module = require(current_dir .. "trees." .. lang .. "." .. struct_name)

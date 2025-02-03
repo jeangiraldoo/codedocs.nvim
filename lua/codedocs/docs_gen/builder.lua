@@ -11,17 +11,11 @@ end
 
 local function insert_title(underline_char, title, gap, line_start, docs)
 	local final_title = line_start .. title
-	if title ~= "" then
-		table.insert(docs, final_title)
-	end
+	if title ~= "" then table.insert(docs, final_title) end
 
-	if underline_char ~= "" then
-		table.insert(docs, line_start .. string.rep(underline_char, #title))
-	end
+	if underline_char ~= "" then table.insert(docs, line_start .. string.rep(underline_char, #title)) end
 
-	if gap then
-		table.insert(docs, line_start .. "")
-	end
+	if gap then table.insert(docs, line_start .. "") end
 end
 
 local function get_section(opts, general_style, style, items)
@@ -31,13 +25,11 @@ local function get_section(opts, general_style, style, items)
 
 	local section = {}
 	local line_start = general_style[opts.general.struct.val][2]
-	local base_line = (style[opts.item.indent.val]) and ("\t" .. line_start) or (line_start)
+	local base_line = style[opts.item.indent.val] and ("\t" .. line_start) or line_start
 	insert_title(title_underline_char, title, title_gap, line_start, section)
 	for idx, item in pairs(items) do
 		table.insert(section, base_line .. item)
-		if general_style[opts.general.item_gap.val] and idx < #items then
-			table.insert(section, base_line)
-		end
+		if general_style[opts.general.item_gap.val] and idx < #items then table.insert(section, base_line) end
 	end
 	return section
 end
@@ -46,20 +38,14 @@ local function get_docs_with_sections(opts, style, sections, docs)
 	local title_gap = style.general[opts.general.title_gap.val]
 	local line_start = style.general[opts.general.struct.val][2]
 
-	if #sections > 0 and title_gap then
-		table.insert(docs, style.general[opts.general.title_pos.val], line_start)
-	end
+	if #sections > 0 and title_gap then table.insert(docs, style.general[opts.general.title_pos.val], line_start) end
 	for i = 1, #sections do
 		for _, item in pairs(sections[i]) do
 			table.insert(docs, #docs, item)
 		end
-		if style.general[opts.general.section_gap.val] and i < #sections then
-			table.insert(docs, #docs, line_start)
-		end
+		if style.general[opts.general.section_gap.val] and i < #sections then table.insert(docs, #docs, line_start) end
 	end
-	if #style.general[opts.general.struct.val] == 2 then
-		table.remove(docs, #docs)
-	end
+	if #style.general[opts.general.struct.val] == 2 then table.remove(docs, #docs) end
 	return docs
 end
 
@@ -90,12 +76,11 @@ end
 local function get_split_item(standalone_name, param_info, type_kw, is_type_below_name_first)
 	local p_name = param_info[1]
 	local p_type = param_info[2]
-	local type_with_name = get_formatted_item_info(
-		type_kw ~= "" and (type_kw .. " " .. p_name) or p_name, p_type, p_name, false
-	)
-	local final_type = (is_type_below_name_first) and type_with_name or standalone_type
-	local name_first = {standalone_name, final_type}
-	local type_first = {final_type, standalone_name}
+	local type_with_name =
+		get_formatted_item_info(type_kw ~= "" and (type_kw .. " " .. p_name) or p_name, p_type, p_name, false)
+	local final_type = is_type_below_name_first and type_with_name or standalone_type
+	local name_first = { standalone_name, final_type }
+	local type_first = { final_type, standalone_name }
 
 	return name_first, type_first
 end
@@ -114,13 +99,13 @@ local function get_item_line(opts, style, wrapped_item)
 	else
 		name_first, type_first = get_split_item(standalone_name, wrapped_item, item_type_kw, is_type_below_name_first)
 	end
-	return (style[opts.item.type_first.val]) and type_first or name_first
+	return style[opts.item.type_first.val] and type_first or name_first
 end
 
 local function get_wrapped_item(opts, style, item)
 	local include_type = (item.type and style[opts.item.include_type.val])
-	local item_name = (item.name) and item.name or ""
-	local item_type = (include_type) and item.type or ""
+	local item_name = item.name and item.name or ""
+	local item_type = include_type and item.type or ""
 	local name_wrapper, type_wrapper = style[opts.item.name_wrapper.val], style[opts.item.type_wrapper.val]
 
 	local open_name_wrapper, close_name_wrapper = name_wrapper[1], name_wrapper[2]
@@ -128,7 +113,7 @@ local function get_wrapped_item(opts, style, item)
 
 	local wrapped_name = open_name_wrapper .. item_name .. close_name_wrapper
 	local wrapped_type = open_type_wrapper .. item_type .. close_type_wrapper
-	return {wrapped_name, wrapped_type}
+	return { wrapped_name, wrapped_type }
 end
 
 local function get_section_lines(opts, style, items)

@@ -1,10 +1,10 @@
 return {
 	default_style = "Doxygen",
 	identifier_pos = false,
-	styles = {Doxygen = true},
+	styles = { Doxygen = true },
 	structs = {
 		func = {
-			node_identifiers = {"function_definition"}
+			node_identifiers = { "function_definition" },
 		},
-	}
+	},
 }

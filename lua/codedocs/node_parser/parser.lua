@@ -1,19 +1,18 @@
 local parse_simple_query = require("codedocs.node_parser.query_processor").process_query
 local get_lang_trees = require("codedocs.node_parser.custom_nodes.init").get_lang_trees
 
-
 local function iterate_child_nodes(node, node_type, result_table, collect)
-    result_table = result_table or {}
+	result_table = result_table or {}
 
 	if not collect and #result_table > 0 then
 		return
 	elseif node:type() == node_type then
-        table.insert(result_table, node)
-    end
+		table.insert(result_table, node)
+	end
 
-    for child in node:iter_children() do
-        iterate_child_nodes(child, node_type, result_table, collect)
-    end
+	for child in node:iter_children() do
+		iterate_child_nodes(child, node_type, result_table, collect)
+	end
 end
 
 local function get_child_data_if_present(node, query)
@@ -21,22 +20,21 @@ local function get_child_data_if_present(node, query)
 	local def_val = query[2]
 	local child_data = {}
 	iterate_child_nodes(node, node_type, child_data, false)
-	local final_data =  {}
+	local final_data = {}
 	final_data["type"] = def_val
-	return (#child_data > 0) and {final_data} or {}
+	return (#child_data > 0) and { final_data } or {}
 end
 
 local function process_query(query, context)
 	local filetype = vim.bo.filetype
-    -- Handle different types of queries
-    if type(query) == "string" then
-        return parse_simple_query(context.node, context.include_type, filetype, query, context.identifier_pos)
-    elseif type(query) == "table" then
-        -- Recursively process nested queries
-        return query:process(context)
-    end
+	-- Handle different types of queries
+	if type(query) == "string" then
+		return parse_simple_query(context.node, context.include_type, filetype, query, context.identifier_pos)
+	elseif type(query) == "table" then
+		-- Recursively process nested queries
+		return query:process(context)
+	end
 end
-
 
 local function get_node_data(node, struct_name, sections, filetype, settings)
 	local data = {}
@@ -70,5 +68,5 @@ end
 return {
 	get_data = get_data,
 	process_query = process_query,
-	iterate_child_nodes = iterate_child_nodes
+	iterate_child_nodes = iterate_child_nodes,
 }

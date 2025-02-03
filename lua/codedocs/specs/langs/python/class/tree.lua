@@ -6,7 +6,7 @@ local get_methods = [[
 	)
 ]]
 
-local get_constructor =	[[
+local get_constructor = [[
 	(class_definition
 		body: (block
 			(function_definition
@@ -24,15 +24,14 @@ local get_method_attrs = [[
 	)
 ]]
 
-
 local function get_tree(node_constructor)
 	local get_all_attrs = node_constructor({
 		type = "double_recursion",
 		children = {
 			first_query = get_methods,
 			second_query = get_method_attrs,
-			target = "attribute"
-		}
+			target = "attribute",
+		},
 	})
 
 	local get_only_constructor_attrs = node_constructor({
@@ -40,10 +39,9 @@ local function get_tree(node_constructor)
 		children = {
 			first_query = get_constructor,
 			second_query = get_method_attrs,
-			target = "attribute"
-		}
+			target = "attribute",
+		},
 	})
-
 
 	local class_fields_node = node_constructor({
 		type = "simple",
@@ -58,45 +56,44 @@ local function get_tree(node_constructor)
 						)
 					)
 				)
-			]]
-		}
+			]],
+		},
 	})
 
 	local no_attrs_node = node_constructor({
 		type = "simple",
-		children = {""}
+		children = { "" },
 	})
 
 	local get_instance_attrs = node_constructor({
 		type = "boolean",
-		children = {get_only_constructor_attrs, get_all_attrs}
+		children = { get_only_constructor_attrs, get_all_attrs },
 	})
 
 	local include_instance_attrs_or_not = node_constructor({
 		type = "boolean",
-		children = {get_instance_attrs, no_attrs_node}
-
+		children = { get_instance_attrs, no_attrs_node },
 	})
 
 	local include_the_class_fields = node_constructor({
 		type = "accumulator",
-		children = {class_fields_node, include_instance_attrs_or_not}
+		children = { class_fields_node, include_instance_attrs_or_not },
 	})
 
 	local include_class_fields_or_not = node_constructor({
 		type = "boolean",
-		children = {include_the_class_fields, include_instance_attrs_or_not}
+		children = { include_the_class_fields, include_instance_attrs_or_not },
 	})
 
 	return {
 		sections = {
 			attrs = {
-				include_class_fields_or_not
-			}
-		}
+				include_class_fields_or_not,
+			},
+		},
 	}
 end
 
 return {
-	get_tree = get_tree
+	get_tree = get_tree,
 }

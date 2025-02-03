@@ -4,13 +4,13 @@ local iterate_child_nodes = require("codedocs.node_parser.parser").iterate_child
 local query_node = {}
 
 function query_node:new(node_type, children)
-    local node = {
-        node_type = node_type,
-        children = children or {}
-    }
-    setmetatable(node, self)
-    self.__index = self
-    return node
+	local node = {
+		node_type = node_type,
+		children = children or {},
+	}
+	setmetatable(node, self)
+	self.__index = self
+	return node
 end
 
 local function get_trimmed_table(tbl)
@@ -30,9 +30,9 @@ function finder_node:process(settings)
 	local def_val = self.children[2]
 	local child_data = {}
 	iterate_child_nodes(node, node_type, child_data, false)
-	local final_data =  {}
+	local final_data = {}
 	final_data["type"] = def_val
-	return (#child_data > 0) and {final_data} or {}
+	return (#child_data > 0) and { final_data } or {}
 end
 
 local double_recursion_node = query_node:new()
@@ -43,13 +43,11 @@ function double_recursion_node:process(settings)
 	local nodes = {}
 	for id, capture_node, _ in query_obj:iter_captures(settings.node, 0) do
 		local capture_name = query_obj.captures[id]
-		if capture_name == "target" then
-			iterate_child_nodes(capture_node, self.children.target, nodes, true)
-		end
+		if capture_name == "target" then iterate_child_nodes(capture_node, self.children.target, nodes, true) end
 	end
 	local items = {}
 	local original_node = settings.node
-	for _, node_item in ipairs (nodes) do
+	for _, node_item in ipairs(nodes) do
 		settings.node = node_item
 		local result = process_query(second_query, settings)
 		table.insert(items, result)
@@ -62,7 +60,7 @@ local chain_node = query_node:new()
 function chain_node:process(settings)
 	local filetype = vim.bo.filetype
 	local original_node = settings.node
-	local result_nodes = {original_node}
+	local result_nodes = { original_node }
 	for _, query in ipairs(self.children) do
 		if type(query) ~= "string" then
 			query.children.nodes = result_nodes
@@ -101,7 +99,7 @@ function regex_node:process(settings)
 	for _, node, _ in ipairs(self.children.nodes) do
 		local node_text = vim.treesitter.get_node_text(node, 0)
 		local result = string.find(node_text, pattern)
-		local expected_result = (self.children.mode) and true or nil
+		local expected_result = self.children.mode and true or nil
 		if result == expected_result then
 			settings.node = node
 			local final = process_query(self.children.query, settings)
@@ -113,20 +111,20 @@ end
 
 local boolean_node = query_node:new()
 function boolean_node:process(settings)
-    local condition = settings.boolean_condition[1] -- Or any logic you want
-    local query_to_process = condition and self.children[1] or self.children[2]
+	local condition = settings.boolean_condition[1] -- Or any logic you want
+	local query_to_process = condition and self.children[1] or self.children[2]
 	table.remove(settings.boolean_condition, 1)
-    return process_query(query_to_process, settings)
+	return process_query(query_to_process, settings)
 end
 
 local accumulator_node = query_node:new()
 function accumulator_node:process(settings)
-    local results = {}
-    for _, query in ipairs(self.children) do
+	local results = {}
+	for _, query in ipairs(self.children) do
 		local result = process_query(query, settings)
-        table.insert(results, result)
-    end
-    return get_trimmed_table(results)
+		table.insert(results, result)
+	end
+	return get_trimmed_table(results)
 end
 
 local simple_query_node = query_node:new()
@@ -146,18 +144,16 @@ function group_node:process(settings)
 		local item_type = item_data.type
 		if item_type ~= nil and item_name == nil then
 			for _, final_name in pairs(name_group) do
-				table.insert(groups, {name = final_name, type = item_type})
+				table.insert(groups, { name = final_name, type = item_type })
 			end
 			name_group = {}
 		elseif item_type ~= nil and item_name ~= nil then
-			table.insert(groups, {name = item_name, type = item_type})
+			table.insert(groups, { name = item_name, type = item_type })
 		else
 			table.insert(name_group, item_name)
 		end
 	end
-	if #groups == 0 then
-		return items
-	end
+	if #groups == 0 then return items end
 	return groups
 end
 
@@ -172,7 +168,7 @@ local function node_constructor(data)
 		finder = finder_node,
 		chain = chain_node,
 		regex = regex_node,
-		group = group_node
+		group = group_node,
 	}
 	local node = query_nodes[node_type]:new(node_type, children)
 	return node

@@ -4,8 +4,7 @@ return {
 	styles = { YARD = true },
 	structs = {
 		func = {
-			node_identifiers = {"method"}
+			node_identifiers = { "method" },
 		},
-	}
+	},
 }
-

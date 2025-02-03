@@ -4,8 +4,7 @@ return {
 	styles = { RustDoc = true },
 	structs = {
 		func = {
-			node_identifiers = {"function_item"}
+			node_identifiers = { "function_item" },
 		},
-	}
+	},
 }
-
