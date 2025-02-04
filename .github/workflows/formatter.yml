@@ -24,12 +24,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install StyLua
-        run: |
-          curl -L https://github.com/JohnnyMorganz/StyLua/releases/download/v2.0.2/stylua-linux-x86_64.zip -o stylua.zip
-          unzip stylua.zip -d /usr/local/bin
-          chmod +x /usr/local/bin/stylua
+      - name: Cache StyLua
+        uses: actions/cache@v3
+        with:
+          path: /usr/local/bin/stylua
+          key: stylua-v2.0.2
 
+      - name: Install StyLua (if not cached)
+        run: |
+          if [ ! -f /usr/local/bin/stylua ]; then
+            sudo apt update
+            sudo apt install -y stylua=2.0.2
+          fi
+      
       - name: Check Formatting
         run: |
           if [ "$GITHUB_EVENT_NAME" = "push" ]; then
