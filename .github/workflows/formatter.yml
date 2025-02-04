@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Checkout Codedocs Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install StyLua
         run: |
@@ -30,18 +32,20 @@ jobs:
 
       - name: Check Formatting
         run: |
-          if git rev-parse --verify HEAD~1 > /dev/null 2>&1; then
-              # If there's a previous commit, use HEAD~1
-              modified_files=$(git diff --name-only HEAD~1 HEAD -- '*.lua')
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+              commit_range="${{ github.event.before }}..${{ github.sha }}"
+          elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              commit_range="origin/${{ github.base_ref }}..HEAD"
           else
-              # Otherwise, only check the current HEAD (i.e., first commit)
-              modified_files=$(git diff --name-only HEAD -- '*.lua')
+              commit_range="HEAD~1..HEAD"
           fi
 
+          modified_files=$(git diff --name-only $commit_range -- '*.lua')
+
           if [ -n "$modified_files" ]; then
+              echo "Checking formatting for the following files:"
               echo "$modified_files"
               stylua --check $modified_files
           else
               echo "No Lua files were modified. Skipping formatting check."
           fi
-
