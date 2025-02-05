@@ -18,61 +18,76 @@ architecture-beta
 
     group node_parser(server)[node_parser] in components
     service parser(server)[parser] in node_parser
-    service queries(database)[queries] in node_parser
+    service struct_finder(server)[struct_finder] in node_parser
+    service query_processor(server)[query_processor] in node_parser
+    group custom_nodes(server)[custom_nodes] in node_parser
+    service nodes(server)[nodes] in custom_nodes
 
     group docs_gen(server)[docs_gen] in components
     service builder(server)[builder] in docs_gen
-    group styles(database)[styles] in docs_gen
 
-    service langs(database)[langs] in styles
-    service manager(server)[manager] in styles
+    group specs(server)[specs] in components
+    service paths(database)[paths] in specs
+    group manager(server)[manager] in specs
+    service customizer(server)[customizer] in manager
+    service reader(server)[reader] in manager
+    group validators(server)[validators] in specs
+    service structs(server)[structs] in validators
+    service style(server)[style] in validators
+    service basic(server)[basic] in validators
+    group langs(database)[langs] in specs
+    service style_opts(database)[style_opts] in langs
+    service lang_specs(database)[lang_specs] in langs
 
     service writer(server)[writer] in components
-
-    parser:R <-- L:queries
+    lang_specs:L --> T:reader
+    paths:L --> R:reader
+    reader:L --> R:builder
     parser:T --> B:builder
-    langs:L --> R:builder
     builder:L --> R:writer
 ```
 
+### `specs`
+
+This directory defines a language's specifications. Each language specification includes:
+
+- **Directories for supported structures** (e.g., functions). Each structure directory contains modules that define style options for a specific style (e.g., JSDoc for a JavaScript function).
+- **An `init.lua` file** that provides essential language details, including:
+  - **`identifier_pos`**: Determines whether a structure's data identifier appears before its type. For example, in functions, this specifies if a parameter's name precedes its type based on the language's syntax.
+  - **`styles`**: A table listing the required styles for all structures. If a structure does not define all listed styles, an error will occur.
+  - **`default_style`**: Specifies the default style used when generating a docstring.
+  - **`structs`**: A table where each key represents a supported structure. Each structure contains a `node_identifiers` table, which maps to a list of Treesitter node types that correspond to that structure.
+
 ### `node_parser`
 
-This directory is responsible for parsing Treesitter nodes and extracting specific data from them (e.g., the parameters of a function node).
+This directory is responsible for parsing Treesitter nodes and extracting specific data from them.
 
 ```mermaid
 architecture-beta
     group node_parser(server)[node_parser]
     service parser(server)[parser] in node_parser
-    service queries(database)[queries] in node_parser
-
-    parser:R <-- L:queries
+    service struct_finder(server)[struct_finder] in node_parser
+    service query_processor(server)[query_processor] in node_parser
+    group custom_nodes(server)[custom_nodes] in node_parser
+    service nodes(server)[nodes] in custom_nodes
 ```
 
-- **`queries`**: A directory containing files with Treesitter queries for parsing language constructs such as functions, classes, etc.  
-- **`parser`**: A module that detects the programming language in the Neovim buffer, parses the corresponding queries from the `queries` directory, and returns specific data based on the parsed queries.
+- **`query_processor`**: A module that processes standard Treesitter queries.  
+- **`struct_finder`**: A module that utilizes the `node_identifiers` field from each structure in a language spec to determine which structure is under the cursor.  
+- **`custom_nodes`**: A directory containing a `nodes` module, which implements all custom nodes.  
+- **`parser`**: A module that processes a spec's custom node tree and returns the resulting data.  
 
 ### `docs_gen`
 
-This directory is responsible for generating a docstring using the data provided by the `node_parser` component.
+This directory handles the generation of docstrings using data from the `node_parser` component.
 
 ```mermaid
 architecture-beta
     group docs_gen(server)[docs_gen]
     service builder(server)[builder] in docs_gen
-    group styles(database)[styles] in docs_gen
-
-    service langs(database)[langs] in styles
-    service manager(server)[manager] in styles
-
-    langs:L --> R:builder
 ```
 
-- **`builder`**: A module that constructs a docstring based on the data parsed by `node_parser` and the language-specific settings defined in `langs`.
-
-#### Styles
-
-- **`langs`**: A directory containing modules for various programming languages. Each module includes customizable settings that define the structure and appearance of a docstring for its respective language.  
-- **`manager`**: A module dedicated to modifying the settings in the `langs` directory. It is invoked by the `setup` function in the `init` file, allowing users to customize the default language style or specific settings from a particular style.
+- **`builder`**: A module responsible for constructing docstrings. It utilizes the parsed data from `node_parser` and applies the structure-specific style options defined in the language's specification.
 
 ### `writer`
 
