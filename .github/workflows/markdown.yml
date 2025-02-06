@@ -1,0 +1,42 @@
+name: Lint Markdown
+
+on: [push, pull_request]
+
+jobs:
+  markdownlint:
+    name: Lint Markdown files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get commits file list
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+              commit_range="${{ github.event.before }}..${{ github.sha }}"
+          elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              commit_range="origin/${{ github.base_ref }}..HEAD"
+          else
+              commit_range="HEAD~1..HEAD"
+          fi
+
+          modified_files=$(git diff --name-only $commit_range -- '*.md')
+          echo "Detected modified files:"
+          echo "$modified_files"
+
+          if [ -n "$modified_files" ]; then
+              echo "Modified files: $modified_files"
+              echo "files=$modified_files" >> "$GITHUB_ENV"
+          else
+              echo "No Lua files were modified."
+              echo "files=" >> "$GITHUB_ENV"
+          fi
+
+      - name: markdownlint-cli
+        if: env.files != ''
+        uses: nosborn/github-action-markdown-cli@v3.3.0
+        with:
+          files: ${{ env.files }}
+          config_file: .markdownlint.yaml
+          dot: true
