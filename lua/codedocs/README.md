@@ -1,16 +1,23 @@
 # Technical documentation
 
-Welcome! This document provides an overview of the Codedocs codebase to help you contribute to the project, understand how it works internally, or—let's be honest—to help me when I inevitably forget how things are wired together.
+Welcome! This document provides an overview of the Codedocs codebase to
+help you contribute to the project, understand how it works internally,
+or—let's be honest—to help me when I inevitably forget how things are wired
+together.
 
-Codedocs is a plugin focused on generating and inserting docstrings for programming language structures. In the context of this plugin, a "structure" refers to any language construct such as functions, methods, classes, or variables.
+Codedocs is a plugin focused on generating and inserting docstrings for
+programming language structures. In the context of this plugin, a "structure"
+refers to any language construct such as functions, methods, classes, or variables.
 
 ## Table of contents
+
 - [Components](#components)
 - [Logic flow](#logic-flow)
 
 ## Components
 
-This a detailed representation of the components and subcomponents that form the plugin:
+This a detailed representation of the components and subcomponents that form the
+plugin:
 
 ```mermaid
 architecture-beta
@@ -55,7 +62,9 @@ Here is the documentation for the main components:
 
 ## Logic flow
 
-The following diagram provides a visual representation of the logic flow that takes place each time docstring generation is triggered, whether through a Codedocs command or a keymap.
+The following diagram provides a visual representation of the logic flow that
+takes place each time docstring generation is triggered, whether through a Codedocs
+command or a keymap.
 
 ```mermaid
 flowchart TB
@@ -68,6 +77,6 @@ flowchart TB
     5 -- Yes ---> 7{Is there a supported<br>structure node<br>under the cursor?}
     7 -- No ---> 8[Insert a generic docstring]
     7 -- Yes ---> 9[Extract data using<br>the appropriate<br>Struct Parser module]
-    9 ---> 10[Build the docstring<br>using the corresponding<br>Docstring Builder module]
+    9 ---> 10[Build the docstring<br>using the corresponding<br>Docs Builder module]
     10 --> 11((Docstring<br>inserted))
 ```
