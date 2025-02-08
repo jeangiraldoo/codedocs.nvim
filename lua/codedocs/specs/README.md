@@ -10,7 +10,7 @@ A spec follows this structure:
 ```mermaid
 architecture-beta
     group spec(database)[spec]
-    service init(database)[init.lua] in spec
+    service init(database)[init] in spec
     
     group structs(server)[structs] in spec
     group struct(database)[struct] in structs
