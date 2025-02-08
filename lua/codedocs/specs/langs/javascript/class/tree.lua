@@ -43,11 +43,6 @@ local function get_tree(node_constructor)
 		children = { [[(class_body) @target]], [[(field_definition) @target]], regex },
 	})
 
-	local no_attrs_node = node_constructor({
-		type = "simple",
-		children = { "" },
-	})
-
 	local get_all_method_attrs = node_constructor({
 		type = "double_recursion",
 		children = {
@@ -78,7 +73,7 @@ local function get_tree(node_constructor)
 
 	local include_instance_attrs_or_not = node_constructor({
 		type = "boolean",
-		children = { get_instance_attrs, no_attrs_node },
+		children = { get_instance_attrs },
 	})
 
 	local include_class_fields = node_constructor({

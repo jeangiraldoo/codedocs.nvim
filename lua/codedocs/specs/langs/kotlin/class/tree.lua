@@ -46,8 +46,6 @@ local get_companion_object_attrs = [[
 
 ]]
 
-local no_fields = ""
-
 local function get_tree(node_constructor)
 	local get_instance_attrs = node_constructor({
 		type = "boolean",
@@ -55,7 +53,7 @@ local function get_tree(node_constructor)
 	})
 	local include_instance_attrs = node_constructor({
 		type = "boolean",
-		children = { get_instance_attrs, no_fields },
+		children = { get_instance_attrs },
 	})
 	local include_class_attrs = node_constructor({
 		type = "accumulator",

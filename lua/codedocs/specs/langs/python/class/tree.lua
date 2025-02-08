@@ -60,11 +60,6 @@ local function get_tree(node_constructor)
 		},
 	})
 
-	local no_attrs_node = node_constructor({
-		type = "simple",
-		children = { "" },
-	})
-
 	local get_instance_attrs = node_constructor({
 		type = "boolean",
 		children = { get_only_constructor_attrs, get_all_attrs },
@@ -72,7 +67,7 @@ local function get_tree(node_constructor)
 
 	local include_instance_attrs_or_not = node_constructor({
 		type = "boolean",
-		children = { get_instance_attrs, no_attrs_node },
+		children = { get_instance_attrs },
 	})
 
 	local include_the_class_fields = node_constructor({

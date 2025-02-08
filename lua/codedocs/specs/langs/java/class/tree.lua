@@ -23,12 +23,11 @@ local get_instance_attrs = [[
 		)
     )
 ]]
-local no_attrs = ""
 
 local function get_tree(node_constructor)
 	local include_instance_attrs = node_constructor({
 		type = "boolean",
-		children = { get_instance_attrs, "" },
+		children = { get_instance_attrs },
 	})
 	local include_class_fields = node_constructor({
 		type = "accumulator",

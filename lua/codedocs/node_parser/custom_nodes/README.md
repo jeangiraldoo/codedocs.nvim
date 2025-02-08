@@ -44,6 +44,17 @@ node_constructor({
 })
 ```
 
+If a boolean node is intended to process a child node only when its condition
+is true (and remain inactive when false), simply define the child node in the
+children field. When the condition evaluates to false, no action is performed.
+
+```lua
+node_constructor({
+    type = "boolean",
+    children = { node }
+})
+```
+
 ### **accumulator**
 
 Processes each child node and accumulates the values they return.

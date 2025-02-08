@@ -49,7 +49,9 @@ local function get_node_data(node, struct_name, sections, filetype, settings)
 			settings["node"] = node
 			items = tree_node:process(settings)
 
-			if #items > 0 then break end
+			if #items > 0 then
+				break
+			end
 		end
 		data[section_name] = items
 	end

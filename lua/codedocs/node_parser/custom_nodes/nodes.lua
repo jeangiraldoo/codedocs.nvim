@@ -43,7 +43,9 @@ function double_recursion_node:process(settings)
 	local nodes = {}
 	for id, capture_node, _ in query_obj:iter_captures(settings.node, 0) do
 		local capture_name = query_obj.captures[id]
-		if capture_name == "target" then iterate_child_nodes(capture_node, self.children.target, nodes, true) end
+		if capture_name == "target" then
+			iterate_child_nodes(capture_node, self.children.target, nodes, true)
+		end
 	end
 	local items = {}
 	local original_node = settings.node
@@ -111,10 +113,12 @@ end
 
 local boolean_node = query_node:new()
 function boolean_node:process(settings)
-	local condition = settings.boolean_condition[1] -- Or any logic you want
-	local query_to_process = condition and self.children[1] or self.children[2]
+	local condition = settings.boolean_condition[1]
+	local true_child = self.children[1]
+	local false_child = self.children[2] or ""
+	local child_to_process = condition and true_child or false_child
 	table.remove(settings.boolean_condition, 1)
-	return process_query(query_to_process, settings)
+	return process_query(child_to_process, settings)
 end
 
 local accumulator_node = query_node:new()
@@ -153,7 +157,9 @@ function group_node:process(settings)
 			table.insert(name_group, item_name)
 		end
 	end
-	if #groups == 0 then return items end
+	if #groups == 0 then
+		return items
+	end
 	return groups
 end
 
