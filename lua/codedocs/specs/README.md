@@ -85,5 +85,5 @@ Each module must be named exactly as listed in the `"styles"` field of the spec.
 #### Tree File
 
 The `tree` file contains nested custom nodes that will be processed by the
-[node_parser component](./../node_parser.README).  
+[node_parser component](./../node_parser/README).  
 This file determines what data is extracted from Treesitter nodes and how it's retrieved.
