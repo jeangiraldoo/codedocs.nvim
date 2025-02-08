@@ -1,0 +1,46 @@
+name: Markdown linting
+
+on:
+  push:
+    branches: [main]
+    paths: ["**/*.md"]
+  pull_request:
+    branches: [main]
+    paths: ["**/*.md"]
+
+jobs:
+  markdownlint:
+    name: Lint Markdown files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create markdownlint directory
+        run: mkdir -p /home/runner/markdownlint
+
+      - name: Cache markdownlint installation
+        id: cache-markdownlint
+        uses: actions/cache@v4
+        with:
+          path: /home/runner/markdownlint
+          key: ${{ runner.os }}-markdownlint-cache
+          restore-keys: |
+            ${{ runner.os }}-markdownlint-cache
+
+      - name: Install markdownlint-cli
+        if: steps.cache-markdownlint.outputs.cache-hit != 'true'
+        run: npm install --prefix /home/runner/markdownlint markdownlint-cli
+
+      - name: Add markdownlint bin to PATH
+        run: echo "/home/runner/markdownlint/node_modules/.bin" >> $GITHUB_PATH
+
+      - name: Verify markdownlint installation
+        run: |
+          which markdownlint || echo "markdownlint not found in PATH"
+          ls -la /home/runner/markdownlint/node_modules/.bin
+          markdownlint --version
+
+      - name: Run markdownlint
+        run: markdownlint "**/*.md"
