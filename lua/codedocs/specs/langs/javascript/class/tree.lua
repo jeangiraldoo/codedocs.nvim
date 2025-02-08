@@ -35,7 +35,11 @@ local get_class_attrs = [[
 local function get_tree(node_constructor)
 	local regex = node_constructor({
 		type = "regex",
-		children = { pattern = "%f[%a]static%f[%A]", mode = false, query = [[(property_identifier) @item_name]] },
+		data = {
+			pattern = "%f[%a]static%f[%A]",
+			mode = false,
+			query = [[(property_identifier) @item_name]]
+		},
 	})
 
 	local get_body_instance_attrs = node_constructor({
@@ -45,11 +49,8 @@ local function get_tree(node_constructor)
 
 	local get_all_method_attrs = node_constructor({
 		type = "double_recursion",
-		children = {
-			first_query = get_methods,
-			second_query = get_attrs_in_methods,
-			target = "assignment_expression",
-		},
+		data = { target = "assignment_expression" },
+		children = { get_methods, get_attrs_in_methods },
 	})
 
 	local get_all_instance_attrs = node_constructor({
@@ -59,12 +60,10 @@ local function get_tree(node_constructor)
 
 	local get_only_constructor_attrs = node_constructor({
 		type = "double_recursion",
-		children = {
-			first_query = get_constructor,
-			second_query = get_attrs_in_methods,
-			target = "assignment_expression",
-		},
+		data = { target = "assignment_expression" },
+		children = { get_constructor, get_attrs_in_methods },
 	})
+
 
 	local get_instance_attrs = node_constructor({
 		type = "boolean",

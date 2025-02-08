@@ -76,9 +76,9 @@ Has two children:
 ```lua
 node_constructor({
     type = "finder",
-    children = {
-        "<Treesitter node type>",
-        "default value"
+    data = {
+        node_type = "<Treesitter node type>",
+        def_val = "<default value if found>"
     }
 })
 ```
@@ -124,7 +124,7 @@ The mode parameter determines whether it returns matches (true) or non-matches (
 ```lua
 node_constructor({
     type = "regex",
-    children = {
+    data = {
         pattern = "<ReGex pattern>",
         mode = true, -- or false
         query = [[<Treesitter query>]]

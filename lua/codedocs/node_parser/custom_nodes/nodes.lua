@@ -3,9 +3,10 @@ local iterate_child_nodes = require("codedocs.node_parser.parser").iterate_child
 
 local query_node = {}
 
-function query_node:new(node_type, children)
+function query_node:new(node_type, children, data)
 	local node = {
 		node_type = node_type,
+		data = data or {},
 		children = children or {},
 	}
 	setmetatable(node, self)
@@ -26,8 +27,8 @@ end
 local finder_node = query_node:new()
 function finder_node:process(settings)
 	local node = settings.node
-	local node_type = self.children[1]
-	local def_val = self.children[2]
+	local node_type = self.data.node_type
+	local def_val = self.data.def_val
 	local child_data = {}
 	iterate_child_nodes(node, node_type, child_data, false)
 	local final_data = {}
@@ -38,13 +39,13 @@ end
 local double_recursion_node = query_node:new()
 function double_recursion_node:process(settings)
 	local filetype = vim.bo.filetype
-	local first_query, second_query = self.children.first_query, self.children.second_query
+	local first_query, second_query = self.children[1], self.children[2]
 	local query_obj = vim.treesitter.query.parse(filetype, first_query)
 	local nodes = {}
 	for id, capture_node, _ in query_obj:iter_captures(settings.node, 0) do
 		local capture_name = query_obj.captures[id]
 		if capture_name == "target" then
-			iterate_child_nodes(capture_node, self.children.target, nodes, true)
+			iterate_child_nodes(capture_node, self.data.target, nodes, true)
 		end
 	end
 	local items = {}
@@ -95,16 +96,15 @@ end
 
 local regex_node = query_node:new()
 function regex_node:process(settings)
-	local filetype = vim.bo.filetype
-	local pattern = self.children.pattern
+	local pattern = self.data.pattern
 	local nodes = {}
 	for _, node, _ in ipairs(self.children.nodes) do
 		local node_text = vim.treesitter.get_node_text(node, 0)
 		local result = string.find(node_text, pattern)
-		local expected_result = self.children.mode and true or nil
+		local expected_result = self.data.mode and true or nil
 		if result == expected_result then
 			settings.node = node
-			local final = process_query(self.children.query, settings)
+			local final = process_query(self.data.query, settings)
 			table.insert(nodes, final)
 		end
 	end
@@ -163,9 +163,10 @@ function group_node:process(settings)
 	return groups
 end
 
-local function node_constructor(data)
-	local node_type = data.type
-	local children = data.children
+local function node_constructor(node_info)
+	local node_type = node_info.type
+	local children = node_info.children
+	local data = node_info.data
 	local query_nodes = {
 		simple = simple_query_node,
 		boolean = boolean_node,
@@ -176,7 +177,7 @@ local function node_constructor(data)
 		regex = regex_node,
 		group = group_node,
 	}
-	local node = query_nodes[node_type]:new(node_type, children)
+	local node = query_nodes[node_type]:new(node_type, children, data)
 	return node
 end
 

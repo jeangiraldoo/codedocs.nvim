@@ -41,7 +41,10 @@ local function get_tree(node_constructor)
 	local return_type_section = {
 		node_constructor({
 			type = "finder",
-			children = { "return_statement", "" },
+			data = {
+				node_type = "return_statement",
+				def_val = "",
+			},
 		}),
 	}
 	return {
