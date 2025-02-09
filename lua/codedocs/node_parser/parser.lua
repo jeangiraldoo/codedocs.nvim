@@ -4,9 +4,9 @@ local get_lang_trees = require("codedocs.node_parser.custom_nodes.init").get_lan
 local function iterate_child_nodes(node, node_type, result_table, collect)
 	result_table = result_table or {}
 
-	if not collect and #result_table > 0 then
-		return
-	elseif node:type() == node_type then
+	if collect == false and node:type() == node_type then
+		return table.insert(result_table, true)
+	elseif collect == true and node:type() == node_type then
 		table.insert(result_table, node)
 	end
 
@@ -48,8 +48,9 @@ local function get_node_data(node, struct_name, sections, filetype, settings)
 			settings.include_type = include_type
 			settings["node"] = node
 			items = tree_node:process(settings)
+			items = items and (items) or {}
 
-			if #items > 0 then
+			if items and #items > 0 then
 				break
 			end
 		end

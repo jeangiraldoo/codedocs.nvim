@@ -29,34 +29,19 @@ function finder_node:process(settings)
 	local node = settings.node
 	local node_type = self.data.node_type
 	local def_val = self.data.def_val
+	local mode = self.data.mode
 	local child_data = {}
-	iterate_child_nodes(node, node_type, child_data, false)
+	iterate_child_nodes(node, node_type, child_data, mode)
 	local final_data = {}
-	final_data["type"] = def_val
-	return (#child_data > 0) and { final_data } or {}
-end
-
-local double_recursion_node = query_node:new()
-function double_recursion_node:process(settings)
-	local filetype = vim.bo.filetype
-	local first_query, second_query = self.children[1], self.children[2]
-	local query_obj = vim.treesitter.query.parse(filetype, first_query)
-	local nodes = {}
-	for id, capture_node, _ in query_obj:iter_captures(settings.node, 0) do
-		local capture_name = query_obj.captures[id]
-		if capture_name == "target" then
-			iterate_child_nodes(capture_node, self.data.target, nodes, true)
+	if mode then
+		final_data = child_data
+		return final_data
+	else
+		if child_data[1] then
+			final_data["type"] = def_val
+			return { final_data }
 		end
 	end
-	local items = {}
-	local original_node = settings.node
-	for _, node_item in ipairs(nodes) do
-		settings.node = node_item
-		local result = process_query(second_query, settings)
-		table.insert(items, result)
-	end
-	settings.node = original_node
-	return get_trimmed_table(items)
 end
 
 local chain_node = query_node:new()
@@ -65,48 +50,50 @@ function chain_node:process(settings)
 	local original_node = settings.node
 	local result_nodes = { original_node }
 	for _, query in ipairs(self.children) do
+		local new_results = {}
 		if type(query) ~= "string" then
-			query.children.nodes = result_nodes
-			local result = process_query(query, settings)
-			settings.node = original_node
-			return result
+			for _, node in ipairs(result_nodes) do
+				settings.node = node
+				query.children.nodes = node
+				local result = process_query(query, settings)
+				table.insert(new_results, result)
+				settings.node = original_node
+			end
+			new_results = get_trimmed_table(new_results)
 		else
 			local query_obj = vim.treesitter.query.parse(filetype, query)
-			local new_results = {}
-			local original_node = settings.node
 			for _, node in ipairs(result_nodes) do
 				settings.node = node
 				for id, capture_node, _ in query_obj:iter_captures(node, 0) do
+					local node_text = vim.treesitter.get_node_text(capture_node, 0)
 					local capture_name = query_obj.captures[id]
-					if capture_name ~= "target" then
+					if capture_name == "item_name" then
 						settings.node = capture_node
-						local result = process_query(query, settings)
-						table.insert(new_results, result)
-					else
+						table.insert(new_results, { name = node_text })
+					elseif capture_name == "target" then
 						table.insert(new_results, capture_node)
 					end
 				end
 			end
-			result_nodes = new_results
 		end
+		result_nodes = new_results
 	end
 	settings.node = original_node
-	return get_trimmed_table(result_nodes)
+	return result_nodes
 end
 
 local regex_node = query_node:new()
 function regex_node:process(settings)
 	local pattern = self.data.pattern
+	local node = self.children.nodes
 	local nodes = {}
-	for _, node, _ in ipairs(self.children.nodes) do
-		local node_text = vim.treesitter.get_node_text(node, 0)
-		local result = string.find(node_text, pattern)
-		local expected_result = self.data.mode and true or nil
-		if result == expected_result then
-			settings.node = node
-			local final = process_query(self.data.query, settings)
-			table.insert(nodes, final)
-		end
+	local node_text = vim.treesitter.get_node_text(node, 0)
+	local result = string.find(node_text, pattern)
+	local expected_result = self.data.mode and true or nil
+	if result == expected_result then
+		settings.node = node
+		local final = process_query(self.data.query, settings)
+		table.insert(nodes, final)
 	end
 	return get_trimmed_table(nodes)
 end
@@ -170,7 +157,6 @@ local function node_constructor(node_info)
 	local query_nodes = {
 		simple = simple_query_node,
 		boolean = boolean_node,
-		double_recursion = double_recursion_node,
 		accumulator = accumulator_node,
 		finder = finder_node,
 		chain = chain_node,

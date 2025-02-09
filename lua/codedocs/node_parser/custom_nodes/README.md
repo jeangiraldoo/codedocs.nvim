@@ -83,25 +83,6 @@ node_constructor({
 })
 ```
 
-### **double_recursion**
-
-A recursive node that:  
-
-1. Processes the **first query**.  
-2. Recursively searches for nodes of a specified type.  
-3. If matching nodes are found, it applies the **second query** to them.
-
-```lua
-node_constructor({
-    type = "double_recursion",
-    children = {
-        first_query = <simple node goes here>,
-        second_query = <simple node goes here>,
-        target = <node type>
-    }
-})
-```
-
 ### **chain**
 
 Processes a sequence of queries in order, running the next query on the

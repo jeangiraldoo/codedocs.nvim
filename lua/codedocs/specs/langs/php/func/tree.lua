@@ -43,6 +43,7 @@ local function get_tree(node_constructor)
 			type = "finder",
 			data = {
 				node_type = "return_statement",
+				mode = false,
 				def_val = "",
 			},
 		}),

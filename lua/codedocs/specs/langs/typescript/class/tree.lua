@@ -47,10 +47,18 @@ local function get_tree(node_constructor)
 		children = { [[(class_body) @target]], [[(public_field_definition) @target]], regex },
 	})
 
+	local method_attr_finder = node_constructor({
+		type = "finder",
+		data = {
+			node_type = "assignment_expression",
+			mode = true,
+			def_val = "",
+		}
+	})
+
 	local get_all_method_attrs = node_constructor({
-		type = "double_recursion",
-		data = { target = "assignment_expression" },
-		children = { get_methods, get_attrs_in_methods },
+		type = "chain",
+		children = { get_methods, method_attr_finder, get_attrs_in_methods }
 	})
 
 	local get_all_instance_attrs = node_constructor({
@@ -59,9 +67,8 @@ local function get_tree(node_constructor)
 	})
 
 	local get_only_constructor_attrs = node_constructor({
-		type = "double_recursion",
-		data = { target = "assignment_expression" },
-		children = { get_constructor, get_attrs_in_methods },
+		type = "chain",
+		children = { get_constructor, method_attr_finder, get_attrs_in_methods }
 	})
 
 	local get_instance_attrs = node_constructor({

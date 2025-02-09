@@ -36,6 +36,7 @@ local function get_tree(node_constructor)
 			type = "finder",
 			data = {
 				node_type = "return_expression",
+				mode = false,
 				def_val = "",
 			},
 		}),
