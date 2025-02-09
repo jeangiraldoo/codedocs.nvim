@@ -1,5 +1,4 @@
 local process_query = require("codedocs.node_parser.parser").process_query
-local iterate_child_nodes = require("codedocs.node_parser.parser").iterate_child_nodes
 
 local query_node = {}
 
@@ -12,6 +11,20 @@ function query_node:new(node_type, children, data)
 	setmetatable(node, self)
 	self.__index = self
 	return node
+end
+
+local function iterate_child_nodes(node, node_type, result_table, collect)
+	result_table = result_table or {}
+
+	if collect == false and node:type() == node_type then
+		return table.insert(result_table, true)
+	elseif collect == true and node:type() == node_type then
+		table.insert(result_table, node)
+	end
+
+	for child in node:iter_children() do
+		iterate_child_nodes(child, node_type, result_table, collect)
+	end
 end
 
 local function get_trimmed_table(tbl)

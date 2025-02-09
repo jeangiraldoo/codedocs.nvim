@@ -54,7 +54,7 @@ function M.insert_docs()
 		parser_settings["identifier_pos"] = identifier_pos
 		parser_settings["tree"] = spec_reader.get_struct_tree(lang, struct_name).get_tree(node_constructor)
 	end
-	local pos, data = parser.get_data(lang, node, sections, struct_name, parser_settings)
+	local pos, data = parser.get_data(node, sections, struct_name, parser_settings)
 	local struct = style.general[opts.general.struct.val]
 
 	local docs = (struct_name == "comment") and struct or builder.get_docs(opts, style, data, struct)
