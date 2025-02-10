@@ -1,6 +1,6 @@
 local parse_query = require("codedocs.node_parser.query_processor").process_query
 
-local function process_query(query, context)
+local function process_node(query, context)
 	local filetype = vim.bo.filetype
 	if type(query) == "string" then
 		return parse_query(context.node, context.include_type, filetype, query, context.identifier_pos)
@@ -43,5 +43,5 @@ end
 
 return {
 	get_data = get_data,
-	process_query = process_query,
+	process_node = process_node,
 }

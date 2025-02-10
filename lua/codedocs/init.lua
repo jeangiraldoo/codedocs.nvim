@@ -1,7 +1,7 @@
 local builder = require("codedocs.docs_gen.init").builder
 local parser = require("codedocs.node_parser.parser")
 local extractor = require("codedocs.node_parser.struct_finder")
-local node_constructor = require("codedocs.node_parser.custom_nodes.nodes").node_constructor
+local node_constructor = require("codedocs.node_parser.custom_nodes.init")
 local spec_manager = require("codedocs.specs.manager.init")
 local spec_customizer, spec_reader = spec_manager.customizer, spec_manager.reader
 
