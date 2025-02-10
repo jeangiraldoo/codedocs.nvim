@@ -73,7 +73,7 @@ local function get_inline_item(standalone_name, standalone_type)
 	return name_first, type_first
 end
 
-local function get_split_item(standalone_name, param_info, type_kw, is_type_below_name_first)
+local function get_split_item(standalone_name, param_info, type_kw, is_type_below_name_first, standalone_type)
 	local p_name = param_info[1]
 	local p_type = param_info[2]
 	local type_with_name =
@@ -97,7 +97,9 @@ local function get_item_line(opts, style, wrapped_item)
 	if style[opts.item.inline.val] then
 		name_first, type_first = get_inline_item(standalone_name, standalone_type)
 	else
-		name_first, type_first = get_split_item(standalone_name, wrapped_item, item_type_kw, is_type_below_name_first)
+		name_first, type_first = get_split_item(
+			standalone_name, wrapped_item, item_type_kw, is_type_below_name_first, standalone_type
+		)
 	end
 	return style[opts.item.type_first.val] and type_first or name_first
 end

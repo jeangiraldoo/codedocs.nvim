@@ -1,6 +1,5 @@
 local opts = require("codedocs.specs.langs.style_opts")
 local general = opts.general
-local item = opts.item
 
 local general_opts = {
 	[general.struct.val] = { "// " },

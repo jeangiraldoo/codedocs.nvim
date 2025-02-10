@@ -25,7 +25,7 @@ local function update_style_opts(section_opts, struct_section)
 	end
 end
 
-local function process_style_structs(structs, style_name, lang_data, lang_name)
+local function process_style_structs(structs, style_name, lang_name)
 	for struct_name, struct_sections in pairs(structs) do
 		local struct_path = format_path(path_formats.struct_path, {
 			lang_name = lang_name,
@@ -55,11 +55,11 @@ end
 
 local function update_style(user_opts)
 	for lang_name, styles in pairs(user_opts) do
-		local success, lang_data = pcall(require, format_path(path_formats.data, lang_name))
+		local success = pcall(require, format_path(path_formats.data, lang_name))
 
 		if not success then error("There is no language called " .. lang_name .. " available in codedocs") end
 		for style_name, structs in pairs(styles) do
-			process_style_structs(structs, style_name, lang_data, lang_name)
+			process_style_structs(structs, style_name, lang_name)
 		end
 	end
 end

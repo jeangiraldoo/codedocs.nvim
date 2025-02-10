@@ -29,10 +29,9 @@ local function get_table_length(table)
 end
 
 --- Validates if a table is valid in terms of its content and length
--- @param opts (table) Keys used to access opt values in a style
--- @param setting_name The name of the opt that contains the table to validate
+-- @param opt_name The name of the opt that contains the table to validate
 -- @param table The table to validate
-local function validate_table(opts, opt_name, table, struct_name)
+local function validate_table(opt_name, table, struct_name)
 	local res_items = validate_table_items(table)
 	local table_length = get_table_length(table)
 	if table_length < 1 then
@@ -48,16 +47,16 @@ end
 -- @param setting_name The name of the setting that contains the value to validate
 -- @param setting_type The datatype expected by the setting
 -- @param value The value assined to the setting
-local function validate_value(opts, setting_values, value, struct_name)
+local function validate_value(setting_values, value, struct_name)
 	if setting_values.type == "number" and value < 1 then
 		display_error(setting_values.val, "contain a number higher than 0. Received " .. value)
 	end
 
-	if setting_values.type == "table" then validate_table(opts, setting_values.val, value, struct_name) end
+	if setting_values.type == "table" then validate_table(setting_values.val, value, struct_name) end
 end
 
 --- Validates if the value assigned to a setting corresponds to its expected data type
--- @param setting_type (string) Expected data type
+-- @param opt_type (string) Expected data type
 -- @param actual_value Value assigned to the setting
 -- @return boolean
 local function validate_type(opt_type, actual_value)
@@ -79,7 +78,7 @@ local function validate(opts, style, struct_name)
 						if not validate_type(opt_expected_type, val) then
 							display_error(opt_name, "be a " .. opt_expected_type .. ". Received " .. type(val))
 						end
-						validate_value(opts, opt, val, struct_name)
+						validate_value(opt, val, struct_name)
 					end
 				end
 			end
