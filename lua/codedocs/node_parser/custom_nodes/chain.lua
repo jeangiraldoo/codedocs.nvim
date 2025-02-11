@@ -1,23 +1,11 @@
 local get_trimmed_table = require("codedocs.node_parser.custom_nodes.common").get_trimmed_table
-local query_parser = require("codedocs.node_parser.query_processor").process_query
 
-local function get_child_node_results(result_nodes, child, settings, node_processor, original_node)
+local function process_results_using_child(result_nodes, child, settings, node_processor)
 	local new_results = {}
 	for _, node in ipairs(result_nodes) do
 		settings.node = node
-		child.children.nodes = node
+		if type(child) ~= "string" then child.children.nodes = node end
 		local result = node_processor(child, settings)
-		table.insert(new_results, result)
-		settings.node = original_node
-	end
-	return get_trimmed_table(new_results)
-end
-
-local function get_child_query_results(result_nodes, query)
-	local filetype = vim.bo.filetype
-	local new_results = {}
-	for _, node in ipairs(result_nodes) do
-		local result = query_parser(node, false, filetype, query, false)
 		table.insert(new_results, result)
 	end
 	return get_trimmed_table(new_results)
@@ -30,13 +18,7 @@ local function get_node(data)
 		local original_node = settings.node
 		local result_nodes = { original_node }
 		for _, child in ipairs(self.children) do
-			local new_results = {}
-			if type(child) ~= "string" then
-				new_results = get_child_node_results(result_nodes, child, settings, node_processor, original_node)
-			else
-				new_results = get_child_query_results(result_nodes, child)
-			end
-			result_nodes = new_results
+			result_nodes = process_results_using_child(result_nodes, child, settings, node_processor)
 		end
 		settings.node = original_node
 		return result_nodes
