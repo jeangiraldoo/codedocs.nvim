@@ -44,16 +44,35 @@ local function parse_items(query_obj, include_type, node, item_processor)
 	return items
 end
 
-local function parse_simple_query(node, include_type, filetype, query, identifier_pos)
+local function get_node_matches(query_obj, node)
+	local nodes = {}
+	for id, capture_node, _ in query_obj:iter_captures(node, 0) do
+		local node_text = vim.treesitter.get_node_text(capture_node, 0)
+		local capture_name = query_obj.captures[id]
+		if capture_name == "target" then
+			table.insert(nodes, capture_node)
+		end
+	end
+	return nodes
+end
+
+local function parse_query(node, include_type, filetype, query, identifier_pos)
 	if query == nil then
 		return {}
 	end
 
 	local query_obj = vim.treesitter.query.parse(filetype, query)
-	local item_processor = (identifier_pos and get_parsed_item_name_first or get_parsed_item_name_last)
-	return parse_items(query_obj, include_type, node, item_processor)
+	local has_target_capture = vim.tbl_contains(query_obj.captures, "target")
+	local result
+	if has_target_capture then
+		result = get_node_matches(query_obj, node)
+	else
+		local item_processor = (identifier_pos and get_parsed_item_name_first or get_parsed_item_name_last)
+		result = parse_items(query_obj, include_type, node, item_processor)
+	end
+	return result
 end
 
 return {
-	process_query = parse_simple_query,
+	process_query = parse_query,
 }

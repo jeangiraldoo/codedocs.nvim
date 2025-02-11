@@ -1,38 +1,41 @@
 local get_trimmed_table = require("codedocs.node_parser.custom_nodes.common").get_trimmed_table
+local query_parser = require("codedocs.node_parser.query_processor").process_query
+
+local function get_child_node_results(result_nodes, child, settings, node_processor, original_node)
+	local new_results = {}
+	for _, node in ipairs(result_nodes) do
+		settings.node = node
+		child.children.nodes = node
+		local result = node_processor(child, settings)
+		table.insert(new_results, result)
+		settings.node = original_node
+	end
+	return get_trimmed_table(new_results)
+end
+
+local function get_child_query_results(result_nodes, query)
+	local filetype = vim.bo.filetype
+	local new_results = {}
+	for _, node in ipairs(result_nodes) do
+		local result = query_parser(node, false, filetype, query, false)
+		print(vim.inspect(result))
+		table.insert(new_results, result)
+	end
+	return new_results
+end
 
 local function get_node(data)
 	local template, node_processor = data[1], data[2]
 	local chain_node = template:new()
 	function chain_node:process(settings)
-		local filetype = vim.bo.filetype
 		local original_node = settings.node
 		local result_nodes = { original_node }
-		for _, query in ipairs(self.children) do
+		for _, child in ipairs(self.children) do
 			local new_results = {}
-			if type(query) ~= "string" then
-				for _, node in ipairs(result_nodes) do
-					settings.node = node
-					query.children.nodes = node
-					local result = node_processor(query, settings)
-					table.insert(new_results, result)
-					settings.node = original_node
-				end
-				new_results = get_trimmed_table(new_results)
+			if type(child) ~= "string" then
+				new_results = get_child_node_results(result_nodes, child, settings, node_processor, original_node)
 			else
-				local query_obj = vim.treesitter.query.parse(filetype, query)
-				for _, node in ipairs(result_nodes) do
-					settings.node = node
-					for id, capture_node, _ in query_obj:iter_captures(node, 0) do
-						local node_text = vim.treesitter.get_node_text(capture_node, 0)
-						local capture_name = query_obj.captures[id]
-						if capture_name == "item_name" then
-							settings.node = capture_node
-							table.insert(new_results, { name = node_text })
-						elseif capture_name == "target" then
-							table.insert(new_results, capture_node)
-						end
-					end
-				end
+				new_results = get_child_query_results(result_nodes, child)
 			end
 			result_nodes = new_results
 		end
