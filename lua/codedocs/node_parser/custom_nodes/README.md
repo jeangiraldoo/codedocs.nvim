@@ -13,9 +13,21 @@ more advanced and customizable functionality. This means we either:
 By introducing recursion and nesting into the second approach, we arrive
 at the **custom node system**.
 
-## Node Types
+## Node Categories
 
-### **simple**
+Nodes are divided into two main categories:
+
+- Branch Nodes: Can have child nodes or queries and process them.
+- Leaf Nodes: Do not have children but are used inside branch nodes
+to perform specific tasks.
+
+### Branch
+
+A branch node can have nested children or queries when defined.
+It processes them using a common function shared across all branch
+nodes.
+
+#### **simple (branch)**
 
 A basic node that contains a regular Treesitter query, parsed as usual.
 
@@ -30,7 +42,7 @@ node_constructor({
 })
 ```
 
-### **boolean**
+#### **boolean (branch)**
 
 Contains two child nodes and selects one based on a boolean setting passed
 to the parser.
@@ -55,52 +67,37 @@ node_constructor({
 })
 ```
 
-### **accumulator**
+#### **accumulator (branch)**
 
-Processes each child node and accumulates the values they return.
+Processes a sequence of queries or nodes and accumulates their returned
+values.
 
 ```lua
 node_constructor({
     type = "accumulator",
-    children = { node_a, node_b, ... }
+    children = { child_a, child_b, ... }
 })
 ```
 
-### **finder**
+#### **chain (branch)**
 
-Has two children:
-
-1. The node type to find in a Treesitter tree.
-2. A default value to return if the node is found.
-
-```lua
-node_constructor({
-    type = "finder",
-    data = {
-        node_type = "<Treesitter node type>",
-        def_val = "<default value if found>"
-    }
-})
-```
-
-### **chain**
-
-Processes a sequence of queries in order, running the next query on the
-results of the previous one.
+Processes a sequence of queries or nodes in order, passing the results
+of each step to the next.
 
 ```lua
 node_constructor({
     type = "chain",
     children = {
-        query_a, query_b, ...
+        child_a, child_b, ...
     }
 })
 ```
 
-### **regex**
+#### **regex (branch)**
 
 Runs a query but filters results based on a regular expression pattern.
-The mode parameter determines whether it returns matches (true) or non-matches (false).
+The mode parameter determines whether it returns matches (true) or
+non-matches (false).
 
 ```lua
 node_constructor({
@@ -113,7 +110,7 @@ node_constructor({
 })
 ```
 
-### **group** (experimental)
+#### **group** (branch/experimental node)
 
 Groups related items and assigns each one a specific type.
 Currently, this is mainly used for Go functions to support type grouping.
@@ -122,6 +119,40 @@ Currently, this is mainly used for Go functions to support type grouping.
 node_constructor({
     type = "group",
     children = "<Treesitter query>"
+})
+```
+
+---
+
+### Leaf
+
+Leaf nodes are self-contained and do not require user-defined children.
+Instead, they are nested within other nodes, which provide them with
+specific nodes*. Think of them as functions that always return a value
+based on the data they receive.
+
+*At the moment, the only branch node capable of passing nodes to a leaf
+node is the chain node.
+
+#### **finder (leaf)**
+
+It's focused on finding a specific type of node in a Treesitter node tree,
+and either return a default value if it finds at least one node, or return
+all found nodes.
+
+1. node_type – The Treesitter node type to search for.
+2. mode – true to return all found nodes, false to return a default value
+    if at least one node is found.
+3. def_val – Returned if the mode is false and a node is found.
+
+```lua
+node_constructor({
+    type = "finder",
+    data = {
+        node_type = "<Treesitter node type>",
+        mode = false -- Or true
+        def_val = "<default value if found>"
+    }
 })
 ```
 
