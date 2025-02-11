@@ -18,10 +18,9 @@ local function get_child_query_results(result_nodes, query)
 	local new_results = {}
 	for _, node in ipairs(result_nodes) do
 		local result = query_parser(node, false, filetype, query, false)
-		print(vim.inspect(result))
 		table.insert(new_results, result)
 	end
-	return new_results
+	return get_trimmed_table(new_results)
 end
 
 local function get_node(data)
