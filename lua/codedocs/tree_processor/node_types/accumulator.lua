@@ -1,4 +1,4 @@
-local get_trimmed_table = require("codedocs.node_parser.custom_nodes.common").get_trimmed_table
+local get_trimmed_table = require("codedocs.tree_processor.node_types.common").get_trimmed_table
 
 local function get_node(data)
 	local template, node_processor = data[1], data[2]

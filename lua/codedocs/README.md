@@ -16,19 +16,17 @@ refers to any language construct such as functions, methods, classes, or variabl
 
 ## Components
 
-This a detailed representation of the components and subcomponents that form the
-plugin:
+This is a detailed breakdown of the plugin's components and subcomponents.
 
 ```mermaid
 architecture-beta
     group components(cloud)[Components]
 
-    group node_parser(server)[node_parser] in components
-    service parser(server)[parser] in node_parser
+    group node_parser(server)[tree_processor] in components
+    service processor(server)[processor] in node_parser
     service struct_finder(server)[struct_finder] in node_parser
-    service query_processor(server)[query_processor] in node_parser
-    group custom_nodes(server)[custom_nodes] in node_parser
-    service nodes(server)[nodes] in custom_nodes
+    group node_types(server)[node_types] in node_parser
+    service nodes(server)[nodes] in node_types
 
     group docs_gen(server)[docs_gen] in components
     service builder(server)[builder] in docs_gen
@@ -50,7 +48,7 @@ architecture-beta
     lang_specs:L --> T:reader
     paths:L --> R:reader
     reader:L --> R:builder
-    parser:T --> B:builder
+    processor:T --> B:builder
     builder:L --> R:writer
 ```
 

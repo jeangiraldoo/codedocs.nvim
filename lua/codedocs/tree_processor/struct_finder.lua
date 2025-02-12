@@ -42,6 +42,4 @@ local function get_node_type(filetype, structs)
 	return get_supported_node_data(node, structs)
 end
 
-return {
-	get_node_type = get_node_type,
-}
+return get_node_type

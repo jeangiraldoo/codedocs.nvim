@@ -1,9 +1,6 @@
-local builder = require("codedocs.docs_gen.init").builder
-local parser = require("codedocs.node_parser.parser")
-local extractor = require("codedocs.node_parser.struct_finder")
-local node_constructor = require("codedocs.node_parser.custom_nodes.init")
-local spec_manager = require("codedocs.specs.manager.init")
-local spec_customizer, spec_reader = spec_manager.customizer, spec_manager.reader
+local docs_builder = require("codedocs.docs_gen")
+local spec_reader, spec_customizer = unpack(require("codedocs.specs"))
+local get_struct_items, get_struct_info, node_constructor = unpack(require("codedocs.tree_processor"))
 
 local M = {}
 
@@ -42,7 +39,7 @@ function M.insert_docs()
 
 	local struct_names = spec_reader.get_struct_names(lang)
 	if not struct_names then return false end
-	local struct_name, node = extractor.get_node_type(lang, struct_names)
+	local struct_name, node = get_struct_info(lang, struct_names)
 
 	local struct_data = spec_reader.get_struct_style(lang, struct_name)
 	if not struct_data then return false end
@@ -54,10 +51,10 @@ function M.insert_docs()
 		parser_settings["identifier_pos"] = identifier_pos
 		parser_settings["tree"] = spec_reader.get_struct_tree(lang, struct_name).get_tree(node_constructor)
 	end
-	local pos, data = parser.get_data(node, sections, struct_name, parser_settings)
+	local pos, data = get_struct_items(node, sections, struct_name, parser_settings)
 	local struct = style.general[opts.general.struct.val]
 
-	local docs = (struct_name == "comment") and struct or builder.get_docs(opts, style, data, struct)
+	local docs = (struct_name == "comment") and struct or docs_builder.get_docs(opts, style, data, struct)
 	local docs_data = {
 		pos = pos,
 		direction = style.general[opts.general.direction.val],

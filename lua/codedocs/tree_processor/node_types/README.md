@@ -8,7 +8,7 @@ which works well for most applications. However, Codedocs aims to offer
 more advanced and customizable functionality. This means we either:  
 
 - Write a lot of language-specific logic.
-- Implement language-agnostic logic in a structured way.  
+- Implement language-agnostic logic in a structured way.
 
 By introducing recursion and nesting into the second approach, we arrive
 at the **custom node system**.

@@ -1,4 +1,4 @@
-local get_trimmed_table = require("codedocs.node_parser.custom_nodes.common").get_trimmed_table
+local get_trimmed_table = require("codedocs.tree_processor.node_types.common").get_trimmed_table
 
 local function process_results_using_child(result_nodes, child, settings, node_processor)
 	local new_results = {}

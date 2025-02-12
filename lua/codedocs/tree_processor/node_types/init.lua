@@ -1,3 +1,6 @@
+local current_dir = "codedocs.tree_processor.node_types."
+local node_processor = require("codedocs.tree_processor.processor")[1]
+
 local node_template = {}
 function node_template:new(node_type, children, data)
 	local node = {
@@ -20,8 +23,6 @@ local function get_node(name)
 		regex = "branch",
 		group = "branch"
 	}
-	local current_dir = "codedocs.node_parser.custom_nodes."
-	local node_processor = require("codedocs.node_parser.parser").process_node
 	local node_type = type_index[name]
 	local getter_data = { node_template }
 

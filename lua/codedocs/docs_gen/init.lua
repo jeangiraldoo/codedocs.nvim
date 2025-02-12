@@ -1,3 +1,1 @@
-return {
-	builder = require("codedocs.docs_gen.builder"),
-}
+return require("codedocs.docs_gen.builder")
