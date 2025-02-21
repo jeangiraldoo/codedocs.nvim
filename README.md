@@ -96,6 +96,39 @@ use {
 }
 ```
 
+#### [vim-plug](https://github.com/junegunn/vim-plug)
+
+```vim
+Plug 'jeangiraldoo/codedocs.nvim'
+Plug 'nvim-treesitter/nvim-treesitter' " Remove this if you don't plan on using nvim-treesitter
+```
+
+#### [mini.deps](https://github.com/echasnovski/mini.deps)
+
+```lua
+require("mini.deps").add({
+    source = "jeangiraldoo/codedocs.nvim",
+    depends = { "nvim-treesitter/nvim-treesitter" } -- Remove this if you don't plan on using nvim-treesitter
+})
+```
+
+#### [minpac](https://github.com/k-takata/minpac)
+
+```vim
+packadd minpac
+call minpac#add('jeangiraldoo/codedocs.nvim')
+call minpac#add('nvim-treesitter/nvim-treesitter') " Remove this if you don't plan on using nvim-treesitter
+```
+
+#### [paq-nvim](https://github.com/savq/paq-nvim)
+
+```lua
+require("paq") {
+    "jeangiraldoo/codedocs.nvim",
+    "nvim-treesitter/nvim-treesitter", -- Remove this if you don't plan on using nvim-treesitter
+}
+```
+
 ### ⚙️ Configuration
 
 Configuring Codedocs is not mandatory, as it works out of the box. However, if
