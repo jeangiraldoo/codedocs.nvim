@@ -39,7 +39,7 @@ formats, or just use codedocs as it is! :)
 - [Motivation](#motivation)
 - [License](#license)
 
-### 🚀 Features
+### <a id="features"></a>🚀 Features
 
 - Works out-of-the-box: Integrates with Neovim instantly—no configuration
   needed.
@@ -50,7 +50,7 @@ formats, or just use codedocs as it is! :)
 - Customizable: Easily modify existing formats or add new ones in just a few
   simple steps.
 
-### 📋 Requirements
+### <a id="requirements"></a>📋 Requirements
 
 Codedocs relies on Treesitter for its core functionality. Neovim includes
 built-in Treesitter parsers for the following languages—meaning no extra setup
@@ -62,14 +62,14 @@ is needed for:
 
 For any other language, you'll need to install the corresponding Treesitter
 parser. The simplest way to do this is with
-**[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter))**.
+**[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)**.
 
 Once you have the necessary parsers, you're all set to install Codedocs.
 
-### 📦 Installation
+### <a id="installation"></a>📦 Installation
 
 To install Codedocs with your plugin manager, follow the instructions for your
-preferred manager below. As noted in the [Requirements section](requirements),
+preferred manager below. As noted in the [Requirements section](#requirements),
 nvim-treesitter is only needed if you plan to use it for installing additional
 Treesitter parsers. If you're only working with Lua and C, or prefer to manage
 parsers manually, you can safely omit it.
@@ -108,6 +108,7 @@ Plug 'nvim-treesitter/nvim-treesitter' " Remove this if you don't plan on using 
 ```lua
 require("mini.deps").add({
     source = "jeangiraldoo/codedocs.nvim",
+	-- Remove this dependency if you don't plan on using nvim-treesitter
     depends = { "nvim-treesitter/nvim-treesitter" } -- Remove this if you don't plan on using nvim-treesitter
 })
 ```
@@ -129,7 +130,7 @@ require("paq") {
 }
 ```
 
-### ⚙️ Configuration
+### <a id="configuration"></a>⚙️ Configuration
 
 Configuring Codedocs is not mandatory, as it works out of the box. However, if
 the default settings don’t meet your needs, you can easily customize the plugin.
@@ -161,7 +162,7 @@ require("codedocs").setup {
 You can refer to the [Customize docstring style](#customize-docstrings) section
 for detailed information about the process and the options available!
 
-### 💻 Usage
+### <a id="usage"></a>💻 Usage
 
 When your cursor is placed on top of a language's structure (e.g., a function
 declaration, class, etc.) that you want to document and you trigger the
@@ -197,7 +198,7 @@ vim.keymap.set("n", "<leader>k", require('codedocs').insert_docs, { desc = "Inse
 This keymap will insert a docstring when pressing `<leader>k`. Feel free to
 customize the key combination to your liking.
 
-### 🌐 Supported languages
+### <a id="supported-languages"></a>🌐 Supported languages
 
 Codedocs supports a variety of programming languages and provides automatic
 annotations tailored to each language's style. Below is a breakdown of how
@@ -242,7 +243,7 @@ Want to see what docstrings look like by default? Check out the
 [Docstring Examples](./DOCSTRING_EXAMPLES.md) to explore different formats
 across multiple languages.
 
-### 🎨 Customize docstrings
+### <a id="customize-docstrings"></a>🎨 Customize docstrings
 
 In Codedocs, you can customize almost (for now!) every aspect of a docstring
 style. Whether you want to make a simple change, like modifying the characters
@@ -418,7 +419,7 @@ If an option is misspelled or the wrong data type is used, an error will occur.
 This procedure applies to all supported languages, considering the information
 provided in this section.
 
-### 🗺️ Roadmap
+### <a id="roadmap"></a>🗺️ Roadmap
 
 This diagram outlines the features and improvements planned for the project at
 different stages. Please note that this roadmap is flexible and will be updated
@@ -444,7 +445,7 @@ flowchart LR
 reaches a stable and mature state. They will be appropriately split into stages
 when the moment comes.
 
-### 🤝 Contributing
+### <a id="contributing"></a>🤝 Contributing
 
 Thank you for your interest in contributing to **Codedocs**! There are several
 ways you can help improve the project:
@@ -465,7 +466,7 @@ ways you can help improve the project:
 Every contribution, no matter how big or small, is valuable and highly
 appreciated!
 
-### 💡 Motivation
+### <a id="motivation"></a>💡 Motivation
 
 I started workng on Codedocs because I wanted to enhance my experience with
 Neovim, which I started using daily for my side projects and university
@@ -482,7 +483,7 @@ documentation strings, allowing for easy customization, and providing a simple
 yet powerful solution for both personal and community use. Plus, it is a fun
 project to work on!
 
-### 📜 License
+### <a id="license"></a>📜 License
 
 Codedocs is licensed under the MIT License. This means you are free to download,
 install, modify, share, and use the plugin for both personal and commercial
