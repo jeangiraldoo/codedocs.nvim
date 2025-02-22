@@ -7,6 +7,23 @@ annotations by default, so you can see what it might look like in your own code.
 Feel free to [customize any docstring style](./README.md#customize-docstrings)
 in case these default styles don't fit your needs!
 
+## Table of languages
+
+- [Lua (LDoc)](#lua-ldoc)
+- [JavaScript (JSDoc)](#javascript-jsdoc)
+- [TypeScript (TSDoc)](#typescript-tsdoc)
+- [Python (Google)](#google)
+- [Python (NumPy/SciPy)](#numpy-section)
+- [Python (reST)](#rest-section)
+- [PHP (PHPDoc)](#php-phpdoc)
+- [Ruby (YARD)](#ruby-yard)
+- [Java (JavaDoc)](#java-javadoc)
+- [Kotlin (KDoc)](#kotlin-kdoc)
+- [Rust (RustDoc)](#rust-rustdoc)
+- [Go (Godoc)](#go-godoc)
+- [C (Doxygen)](#c-doxygen)
+- [C++ (Doxygen)](#cpp-section)
+
 ## Lua (LDoc)
 
 [Official LDoc documentation](https://lunarmodules.github.io/ldoc/manual/manual.md.html#Introduction)
