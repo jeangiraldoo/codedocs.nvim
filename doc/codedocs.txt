@@ -1,0 +1,256 @@
+*codedocs.txt*     For Neovim >= 0.10.0     Last change: 2025 February 22
+
+==============================================================================
+Codedocs
+
+Codedocs.nvim automatically recognizes various language structures such as
+functions, classes, variables, and more, and inserts appropriate documentation
+strings based on the programming language you are using.
+
+You can easily modify the structure of the documentation strings to suit your
+specific needs, add support for new languages by defining their documentation
+formats, or just use codedocs as it is! :)
+
+Table of Contents                               *codedocs-table-of-contents*
+
+  - Features                   |codedocs-features|
+  - Requirements               |codedocs-requirements|
+  - Installation               |codedocs-installation|
+  - Configuration              |codedocs-configuration|
+  - Usage                      |codedocs-usage|
+  - Supported languages        |codedocs-supported-languages|
+  - Customize docstrings       |codedocs-customize-docstrings|
+  - Contributing               |codedocs-contributing|
+  - Motivation                 |codedocs-motivation|
+  - License                    |codedocs-license|
+
+Features                                               *codedocs-features*
+
+- Works out-of-the-box: Integrates with Neovim instantly—no configuration
+  needed.
+- Auto Documentation: Detects and documents code structures with a simple
+  keybind.
+- Multi-language Support: Generates docstrings for various programming
+  languages.
+- Customizable: Easily modify existing formats or add new ones in just a few
+  simple steps.
+
+Requirements                                          *codedocs-requirements*
+
+Codedocs relies on Treesitter for its core functionality. Neovim includes
+built-in Treesitter parsers for the following languages—meaning no extra setup
+is needed for:
+
+- Lua
+- C
+
+For any other language, you'll need to install the corresponding Treesitter
+parser. The simplest way to do this is with nvim-treesitter.
+
+Once you have the necessary parsers, you're all set to install Codedocs.
+
+Installation                                         *codedocs-installation*
+
+To install Codedocs with your plugin manager, follow the instructions for your
+preferred manager below. As noted in the Requirements section, nvim-treesitter
+is only needed if you plan to use it for installing additional Treesitter
+parsers. If you're only working with Lua and C, or prefer to manage parsers
+manually, you can safely omit it.
+
+- lazy.nvim:
+
+{
+    "jeangiraldoo/codedocs.nvim",
+    dependencies = {
+        "nvim-treesitter/nvim-treesitter" -- Remove this if you don't plan on using nvim-treesitter
+    }
+}
+
+- packer.nvim:
+
+use {
+    "jeangiraldoo/codedocs.nvim",
+    requires = {
+        "nvim-treesitter/nvim-treesitter" -- Remove this if you don't plan on using nvim-treesitter
+    }
+}
+
+- vim-plug:
+
+Plug 'jeangiraldoo/codedocs.nvim'
+Plug 'nvim-treesitter/nvim-treesitter' " Remove this if you don't plan on using nvim-treesitter
+
+- mini.deps
+
+require("mini.deps").add({
+    source = "jeangiraldoo/codedocs.nvim",
+    depends = { "nvim-treesitter/nvim-treesitter" } -- Remove this if you don't plan on using nvim-treesitter
+})
+
+- minpac:
+
+packadd minpac
+call minpac#add('jeangiraldoo/codedocs.nvim')
+call minpac#add('nvim-treesitter/nvim-treesitter') " Remove this if you don't plan on using nvim-treesitter
+
+- paq-nvim:
+
+require("paq") {
+    "jeangiraldoo/codedocs.nvim",
+    "nvim-treesitter/nvim-treesitter", -- Remove this if you don't plan on using nvim-treesitter
+}
+
+Configuration                                           *codedocs-configuration*
+
+Configuring Codedocs is not mandatory, as it works out of the box. However, if
+the default settings don’t meet your needs, you can easily customize the plugin.
+
+- Change the default docstring style used in a language
+
+  You can change the docstring style for any language that supports more than one
+  style.
+
+  Keep in mind that the name of the docstring style must be spelled exactly as
+  shown in the table of [supported languages](#supported-languages-and-structures). For example, `reST`
+  must be written as `reST` (not `ReST` or any other variation).
+
+  Although this example demonstrates changing the style for a single language, you
+  can customize as many languages as you want by adding their names to the table
+  and assigning the respective style names.
+
+  In this case, we are changing Python's docstring style from the default to
+  "reST":
+
+  require("codedocs").setup {
+      default_styles = {python = "reST"}
+  }
+
+- Customize a docstring style
+
+You can refer to the "Customize docstring style" section
+for detailed information about the process and the options available!
+
+Usage                                                        *codedocs-usage*
+
+When your cursor is placed on top of a language's structure (e.g., a function
+declaration, class, etc.) that you want to document and you trigger the
+docstring insertion, Codedocs will check if it has a docstring style for
+such structure in the programming language you are using. If a docstring
+style is available, it will generate and insert a docstring above or below the
+structure, depending on the language's docstring style.
+
+If the structure under the cursor isn't supported by Codedocs, an empty
+single-line comment will be inserted.
+
+You can start the docstring insertion either by using a command or a keymap:
+
+- **Command**
+
+  Codedocs creates the `:Codedocs` command, which can be called manually like
+  this:
+
+      :Codedocs
+
+- **Keymap**
+
+  For a more convenient experience, you can bind the docstring insertion to a
+  keymap. For example:
+
+      vim.keymap.set("n", "<leader>k", require('codedocs').insert_docs,
+          { desc = "Inserts a docstring" })
+
+  This keymap will insert a docstring when pressing `<leader>k`. Feel free to
+  customize the key combination to your liking.
+
+Supported languages                            *codedocs-supported-languages*
+
+Codedocs supports a variety of programming languages and provides automatic
+annotations tailored to each language's style. Below is a breakdown of how
+Codedocs handles annotations for different code structures:
+
+1. Function
+
+   - Parameters: Included if present in the function signature.
+   - Parameter Type: Added if specified through a type hint or if the language
+     is statically typed.
+   - Return Section: Included only if a return type is explicitly defined in
+     the function signature.
+
+2. Class
+
+   - Attributes: Class attributes are documented when available.
+
+3. Comment
+
+   - If no supported structure is detected under the cursor, Codedocs will insert
+     an empty inline comment as a shortcut for adding regular comments.
+
+This table lists the structures and their supported docstring styles for each
+language:
+
+    Languages   | Annotation Styles           | Supported Automatic Annotation
+    ------------|-----------------------------|-------------------------------
+    Lua         | LDoc                        | function, comment
+    Python      | Google, NumPy/SciPy, reST   | class, function, comment
+    JavaScript  | JSDoc                       | class, function, comment
+    TypeScript  | TSDoc                       | class, function, comment
+    Ruby        | YARD                        | function, comment
+    PHP         | PHPDoc                      | function, comment
+    Java        | JavaDoc                     | class, function, comment
+    Kotlin      | KDoc                        | class, function, comment
+    Rust        | RustDoc                     | function, comment
+    Go          | Godoc                       | function, comment
+    C           | Doxygen                     | function, comment
+    C++         | Doxygen                     | function, comment
+
+Want to see what docstrings look like by default? Check out the
+Docstring Examples to explore different formats across multiple languages.
+
+Contributing                                             *codedocs-contributing*
+
+Thank you for your interest in contributing to Codedocs! There are several
+ways you can help improve the project:
+
+  - Propose new features: If you have an idea for a new feature, please open a
+    discussion in the Discussions section.
+  - Contribute to feature development: You can help by working on features
+    listed in the Roadmap. For a deeper understanding of the codebase, check out
+    the Technical documentation.
+  - Report or fix bugs: If you encounter a bug, you can report it by creating a
+    new discussion or GitHub issue. If you're able to fix the bug yourself, your
+    help in resolving it is greatly appreciated!
+  - Enhance the documentation: If you spot any typos, outdated information, or
+    areas where the documentation could be clearer, feel free to suggest
+    improvements.
+
+Every contribution, no matter how big or small, is valuable and highly
+appreciated!
+
+Motivation                                             *codedocs-motivation*
+
+I started workng on Codedocs because I wanted to enhance my experience with
+Neovim, which I started using daily for my side projects and university
+assignments. I wanted a tool to make documenting my code easier and to
+contribute something useful to the community! :D
+
+While I found a few plugins with similar functionality, none of them offered the
+level of customization and simplicity I was looking for. Sometimes, I feel that
+apps and plugins could be more intuitive and user-friendly while still providing
+the same powerful features.
+
+TL;DR: I built Codedocs to improve productivity by automatically generating
+documentation strings, allowing for easy customization, and providing a simple
+yet powerful solution for both personal and community use. Plus, it is a fun
+project to work on!
+
+License                                               *codedocs-license*
+
+Codedocs is licensed under the MIT License. This means you are free to download,
+install, modify, share, and use the plugin for both personal and commercial
+purposes.
+
+The only requirement is that if you modify and redistribute the code, you must
+include the same LICENSE file found in this repository.
+
+================================================================================
+vim:tw=80:ts=2:ft=help:norl:syntax=help:
