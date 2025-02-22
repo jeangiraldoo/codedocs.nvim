@@ -18,8 +18,7 @@
 
 Codedocs.nvim automatically recognizes various language structures such as
 functions, classes, variables, and more, and inserts appropriate documentation
-strings based on the [programming language](#supported-languages-and-structures)
-you are using.
+strings based on the [programming language](#supported-languages) you are using.
 
 You can easily modify the structure of the documentation strings to suit your
 specific needs, add support for new languages by defining their documentation
@@ -32,7 +31,7 @@ formats, or just use codedocs as it is! :)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
-- [Supported languages/structures](#supported-languages-and-structures)
+- [Supported languages](#supported-languages)
 - [Customize docstrings](#customize-docstrings)
 - [Roadmap](#roadmap)
 - [Technical documentation](./lua/codedocs/README.md)
@@ -58,6 +57,7 @@ built-in Treesitter parsers for the following languages—meaning no extra setup
 is needed for:
 
 - Lua
+- Python
 - C
 
 For any other language, you'll need to install the corresponding Treesitter
@@ -140,9 +140,8 @@ You can change the docstring style for any language that supports more than one
 style.
 
 Keep in mind that the name of the docstring style must be spelled exactly as
-shown in the table of
-[supported languages](#supported-languages-and-structures). For example, `reST`
-must be written as `reST` (not `ReST` or any other variation).
+shown in the table of [supported languages](#supported-languages). For example,
+`reST` must be written as `reST` (not `ReST` or any other variation).
 
 Although this example demonstrates changing the style for a single language, you
 can customize as many languages as you want by adding their names to the table
@@ -167,10 +166,10 @@ for detailed information about the process and the options available!
 When your cursor is placed on top of a language's structure (e.g., a function
 declaration, class, etc.) that you want to document and you trigger the
 docstring insertion, Codedocs will check if it has a
-[docstring style](#supported-languages-and-structures) for such structure in the
-programming language you are using. If a docstring style is available, it will
-generate and insert a docstring above or below the structure, depending on the
-language's docstring style.
+[docstring style](#supported-languages) for such structure in the programming
+language you are using. If a docstring style is available, it will generate and
+insert a docstring above or below the structure, depending on the language's
+docstring style.
 
 If the structure under the cursor isn't supported by Codedocs, an empty
 single-line comment will be inserted.
@@ -198,7 +197,7 @@ vim.keymap.set("n", "<leader>k", require('codedocs').insert_docs, { desc = "Inse
 This keymap will insert a docstring when pressing `<leader>k`. Feel free to
 customize the key combination to your liking.
 
-### 🌐 Supported languages and structures
+### 🌐 Supported languages
 
 Codedocs supports a variety of programming languages and provides automatic
 annotations tailored to each language's style. Below is a breakdown of how
