@@ -3,6 +3,7 @@ if curr_file_path:sub(1, 1) == "@" then curr_file_path = curr_file_path:sub(2) e
 
 local plugin_dir = vim.fn.fnamemodify(curr_file_path, ":p:h")
 
+-- Load help tags
 vim.api.nvim_create_autocmd("VimEnter", {
 	callback = function()
 		local doc_dir = vim.fn.fnamemodify(plugin_dir .. "/../doc", ":p")
@@ -12,3 +13,11 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		end
 	end,
 })
+
+vim.api.nvim_set_keymap(
+	"n",
+	"<Plug>Codedocs",
+	"<cmd>lua require('codedocs').insert_docs()<CR>",
+	{ noremap = true, silent = true }
+)
+vim.api.nvim_create_user_command("Codedocs", require("codedocs").insert_docs, {})

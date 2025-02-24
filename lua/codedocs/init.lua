@@ -63,12 +63,4 @@ function M.insert_docs()
 	require("codedocs.writer").start(docs, docs_data)
 end
 
-vim.api.nvim_set_keymap(
-	"n",
-	"<Plug>Codedocs",
-	"<cmd>lua require('codedocs').insert_docs()<CR>",
-	{ noremap = true, silent = true }
-)
-vim.api.nvim_create_user_command("Codedocs", M.insert_docs, {})
-
 return M
