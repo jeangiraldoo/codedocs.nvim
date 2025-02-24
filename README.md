@@ -8,7 +8,7 @@
         alt="When was the last commit made"/>
     <img src="https://img.shields.io/badge/v0.10%2B-%238BD5CA?style=for-the-badge&logo=neovim&label=Neovim&labelColor=%232E3A59&color=%238BD5CA"
         alt="Neovim version 0.10.0 and up"/>
-    <a href = "https://github.com/jeangiraldoo/codedocs.nvim/blob/main/LICENSE" alt="Licensed under MIT">
+    <a href = "https://github.com/jeangiraldoo/codedocs.nvim/blob/main/LICENSE">
         <img src="https://img.shields.io/badge/MIT-%232E3A59?style=for-the-badge&label=License&labelColor=%232E3A59&color=%23F4A6A6"
             alt="Latest version"/>
     </a>
@@ -79,9 +79,10 @@ parsers manually, you can safely omit it.
 ```lua
 {
     "jeangiraldoo/codedocs.nvim",
-	dependencies = {
-		"nvim-treesitter/nvim-treesitter" -- Remove this if you don't plan on using nvim-treesitter
-	}
+    -- Remove the 'dependencies' section if you don't plan on using nvim-treesitter
+    dependencies = {
+        "nvim-treesitter/nvim-treesitter"
+    }
 }
 ```
 
@@ -90,9 +91,10 @@ parsers manually, you can safely omit it.
 ```lua
 use {
     "jeangiraldoo/codedocs.nvim",
-	requires = {
-		"nvim-treesitter/nvim-treesitter" -- Remove this if you don't plan on using nvim-treesitter
-	}
+    -- Remove the 'requires' section if you don't plan on using nvim-treesitter
+    requires = {
+        "nvim-treesitter/nvim-treesitter"
+    }
 }
 ```
 
@@ -100,7 +102,8 @@ use {
 
 ```vim
 Plug 'jeangiraldoo/codedocs.nvim'
-Plug 'nvim-treesitter/nvim-treesitter' " Remove this if you don't plan on using nvim-treesitter
+" Remove the 'Plug' line below if you don't plan on using nvim-treesitter
+Plug 'nvim-treesitter/nvim-treesitter'
 ```
 
 #### [mini.deps](https://github.com/echasnovski/mini.deps)
@@ -108,8 +111,8 @@ Plug 'nvim-treesitter/nvim-treesitter' " Remove this if you don't plan on using 
 ```lua
 require("mini.deps").add({
     source = "jeangiraldoo/codedocs.nvim",
-	-- Remove this dependency if you don't plan on using nvim-treesitter
-    depends = { "nvim-treesitter/nvim-treesitter" } -- Remove this if you don't plan on using nvim-treesitter
+    -- Remove the 'depends' section if you don't plan on using nvim-treesitter
+    depends = { "nvim-treesitter/nvim-treesitter" }
 })
 ```
 
@@ -118,7 +121,8 @@ require("mini.deps").add({
 ```vim
 packadd minpac
 call minpac#add('jeangiraldoo/codedocs.nvim')
-call minpac#add('nvim-treesitter/nvim-treesitter') " Remove this if you don't plan on using nvim-treesitter
+" Remove the 'call minpac#add' line below if you don't plan on using nvim-treesitter
+call minpac#add('nvim-treesitter/nvim-treesitter')
 ```
 
 #### [paq-nvim](https://github.com/savq/paq-nvim)
@@ -126,7 +130,8 @@ call minpac#add('nvim-treesitter/nvim-treesitter') " Remove this if you don't pl
 ```lua
 require("paq") {
     "jeangiraldoo/codedocs.nvim",
-    "nvim-treesitter/nvim-treesitter", -- Remove this if you don't plan on using nvim-treesitter
+    -- Remove the line below if you don't plan on using nvim-treesitter
+    "nvim-treesitter/nvim-treesitter",
 }
 ```
 
@@ -192,7 +197,10 @@ For a more convenient experience, you can bind the docstring insertion to a
 keymap. For example:
 
 ```lua
-vim.keymap.set("n", "<leader>k", require('codedocs').insert_docs, { desc = "Inserts a docstring" })
+vim.keymap.set(
+    "n", "<leader>k", require('codedocs').insert_docs,
+    { desc = "Insert docstring" }
+)
 ```
 
 This keymap will insert a docstring when pressing `<leader>k`. Feel free to

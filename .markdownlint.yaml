@@ -1,2 +1,5 @@
 MD033:
-  allowed_elements: ["p", "a", "img"]
+    allowed_elements: ["p", "a", "img"]
+
+MD013:
+    tables: false
