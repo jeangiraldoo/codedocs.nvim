@@ -42,6 +42,7 @@ built-in Treesitter parsers for the following languages—meaning no extra setup
 is needed for:
 
 - Lua
+- Python
 - C
 
 For any other language, you'll need to install the corresponding Treesitter
