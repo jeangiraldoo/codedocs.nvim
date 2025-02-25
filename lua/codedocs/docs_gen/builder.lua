@@ -107,44 +107,32 @@ local function get_wrapped_item(opts, style, item)
 end
 
 local function get_section_lines(opts, style, items)
-	local lines = {}
-
-	for _, item in ipairs(items) do
-		local wrapped_item = get_wrapped_item(opts, style, item)
-		local item_line = get_item_line(opts, style, wrapped_item)
-
-		if type(item_line) == "string" then
-			table.insert(lines, item_line)
-		elseif type(item_line) == "table" then
-			for _, split_line in pairs(item_line) do
-				table.insert(lines, split_line)
-			end
-		end
-	end
+	local lines = vim.iter(items)
+		:map(function(item)
+			local wrapped_item = get_wrapped_item(opts, style, item)
+			local item_line = get_item_line(opts, style, wrapped_item)
+			return type(item_line) == "string" and item_line or unpack(item_line)
+		end)
+		:totable()
 	return lines
 end
 
-local function get_sections(opts, style, sections_items)
+local function get_docs_lines(opts, style, sections_items)
 	local general_style = style.general
 	local section_order = general_style[opts.general.section_order.val]
-	local sections = {}
-	for _, section_name in pairs(section_order) do
-		if section_name ~= "general" then
-			local section_style = style[section_name]
-			local section_items = sections_items[section_name]
-			local lines = get_section_lines(opts, section_style, section_items)
-			if #lines > 0 then
-				local final_section = get_section(opts, general_style, section_style, lines)
-				table.insert(sections, final_section)
-			end
-		end
-	end
+	local sections = vim.iter(section_order)
+		:map(function(name)
+			local section_style, sections_items = style[name], sections_items[name]
+			local lines = get_section_lines(opts, section_style, sections_items)
+			if #lines > 0 then return get_section(opts, general_style, section_style, lines) end
+		end)
+		:totable()
 	return sections
 end
 
 local function get_docs(opts, style, data, docs_struct)
-	local sections = get_sections(opts, style, data)
-	return get_docs_with_sections(opts, style, sections, vim.deepcopy(docs_struct))
+	local docs_lines = get_docs_lines(opts, style, data)
+	return get_docs_with_sections(opts, style, docs_lines, vim.deepcopy(docs_struct))
 end
 
 return {
