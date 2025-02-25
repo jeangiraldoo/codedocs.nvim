@@ -1,14 +1,3 @@
--- local defaults = require("codedocs.docs_gen.styles.init")
-
-local function copy_docs(docs_struct)
-	local copied_docs_struct = {}
-	for i = 1, #docs_struct do
-		local copied_elem = docs_struct[i]
-		table.insert(copied_docs_struct, i, copied_elem)
-	end
-	return copied_docs_struct
-end
-
 local function insert_title(underline_char, title, gap, line_start, docs)
 	local final_title = line_start .. title
 	if title ~= "" then table.insert(docs, final_title) end
@@ -97,9 +86,8 @@ local function get_item_line(opts, style, wrapped_item)
 	if style[opts.item.inline.val] then
 		name_first, type_first = get_inline_item(standalone_name, standalone_type)
 	else
-		name_first, type_first = get_split_item(
-			standalone_name, wrapped_item, item_type_kw, is_type_below_name_first, standalone_type
-		)
+		name_first, type_first =
+			get_split_item(standalone_name, wrapped_item, item_type_kw, is_type_below_name_first, standalone_type)
 	end
 	return style[opts.item.type_first.val] and type_first or name_first
 end
@@ -156,7 +144,7 @@ end
 
 local function get_docs(opts, style, data, docs_struct)
 	local sections = get_sections(opts, style, data)
-	return get_docs_with_sections(opts, style, sections, copy_docs(docs_struct))
+	return get_docs_with_sections(opts, style, sections, vim.deepcopy(docs_struct))
 end
 
 return {
