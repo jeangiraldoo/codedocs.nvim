@@ -14,20 +14,20 @@ local function get_node_settings(style, opts, struct_name)
 	local settings = {
 		func = {
 			params = {
-				include_type = style.params and style.params[opts.item.include_type.val],
+				include_type = style.params and style.params[opts.include_type.val],
 			},
 			return_type = {
-				include_type = style.return_type and style.return_type[opts.item.include_type.val],
+				include_type = style.return_type and style.return_type[opts.include_type.val],
 			},
 		},
 		class = {
 			attrs = {
-				include_type = style.attrs and style.attrs[opts.item.include_type.val],
+				include_type = style.attrs and style.attrs[opts.include_type.val],
 			},
 			boolean_condition = {
-				style.general[opts.class_general.include_class_body_attrs.val],
-				style.general[opts.class_general.include_instance_attrs.val],
-				style.general[opts.class_general.include_only_constructor_instance_attrs.val],
+				style.general[opts.include_class_body_attrs.val],
+				style.general[opts.include_instance_attrs.val],
+				style.general[opts.include_only_constructor_instance_attrs.val],
 			},
 		},
 	}
@@ -52,13 +52,13 @@ function M.insert_docs()
 		parser_settings["tree"] = spec_reader.get_struct_tree(lang, struct_name).get_tree(node_constructor)
 	end
 	local pos, data = get_struct_items(node, sections, struct_name, parser_settings)
-	local struct = style.general[opts.general.struct.val]
+	local struct = style.general[opts.struct.val]
 
 	local docs = (struct_name == "comment") and struct or docs_builder.get_docs(opts, style, data, struct)
 	local docs_data = {
 		pos = pos,
-		direction = style.general[opts.general.direction.val],
-		title_pos = style.general[opts.general.title_pos.val],
+		direction = style.general[opts.direction.val],
+		title_pos = style.general[opts.title_pos.val],
 	}
 	require("codedocs.writer").start(docs, docs_data)
 end

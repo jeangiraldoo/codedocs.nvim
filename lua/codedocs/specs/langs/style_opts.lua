@@ -121,8 +121,5 @@ local class_general = {
 	},
 }
 
-return {
-	item = item,
-	class_general = class_general,
-	general = general,
-}
+local opts = vim.tbl_extend("error", general, class_general, item)
+return opts
