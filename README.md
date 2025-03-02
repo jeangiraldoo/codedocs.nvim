@@ -232,7 +232,7 @@ Codedocs handles annotations for different code structures:
 This table lists the structures and their supported docstring styles for each
 language:
 
-| Languages  | Annonation styles         | Supported automatic annotation |
+| Languages  | Annotation styles         | Supported automatic annotation |
 | ---------- | ------------------------- | ------------------------------ |
 | Lua        | LDoc                      | `function`, `comment`          |
 | Python     | Google, NumPy/SciPy, reST | `class`, `function`, `comment` |
@@ -476,7 +476,7 @@ appreciated!
 
 ### <a id="motivation"></a>💡 Motivation
 
-I started workng on Codedocs because I wanted to enhance my experience with
+I started working on Codedocs because I wanted to enhance my experience with
 Neovim, which I started using daily for my side projects and university
 assignments. I wanted a tool to make documenting my code easier and to
 contribute something useful to the community! :D
