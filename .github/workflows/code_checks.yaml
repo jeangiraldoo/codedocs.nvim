@@ -66,7 +66,7 @@ jobs:
 
             - name: Run linter check
               run: |
-                  luacheck .
+                  luacheck . --exclude luarocks-3.11.1
 
             - name: Run formatter check
               uses: JohnnyMorganz/stylua-action@v4
