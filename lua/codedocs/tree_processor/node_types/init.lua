@@ -21,7 +21,7 @@ local function get_node(name)
 		finder = "leaf",
 		chain = "branch",
 		regex = "branch",
-		group = "branch"
+		group = "branch",
 	}
 	local node_type = type_index[name]
 	local getter_data = { node_template }

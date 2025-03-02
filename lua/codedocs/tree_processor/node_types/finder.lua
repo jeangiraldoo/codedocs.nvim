@@ -37,5 +37,5 @@ local function get_node(data)
 end
 
 return {
-	get_node = get_node
+	get_node = get_node,
 }

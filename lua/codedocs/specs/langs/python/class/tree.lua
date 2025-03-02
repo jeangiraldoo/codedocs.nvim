@@ -31,17 +31,17 @@ local function get_tree(node_constructor)
 			node_type = "attribute",
 			mode = true,
 			def_val = "",
-		}
+		},
 	})
 
 	local get_all_attrs = node_constructor({
 		type = "chain",
-		children = { get_methods, find_method_attrs, get_method_attrs}
+		children = { get_methods, find_method_attrs, get_method_attrs },
 	})
 
 	local get_only_constructor_attrs = node_constructor({
 		type = "chain",
-		children = { get_constructor, find_method_attrs, get_method_attrs }
+		children = { get_constructor, find_method_attrs, get_method_attrs },
 	})
 
 	local class_fields_node = node_constructor({

@@ -13,17 +13,13 @@ local function validate_treesitter(lang)
 end
 
 local function get_supported_node_data(node_at_cursor, structs)
-	if node_at_cursor == nil then
-		return "comment", node_at_cursor
-	end
+	if node_at_cursor == nil then return "comment", node_at_cursor end
 	while node_at_cursor do
 		for struct_name, value in pairs(structs) do
 			if struct_name ~= "comment" then
 				local node_identifiers = value["node_identifiers"]
 				for _, id in pairs(node_identifiers) do
-					if node_at_cursor:type() == id then
-						return struct_name, node_at_cursor
-					end
+					if node_at_cursor:type() == id then return struct_name, node_at_cursor end
 				end
 			end
 		end
@@ -33,9 +29,7 @@ local function get_supported_node_data(node_at_cursor, structs)
 end
 
 local function get_node_type(filetype, structs)
-	if not validate_treesitter(filetype) then
-		return "comment", nil
-	end
+	if not validate_treesitter(filetype) then return "comment", nil end
 	-- local lang_data = require("codedocs.node_parser.custom_nodes.init").get_lang_trees(filetype)
 	-- local lang_trees = lang_data["trees"]
 	local node = require("nvim-treesitter.ts_utils").get_node_at_cursor()

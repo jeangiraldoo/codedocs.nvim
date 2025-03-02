@@ -38,7 +38,7 @@ local function get_tree(node_constructor)
 		data = {
 			pattern = "%f[%a]static%f[%A]",
 			mode = false,
-			query = [[(property_identifier) @item_name]]
+			query = [[(property_identifier) @item_name]],
 		},
 	})
 
@@ -53,7 +53,7 @@ local function get_tree(node_constructor)
 			node_type = "assignment_expression",
 			mode = true,
 			def_val = "",
-		}
+		},
 	})
 
 	local get_all_method_attrs = node_constructor({
@@ -68,7 +68,7 @@ local function get_tree(node_constructor)
 
 	local get_only_constructor_attrs = node_constructor({
 		type = "chain",
-		children = { get_constructor, method_attr_finder, get_attrs_in_methods }
+		children = { get_constructor, method_attr_finder, get_attrs_in_methods },
 	})
 
 	local get_instance_attrs = node_constructor({
