@@ -1,96 +1,76 @@
-name: Code formatting and linting
+name: Code formatting and linting checks
 
 on:
-  push:
-    branches: [main]
-    paths: ["**/*.lua"]
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize, reopened]
-    paths: ["**/*.lua"]
+    push:
+        branches: [main]
+        paths: ["**/*.lua"]
+    pull_request:
+        branches: [main]
+        types: [opened, synchronize, reopened]
+        paths: ["**/*.lua"]
 
 jobs:
-  format-check:
-    name: Check formatting
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    format-check:
+        name: Check formatting
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - name: Create directories for Lua and LuaRocks
-        run: |
-          mkdir -p /home/runner/lua
-          mkdir -p /home/runner/luarocks
+            - name: Create directories for Lua and LuaRocks
+              run: |
+                  mkdir -p /home/runner/lua
+                  mkdir -p /home/runner/luarocks
 
-      - name: Cache Lua and LuaRocks installations
-        id: cache-lua-luarocks
-        uses: actions/cache@v4
-        with:
-          path: |
-            /home/runner/lua
-            /home/runner/luarocks
-          key: Linux-lua-luarocks-cache
-          restore-keys: |
-            Linux-lua-luarocks-cache
+            - name: Cache Lua and LuaRocks installations
+              id: cache-lua-luarocks
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      /home/runner/lua
+                      /home/runner/luarocks
+                  key: Linux-lua-luarocks-cache
+                  restore-keys: |
+                      Linux-lua-luarocks-cache
 
-      - name: Install Lua and LuaRocks
-        if: steps.cache-lua-luarocks.outputs.cache-hit != 'true'
-        run: |
-          # Install Lua 5.4.4 into /home/runner/lua
-          curl -L -R -O https://www.lua.org/ftp/lua-5.4.4.tar.gz
-          tar zxf lua-5.4.4.tar.gz
-          cd lua-5.4.4
-          make linux test
-          make INSTALL_TOP=/home/runner/lua install
-          cd ..
-          # Install LuaRocks 3.11.1 into /home/runner/luarocks using our custom Lua
-          curl -fsSL https://luarocks.github.io/luarocks/releases/luarocks-3.11.1.tar.gz | tar xz
-          cd luarocks-3.11.1
-          ./configure --with-lua=/home/runner/lua --prefix=/home/runner/luarocks
-          make
-          make install
+            - name: Install Lua and LuaRocks
+              if: steps.cache-lua-luarocks.outputs.cache-hit != 'true'
+              run: |
+                  # Install Lua 5.4.4 into /home/runner/lua
+                  curl -L -R -O https://www.lua.org/ftp/lua-5.4.4.tar.gz
+                  tar zxf lua-5.4.4.tar.gz
+                  cd lua-5.4.4
+                  make linux test
+                  make INSTALL_TOP=/home/runner/lua install
+                  cd ..
+                  # Install LuaRocks 3.11.1 into /home/runner/luarocks
+                  curl -fsSL https://luarocks.github.io/luarocks/releases/luarocks-3.11.1.tar.gz | tar xz
+                  cd luarocks-3.11.1
+                  ./configure --with-lua=/home/runner/lua --prefix=/home/runner/luarocks
+                  make
+                  make install
 
-      - name: Add Lua and Luarocks bin to PATH
-        run: |
-          echo "/home/runner/lua/bin" >> $GITHUB_PATH
-          echo "/home/runner/luarocks/bin" >> $GITHUB_PATH
+            - name: Add Lua and Luarocks bin to PATH
+              run: |
+                  echo "/home/runner/lua/bin" >> $GITHUB_PATH
+                  echo "/home/runner/luarocks/bin" >> $GITHUB_PATH
 
-      - name: Check Lua and Luarocks version
-        run: |
-          lua -v
-          luarocks --version
+            - name: Check Lua and Luarocks version
+              run: |
+                  lua -v
+                  luarocks --version
 
-      - name: Install Luacheck
-        run: luarocks install luacheck
+            - name: Install Luacheck
+              run: luarocks install luacheck
 
-      - name: Get commits file list
-        run: |
-          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
-              commit_range="${{ github.event.before }}..${{ github.sha }}"
-          elif [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
-              commit_range="origin/${{ github.base_ref }}..HEAD"
-          else
-              commit_range="HEAD~1..HEAD"
-          fi
-          modified_files=$(git diff --name-only $commit_range -- '*.lua')
-          if [ -n "$modified_files" ]; then
-              echo "Modified files: $modified_files"
-              echo "files=$modified_files" >> "$GITHUB_ENV"
-          else
-              echo "No Lua files were modified."
-              echo "files=" >> "$GITHUB_ENV"
-          fi
+            - name: Run linter check
+              run: |
+                  luacheck .
 
-      - name: Run linter check
-        if: env.files != ''
-        run: |
-          luacheck ${{ env.files }}
-
-      - name: Run formatter check
-        if: env.files != ''
-        uses: JohnnyMorganz/stylua-action@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          version: 2.0.2
-          args: --check ${{ env.files }}
+            - name: Run formatter check
+              uses: JohnnyMorganz/stylua-action@v4
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  version: 2.0.2
+                  args: --check .
