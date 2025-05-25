@@ -429,29 +429,9 @@ provided in this section.
 
 ### <a id="roadmap"></a>🗺️ Roadmap
 
-This diagram outlines the features and improvements planned for the project at
-different stages. Please note that this roadmap is flexible and will be updated
-as the project evolves, reflecting its current state at any given time.
-
-```mermaid
-flowchart LR
-    1[Current stage: Alpha]
-    2[Beta
-    - Support for documenting files/modules
-    - Support for documenting variables
-    - Unit tests]
-    3[Stable
-    - More unit tests
-    - Design a logo]
-    4[Beyond*
-    - Automatically updating docstrings when the structure they document changes,
-    such as updating parameters when they are renamed or removed in a function declaration]
-    1 --> 2 --> 3 --> 4
-```
-
-\*Beyond: Refers to all the features planned for Codedocs after the plugin
-reaches a stable and mature state. They will be appropriately split into stages
-when the moment comes.
+You can see what's being worked on and which features are planned by checking
+the
+[GitHub Milestones](https://github.com/jeangiraldoo/codedocs.nvim/milestones).
 
 ### <a id="contributing"></a>🤝 Contributing
 
