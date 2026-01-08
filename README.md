@@ -67,11 +67,7 @@ Once you have the necessary parsers, you're all set to install Codedocs.
 
 ### <a id="installation"></a>📦 Installation
 
-To install Codedocs with your plugin manager, follow the instructions for your
-preferred manager below. As noted in the [Requirements section](#requirements),
-nvim-treesitter is only needed if you plan to use it for installing additional
-Treesitter parsers. If you're only working with Lua and C, or prefer to manage
-parsers manually, you can safely omit it.
+Use the snippet for your plugin manager:
 
 #### [vim.pack](https://neovim.io/doc/user/pack.html#vim.pack)
 
@@ -86,10 +82,6 @@ vim.pack.add({
 ```lua
 {
     "jeangiraldoo/codedocs.nvim",
-    -- Remove the 'dependencies' section if you don't plan on using nvim-treesitter
-    dependencies = {
-        "nvim-treesitter/nvim-treesitter"
-    }
 }
 ```
 
@@ -98,10 +90,6 @@ vim.pack.add({
 ```lua
 use {
     "jeangiraldoo/codedocs.nvim",
-    -- Remove the 'requires' section if you don't plan on using nvim-treesitter
-    requires = {
-        "nvim-treesitter/nvim-treesitter"
-    }
 }
 ```
 
@@ -109,8 +97,6 @@ use {
 
 ```vim
 Plug 'jeangiraldoo/codedocs.nvim'
-" Remove the 'Plug' line below if you don't plan on using nvim-treesitter
-Plug 'nvim-treesitter/nvim-treesitter'
 ```
 
 #### [mini.deps](https://github.com/echasnovski/mini.deps)
@@ -118,8 +104,6 @@ Plug 'nvim-treesitter/nvim-treesitter'
 ```lua
 require("mini.deps").add({
     source = "jeangiraldoo/codedocs.nvim",
-    -- Remove the 'depends' section if you don't plan on using nvim-treesitter
-    depends = { "nvim-treesitter/nvim-treesitter" }
 })
 ```
 
@@ -128,8 +112,6 @@ require("mini.deps").add({
 ```vim
 packadd minpac
 call minpac#add('jeangiraldoo/codedocs.nvim')
-" Remove the 'call minpac#add' line below if you don't plan on using nvim-treesitter
-call minpac#add('nvim-treesitter/nvim-treesitter')
 ```
 
 #### [paq-nvim](https://github.com/savq/paq-nvim)
@@ -137,8 +119,6 @@ call minpac#add('nvim-treesitter/nvim-treesitter')
 ```lua
 require("paq") {
     "jeangiraldoo/codedocs.nvim",
-    -- Remove the line below if you don't plan on using nvim-treesitter
-    "nvim-treesitter/nvim-treesitter",
 }
 ```
 
