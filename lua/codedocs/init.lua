@@ -35,11 +35,15 @@ local function get_node_settings(style, opts, struct_name)
 end
 
 function M.insert_docs()
-	local lang = vim.api.nvim_buf_get_option(0, "filetype")
+	local lang = vim.bo.filetype
+	if not vim.treesitter.get_parser(0, lang, { error = false }) then
+		vim.notify("Tree-sitter parser for " .. lang .. " is not installed", vim.log.levels.ERROR)
+		return
+	end
 
 	local struct_names = spec_reader.get_struct_names(lang)
 	if not struct_names then return false end
-	local struct_name, node = get_struct_info(lang, struct_names)
+	local struct_name, node = get_struct_info(struct_names)
 
 	local struct_data = spec_reader.get_struct_style(lang, struct_name)
 	if not struct_data then return false end
