@@ -73,6 +73,14 @@ nvim-treesitter is only needed if you plan to use it for installing additional
 Treesitter parsers. If you're only working with Lua and C, or prefer to manage
 parsers manually, you can safely omit it.
 
+#### [vim.pack](https://neovim.io/doc/user/pack.html#vim.pack)
+
+```lua
+vim.pack.add({
+    { src = "https://github.com/jeangiraldoo/codedocs.nvim" }
+})
+```
+
 #### [lazy.nvim](http://www.lazyvim.org/)
 
 ```lua
