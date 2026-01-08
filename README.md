@@ -57,7 +57,6 @@ built-in Treesitter parsers for the following languages—meaning no extra setup
 is needed for:
 
 - Lua
-- Python
 - C
 
 For any other language, you'll need to install the corresponding Treesitter
@@ -410,7 +409,6 @@ Explanation:
 4. Specify the structure to modify – In this example, "func".
 5. Modify sections within the structure – For "func", the general and params
    sections are customized.
-
     - general section:
         - item_gap = true (adds spacing between items)
         - section_gap = true (adds spacing between sections)
