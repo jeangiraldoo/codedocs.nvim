@@ -117,30 +117,32 @@ require("paq") {
 
 ### <a id="configuration"></a>⚙️ Configuration
 
-<!-- Configuring Codedocs is not mandatory, as it works out of the box. However, if -->
-<!-- the default settings don’t meet your needs, you can easily customize the plugin. -->
+#### Change a language's default annotation style
 
-#### Change the default docstring style used in a language
-
-You can change the docstring style for any language that supports more than one
-style.
-
-Keep in mind that the name of the docstring style must be spelled exactly as
-shown in the table of [supported languages](#supported-languages). For example,
-`reST` must be written as `reST` (not `ReST` or any other variation).
-
-Although this example demonstrates changing the style for a single language, you
-can customize as many languages as you want by adding their names to the table
-and assigning the respective style names.
-
-In this case, we are changing Python's docstring style from the default to
-"reST":
+Default styles are defined using the `default_styles` key:
 
 ```lua
 require("codedocs").setup {
-    default_styles = {python = "reST"}
+    default_styles = {
+        --- Default styles definitions
+    }
 }
 ```
+
+For example, let's set the default styles for Python and Lua:
+
+```lua
+require("codedocs").setup {
+    default_styles = {
+        lua = "EmmyLua",
+        python = "reST"
+    }
+}
+```
+
+> [!WARNING]
+> Keep in mind that the name of the docstring style must be spelled exactly as
+> shown in the table of [supported languages](#supported-languages).
 
 #### Customize a docstring style
 
