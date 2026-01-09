@@ -32,7 +32,6 @@ formats, or just use codedocs as it is! :)
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Supported languages](#supported-languages)
-- [Customize docstrings](#customize-docstrings)
 - [Roadmap](#roadmap)
 - [Technical documentation](./lua/codedocs/README.md)
 - [Contributing](#contributing)
@@ -41,14 +40,10 @@ formats, or just use codedocs as it is! :)
 
 ### <a id="features"></a>🚀 Features
 
-- Works out-of-the-box: Integrates with Neovim instantly—no configuration
-  needed.
-- Auto Documentation: Detects and documents code structures with a simple
-  keybind.
-- Multi-language Support: Generates docstrings for various programming
-  languages.
-- Customizable: Easily modify existing formats or add new ones in just a few
-  simple steps.
+- Works out-of-the-box.
+- Detects and documents code structures with a simple keybind.
+- Supports multiple languages and structures.
+- Easily customize existing formats or add new ones.
 
 ### <a id="requirements"></a>📋 Requirements
 
@@ -62,8 +57,6 @@ is needed for:
 For any other language, you'll need to install the corresponding Treesitter
 parser. The simplest way to do this is with
 **[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)**.
-
-Once you have the necessary parsers, you're all set to install Codedocs.
 
 ### <a id="installation"></a>📦 Installation
 
@@ -124,121 +117,34 @@ require("paq") {
 
 ### <a id="configuration"></a>⚙️ Configuration
 
-Configuring Codedocs is not mandatory, as it works out of the box. However, if
-the default settings don’t meet your needs, you can easily customize the plugin.
+#### Change a language's default annotation style
 
-#### Change the default docstring style used in a language
-
-You can change the docstring style for any language that supports more than one
-style.
-
-Keep in mind that the name of the docstring style must be spelled exactly as
-shown in the table of [supported languages](#supported-languages). For example,
-`reST` must be written as `reST` (not `ReST` or any other variation).
-
-Although this example demonstrates changing the style for a single language, you
-can customize as many languages as you want by adding their names to the table
-and assigning the respective style names.
-
-In this case, we are changing Python's docstring style from the default to
-"reST":
+Default styles are defined using the `default_styles` key:
 
 ```lua
 require("codedocs").setup {
-    default_styles = {python = "reST"}
+    default_styles = {
+        --- Default styles definitions
+    }
 }
 ```
 
+For example, let's set the default styles for Python and Lua:
+
+```lua
+require("codedocs").setup {
+    default_styles = {
+        lua = "EmmyLua",
+        python = "reST"
+    }
+}
+```
+
+> [!WARNING]
+> Keep in mind that the name of the docstring style must be spelled exactly as
+> shown in the table of [supported languages](#supported-languages).
+
 #### Customize a docstring style
-
-You can refer to the [Customize docstring style](#customize-docstrings) section
-for detailed information about the process and the options available!
-
-### <a id="usage"></a>💻 Usage
-
-When your cursor is placed on top of a language's structure (e.g., a function
-declaration, class, etc.) that you want to document and you trigger the
-docstring insertion, Codedocs will check if it has a
-[docstring style](#supported-languages) for such structure in the programming
-language you are using. If a docstring style is available, it will generate and
-insert a docstring above or below the structure, depending on the language's
-docstring style.
-
-If the structure under the cursor isn't supported by Codedocs, an empty
-single-line comment will be inserted.
-
-You can start the docstring insertion either by using a command or a keymap:
-
-#### Command
-
-Codedocs creates the `:Codedocs` command, which can be called manually like
-this:
-
-```lua
-:Codedocs
-```
-
-#### Keymap
-
-For a more convenient experience, you can bind the docstring insertion to a
-keymap. For example:
-
-```lua
-vim.keymap.set(
-    "n", "<leader>k", require('codedocs').insert_docs,
-    { desc = "Insert docstring" }
-)
-```
-
-This keymap will insert a docstring when pressing `<leader>k`. Feel free to
-customize the key combination to your liking.
-
-### <a id="supported-languages"></a>🌐 Supported languages
-
-Codedocs supports a variety of programming languages and provides automatic
-annotations tailored to each language's style. Below is a breakdown of how
-Codedocs handles annotations for different code structures:
-
-#### 1. **Function**
-
-- **Parameters**: Included if present in the function signature.
-- **Parameter Type**: Added if specified through a type hint or if the language
-  is statically typed.
-- **Return Section**: Included only if a return type is explicitly defined in
-  the function signature.
-
-#### 2. **Class**
-
-- **Attributes**: Class attributes are documented when available.
-
-#### 3. **Comment**
-
-- If no supported structure is detected under the cursor, Codedocs will insert
-  an empty inline comment as a shortcut for adding regular comments.
-
-This table lists the structures and their supported docstring styles for each
-language:
-
-| Languages  | Annotation styles         | Supported automatic annotation |
-| ---------- | ------------------------- | ------------------------------ |
-| Lua        | LDoc                      | `function`, `comment`          |
-| Python     | Google, NumPy/SciPy, reST | `class`, `function`, `comment` |
-| JavaScript | JSDoc                     | `class`, `function`, `comment` |
-| TypeScript | TSDoc                     | `class`, `function`, `comment` |
-| Ruby       | YARD                      | `function`, `comment`          |
-| PHP        | PHPDoc                    | `function`, `comment`          |
-| Java       | JavaDoc                   | `class`, `function`, `comment` |
-| Kotlin     | KDoc                      | `class`, `function`, `comment` |
-| Rust       | RustDoc                   | `function`, `comment`          |
-| Go         | Godoc                     | `function`, `comment`          |
-| C          | Doxygen                   | `function`, `comment`          |
-| C++        | Doxygen                   | `function`, `comment`          |
-
-Want to see what docstrings look like by default? Check out the
-[Docstring Examples](./DOCSTRING_EXAMPLES.md) to explore different formats
-across multiple languages.
-
-### <a id="customize-docstrings"></a>🎨 Customize docstrings
 
 In Codedocs, you can customize almost (for now!) every aspect of a docstring
 style. Whether you want to make a simple change, like modifying the characters
@@ -403,15 +309,71 @@ Explanation:
     - params section:
         - include_type = true (includes parameter types in the docstring)
 
-⚠️ Important Notes:
+### <a id="usage"></a>💻 Usage
 
-Ensure that the option names are spelled correctly and that the values match
-their expected data types (e.g., true/false for booleans).
+When an annotation insertion is triggered, the plugin generates one for the
+structure under the cursor. If no supported structure is detected, it inserts an
+inline comment instead.
 
-If an option is misspelled or the wrong data type is used, an error will occur.
+An annotation insertion can be triggered in the following ways:
 
-This procedure applies to all supported languages, considering the information
-provided in this section.
+#### Command
+
+The simplest way to use the plugin is with the following command:
+
+```lua
+:Codedocs
+```
+
+#### Keymap
+
+For a more convenient experience, you can bind the annotation insertion to a
+keymap. For example:
+
+```lua
+vim.keymap.set(
+    "n", "<leader>k", require('codedocs').insert_docs,
+    { desc = "Insert docstring" }
+)
+```
+
+### <a id="supported-languages"></a>🌐 Supported languages
+
+| Languages  | Annotation styles         | Supported automatic annotation |
+| ---------- | ------------------------- | ------------------------------ |
+| Lua        | LDoc                      | `function`, `comment`          |
+| Python     | Google, NumPy/SciPy, reST | `class`, `function`, `comment` |
+| JavaScript | JSDoc                     | `class`, `function`, `comment` |
+| TypeScript | TSDoc                     | `class`, `function`, `comment` |
+| Ruby       | YARD                      | `function`, `comment`          |
+| PHP        | PHPDoc                    | `function`, `comment`          |
+| Java       | JavaDoc                   | `class`, `function`, `comment` |
+| Kotlin     | KDoc                      | `class`, `function`, `comment` |
+| Rust       | RustDoc                   | `function`, `comment`          |
+| Go         | Godoc                     | `function`, `comment`          |
+| C          | Doxygen                   | `function`, `comment`          |
+| C++        | Doxygen                   | `function`, `comment`          |
+
+#### 1. **Function**
+
+- **Parameters**: Included if present in the function signature.
+- **Parameter Type**: Added if specified through a type hint or if the language
+  is statically typed.
+- **Return Section**: Included only if a return type is explicitly defined in
+  the function signature.
+
+#### 2. **Class**
+
+- **Attributes**: Class attributes are documented when available.
+
+#### 3. **Comment**
+
+If no structure is detected under the cursor, an empty inline comment will be inserted.
+
+> [!TIP]
+> Want to see what docstrings look like by default? Check out the
+> [Docstring Examples](./DOCSTRING_EXAMPLES.md) to explore different formats
+> across multiple languages.
 
 ### <a id="roadmap"></a>🗺️ Roadmap
 
