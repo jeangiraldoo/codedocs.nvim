@@ -9,6 +9,7 @@ local function validate_struct_style(struct_path, struct_styles, struct_name, la
 
 	for style_name, _ in pairs(struct_styles) do
 		local style_path_in_struct = struct_path .. ".styles." .. style_name
+		print(style_path_in_struct)
 		local style_module_exists, _ = pcall(require, style_path_in_struct)
 		if not style_module_exists then
 			local msg = string.format(
@@ -40,7 +41,7 @@ local function validate_struct_dirs(structs, struct_styles, lang)
 	for struct_name, _ in pairs(structs) do
 		local script_dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h")
 
-		local path_to_struct = script_dir .. "/../langs/" .. lang .. "/" .. struct_name
+		local path_to_struct = script_dir .. "/../_langs/" .. lang .. "/" .. struct_name
 
 		local is_dir = vim.fn.isdirectory(path_to_struct)
 
@@ -49,7 +50,7 @@ local function validate_struct_dirs(structs, struct_styles, lang)
 			vim.notify(msg, vim.log.levels.ERROR)
 			return false
 		end
-		local struct_path = "codedocs.specs.langs." .. lang .. "." .. struct_name
+		local struct_path = "codedocs.specs._langs." .. lang .. "." .. struct_name
 		if not validate_struct_tree(struct_path, struct_name) then return false end
 
 		if not validate_struct_style(struct_path, struct_styles, struct_name, lang) then return false end
