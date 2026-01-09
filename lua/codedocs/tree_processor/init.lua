@@ -1,5 +1,99 @@
-local current_dir = "codedocs.tree_processor."
-local item_data_retriever = require(current_dir .. "processor")
-local struct_finder = require(current_dir .. "struct_finder")
+local node_constructor = require("codedocs.tree_processor.node_types")
 
-return { item_data_retriever, struct_finder }
+local Processor = {
+	CACHED_TREES = {},
+}
+
+-- @param structs Structure types to check for
+-- @return string Structure name
+-- @return vim.treesitter._tsnode
+function Processor:determine_struc_under_cursor(structs)
+	vim.treesitter.get_parser(0):parse()
+	local node_at_cursor = vim.treesitter.get_node()
+
+	if node_at_cursor == nil then return "comment", node_at_cursor end
+
+	while node_at_cursor do
+		for struct_name, value in pairs(structs) do
+			if struct_name ~= "comment" then
+				local node_identifiers = value["node_identifiers"]
+				for _, id in pairs(node_identifiers) do
+					if node_at_cursor:type() == id then return struct_name, node_at_cursor end
+				end
+			end
+		end
+		node_at_cursor = node_at_cursor:parent()
+	end
+	return "comment", node_at_cursor
+end
+
+local function _get_parser_settings(style, opts, struct_name)
+	local settings = {
+		func = {
+			params = {
+				include_type = style.params and style.params[opts.include_type.val],
+			},
+			return_type = {
+				include_type = style.return_type and style.return_type[opts.include_type.val],
+			},
+		},
+		class = {
+			attrs = {
+				include_type = style.attrs and style.attrs[opts.include_type.val],
+			},
+			boolean_condition = {
+				style.general[opts.include_class_body_attrs.val],
+				style.general[opts.include_instance_attrs.val],
+				style.general[opts.include_only_constructor_instance_attrs.val],
+			},
+		},
+	}
+	return settings[struct_name]
+end
+
+local function _get_struct_section_items(node, tree, settings, include_type)
+	local items
+	for _, tree_node in pairs(tree) do
+		settings.include_type = include_type
+		settings["node"] = node
+		items = tree_node:process(settings) or {}
+
+		if items and #items > 0 then break end
+	end
+	return items
+end
+
+local function _get_struct_items(node, sections, settings)
+	local lang_node_trees = settings.tree
+	local struct_sections = lang_node_trees.sections
+
+	local items = {}
+	for _, section_name in pairs(sections) do
+		local include_type = settings[section_name].include_type
+		local section_tree = struct_sections[section_name]
+		items[section_name] = _get_struct_section_items(node, section_tree, settings, include_type)
+	end
+	return items
+end
+
+function Processor:item_parser(node, sections, struct_name, style, opts, identifier_pos)
+	local pos = vim.api.nvim_win_get_cursor(0)[1] - 1
+	if struct_name == "comment" then return pos, {} end
+
+	local tree = self.CACHED_TREES[vim.bo.filetype]
+
+	if not tree then
+		tree = require("codedocs.specs").reader:get_struct_tree(vim.bo.filetype, struct_name).get_tree(node_constructor)
+		self.CACHED_TREES[vim.bo.filetype] = tree
+	end
+
+	local parser_settings = _get_parser_settings(style, opts, struct_name)
+	if struct_name ~= "comment" then
+		parser_settings["identifier_pos"] = identifier_pos
+		parser_settings["tree"] = tree
+	end
+
+	return node:range(), _get_struct_items(node, sections, parser_settings)
+end
+
+return Processor

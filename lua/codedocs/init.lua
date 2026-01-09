@@ -1,6 +1,6 @@
 local docs_builder = require("codedocs.docs_gen")
 local Spec = require("codedocs.specs")
-local get_struct_items, get_struct_info = unpack(require("codedocs.tree_processor"))
+local Processor = require("codedocs.tree_processor")
 
 local M = {}
 
@@ -21,11 +21,11 @@ function M.insert_docs()
 
 	if not struct_names then return false end
 
-	local struct_name, node = get_struct_info(struct_names)
+	local struct_name, node = Processor:determine_struc_under_cursor(struct_names)
 	local style, opts, identifier_pos = Spec.reader:get_struct_data(lang, struct_name)
 
 	local sections = style.general.section_order
-	local pos, data = get_struct_items(node, sections, struct_name, style, opts, identifier_pos)
+	local pos, data = Processor:item_parser(node, sections, struct_name, style, opts, identifier_pos)
 	local struct = style.general[opts.struct.val]
 
 	local docs = (struct_name == "comment") and struct or docs_builder.get_docs(opts, style, data, struct)
