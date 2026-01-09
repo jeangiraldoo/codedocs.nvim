@@ -41,14 +41,10 @@ formats, or just use codedocs as it is! :)
 
 ### <a id="features"></a>🚀 Features
 
-- Works out-of-the-box: Integrates with Neovim instantly—no configuration
-  needed.
-- Auto Documentation: Detects and documents code structures with a simple
-  keybind.
-- Multi-language Support: Generates docstrings for various programming
-  languages.
-- Customizable: Easily modify existing formats or add new ones in just a few
-  simple steps.
+- Works out-of-the-box.
+- Detects and documents code structures with a simple keybind.
+- Supports multiple languages and structures.
+- Easily customize existing formats or add new ones.
 
 ### <a id="requirements"></a>📋 Requirements
 
@@ -62,8 +58,6 @@ is needed for:
 For any other language, you'll need to install the corresponding Treesitter
 parser. The simplest way to do this is with
 **[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)**.
-
-Once you have the necessary parsers, you're all set to install Codedocs.
 
 ### <a id="installation"></a>📦 Installation
 
@@ -124,8 +118,8 @@ require("paq") {
 
 ### <a id="configuration"></a>⚙️ Configuration
 
-Configuring Codedocs is not mandatory, as it works out of the box. However, if
-the default settings don’t meet your needs, you can easily customize the plugin.
+<!-- Configuring Codedocs is not mandatory, as it works out of the box. However, if -->
+<!-- the default settings don’t meet your needs, you can easily customize the plugin. -->
 
 #### Change the default docstring style used in a language
 
@@ -195,30 +189,6 @@ customize the key combination to your liking.
 
 ### <a id="supported-languages"></a>🌐 Supported languages
 
-Codedocs supports a variety of programming languages and provides automatic
-annotations tailored to each language's style. Below is a breakdown of how
-Codedocs handles annotations for different code structures:
-
-#### 1. **Function**
-
-- **Parameters**: Included if present in the function signature.
-- **Parameter Type**: Added if specified through a type hint or if the language
-  is statically typed.
-- **Return Section**: Included only if a return type is explicitly defined in
-  the function signature.
-
-#### 2. **Class**
-
-- **Attributes**: Class attributes are documented when available.
-
-#### 3. **Comment**
-
-- If no supported structure is detected under the cursor, Codedocs will insert
-  an empty inline comment as a shortcut for adding regular comments.
-
-This table lists the structures and their supported docstring styles for each
-language:
-
 | Languages  | Annotation styles         | Supported automatic annotation |
 | ---------- | ------------------------- | ------------------------------ |
 | Lua        | LDoc                      | `function`, `comment`          |
@@ -234,9 +204,26 @@ language:
 | C          | Doxygen                   | `function`, `comment`          |
 | C++        | Doxygen                   | `function`, `comment`          |
 
-Want to see what docstrings look like by default? Check out the
-[Docstring Examples](./DOCSTRING_EXAMPLES.md) to explore different formats
-across multiple languages.
+#### 1. **Function**
+
+- **Parameters**: Included if present in the function signature.
+- **Parameter Type**: Added if specified through a type hint or if the language
+  is statically typed.
+- **Return Section**: Included only if a return type is explicitly defined in
+  the function signature.
+
+#### 2. **Class**
+
+- **Attributes**: Class attributes are documented when available.
+
+#### 3. **Comment**
+
+If no structure is detected under the cursor, an empty inline comment will be inserted.
+
+> [!TIP]
+> Want to see what docstrings look like by default? Check out the
+> [Docstring Examples](./DOCSTRING_EXAMPLES.md) to explore different formats
+> across multiple languages.
 
 ### <a id="customize-docstrings"></a>🎨 Customize docstrings
 
