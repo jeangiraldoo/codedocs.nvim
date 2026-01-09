@@ -1,34 +1,39 @@
 local validator = require("codedocs.specs.validators.init")
 local opts = require("codedocs.specs.langs.style_opts")
 
-local function get_lang_data(lang, struct_name)
-	local struct_path = "codedocs.specs.langs." .. lang .. "." .. struct_name
-	local lang_data = require("codedocs.specs.langs." .. lang .. ".init")
-	if not validator.basic.validate(lang_data, lang) then return false end
+local Reader = {}
 
-	local default_style, identifier_pos = lang_data.default_style, lang_data.identifier_pos
-	local main_style = require(struct_path .. ".styles." .. default_style)
-	if not validator.style.validate(opts, main_style, struct_name) then return false end
-	return { opts, main_style, identifier_pos }
+local function _get_data(lang) return require("codedocs.specs.langs." .. lang) end
+
+function Reader:_get_struct_main_style(lang, struct_name)
+	local lang_data = _get_data(lang)
+	local default_style = lang_data.default_style
+
+	local struct_path = "codedocs.specs.langs." .. lang .. "." .. struct_name
+	return require(struct_path .. ".styles." .. default_style)
 end
 
-local function get_lang_structs(lang)
-	local lang_data = require("codedocs.specs.langs." .. lang .. ".init")
+function Reader:get_struct_data(lang, struct_name)
+	local lang_data = _get_data(lang)
+	if not validator.basic.validate(lang_data, lang) then return false end
+
+	local main_style = self:_get_struct_main_style(lang, struct_name)
+	if not validator.style.validate(opts, main_style, struct_name) then return false end
+	return main_style, opts, lang_data.identifier_pos
+end
+
+function Reader:get_struct_names(lang)
+	local lang_data = _get_data(lang)
 	local structs = lang_data.structs
 	if not validator.structs.validate(lang, lang_data, structs) then return false end
 	return structs
 end
 
-local function get_struct_tree(lang, struct_name)
+function Reader:get_struct_tree(lang, struct_name)
 	local struct_path = "codedocs.specs.langs." .. lang .. "." .. struct_name
 	local lang_path = struct_path .. ".tree"
 	local tree = require(lang_path)
-	print(vim.inspect(tree))
 	return tree
 end
 
-return {
-	get_struct_style = get_lang_data,
-	get_struct_names = get_lang_structs,
-	get_struct_tree = get_struct_tree,
-}
+return Reader
