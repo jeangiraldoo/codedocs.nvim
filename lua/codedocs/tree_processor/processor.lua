@@ -1,5 +1,7 @@
 local node_constructor = require("codedocs.tree_processor.node_types")
 
+local CACHED_TREES = {}
+
 local function get_parser_settings(style, opts, struct_name)
 	local settings = {
 		func = {
@@ -53,11 +55,17 @@ local function get_data(node, sections, struct_name, style, opts, identifier_pos
 	local pos = vim.api.nvim_win_get_cursor(0)[1] - 1
 	if struct_name == "comment" then return pos, {} end
 
+	local tree = CACHED_TREES[vim.bo.filetype]
+
+	if not tree then
+		tree = require("codedocs.specs").reader:get_struct_tree(vim.bo.filetype, struct_name).get_tree(node_constructor)
+		CACHED_TREES[vim.bo.filetype] = tree
+	end
+
 	local parser_settings = get_parser_settings(style, opts, struct_name)
 	if struct_name ~= "comment" then
 		parser_settings["identifier_pos"] = identifier_pos
-		parser_settings["tree"] =
-			require("codedocs.specs").reader:get_struct_tree(vim.bo.filetype, struct_name).get_tree(node_constructor)
+		parser_settings["tree"] = tree
 	end
 
 	return node:range(), get_struct_items(node, sections, parser_settings)
