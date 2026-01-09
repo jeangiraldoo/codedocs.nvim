@@ -309,18 +309,11 @@ Explanation:
 
 ### <a id="usage"></a>💻 Usage
 
-When your cursor is placed on top of a language's structure (e.g., a function
-declaration, class, etc.) that you want to document and you trigger the
-docstring insertion, Codedocs will check if it has a
-[docstring style](#supported-languages) for such structure in the programming
-language you are using. If a docstring style is available, it will generate and
-insert a docstring above or below the structure, depending on the language's
-docstring style.
+When an annotation insertion is triggered, the plugin generates one for the
+structure under the cursor. If no supported structure is detected, it inserts an
+inline comment instead.
 
-If the structure under the cursor isn't supported by Codedocs, an empty
-single-line comment will be inserted.
-
-You can start the docstring insertion either by using a command or a keymap:
+An annotation insertion can be triggered in the following ways:
 
 #### Command
 
@@ -342,9 +335,6 @@ vim.keymap.set(
     { desc = "Insert docstring" }
 )
 ```
-
-This keymap will insert a docstring when pressing `<leader>k`. Feel free to
-customize the key combination to your liking.
 
 ### <a id="supported-languages"></a>🌐 Supported languages
 
