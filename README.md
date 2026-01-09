@@ -317,8 +317,7 @@ An annotation insertion can be triggered in the following ways:
 
 #### Command
 
-Codedocs creates the `:Codedocs` command, which can be called manually like
-this:
+The simplest way to use the plugin is with the following command:
 
 ```lua
 :Codedocs
@@ -326,7 +325,7 @@ this:
 
 #### Keymap
 
-For a more convenient experience, you can bind the docstring insertion to a
+For a more convenient experience, you can bind the annotation insertion to a
 keymap. For example:
 
 ```lua
