@@ -1,4 +1,4 @@
-local get_class_fields = [[
+local GET_CLASS_FIELDS = [[
 	(class_body
 		(field_declaration
 			(modifiers) @name
@@ -11,7 +11,7 @@ local get_class_fields = [[
     )
 ]]
 
-local get_instance_attrs = [[
+local GET_INSTANCE_ATTRS = [[
 	(class_body
 		(field_declaration
 			(modifiers) @name
@@ -24,29 +24,29 @@ local get_instance_attrs = [[
     )
 ]]
 
-local function get_tree(node_constructor)
-	local include_instance_attrs = node_constructor({
-		type = "boolean",
-		children = { get_instance_attrs },
-	})
-	local include_class_fields = node_constructor({
-		type = "accumulator",
-		children = { get_class_fields, include_instance_attrs },
-	})
+local INCLUDE_INSTANCE_ATTRS = {
+	type = "boolean",
+	children = { GET_INSTANCE_ATTRS },
+}
 
-	local include_attrs = node_constructor({
+local ATTRS = {
+	{
 		type = "boolean",
-		children = { include_class_fields, include_instance_attrs },
-	})
-	return {
-		sections = {
-			attrs = {
-				include_attrs,
+		children = {
+			{
+				type = "accumulator",
+				children = {
+					GET_CLASS_FIELDS,
+					INCLUDE_INSTANCE_ATTRS,
+				},
 			},
+			INCLUDE_INSTANCE_ATTRS,
 		},
-	}
-end
+	},
+}
 
 return {
-	get_tree = get_tree,
+	sections = {
+		attrs = ATTRS,
+	},
 }

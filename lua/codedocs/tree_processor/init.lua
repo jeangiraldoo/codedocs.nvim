@@ -76,21 +76,61 @@ local function _get_struct_items(node, sections, settings)
 	return items
 end
 
+local function build_node(node)
+	local new_children
+	if node.children then
+		new_children = {}
+		for i, child in ipairs(node.children) do
+			if type(child) == "table" then
+				new_children[i] = build_node(child)
+			else
+				table.insert(new_children, child)
+			end
+		end
+	end
+
+	local new_node = {}
+	for key, value in pairs(node) do
+		if key ~= "children" then new_node[key] = value end
+	end
+
+	if new_children then new_node.children = new_children end
+
+	return node_constructor(new_node)
+end
+
+local function build_tree_list(list)
+	local final_tree = {
+		sections = {},
+	}
+
+	for section_name, trees in pairs(list.sections) do
+		local section_list = {}
+
+		for i, tree in ipairs(trees) do
+			section_list[i] = build_node(tree)
+		end
+
+		final_tree.sections[section_name] = section_list
+	end
+
+	return final_tree
+end
+
 function Processor:item_parser(node, sections, struct_name, style, opts, identifier_pos)
 	local pos = vim.api.nvim_win_get_cursor(0)[1] - 1
 	if struct_name == "comment" then return pos, {} end
 
-	local tree = self.CACHED_TREES[vim.bo.filetype]
-
-	if not tree then
-		tree = require("codedocs.specs").reader:get_struct_tree(vim.bo.filetype, struct_name).get_tree(node_constructor)
-		self.CACHED_TREES[vim.bo.filetype] = tree
+	if not self.CACHED_TREES[vim.bo.filetype] then self.CACHED_TREES[vim.bo.filetype] = {} end
+	if not self.CACHED_TREES[vim.bo.filetype][struct_name] then
+		local raw_tree_list = require("codedocs.specs").reader:get_struct_tree(vim.bo.filetype, struct_name)
+		self.CACHED_TREES[vim.bo.filetype][struct_name] = build_tree_list(raw_tree_list)
 	end
 
 	local parser_settings = _get_parser_settings(style, opts, struct_name)
 	if struct_name ~= "comment" then
 		parser_settings["identifier_pos"] = identifier_pos
-		parser_settings["tree"] = tree
+		parser_settings["tree"] = self.CACHED_TREES[vim.bo.filetype][struct_name]
 	end
 
 	return node:range(), _get_struct_items(node, sections, parser_settings)

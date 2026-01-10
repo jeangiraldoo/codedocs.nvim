@@ -1,4 +1,4 @@
-local get_methods = [[
+local GET_METHODS = [[
 	(class_definition
 		body: (block
 			(function_definition) @target
@@ -6,7 +6,7 @@ local get_methods = [[
 	)
 ]]
 
-local get_constructor = [[
+local GET_CONSTRUCTOR = [[
 	(class_definition
 		body: (block
 			(function_definition
@@ -17,79 +17,75 @@ local get_constructor = [[
 	)
 ]]
 
-local get_method_attrs = [[
+local GET_METHOD_ATTRS = [[
 	(attribute
 		(identifier) @item_name
 		(#not-eq? @item_name "self")
 	)
 ]]
 
-local function get_tree(node_constructor)
-	local find_method_attrs = node_constructor({
-		type = "finder",
-		data = {
-			node_type = "attribute",
-			mode = true,
-			def_val = "",
-		},
-	})
+local FIND_METHOD_ATTRS = {
+	type = "finder",
+	data = {
+		node_type = "attribute",
+		mode = true,
+		def_val = "",
+	},
+}
 
-	local get_all_attrs = node_constructor({
-		type = "chain",
-		children = { get_methods, find_method_attrs, get_method_attrs },
-	})
+local GET_ALL_ATTRS = {
+	type = "chain",
+	children = { GET_METHODS, FIND_METHOD_ATTRS, GET_METHOD_ATTRS },
+}
 
-	local get_only_constructor_attrs = node_constructor({
-		type = "chain",
-		children = { get_constructor, find_method_attrs, get_method_attrs },
-	})
+local GET_ONLY_CONSTRUCTOR_ATTRS = {
+	type = "chain",
+	children = { GET_CONSTRUCTOR, FIND_METHOD_ATTRS, GET_METHOD_ATTRS },
+}
 
-	local class_fields_node = node_constructor({
-		type = "simple",
+local GET_INSTANCE_ATTRS = {
+	type = "boolean",
+	children = { GET_ONLY_CONSTRUCTOR_ATTRS, GET_ALL_ATTRS },
+}
+
+local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
+	type = "boolean",
+	children = { GET_INSTANCE_ATTRS },
+}
+
+local ATTRS = {
+	{
+		type = "boolean",
 		children = {
-			[[
-				(class_definition
-					body: (block
-						(expression_statement
-							(assignment
-								left: (_) @item_name
-							)
-						)
-					)
-				)
-			]],
-		},
-	})
-
-	local get_instance_attrs = node_constructor({
-		type = "boolean",
-		children = { get_only_constructor_attrs, get_all_attrs },
-	})
-
-	local include_instance_attrs_or_not = node_constructor({
-		type = "boolean",
-		children = { get_instance_attrs },
-	})
-
-	local include_the_class_fields = node_constructor({
-		type = "accumulator",
-		children = { class_fields_node, include_instance_attrs_or_not },
-	})
-
-	local include_class_fields_or_not = node_constructor({
-		type = "boolean",
-		children = { include_the_class_fields, include_instance_attrs_or_not },
-	})
-
-	return {
-		sections = {
-			attrs = {
-				include_class_fields_or_not,
+			{
+				type = "accumulator",
+				children = {
+					{
+						type = "simple",
+						children = {
+							[[
+								(class_definition
+									body: (block
+										(expression_statement
+											(assignment
+												left: (_) @item_name
+											)
+										)
+									)
+								)
+							]],
+						},
+					},
+					INCLUDE_INSTANCE_ATTRS_OR_NOT,
+				},
 			},
+			INCLUDE_INSTANCE_ATTRS_OR_NOT,
 		},
-	}
-end
+	},
+}
 
 return {
-	get_tree = get_tree,
+	sections = {
+		attrs = ATTRS,
+	},
 }

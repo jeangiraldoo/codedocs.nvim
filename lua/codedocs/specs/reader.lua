@@ -112,7 +112,6 @@ function Reader:get_struct_names(lang)
 
 		for style_name, _ in pairs(struct_styles) do
 			local style_path_in_struct = struct_path .. ".styles." .. style_name
-			print(style_path_in_struct)
 			local style_module_exists, _ = pcall(require, style_path_in_struct)
 			if not style_module_exists then
 				local msg = string.format(

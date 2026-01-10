@@ -1,4 +1,4 @@
-local get_methods = [[
+local GET_METHODS = [[
 	(class_body
 		(method_definition
 			(statement_block) @target
@@ -6,7 +6,7 @@ local get_methods = [[
 	)
 ]]
 
-local get_constructor = [[
+local GET_CONSTRUCTOR = [[
 	(class_body
 		(method_definition
 			(property_identifier) @name
@@ -15,7 +15,7 @@ local get_constructor = [[
 	)
 ]]
 
-local get_attrs_in_methods = [[
+local GET_ATTRS_IN_METHODS = [[
 	(assignment_expression
 		(member_expression
 			(property_identifier) @item_name
@@ -23,7 +23,7 @@ local get_attrs_in_methods = [[
 	)
 ]]
 
-local get_class_attrs = [[
+local GET_CLASS_ATTRS = [[
 	(class_body
 		(field_definition
 			"static"
@@ -32,74 +32,72 @@ local get_class_attrs = [[
 	)
 ]]
 
-local function get_tree(node_constructor)
-	local regex = node_constructor({
-		type = "regex",
-		data = {
-			pattern = "%f[%a]static%f[%A]",
-			mode = false,
-			query = [[(property_identifier) @item_name]],
-		},
-	})
+local REGEX = {
+	type = "regex",
+	data = {
+		pattern = "%f[%a]static%f[%A]",
+		mode = false,
+		query = [[(property_identifier) @item_name]],
+	},
+}
 
-	local get_body_instance_attrs = node_constructor({
-		type = "chain",
-		children = { [[(class_body) @target]], [[(field_definition) @target]], regex },
-	})
+local GET_BODY_INSTANCE_ATTRS = {
+	type = "chain",
+	children = { [[(class_body) @target]], [[(field_definition) @target]], REGEX },
+}
 
-	local method_attr_finder = node_constructor({
-		type = "finder",
-		data = {
-			node_type = "assignment_expression",
-			mode = true,
-			def_val = "",
-		},
-	})
+local METHOD_ATTR_FINDER = {
+	type = "finder",
+	data = {
+		node_type = "assignment_expression",
+		mode = true,
+		def_val = "",
+	},
+}
 
-	local get_all_method_attrs = node_constructor({
-		type = "chain",
-		children = { get_methods, method_attr_finder, get_attrs_in_methods },
-	})
+local GET_ALL_METHOD_ATTRS = {
+	type = "chain",
+	children = { GET_METHODS, METHOD_ATTR_FINDER, GET_ATTRS_IN_METHODS },
+}
 
-	local get_all_instance_attrs = node_constructor({
-		type = "accumulator",
-		children = { get_body_instance_attrs, get_all_method_attrs },
-	})
+local GET_ALL_INSTANCE_ATTRS = {
+	type = "accumulator",
+	children = { GET_BODY_INSTANCE_ATTRS, GET_ALL_METHOD_ATTRS },
+}
 
-	local get_only_constructor_attrs = node_constructor({
-		type = "chain",
-		children = { get_constructor, method_attr_finder, get_attrs_in_methods },
-	})
+local GET_ONLY_CONSTRUCTOR_ATTRS = {
+	type = "chain",
+	children = { GET_CONSTRUCTOR, METHOD_ATTR_FINDER, GET_ATTRS_IN_METHODS },
+}
 
-	local get_instance_attrs = node_constructor({
+local GET_INSTANCE_ATTRS = {
+	type = "boolean",
+	children = { GET_ONLY_CONSTRUCTOR_ATTRS, GET_ALL_INSTANCE_ATTRS },
+}
+
+local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
+	type = "boolean",
+	children = { GET_INSTANCE_ATTRS },
+}
+
+local ATTRS = {
+	{
 		type = "boolean",
-		children = { get_only_constructor_attrs, get_all_instance_attrs },
-	})
-
-	local include_instance_attrs_or_not = node_constructor({
-		type = "boolean",
-		children = { get_instance_attrs },
-	})
-
-	local include_class_fields = node_constructor({
-		type = "accumulator",
-		children = { get_class_attrs, include_instance_attrs_or_not },
-	})
-
-	local include_class_fields_or_not = node_constructor({
-		type = "boolean",
-		children = { include_class_fields, include_instance_attrs_or_not },
-	})
-
-	return {
-		sections = {
-			attrs = {
-				include_class_fields_or_not,
+		children = {
+			{
+				type = "accumulator",
+				children = {
+					GET_CLASS_ATTRS,
+					INCLUDE_INSTANCE_ATTRS_OR_NOT,
+				},
 			},
+			INCLUDE_INSTANCE_ATTRS_OR_NOT,
 		},
-	}
-end
+	},
+}
 
 return {
-	get_tree = get_tree,
+	sections = {
+		attrs = ATTRS,
+	},
 }

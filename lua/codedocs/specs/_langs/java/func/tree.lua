@@ -1,51 +1,45 @@
-local function get_tree(node_constructor)
-	local params_section = {
-		node_constructor({
-			type = "simple",
-			children = {
-				[[
-						(method_declaration
-							(formal_parameters
-								(formal_parameter
-									(_) @item_type
-									(identifier) @item_name
-								)
-							)
+local PARAMS = {
+	{
+		type = "simple",
+		children = {
+			[[
+				(method_declaration
+					(formal_parameters
+						(formal_parameter
+							(_) @item_type
+							(identifier) @item_name
 						)
-					]],
-			},
-		}),
-	}
-
-	local return_type_section = {
-		node_constructor({
-			type = "simple",
-			children = {
-				[[
-						(method_declaration
-							(type_identifier) @item_type
-						)
-					]],
-			},
-		}),
-		node_constructor({
-			type = "finder",
-			data = {
-				node_type = "return_statement",
-				mode = false,
-				def_val = "",
-			},
-		}),
-	}
-
-	return {
-		sections = {
-			params = params_section,
-			return_type = return_type_section,
+					)
+				)
+			]],
 		},
-	}
-end
+	},
+}
+
+local RETURN_TYPE = {
+	{
+		type = "simple",
+		children = {
+			[[
+				(method_declaration
+					(type_identifier) @item_type
+				)
+			]],
+		},
+	},
+	{
+		type = "finder",
+		data = {
+			node_type = "return_statement",
+			mode = false,
+			def_val = "",
+		},
+	},
+}
 
 return {
-	get_tree = get_tree,
+	sections = {
+		params = PARAMS,
+		return_type = RETURN_TYPE,
+	},
 }
