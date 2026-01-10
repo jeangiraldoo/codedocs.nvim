@@ -1,4 +1,4 @@
-local get_all_instance_attrs = [[
+local GET_ALL_INSTANCE_ATTRS = [[
 	(class_declaration
 		[
 			(class_body
@@ -20,7 +20,7 @@ local get_all_instance_attrs = [[
 	)
 ]]
 
-local get_constructor_instance_attrs = [[
+local GET_CONSTRUCTOR_INSTANCE_ATTRS = [[
 	(class_declaration
 		(primary_constructor
 			(class_parameter
@@ -32,7 +32,7 @@ local get_constructor_instance_attrs = [[
 	)
 ]]
 
-local get_companion_object_attrs = [[
+local GET_COMPANION_OBJECT_ATTRS = [[
 	(companion_object
 		(class_body
 			(property_declaration
@@ -46,33 +46,34 @@ local get_companion_object_attrs = [[
 
 ]]
 
-local function get_tree(node_constructor)
-	local get_instance_attrs = node_constructor({
-		type = "boolean",
-		children = { get_constructor_instance_attrs, get_all_instance_attrs },
-	})
-	local include_instance_attrs = node_constructor({
-		type = "boolean",
-		children = { get_instance_attrs },
-	})
-	local include_class_attrs = node_constructor({
-		type = "accumulator",
-		children = { get_companion_object_attrs, include_instance_attrs },
-	})
-	local include_attrs = node_constructor({
-		type = "boolean",
-		children = { include_class_attrs, include_instance_attrs },
-	})
+local GET_INSTANCE_ATTRS = {
+	type = "boolean",
+	children = { GET_CONSTRUCTOR_INSTANCE_ATTRS, GET_ALL_INSTANCE_ATTRS },
+}
 
-	return {
-		sections = {
-			attrs = {
-				include_attrs,
+local INCLUDE_INSTANCE_ATTRS = {
+	type = "boolean",
+	children = { GET_INSTANCE_ATTRS },
+}
+
+local ATTRS = {
+	{
+		type = "boolean",
+		children = {
+			{
+				type = "accumulator",
+				children = {
+					GET_COMPANION_OBJECT_ATTRS,
+					INCLUDE_INSTANCE_ATTRS,
+				},
 			},
+			INCLUDE_INSTANCE_ATTRS,
 		},
-	}
-end
+	},
+}
 
 return {
-	get_tree = get_tree,
+	sections = {
+		attrs = ATTRS,
+	},
 }

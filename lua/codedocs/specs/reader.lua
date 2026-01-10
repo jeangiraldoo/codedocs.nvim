@@ -68,11 +68,10 @@ end
 local function _get_data(lang) return require("codedocs.specs._langs." .. lang) end
 
 function Reader:_get_struct_main_style(lang, struct_name)
-	local lang_data = _get_data(lang)
-	local default_style = lang_data.default_style
+	local default_style = _get_data(lang).default_style
 
-	local struct_path = "codedocs.specs._langs." .. lang .. "." .. struct_name
-	return require(struct_path .. ".styles." .. default_style)
+	local main_style_path = string.format("codedocs.specs._langs.%s.%s.styles.%s", lang, struct_name, default_style)
+	return require(main_style_path)(opts)
 end
 
 function Reader:get_struct_data(lang, struct_name)
@@ -112,7 +111,6 @@ function Reader:get_struct_names(lang)
 
 		for style_name, _ in pairs(struct_styles) do
 			local style_path_in_struct = struct_path .. ".styles." .. style_name
-			print(style_path_in_struct)
 			local style_module_exists, _ = pcall(require, style_path_in_struct)
 			if not style_module_exists then
 				local msg = string.format(
