@@ -1,4 +1,4 @@
-local opts = require("lua.codedocs.specs._langs.style_opts")
+local opts = require("codedocs.specs._langs.style_opts")
 
 local Reader = {}
 
