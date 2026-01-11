@@ -3,3 +3,4 @@ MD033:
 
 MD013:
     tables: false
+    code_blocks: false

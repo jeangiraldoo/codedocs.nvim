@@ -144,9 +144,9 @@ require("codedocs").setup {
 > Keep in mind that the name of the docstring style must be spelled exactly as
 > shown in the table of [supported languages](#supported-languages).
 
-#### Customize a docstring style
+#### Customize an annotation style
 
-In Codedocs, you can customize almost (for now!) every aspect of a docstring
+You can customize almost (for now!) every aspect of an annotation
 style. Whether you want to make a simple change, like modifying the characters
 wrapping the parameter type:
 
@@ -183,26 +183,31 @@ def cool_function_with_type_hints(a: int, b: bool) -> str:
         return <value>
 ```
 
-In this case, we added spacing between the items in the parameter section,
-wrapped the parameter types with two [Kaomojis](https://kaomoji.ru/en/), and
-added a third one wrapping the left side of the return type. The titles for the
-return and parameter sections were also customized.
+In this case, we:
 
-No matter your preference, Codedocs has at least one customization option for
-you! 😊
+- Increased spacing between items in the parameters section.
+- Wrapped parameter types with two [Kaomojis](https://kaomoji.ru/en/).
+- Added a third kaomoji to wrap the left side of the return type.
+- Customized the titles for both the parameters and return sections.
 
-To customize a docstring style, you need to consider both the target section in
-the docstring and the available options for it.
+To customize an annotation style, you have to keep in mind that it is nothing
+but a table where each key is an option, spread across many sections:
 
-#### Options
+| Structure | Sections                           |
+| --------- | ---------------------------------- |
+| `func`    | `general`, `params`, `return_type` |
+| `class`   | `general`, `attrs`                 |
+| `comment` | `general`                          |
 
-First, let's focus on the available options. There are three types of options:
-**General**, **Item**, and **Class General**.
+##### General section
 
-##### General
+As you can see, all structures have a `general` section, as it is used for configuring
+all other sections in a given structure by defining options that are available
+to all structures.
 
-These options control general aspects of a docstring, without focusing on
-specific items.
+All other sections are focused on configuring how the items they contain are displayed.
+
+The `general` section supports the following options:
 
 | Option Name         | Expected Value Type | Behavior                                                                                                           |
 | ------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------ |
@@ -216,11 +221,29 @@ specific items.
 | `item_gap`          | boolean             | Determines whether there is an empty line between items.                                                           |
 | `section_order`     | table               | Specifies the order in which sections are added to the docstring.                                                  |
 
-##### Item
+##### General section extension for classes
 
-An **item** refers to a piece of data being documented. In a function docstring,
-for example, parameters and the return type are considered items. These options
-control the formatting of such items.
+Classes have general options that are exclusive to them, as they modify the
+other sections in ways that are only relevant to classes.
+
+| Option Name                             | Expected Value Type | Behavior                                                               |
+| --------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
+| `include_class_attrs`                   | boolean             | Include class-level attributes in the docstring                        |
+| `include_instance_attrs`                | boolean             | Include instance attributes in the docstring                           |
+| `include_only_construct_instance_attrs` | boolean             | Only include instance attributes from the constructor, or document all |
+
+##### Items
+
+An `item` is a part of a structure, having a `name` that identifies it, and a
+`data type`.
+
+The following is a mapping of structures to their respective items:
+
+- Function: Parameters (`params` section), return type (`return_type` section).
+- Class: Attributes (`attrs` section).
+
+Below are the available options (they are available to all structure sections
+except `general`):
 
 | Option Name    | Expected Value Type | Behavior                                                                      |
 | -------------- | ------------------- | ----------------------------------------------------------------------------- |
@@ -234,80 +257,36 @@ control the formatting of such items.
 | `name_wrapper` | table               | Strings surrounding item name (must contain two). Use empty string to disable |
 | `type_wrapper` | table               | Strings surrounding item type (must contain two). Use empty string to disable |
 
-##### Class General
+##### Customization example
 
-This set of options is specific to the **general section** of a class.
+Say we want to make the following changes to Python's Google annotation style
+for functions:
 
-| Option Name                             | Expected Value Type | Behavior                                                               |
-| --------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
-| `include_class_attrs`                   | boolean             | Include class-level attributes in the docstring                        |
-| `include_instance_attrs`                | boolean             | Include instance attributes in the docstring                           |
-| `include_only_construct_instance_attrs` | boolean             | Only include instance attributes from the constructor, or document all |
+- Add a gap in between all items.
+- Add a gap in between sections (functions have a `params` and `return_type` section)
+- Include the parameter types.
 
-#### Docstring sections
-
-Each docstring for a specific language structure (e.g., functions, classes,
-etc.) is composed of sections. Below are the sections found in docstring styles
-for different structures:
-
-| Structure | Sections                           |
-| --------- | ---------------------------------- |
-| `func`    | `general`, `params`, `return_type` |
-| `class`   | `general`, `attrs`                 |
-| `comment` | `general`                          |
-
-### Available Options for Each Section
-
-Each section has specific options that can be customized:
-
-| Section           | Available Options |
-| ----------------- | ----------------- |
-| `general`         | `general`         |
-| `general (class)` | `class general`   |
-| `params`          | `item`            |
-| `return_type`     | `item`            |
-| `attrs`           | `item`            |
-
----
-
-### Customizing a Docstring
-
-To customize a docstring style, follow a structure similar to this:
+This is what such customization would look like:
 
 ```lua
-require("codedocs").setup {
-    styles = {
-        python = {
-            Google = {
-                func = {
-                    general = {
-                        item_gap = true,
-                        section_gap = true
+require("codedocs").setup({
+    styles = { -- Modifications to styles are done in the `styles` key
+        python = { -- language name
+            Google = { -- name of the style to customize
+                func = { -- structure name
+                    general = { -- general section. Options here will modify other sections
+                        item_gap = true, -- general section option
+                        section_gap = true -- general section option
                     },
-                    params = {
-                        include_type = true
+                    params = { -- params section. Options here will modify how parameters are displayed
+                        include_type = true -- item option
                     },
                 }
             },
         },
     }
-}
+})
 ```
-
-Explanation:
-
-1. Define the styles key – This holds a table containing the programming
-   languages you want to target.
-2. Specify the language – In this case, "python".
-3. Choose the docstring style to customize – Here, it is "Google".
-4. Specify the structure to modify – In this example, "func".
-5. Modify sections within the structure – For "func", the general and params
-   sections are customized.
-    - general section:
-        - item_gap = true (adds spacing between items)
-        - section_gap = true (adds spacing between sections)
-    - params section:
-        - include_type = true (includes parameter types in the docstring)
 
 ### <a id="usage"></a>💻 Usage
 
