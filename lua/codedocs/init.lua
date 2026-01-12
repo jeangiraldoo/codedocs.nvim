@@ -28,7 +28,7 @@ function M.insert_docs()
 	local pos, data = Processor:item_parser(node, sections, struct_name, style, opts, identifier_pos)
 	local struct = style.general[opts.struct.val]
 
-	local docs = (struct_name == "comment") and struct or docs_builder.get_docs(opts, style, data, struct)
+	local docs = (struct_name == "comment") and struct or docs_builder(style, data, struct)
 	local docs_data = {
 		pos = pos,
 		direction = style.general[opts.direction.val],

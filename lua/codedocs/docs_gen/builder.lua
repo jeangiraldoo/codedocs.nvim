@@ -1,221 +1,178 @@
-local opts
+local opts = require("codedocs.specs._langs.style_opts")
 
-local function get_sect_title(general_style, style, ln_start)
+-- @param title string Section title
+-- @param title_gap boolean Whether to insert a blank line between the title and the first section item
+-- @param underline_char string Character used to underline the title (one per title character)
+-- @return table
+local function _build_section_title(title, title_gap, underline_char)
 	local title_struct = {}
-	local title = style[opts.title.val]
-	local gap = general_style[opts.section_title_gap.val]
-	local underline_char = general_style[opts.section_underline.val]
 
-	local final_title = ln_start .. title
-	if title ~= "" then table.insert(title_struct, final_title) end
+	if title ~= "" then
+		table.insert(title_struct, title)
+		if underline_char ~= "" then table.insert(title_struct, string.rep(underline_char, #title)) end
+	end
 
-	if underline_char ~= "" then table.insert(title_struct, ln_start .. string.rep(underline_char, #title)) end
-
-	if gap then table.insert(title_struct, ln_start .. "") end
+	if title_gap then table.insert(title_struct, "") end
 	return title_struct
 end
 
-local function get_final_docs(style, sects, docs)
-	local title_gap = style.general[opts.title_gap.val]
-	local title_pos = style.general[opts.title_pos.val]
-	local ln_start = style.general[opts.struct.val][2]
-
-	-- Extend the first table with the second one, starting at its penultimate position
-	table.insert(docs, #docs, sects)
-	local new_docs = vim.iter(docs):flatten():totable()
-
-	if #sects > 0 and title_gap then table.insert(new_docs, title_pos, ln_start) end
-	if #style.general[opts.struct.val] == 2 then table.remove(new_docs, #new_docs) end
-	return new_docs
+local function _join_strings(a, b)
+	if a == "" then return b end
+	if b == "" then return a end
+	return a .. " " .. b
 end
 
---- Returns a string formatted by separating both strings with a space
--- @param val_1 string The first string
--- @param val_2 string The second string
--- @return string The formatted string
-local function get_formatted_full_vals(val_1, val_2) return val_1 .. " " .. val_2 end
-
---- Returns the non-empty string when one is empty
--- or a default value if both are empty
--- @param val_1 string The first string
--- @param val_2 string The second string
--- @param default_val string The value returned when both strings are empty
--- @return string The non-empty string or the default value
-local function get_formatted_empty_vals(val_1, val_2, default_val)
-	local final_val
-	if val_1 == "" and val_2 == "" then
-		final_val = default_val
-	elseif val_1 == "" then
-		final_val = val_2
-	elseif val_2 == "" then
-		final_val = val_1
-	end
-	return final_val
+local function _join_or(val_1, val_2, fallback)
+	if val_1 == "" and val_2 == "" then return fallback end
+	return _join_strings(val_1, val_2)
 end
 
---- Formats 2 strings based on wether at least one is empty
--- @param val_1 The string for the beggining
--- @param val_2 The string for the end
--- @param default_val string The value used when both strings are empty
--- @return string A formatted string combining the 2 values
-local function get_formatted_vals(val_1, val_2, default_val)
-	local one_empty_val = val_1 == "" or val_2 == ""
-	local formatted_vals = one_empty_val and get_formatted_empty_vals(val_1, val_2, default_val)
-		or get_formatted_full_vals(val_1, val_2)
-	return formatted_vals
-end
+--- Formats a single item line according to the given style options
+-- @param style table Configuration options for the current section
+-- @param wrapped_name string Item name already wrapped with its delimiters
+-- @param wrapped_type string Item type already wrapped with its delimiters
+-- @return string|table item_line_content If `style.inline` is true, returns a single formatted line.
+-- Otherwise, returns a two-element array of formatted lines.
+local function _format_item(style, wrapped_name, wrapped_type)
+	local inline = style[opts.inline.val]
 
---- Formats an item in 1 line
--- @param part_1 string Formatted data for the line's beginning
--- @param part_2 string Formatted data for the line's end
--- @param base_ln string String used at the beginning of a line
--- @return string An item formatted in 1 line
-local function get_inline_ln(part_1, part_2, base_ln)
-	local formatted_item = get_formatted_vals(part_1, part_2, "")
-	return base_ln .. formatted_item
-end
+	local item_type_kw = style[opts.type_kw.val]
+	local type_with_kw = _join_strings(item_type_kw, wrapped_type)
 
---- Formats an item across 2 lines
--- @param part_1 string Formatted data for the line's beginning
--- @param part_2 string Formatted data for the line's end
--- @param base_ln string String used at the beginning of a line
--- @return table An item formatted across 2 lines
-local function get_split_ln(part_1, part_2, base_ln)
-	local item_ln = { base_ln .. part_1, base_ln .. part_2 }
-	return item_ln
-end
-
---- Returns a formatted item line
--- @param general_style table Options for the full docstring
--- @param style table Configuration options for the section
--- @param handler function Formats the item data
--- @param part_1 string Formatted data for the line's beginning
--- @param part_2 string Formatted data for the line's end
--- @return string|table A formatted line
-local function item_ln_factory(general_style, style, handler, part_1, part_2)
-	local ln_start = general_style[opts.struct.val][2]
-	local base_ln = style[opts.indent.val] and ("\t" .. ln_start) or ln_start
-	local res = handler(part_1, part_2, base_ln)
-	return res
-end
-
-local function get_item_ln(general_style, style, wrapped_item)
-	local item_name, item_type = unpack(wrapped_item)
-	local item_kw, item_type_kw = style[opts.name_kw.val], style[opts.type_kw.val]
-
-	local is_inline = style[opts.inline.val]
-	local is_type_first = style[opts.type_first.val]
-
-	local name_with_kw = get_formatted_vals(item_kw, item_name, "")
-	local type_with_kw = get_formatted_vals(item_type_kw, item_type, "")
-
-	local formatted_type, handler
-	if is_inline then
-		handler = get_inline_ln
-		formatted_type = type_with_kw
+	local type_content
+	if inline then
+		type_content = type_with_kw
 	else
-		local is_type_below_name_first = style[opts.is_type_below_name_first.val]
-		local name_with_type_kw = get_formatted_vals(item_type_kw, item_name, type_with_kw)
-		local type_with_name = get_formatted_vals(name_with_type_kw, item_type, item_name)
-		formatted_type = is_type_below_name_first and type_with_name or type_with_kw
-		handler = get_split_ln
+		local name_with_type_kw = _join_or(item_type_kw, wrapped_name, type_with_kw)
+		local type_with_name = _join_or(name_with_type_kw, wrapped_type, wrapped_name)
+		type_content = style[opts.is_type_below_name_first.val] and type_with_name or type_with_kw
 	end
-	local order = is_type_first and { formatted_type, name_with_kw } or { name_with_kw, formatted_type }
-	local res = item_ln_factory(general_style, style, handler, unpack(order))
-	return res
+
+	local name_content = _join_strings(style[opts.name_kw.val], wrapped_name)
+
+	local first, second
+	if style[opts.type_first.val] then
+		first, second = type_content, name_content
+	else
+		first, second = name_content, type_content
+	end
+
+	local indent = style[opts.indent.val] and "\t" or ""
+
+	if not inline then return {
+		indent .. first,
+		indent .. second,
+	} end
+
+	return indent .. _join_strings(first, second)
 end
 
---- Wraps the item name and type with their respective wrappers
--- @param style table Configuration options for a specific section
--- @param item table Item data (name and type) to wrap
--- @return table The wrapped item name and type
-local function get_wrapped_item(style, item)
-	local include_type = (item.type and style[opts.include_type.val])
-	local item_name = item.name and item.name or ""
-	local item_type = include_type and item.type or ""
-	local name_wrapper, type_wrapper = style[opts.name_wrapper.val], style[opts.type_wrapper.val]
+--- Wraps the item name and type using their respective wrapper pairs
+-- @param item table Item data containing `name` and `type`
+-- @param include_type boolean Whether to include and wrap the item type
+-- @param name_wrapper table Two-element table used to wrap the item name
+-- @param type_wrapper table Two-element table used to wrap the item type
+-- @return string Wrapped item name
+-- @return string Wrapped item type
+local function _wrap_item_data(item, include_type, name_wrapper, type_wrapper)
+	local name_wrapper_copy, type_wrapper_copy = { unpack(name_wrapper) }, { unpack(type_wrapper) }
 
-	local open_name_wrapper, close_name_wrapper = unpack(name_wrapper)
-	local open_type_wrapper, close_type_wrapper = unpack(type_wrapper)
+	table.insert(name_wrapper_copy, 2, item.name or "")
+	table.insert(type_wrapper_copy, 2, include_type and item.type or "")
 
-	local wrapped_name = open_name_wrapper .. item_name .. close_name_wrapper
-	local wrapped_type = open_type_wrapper .. item_type .. close_type_wrapper
-	return { wrapped_name, wrapped_type }
+	return table.concat(name_wrapper_copy, ""), table.concat(type_wrapper_copy, "")
 end
 
-local function get_sect_body(general_style, style, items)
-	local ln_start = general_style[opts.struct.val][2]
-	local base_ln = style[opts.indent.val] and ("\t" .. ln_start) or ln_start
-	local body = vim.iter(items)
-		:enumerate()
-		:map(function(idx, item)
-			local insert_gap = general_style[opts.item_gap.val] and idx < #items
-			local wrapped_item = get_wrapped_item(style, item)
-			local item_ln = get_item_ln(general_style, style, wrapped_item)
-			if type(item_ln) == "string" then
-				return insert_gap and { item_ln, base_ln } or item_ln
-			elseif insert_gap then
-				table.insert(item_ln, base_ln)
-			end
-			return item_ln
-		end)
-		:flatten()
-		:totable()
-	return body
-end
+--- Builds the raw annotation content for each section, without applying the final structure
+-- Iterates through the sections in the configured order, formats each item according to
+-- its section style, and groups the resulting lines by section name
+-- @param item_data table Mapping of section names to item lists
+-- @param style table Style configuration for all sections and general options
+-- @return table Table mapping section names to their formatted content lines
+local function _build_annotation_content(item_data, style)
+	local annotation_content = {}
 
---- Returns a fully built docstring section
--- @param general_style table Configuration options that apply to the entire docstring
--- @param style table Configuration options for a specific section
--- @param items table Item data for the specific section
--- @return table A fully built docstring section
-local function get_sect(general_style, style, items)
-	local ln_start = general_style[opts.struct.val][2]
-	local body = get_sect_body(general_style, style, items)
-	if #body == 0 then return body end
+	for _, section_name in ipairs(style.general[opts.section_order.val]) do
+		local section_items = item_data[section_name]
+		local section_style = style[section_name]
 
-	local title = get_sect_title(general_style, style, ln_start)
-	return vim.list_extend(title, body)
-end
-
-local function get_docs_body(style, sects_items)
-	local general_style = style.general
-	local ln_start = general_style[opts.struct.val][2]
-	local sect_order = general_style[opts.section_order.val]
-	local sects = vim.iter(sect_order)
-		:enumerate()
-		:map(function(idx, name)
-			local sect_style, sect_items = style[name], sects_items[name]
-			local sec = get_sect(general_style, sect_style, sect_items)
-			if #sec == 0 then return end
-
-			local next_sect = sect_order[idx + 1]
-			local has_gap = (
-				general_style[opts.section_gap.val]
-				and next_sect
-				and vim.tbl_count(sects_items[next_sect])
+		local section_content = {
+			unpack(
+				_build_section_title(
+					section_style[opts.title.val],
+					style.general[opts.section_title_gap.val],
+					style.general[opts.section_underline.val]
+				)
+			),
+		}
+		for _, item in ipairs(section_items) do
+			local include_type = (item.type and style[opts.include_type.val])
+			local wrapped_name, wrapped_type = _wrap_item_data(
+				item,
+				include_type,
+				section_style[opts.name_wrapper.val],
+				section_style[opts.type_wrapper.val]
 			)
-			if has_gap then table.insert(sec, ln_start) end
-			return sec
-		end)
-		:flatten()
-		:totable()
-	return sects
+
+			local item_line_content = _format_item(section_style, wrapped_name, wrapped_type)
+			local is_item_line_content_multiline = type(item_line_content) == "table"
+
+			if is_item_line_content_multiline then
+				for _, val in ipairs(item_line_content) do
+					table.insert(section_content, val)
+				end
+			else
+				table.insert(section_content, item_line_content)
+			end
+		end
+
+		annotation_content[section_name] = section_content
+	end
+	return annotation_content
 end
 
---- Returns a fully built docstring
--- @param options table Enum used to access values from style
--- @param style table Configuration options for the docstring
--- @param data table Item data for every docstring section
--- @param docs_struct table Docstring base template
--- @return table A complete docstring
-local function get_docs(options, style, data, docs_struct)
-	opts = options
-	local docs_lns = get_docs_body(style, data)
-	local final_docs = get_final_docs(style, docs_lns, vim.deepcopy(docs_struct))
-	return final_docs
+--- Formats the annotation content into the final annotation structure
+-- @param sections_data table Section-formatted annotation content
+-- @param style table Style configuration for all sections and general options
+-- @param annotation_structure table Base annotation structure to populate
+-- @return table Final formatted annotation as a flat list of lines
+local function _format_annotation_content(sections_data, style, annotation_structure)
+	local general_opts = style.general
+	local line_start = style.general[opts.struct.val][2]
+
+	local annotation_structure_copy = vim.deepcopy(annotation_structure)
+
+	if general_opts[opts.title_gap.val] then
+		local title_gap_pos = general_opts[opts.title_pos.val] + 1
+		table.insert(annotation_structure_copy, title_gap_pos, line_start)
+	end
+
+	local sections_order = general_opts[opts.section_order.val]
+	for section_idx, section_name in ipairs(sections_order) do
+		local section_content = sections_data[section_name]
+
+		for line_idx, line in ipairs(section_content) do
+			table.insert(annotation_structure_copy, #annotation_structure_copy, line_start .. line)
+
+			if general_opts[opts.item_gap.val] and section_content[line_idx + 1] then
+				table.insert(annotation_structure_copy, #annotation_structure_copy, line_start)
+			end
+		end
+
+		if general_opts[opts.section_gap.val] and sections_order[section_idx + 1] then
+			table.insert(annotation_structure_copy, #annotation_structure_copy, line_start)
+		end
+	end
+
+	-- Elements are inserted at the index of the last element, shifting that element to the right. As a result,
+	-- the original last element of the base annotation structure ends up at the very end of the final annotation.
+	-- This is desired when the base structure has three parts, but becomes a leftover element when it has only two
+	if #annotation_structure == 2 then table.remove(annotation_structure_copy, #annotation_structure_copy) end
+
+	return annotation_structure_copy
 end
 
-return {
-	get_docs = get_docs,
-}
+return function(style, data, annotation_structure)
+	local annotation_content = _build_annotation_content(data, style)
+	return _format_annotation_content(annotation_content, style, annotation_structure)
+end
