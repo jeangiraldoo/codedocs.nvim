@@ -1,7 +1,7 @@
 return function(opts)
 	return {
 		general = {
-			[opts.struct.val] = { " # ", " # " },
+			[opts.struct.val] = { "# ", "# " },
 			[opts.direction.val] = true,
 			[opts.title_pos.val] = 1,
 			[opts.title_gap.val] = true,
