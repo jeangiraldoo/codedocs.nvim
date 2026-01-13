@@ -29,12 +29,8 @@ function M.insert_docs()
 	local struct = style.general[opts.struct.val]
 
 	local docs = (struct_name == "comment") and struct or docs_builder(style, data, struct)
-	local docs_data = {
-		pos = pos,
-		direction = style.general[opts.direction.val],
-		title_pos = style.general[opts.title_pos.val],
-	}
-	require("codedocs.writer").start(docs, docs_data)
+
+	require("lua.codedocs.buf_writer")(docs, pos, style.general[opts.direction.val], style.general[opts.title_pos.val])
 end
 
 return M
