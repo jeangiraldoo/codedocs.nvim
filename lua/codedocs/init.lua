@@ -1,4 +1,4 @@
-local docs_builder = require("codedocs.docs_gen")
+local docs_builder = require("codedocs.annotation_builder")
 local Spec = require("codedocs.specs")
 local Processor = require("codedocs.tree_processor")
 
