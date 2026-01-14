@@ -1,0 +1,13 @@
+extends:
+    - "@commitlint/config-conventional"
+
+rules:
+    header-max-length:
+        - 2
+        - always
+        - 70
+
+    header-min-length:
+        - 2
+        - always
+        - 10

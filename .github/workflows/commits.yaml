@@ -1,0 +1,40 @@
+name: Commit checks
+
+on:
+    pull_request:
+        branches:
+            - main
+        types:
+            - opened
+            - synchronize
+            - reopened
+
+permissions:
+    contents: read
+
+jobs:
+    linting:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+              with:
+                  fetch-depth: 0
+
+            - name: Setup node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: lts/*
+                  cache: npm
+
+            - name: Install commitlint
+              run: npm install -D @commitlint/cli @commitlint/config-conventional
+            - name: Print versions
+              run: |
+                  git --version
+                  node --version
+                  npm --version
+                  npx commitlint --version
+
+            - name: Lint PR commits
+              if: github.event_name == 'pull_request'
+              run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
