@@ -65,10 +65,15 @@ local function _validate_style_opts(opts, style, struct_name)
 	return true
 end
 
-local function _get_data(lang) return require("codedocs.specs._langs." .. lang) end
+function Reader.get_lang_data(lang)
+	local success, data = pcall(require, "codedocs.specs._langs." .. lang)
+	if not success then return nil end
+
+	return data
+end
 
 function Reader:_get_struct_main_style(lang, struct_name)
-	local default_style = _get_data(lang).default_style
+	local default_style = Reader.get_lang_data(lang).default_style
 
 	local main_style_path = string.format("codedocs.specs._langs.%s.%s.styles.%s", lang, struct_name, default_style)
 	return require(main_style_path)(opts)
@@ -93,7 +98,7 @@ function Reader:get_struct_data(lang, struct_name)
 		return true
 	end
 
-	local lang_data = _get_data(lang)
+	local lang_data = Reader.get_lang_data(lang)
 	if not validate_basic_fields(lang_data, lang) then return false end
 
 	local main_style = self:_get_struct_main_style(lang, struct_name)
@@ -169,7 +174,7 @@ function Reader:get_struct_names(lang)
 		return validate_struct_dirs(structs, struct_styles)
 	end
 
-	local lang_data = _get_data(lang)
+	local lang_data = Reader.get_lang_data(lang)
 	local structs = lang_data.structs
 	if not validate(lang_data, structs) then return false end
 	return structs

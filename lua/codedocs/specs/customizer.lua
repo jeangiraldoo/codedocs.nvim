@@ -1,14 +1,20 @@
-local function set_default_lang_style(new_styles)
+local Reader = require("codedocs.specs.reader")
+
+local Customizer = {}
+
+function Customizer.set_default_lang_style(new_styles)
 	for lang_name, new_default_style in pairs(new_styles) do
-		local lang_data = require("codedocs.specs._langs." .. lang_name .. ".init")
-		if not lang_data then error("There is no language called " .. lang_name .. " available in codedocs") end
 		if type(new_default_style) ~= "string" then
 			error("The value assigned as the default docstring style for " .. lang_name .. " must be a string")
 		end
-		local lang_styles = lang_data.styles
-		if not lang_styles[new_default_style] then
+
+		local lang_data = Reader.get_lang_data(lang_name)
+		if not lang_data then error("There is no language called " .. lang_name .. " available in codedocs") end
+
+		if not lang_data.styles[new_default_style] then
 			error(lang_name .. " does not have a docstring style called " .. new_default_style)
 		end
+
 		lang_data.default_style = new_default_style
 	end
 end
@@ -22,8 +28,7 @@ end
 
 local function process_style_structs(structs, style_name, lang_name)
 	for struct_name, struct_sections in pairs(structs) do
-		local struct_path = "codedocs.specs._langs." .. lang_name .. "." .. struct_name
-		local style_path = struct_path .. ".styles." .. style_name
+		local style_path = "codedocs.specs._langs." .. lang_name .. "." .. struct_name .. ".styles." .. style_name
 		local struct_style = require(style_path)
 		for section_name, section_opts in pairs(struct_sections) do
 			local struct_section = struct_style[section_name]
@@ -42,7 +47,7 @@ local function process_style_structs(structs, style_name, lang_name)
 	end
 end
 
-local function update_style(user_opts)
+function Customizer.update_style(user_opts)
 	for lang_name, styles in pairs(user_opts) do
 		local success = pcall(require, "codedocs.specs._langs." .. lang_name .. ".init")
 
@@ -53,7 +58,4 @@ local function update_style(user_opts)
 	end
 end
 
-return {
-	update_style = update_style,
-	set_default_lang_style = set_default_lang_style,
-}
+return Customizer
