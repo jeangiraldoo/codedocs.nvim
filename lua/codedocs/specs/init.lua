@@ -1,8 +1,7 @@
-local current_dir = "codedocs.specs."
+local Reader = require("codedocs.specs.reader")
+local Customizer = require("codedocs.specs.customizer")
 
-local Spec = {
-	reader = require(current_dir .. ".reader"),
-	customizer = require(current_dir .. ".customizer"),
+return {
+	reader = Reader,
+	customizer = Customizer.new(Reader),
 }
-
-return Spec

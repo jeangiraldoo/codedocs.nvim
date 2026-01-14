@@ -1,6 +1,8 @@
 local opts = require("codedocs.specs._langs.style_opts")
 
-local Reader = {}
+local Reader = {
+	cached_styles = {},
+}
 
 --- Validates if a table is valid in terms of its content and length
 -- @param opt_name The name of the opt that contains the table to validate
@@ -65,6 +67,39 @@ local function _validate_style_opts(opts, style, struct_name)
 	return true
 end
 
+local function _resolve_style(raw_style)
+	local resolved = {}
+
+	for section, values in pairs(raw_style) do
+		resolved[section] = {}
+		for key, value in pairs(values) do
+			local opt = opts[key]
+			assert(opt, "Unknown style option: " .. key)
+			assert(type(value) == opt.type, "Invalid type for " .. key)
+			resolved[section][opt.val] = value
+		end
+	end
+
+	return resolved
+end
+
+function Reader.is_lang_supported(lang)
+	local success, _ = pcall(require, "codedocs.specs._langs." .. lang)
+	return success
+end
+
+function Reader:get_struct_style(lang, struct, style)
+	self.cached_styles[lang] = self.cached_styles[lang] or {}
+	self.cached_styles[lang][struct] = self.cached_styles[lang][struct] or {}
+	self.cached_styles[lang][struct][style] = self.cached_styles[lang][struct][style]
+		or (function()
+			local raw = require("codedocs.specs._langs." .. lang .. "." .. struct .. ".styles." .. style) -- cached by Lua
+			return _resolve_style(raw, opts) -- created ONCE
+		end)()
+
+	return self.cached_styles[lang][struct][style]
+end
+
 function Reader.get_lang_data(lang)
 	local success, data = pcall(require, "codedocs.specs._langs." .. lang)
 	if not success then return nil end
@@ -75,8 +110,8 @@ end
 function Reader:_get_struct_main_style(lang, struct_name)
 	local default_style = Reader.get_lang_data(lang).default_style
 
-	local main_style_path = string.format("codedocs.specs._langs.%s.%s.styles.%s", lang, struct_name, default_style)
-	return require(main_style_path)(opts)
+	local main_style_path = self:get_struct_style(lang, struct_name, default_style)
+	return main_style_path
 end
 
 function Reader:get_struct_data(lang, struct_name)
@@ -107,7 +142,7 @@ function Reader:get_struct_data(lang, struct_name)
 end
 
 function Reader:get_struct_names(lang)
-	local function validate_struct_style(struct_path, struct_styles, struct_name)
+	local function validate_struct_style(struct_styles, struct_name)
 		if not struct_styles then
 			local msg = "The 'styles' field has not been defined for " .. lang
 			vim.notify(msg, vim.log.levels.ERROR)
@@ -115,9 +150,8 @@ function Reader:get_struct_names(lang)
 		end
 
 		for style_name, _ in pairs(struct_styles) do
-			local style_path_in_struct = struct_path .. ".styles." .. style_name
-			local style_module_exists, _ = pcall(require, style_path_in_struct)
-			if not style_module_exists then
+			local style = self:get_struct_style(lang, struct_name, style_name)
+			if not style then
 				local msg = string.format(
 					"The %s style module for the %s structure in %s can't be found",
 					style_name,
@@ -160,7 +194,7 @@ function Reader:get_struct_names(lang)
 			local struct_path = "codedocs.specs._langs." .. lang .. "." .. struct_name
 			if not validate_struct_tree(struct_path, struct_name) then return false end
 
-			if not validate_struct_style(struct_path, struct_styles, struct_name) then return false end
+			if not validate_struct_style(struct_styles, struct_name) then return false end
 		end
 		return true
 	end
