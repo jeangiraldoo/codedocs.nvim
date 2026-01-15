@@ -1,2 +1,5 @@
 .luacheckcache
 /doc/tags
+node_modules/
+.luarocks/
+luarocks/
