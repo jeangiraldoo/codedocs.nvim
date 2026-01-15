@@ -1,3 +1,4 @@
+local Debug_logger = require("codedocs.utils.debug_logger")
 local opts = require("codedocs.specs._langs.style_opts")
 
 -- @param title string Section title
@@ -174,5 +175,7 @@ end
 
 return function(style, data, annotation_structure)
 	local annotation_content = _build_annotation_content(data, style)
+	Debug_logger.log("Annotation content:", annotation_content)
+
 	return _format_annotation_content(annotation_content, style, annotation_structure)
 end
