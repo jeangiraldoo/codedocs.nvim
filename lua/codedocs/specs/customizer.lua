@@ -69,4 +69,8 @@ function Customizer:update_style(user_opts)
 	end
 end
 
+function Customizer.set_settings(settings)
+	if settings.debug == true then require("codedocs.utils.debug_logger").enable() end
+end
+
 return Customizer
