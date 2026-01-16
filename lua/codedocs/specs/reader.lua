@@ -88,6 +88,46 @@ function Reader.is_lang_supported(lang)
 	return success
 end
 
+function Reader.get_style_names(lang)
+	local lang_data = Reader.get_lang_data(lang)
+
+	return vim.tbl_keys(lang_data.styles)
+end
+
+local function current_script_dir()
+	local source = debug.getinfo(1, "S").source
+
+	local path = source:sub(2)
+
+	return vim.fs.dirname(path)
+end
+
+function Reader.get_supported_langs()
+	local base_dir = current_script_dir()
+	local target_dir = vim.fs.joinpath(base_dir, "_langs")
+
+	local files = {}
+
+	for name, type in vim.fs.dir(target_dir) do
+		if type == "directory" then table.insert(files, name) end
+	end
+
+	return files
+end
+
+function Reader.is_ts_node_type_supported(lang, node_identifier)
+	local lang_data = Reader.get_lang_data(lang)
+
+	if not lang_data then return false end
+
+	local structs_data = lang_data.structs
+	for _, struct_data in pairs(structs_data) do
+		if vim.list_contains(struct_data.node_identifiers, node_identifier) then return true end
+	end
+
+	return false
+end
+
 function Reader:get_struct_style(lang, struct, style)
 	self.cached_styles[lang] = self.cached_styles[lang] or {}
 	self.cached_styles[lang][struct] = self.cached_styles[lang][struct] or {}
