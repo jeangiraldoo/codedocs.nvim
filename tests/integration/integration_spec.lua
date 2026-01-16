@@ -35,8 +35,8 @@ describe("Annotation building using default options", function()
 			vim.api.nvim_command("enew")
 			vim.bo.filetype = lang
 
-			for struct_name, _ in pairs(Reader:get_struct_names(lang)) do
-				for _, case in ipairs(require(lang)[struct_name]) do
+			for struct_name, cases in pairs(require(lang)) do
+				for _, case in ipairs(cases) do
 					mock_buffer(case.structure, case.cursor_pos)
 					test_case(lang, struct_name, case.expected_annotation)
 				end
