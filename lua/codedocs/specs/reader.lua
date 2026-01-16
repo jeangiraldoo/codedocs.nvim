@@ -88,12 +88,6 @@ function Reader.is_lang_supported(lang)
 	return success
 end
 
-function Reader.get_style_names(lang)
-	local lang_data = Reader.get_lang_data(lang)
-
-	return vim.tbl_keys(lang_data.styles)
-end
-
 local function current_script_dir()
 	local source = debug.getinfo(1, "S").source
 
@@ -182,29 +176,6 @@ function Reader:get_struct_data(lang, struct_name)
 end
 
 function Reader:get_struct_names(lang)
-	local function validate_struct_style(struct_styles, struct_name)
-		if not struct_styles then
-			local msg = "The 'styles' field has not been defined for " .. lang
-			vim.notify(msg, vim.log.levels.ERROR)
-			return false
-		end
-
-		for style_name, _ in pairs(struct_styles) do
-			local style = self:get_struct_style(lang, struct_name, style_name)
-			if not style then
-				local msg = string.format(
-					"The %s style module for the %s structure in %s can't be found",
-					style_name,
-					struct_name,
-					lang
-				)
-				vim.notify(msg, vim.log.levels.ERROR)
-				return false
-			end
-		end
-		return true
-	end
-
 	local function validate_struct_tree(struct_path, struct_name)
 		local tree_path = struct_path .. ".tree"
 		local tree_module_exists, _ = pcall(require, tree_path)
@@ -217,7 +188,7 @@ function Reader:get_struct_names(lang)
 		return true
 	end
 
-	local function validate_struct_dirs(structs, struct_styles)
+	local function validate_struct_dirs(structs)
 		for struct_name, _ in pairs(structs) do
 			local script_dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h")
 
@@ -233,24 +204,21 @@ function Reader:get_struct_names(lang)
 			end
 			local struct_path = "codedocs.specs._langs." .. lang .. "." .. struct_name
 			if not validate_struct_tree(struct_path, struct_name) then return false end
-
-			if not validate_struct_style(struct_styles, struct_name) then return false end
 		end
 		return true
 	end
 
-	local function validate(lang_data, structs)
+	local function validate(structs)
 		if structs == nil then
 			vim.notify("There is no 'structs' section in " .. lang, vim.log.levels.ERROR)
 			return false
 		end
-		local struct_styles = lang_data.styles
-		return validate_struct_dirs(structs, struct_styles)
+		return validate_struct_dirs(structs)
 	end
 
 	local lang_data = Reader.get_lang_data(lang)
 	local structs = lang_data.structs
-	if not validate(lang_data, structs) then return false end
+	if not validate(structs) then return false end
 	return structs
 end
 
