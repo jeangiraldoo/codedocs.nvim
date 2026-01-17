@@ -1,4 +1,6 @@
+local Reader = require("codedocs.specs.reader")
 local node_constructor = require("codedocs.specs.tree_processor.node_types")
+local opts = require("codedocs.specs._langs.style_opts")
 
 local Processor = {
 	CACHED_TREES = {},
@@ -123,7 +125,7 @@ function Processor:item_parser(node, sections, struct_name, style, opts, identif
 
 	if not self.CACHED_TREES[vim.bo.filetype] then self.CACHED_TREES[vim.bo.filetype] = {} end
 	if not self.CACHED_TREES[vim.bo.filetype][struct_name] then
-		local raw_tree_list = require("codedocs.specs").reader:get_struct_tree(vim.bo.filetype, struct_name)
+		local raw_tree_list = Reader:get_struct_tree(vim.bo.filetype, struct_name)
 		self.CACHED_TREES[vim.bo.filetype][struct_name] = build_tree_list(raw_tree_list)
 	end
 
@@ -136,4 +138,17 @@ function Processor:item_parser(node, sections, struct_name, style, opts, identif
 	return node:range(), _get_struct_items(node, sections, parser_settings)
 end
 
-return Processor
+return function(lang, style_name)
+	local struct_names = Reader:get_struct_names(lang)
+	if not struct_names then return false end
+
+	local struct_name, node = Processor:determine_struc_under_cursor(struct_names)
+
+	local style = style_name and Reader:get_struct_style(lang, struct_name, style_name)
+		or Reader:_get_struct_main_style(lang, struct_name)
+	local identifier_pos = Reader.get_lang_data(lang).identifier_pos
+
+	local pos, data = Processor:item_parser(node, style.general.section_order, struct_name, style, opts, identifier_pos)
+
+	return struct_name, data, style, pos, opts
+end

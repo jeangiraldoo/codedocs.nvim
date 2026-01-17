@@ -1,8 +1,7 @@
 local Reader = require("codedocs.specs").reader
 local annotation_builder = require("codedocs.annotation_builder")
-local Processor = require("codedocs.specs.tree_processor")
 
-local project_root = vim.fn.expand("<sfile>:p:h") -- folder of this spec file
+local project_root = vim.fn.expand("<sfile>:p:h")
 package.path = package.path .. ";" .. project_root .. "/tests/cases/?.lua"
 
 local LANGS_TO_TEST = Reader.get_supported_langs()
@@ -12,16 +11,9 @@ local function mock_buffer(structure, cursor_pos)
 	vim.api.nvim_win_set_cursor(0, { cursor_pos, 0 })
 end
 
-local function test_case(lang, struct_name, expected_annotation)
-	local tree = vim.treesitter.get_parser(0, lang):parse()[1]:root()
-	local node = Reader.is_ts_node_type_supported(lang, tree:child(0):type()) and tree:child(0) or tree:child(1)
-
-	local _, opts, identifier_pos = Reader:get_struct_data(lang, struct_name)
-
+local function test_case(struct_name, expected_annotation)
 	for style_name, expected_docs in pairs(expected_annotation) do
-		local style = Reader:get_struct_style(lang, struct_name, style_name)
-		local _, data =
-			Processor:item_parser(node, style.general.section_order, struct_name, style, opts, identifier_pos, lang)
+		local _, data, style, _, opts = require("codedocs.specs.tree_processor")(vim.bo.filetype, style_name)
 		local struct = style.general[opts.struct.val]
 
 		local docs = (struct_name == "comment") and struct or annotation_builder(style, data, struct)
@@ -38,7 +30,7 @@ describe("Annotation building using default options", function()
 			for struct_name, cases in pairs(require(lang)) do
 				for _, case in ipairs(cases) do
 					mock_buffer(case.structure, case.cursor_pos)
-					test_case(lang, struct_name, case.expected_annotation)
+					test_case(struct_name, case.expected_annotation)
 				end
 			end
 		end)

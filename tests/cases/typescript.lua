@@ -24,7 +24,7 @@ return {
 	class = {
 		{
 			structure = {
-				"public class Foo {",
+				"class Foo {",
 				"	a: String;",
 				"}",
 			},

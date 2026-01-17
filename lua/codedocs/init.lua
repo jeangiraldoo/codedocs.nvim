@@ -1,7 +1,6 @@
 local Debug_logger = require("codedocs.utils.debug_logger")
 local docs_builder = require("codedocs.annotation_builder")
 local Spec = require("codedocs.specs")
-local Processor = require("codedocs.specs.tree_processor")
 
 local M = {}
 
@@ -21,22 +20,14 @@ function M.insert_docs()
 		return
 	end
 
-	local struct_names = Spec.reader:get_struct_names(lang)
-
-	if not struct_names then return false end
-
-	local struct_name, node = Processor:determine_struc_under_cursor(struct_names)
+	local struct_name, items_data, style, pos, opts = require("codedocs.specs.tree_processor")(lang)
 	Debug_logger.log("Structure name: " .. struct_name)
-
-	local style, opts, identifier_pos = Spec.reader:get_struct_data(lang, struct_name)
-	Debug_logger.log("Style:", style)
-
-	local pos, data = Processor:item_parser(node, style.general.section_order, struct_name, style, opts, identifier_pos)
-	Debug_logger.log("Items:", data)
+	Debug_logger.log("Item data: ", items_data)
+	Debug_logger.log("Style: ", style)
 
 	local struct = style.general[opts.struct.val]
 
-	local docs = (struct_name == "comment") and struct or docs_builder(style, data, struct)
+	local docs = (struct_name == "comment") and struct or docs_builder(style, items_data, struct)
 	Debug_logger.log("Annotation:", docs)
 
 	require("codedocs.buf_writer")(docs, pos, style.general[opts.direction.val], style.general[opts.title_pos.val])

@@ -109,29 +109,18 @@ function Reader.get_supported_langs()
 	return files
 end
 
-function Reader.is_ts_node_type_supported(lang, node_identifier)
-	local lang_data = Reader.get_lang_data(lang)
-
-	if not lang_data then return false end
-
-	local structs_data = lang_data.structs
-	for _, struct_data in pairs(structs_data) do
-		if vim.list_contains(struct_data.node_identifiers, node_identifier) then return true end
-	end
-
-	return false
-end
-
-function Reader:get_struct_style(lang, struct, style)
+function Reader:get_struct_style(lang, struct, style_name)
 	self.cached_styles[lang] = self.cached_styles[lang] or {}
 	self.cached_styles[lang][struct] = self.cached_styles[lang][struct] or {}
-	self.cached_styles[lang][struct][style] = self.cached_styles[lang][struct][style]
+	self.cached_styles[lang][struct][style_name] = self.cached_styles[lang][struct][style_name]
 		or (function()
-			local raw = require("codedocs.specs._langs." .. lang .. "." .. struct .. ".styles." .. style) -- cached by Lua
-			return _resolve_style(raw, opts) -- created ONCE
+			local raw = require("codedocs.specs._langs." .. lang .. "." .. struct .. ".styles." .. style_name)
+			local style = _resolve_style(raw)
+			_validate_style_opts(opts, style, struct)
+			return style
 		end)()
 
-	return self.cached_styles[lang][struct][style]
+	return self.cached_styles[lang][struct][style_name]
 end
 
 function Reader.get_lang_data(lang)
@@ -146,33 +135,6 @@ function Reader:_get_struct_main_style(lang, struct_name)
 
 	local main_style_path = self:get_struct_style(lang, struct_name, default_style)
 	return main_style_path
-end
-
-function Reader:get_struct_data(lang, struct_name)
-	local function validate_basic_fields(lang_fields, lang_name)
-		local required_fields = {
-			"default_style",
-			"identifier_pos",
-		}
-
-		for _, field_name in ipairs(required_fields) do
-			if lang_fields[field_name] == nil then
-				vim.notify(
-					("The '%s' field has not been defined for %s"):format(field_name, lang_name),
-					vim.log.levels.ERROR
-				)
-				return false
-			end
-		end
-		return true
-	end
-
-	local lang_data = Reader.get_lang_data(lang)
-	if not validate_basic_fields(lang_data, lang) then return false end
-
-	local main_style = self:_get_struct_main_style(lang, struct_name)
-	if not _validate_style_opts(opts, main_style, struct_name) then return false end
-	return main_style, opts, lang_data.identifier_pos
 end
 
 function Reader:get_struct_names(lang)
