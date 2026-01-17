@@ -7,7 +7,7 @@ local CACHED_TREES = {}
 -- @param structs Structure types to check for
 -- @return string Structure name
 -- @return vim.treesitter._tsnode
-local function _determine_struc_under_cursor(structs)
+local function _determine_struc_under_cursor(struct_identifiers)
 	vim.treesitter.get_parser(0):parse()
 	local node_at_cursor = vim.treesitter.get_node()
 
@@ -15,7 +15,7 @@ local function _determine_struc_under_cursor(structs)
 
 	while node_at_cursor do
 		local node_type = node_at_cursor:type()
-		local struct_name = structs[node_type]
+		local struct_name = struct_identifiers[node_type]
 
 		if struct_name then return struct_name, node_at_cursor end
 
@@ -134,10 +134,7 @@ local function _item_parser(node, sections, struct_name, style, identifier_pos)
 end
 
 return function(lang, style_name)
-	local struct_names = Reader:get_struct_names(lang)
-	if not struct_names then return false end
-
-	local struct_name, node = _determine_struc_under_cursor(struct_names)
+	local struct_name, node = _determine_struc_under_cursor(Reader.get_struct_identifiers(lang))
 
 	local style = style_name and Reader:get_struct_style(lang, struct_name, style_name)
 		or Reader:_get_struct_main_style(lang, struct_name)

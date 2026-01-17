@@ -131,10 +131,9 @@ function Reader:_get_struct_main_style(lang, struct_name)
 	return main_style_path
 end
 
-function Reader:get_struct_names(lang)
+function Reader.get_struct_identifiers(lang)
 	local lang_data = Reader.get_lang_data(lang)
-	local structs = lang_data.struct_identifiers
-	return structs
+	return lang_data.struct_identifiers
 end
 
 function Reader:get_struct_tree(lang, struct_name)
