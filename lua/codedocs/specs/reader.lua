@@ -85,11 +85,6 @@ local function _resolve_style(raw_style)
 	return resolved
 end
 
-function Reader.is_lang_supported(lang)
-	local success, _ = pcall(require, "codedocs.specs._langs." .. lang)
-	return success
-end
-
 local function current_script_dir()
 	local source = debug.getinfo(1, "S").source
 
@@ -110,6 +105,8 @@ function Reader.get_supported_langs()
 
 	return files
 end
+
+function Reader.is_lang_supported(lang) return vim.list_contains(Reader.get_supported_langs(), lang) end
 
 function Reader:get_struct_style(lang, struct, style_name)
 	cached_styles[lang] = cached_styles[lang] or {}
