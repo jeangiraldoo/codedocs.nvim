@@ -1,6 +1,6 @@
 local Reader = require("codedocs.specs.reader")
 local node_constructor = require("codedocs.specs.tree_processor.node_types")
-local opts = require("codedocs.specs._langs.style_opts")
+local opts = Reader.get_opts()
 
 local CACHED_TREES = {}
 

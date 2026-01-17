@@ -1,8 +1,9 @@
-local opts = require("codedocs.specs._langs.style_opts")
-
 local Reader = {
 	cached_styles = {},
+	get_opts = function() return require("codedocs.specs._langs.style_opts") end,
 }
+
+local opts = Reader.get_opts()
 
 --- Validates if a table is valid in terms of its content and length
 -- @param opt_name The name of the opt that contains the table to validate
