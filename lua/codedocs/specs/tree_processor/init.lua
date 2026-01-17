@@ -138,7 +138,7 @@ return function(lang, style_name)
 
 	local style = style_name and Reader:get_struct_style(lang, struct_name, style_name)
 		or Reader:_get_struct_main_style(lang, struct_name)
-	local identifier_pos = Reader.get_lang_data(lang).identifier_pos
+	local identifier_pos = Reader.get_lang_identifier_pos(lang)
 
 	local pos, data = _item_parser(node, style.general.section_order, struct_name, style, identifier_pos)
 

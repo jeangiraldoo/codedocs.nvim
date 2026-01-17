@@ -124,6 +124,8 @@ function Reader.get_lang_data(lang)
 	return data
 end
 
+function Reader.get_lang_identifier_pos(lang) return Reader.get_lang_data(lang).identifier_pos end
+
 function Reader:_get_struct_main_style(lang, struct_name)
 	local default_style = Reader.get_lang_data(lang).default_style
 
