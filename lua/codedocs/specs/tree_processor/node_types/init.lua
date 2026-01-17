@@ -1,4 +1,4 @@
-local current_dir = "codedocs.tree_processor.node_types."
+local current_dir = "codedocs.specs.tree_processor.node_types."
 
 local function get_parsed_item_name_last(capture_name, node_text, current_item, include_type)
 	if capture_name == "item_name" then

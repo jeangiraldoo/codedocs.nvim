@@ -1,4 +1,4 @@
-local node_constructor = require("codedocs.tree_processor.node_types")
+local node_constructor = require("codedocs.specs.tree_processor.node_types")
 
 local Processor = {
 	CACHED_TREES = {},

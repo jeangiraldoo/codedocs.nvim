@@ -1,6 +1,6 @@
 local Reader = require("codedocs.specs").reader
 local annotation_builder = require("codedocs.annotation_builder")
-local Processor = require("codedocs.tree_processor")
+local Processor = require("codedocs.specs.tree_processor")
 
 local project_root = vim.fn.expand("<sfile>:p:h") -- folder of this spec file
 package.path = package.path .. ";" .. project_root .. "/tests/cases/?.lua"

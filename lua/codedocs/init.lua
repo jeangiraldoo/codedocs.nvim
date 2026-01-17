@@ -1,7 +1,7 @@
 local Debug_logger = require("codedocs.utils.debug_logger")
 local docs_builder = require("codedocs.annotation_builder")
 local Spec = require("codedocs.specs")
-local Processor = require("codedocs.tree_processor")
+local Processor = require("codedocs.specs.tree_processor")
 
 local M = {}
 
