@@ -7,9 +7,9 @@ local M = {}
 function M.setup(config)
 	if config.settings then Spec.customizer.set_settings(config.settings) end
 
-	if config and config.default_styles then Spec.customizer:set_default_lang_style(config.default_styles) end
+	if config and config.default_styles then Spec.customizer.set_default_lang_style(config.default_styles) end
 
-	if config and config.styles then Spec.customizer:update_style(config.styles) end
+	if config and config.styles then Spec.customizer.update_style(config.styles) end
 end
 
 function M.insert_docs()

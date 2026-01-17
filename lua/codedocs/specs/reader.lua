@@ -1,5 +1,6 @@
+local cached_styles = {}
+
 local Reader = {
-	cached_styles = {},
 	get_opts = function() return require("codedocs.specs._langs.style_opts") end,
 }
 
@@ -111,9 +112,9 @@ function Reader.get_supported_langs()
 end
 
 function Reader:get_struct_style(lang, struct, style_name)
-	self.cached_styles[lang] = self.cached_styles[lang] or {}
-	self.cached_styles[lang][struct] = self.cached_styles[lang][struct] or {}
-	self.cached_styles[lang][struct][style_name] = self.cached_styles[lang][struct][style_name]
+	cached_styles[lang] = cached_styles[lang] or {}
+	cached_styles[lang][struct] = cached_styles[lang][struct] or {}
+	cached_styles[lang][struct][style_name] = cached_styles[lang][struct][style_name]
 		or (function()
 			local raw = require("codedocs.specs._langs." .. lang .. "." .. struct .. ".styles." .. style_name)
 			local style = _resolve_style(raw)
@@ -121,7 +122,7 @@ function Reader:get_struct_style(lang, struct, style_name)
 			return style
 		end)()
 
-	return self.cached_styles[lang][struct][style_name]
+	return cached_styles[lang][struct][style_name]
 end
 
 function Reader.get_lang_data(lang)
