@@ -85,26 +85,21 @@ local function _resolve_style(raw_style)
 	return resolved
 end
 
-local function current_script_dir()
+Reader.get_supported_langs = (function()
 	local source = debug.getinfo(1, "S").source
-
 	local path = source:sub(2)
 
-	return vim.fs.dirname(path)
-end
-
-function Reader.get_supported_langs()
-	local base_dir = current_script_dir()
+	local base_dir = vim.fs.dirname(path)
 	local target_dir = vim.fs.joinpath(base_dir, "_langs")
 
-	local files = {}
+	local SUPPORTED_LANGS = {}
 
-	for name, type in vim.fs.dir(target_dir) do
-		if type == "directory" then table.insert(files, name) end
+	for item_name, item_type in vim.fs.dir(target_dir) do
+		if item_type == "directory" then table.insert(SUPPORTED_LANGS, item_name) end
 	end
 
-	return files
-end
+	return function() return SUPPORTED_LANGS end
+end)()
 
 function Reader.is_lang_supported(lang) return vim.list_contains(Reader.get_supported_langs(), lang) end
 
