@@ -1,12 +1,8 @@
 return {
 	default_style = "KDoc",
 	identifier_pos = true,
-	structs = {
-		func = {
-			node_identifiers = { "function_declaration" },
-		},
-		class = {
-			node_identifiers = { "class_declaration" },
-		},
+	struct_identifiers = {
+		function_declaration = "func",
+		class_declaration = "class",
 	},
 }

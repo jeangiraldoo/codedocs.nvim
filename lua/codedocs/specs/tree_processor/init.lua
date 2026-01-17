@@ -9,21 +9,18 @@ local Processor = {
 -- @param structs Structure types to check for
 -- @return string Structure name
 -- @return vim.treesitter._tsnode
-function Processor:determine_struc_under_cursor(structs)
+function Processor.determine_struc_under_cursor(structs)
 	vim.treesitter.get_parser(0):parse()
 	local node_at_cursor = vim.treesitter.get_node()
 
 	if node_at_cursor == nil then return "comment", node_at_cursor end
 
 	while node_at_cursor do
-		for struct_name, value in pairs(structs) do
-			if struct_name ~= "comment" then
-				local node_identifiers = value["node_identifiers"]
-				for _, id in pairs(node_identifiers) do
-					if node_at_cursor:type() == id then return struct_name, node_at_cursor end
-				end
-			end
-		end
+		local node_type = node_at_cursor:type()
+		local struct_name = structs[node_type]
+
+		if struct_name then return struct_name, node_at_cursor end
+
 		node_at_cursor = node_at_cursor:parent()
 	end
 	return "comment", node_at_cursor
@@ -142,7 +139,7 @@ return function(lang, style_name)
 	local struct_names = Reader:get_struct_names(lang)
 	if not struct_names then return false end
 
-	local struct_name, node = Processor:determine_struc_under_cursor(struct_names)
+	local struct_name, node = Processor.determine_struc_under_cursor(struct_names)
 
 	local style = style_name and Reader:get_struct_style(lang, struct_name, style_name)
 		or Reader:_get_struct_main_style(lang, struct_name)

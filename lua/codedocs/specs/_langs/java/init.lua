@@ -1,12 +1,8 @@
 return {
 	default_style = "JavaDoc",
 	identifier_pos = false,
-	structs = {
-		func = {
-			node_identifiers = { "method_declaration" },
-		},
-		class = {
-			node_identifiers = { "class_declaration" },
-		},
+	struct_identifiers = {
+		method_declaration = "func",
+		class_declaration = "class",
 	},
 }
