@@ -2,14 +2,12 @@ local Reader = require("codedocs.specs.reader")
 local node_constructor = require("codedocs.specs.tree_processor.node_types")
 local opts = require("codedocs.specs._langs.style_opts")
 
-local Processor = {
-	CACHED_TREES = {},
-}
+local CACHED_TREES = {}
 
 -- @param structs Structure types to check for
 -- @return string Structure name
 -- @return vim.treesitter._tsnode
-function Processor.determine_struc_under_cursor(structs)
+local function _determine_struc_under_cursor(structs)
 	vim.treesitter.get_parser(0):parse()
 	local node_at_cursor = vim.treesitter.get_node()
 
@@ -26,7 +24,7 @@ function Processor.determine_struc_under_cursor(structs)
 	return "comment", node_at_cursor
 end
 
-local function _get_parser_settings(style, opts, struct_name)
+local function _get_parser_settings(style, struct_name)
 	local settings = {
 		func = {
 			params = {
@@ -75,13 +73,13 @@ local function _get_struct_items(node, sections, settings)
 	return items
 end
 
-local function build_node(node)
+local function _build_node(node)
 	local new_children
 	if node.children then
 		new_children = {}
 		for i, child in ipairs(node.children) do
 			if type(child) == "table" then
-				new_children[i] = build_node(child)
+				new_children[i] = _build_node(child)
 			else
 				table.insert(new_children, child)
 			end
@@ -98,7 +96,7 @@ local function build_node(node)
 	return node_constructor(new_node)
 end
 
-local function build_tree_list(list)
+local function _build_tree_list(list)
 	local final_tree = {
 		sections = {},
 	}
@@ -107,7 +105,7 @@ local function build_tree_list(list)
 		local section_list = {}
 
 		for i, tree in ipairs(trees) do
-			section_list[i] = build_node(tree)
+			section_list[i] = _build_node(tree)
 		end
 
 		final_tree.sections[section_name] = section_list
@@ -116,20 +114,20 @@ local function build_tree_list(list)
 	return final_tree
 end
 
-function Processor:item_parser(node, sections, struct_name, style, opts, identifier_pos)
+local function _item_parser(node, sections, struct_name, style, identifier_pos)
 	local pos = vim.api.nvim_win_get_cursor(0)[1] - 1
 	if struct_name == "comment" then return pos, {} end
 
-	if not self.CACHED_TREES[vim.bo.filetype] then self.CACHED_TREES[vim.bo.filetype] = {} end
-	if not self.CACHED_TREES[vim.bo.filetype][struct_name] then
+	if not CACHED_TREES[vim.bo.filetype] then CACHED_TREES[vim.bo.filetype] = {} end
+	if not CACHED_TREES[vim.bo.filetype][struct_name] then
 		local raw_tree_list = Reader:get_struct_tree(vim.bo.filetype, struct_name)
-		self.CACHED_TREES[vim.bo.filetype][struct_name] = build_tree_list(raw_tree_list)
+		CACHED_TREES[vim.bo.filetype][struct_name] = _build_tree_list(raw_tree_list)
 	end
 
-	local parser_settings = _get_parser_settings(style, opts, struct_name)
+	local parser_settings = _get_parser_settings(style, struct_name)
 	if struct_name ~= "comment" then
 		parser_settings["identifier_pos"] = identifier_pos
-		parser_settings["tree"] = self.CACHED_TREES[vim.bo.filetype][struct_name]
+		parser_settings["tree"] = CACHED_TREES[vim.bo.filetype][struct_name]
 	end
 
 	return node:range(), _get_struct_items(node, sections, parser_settings)
@@ -139,13 +137,13 @@ return function(lang, style_name)
 	local struct_names = Reader:get_struct_names(lang)
 	if not struct_names then return false end
 
-	local struct_name, node = Processor.determine_struc_under_cursor(struct_names)
+	local struct_name, node = _determine_struc_under_cursor(struct_names)
 
 	local style = style_name and Reader:get_struct_style(lang, struct_name, style_name)
 		or Reader:_get_struct_main_style(lang, struct_name)
 	local identifier_pos = Reader.get_lang_data(lang).identifier_pos
 
-	local pos, data = Processor:item_parser(node, style.general.section_order, struct_name, style, opts, identifier_pos)
+	local pos, data = _item_parser(node, style.general.section_order, struct_name, style, identifier_pos)
 
 	return struct_name, data, style, pos, opts
 end
