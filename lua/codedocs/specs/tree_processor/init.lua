@@ -60,18 +60,6 @@ local function _get_struct_section_items(node, tree, settings, include_type)
 	return items
 end
 
-local function _get_struct_items(node, sections, settings)
-	local struct_sections = settings.tree
-
-	local items = {}
-	for _, section_name in pairs(sections) do
-		local include_type = settings[section_name].include_type
-		local section_tree = struct_sections[section_name]
-		items[section_name] = _get_struct_section_items(node, section_tree, settings, include_type)
-	end
-	return items
-end
-
 local function _build_node(node)
 	local new_children
 	if node.children then
@@ -117,9 +105,14 @@ local function _item_parser(node, struct_name, sections, parser_settings)
 		local raw_tree_list = Spec:get_struct_tree(vim.bo.filetype, struct_name)
 		CACHED_TREES[vim.bo.filetype][struct_name] = _build_tree_list(raw_tree_list)
 	end
-	parser_settings["tree"] = CACHED_TREES[vim.bo.filetype][struct_name]
 
-	return _get_struct_items(node, sections, parser_settings)
+	local items = {}
+	for _, section_name in pairs(sections) do
+		local include_type = parser_settings[section_name].include_type
+		local section_tree = CACHED_TREES[vim.bo.filetype][struct_name][section_name]
+		items[section_name] = _get_struct_section_items(node, section_tree, parser_settings, include_type)
+	end
+	return items
 end
 
 return function(lang, style_name)
