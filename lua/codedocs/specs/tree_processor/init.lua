@@ -115,9 +115,6 @@ local function _build_tree_list(list)
 end
 
 local function _item_parser(node, sections, struct_name, style, identifier_pos)
-	local pos = vim.api.nvim_win_get_cursor(0)[1] - 1
-	if struct_name == "comment" then return pos, {} end
-
 	if not CACHED_TREES[vim.bo.filetype] then CACHED_TREES[vim.bo.filetype] = {} end
 	if not CACHED_TREES[vim.bo.filetype][struct_name] then
 		local raw_tree_list = Spec:get_struct_tree(vim.bo.filetype, struct_name)
@@ -125,12 +122,10 @@ local function _item_parser(node, sections, struct_name, style, identifier_pos)
 	end
 
 	local parser_settings = _get_parser_settings(style, struct_name)
-	if struct_name ~= "comment" then
-		parser_settings["identifier_pos"] = identifier_pos
-		parser_settings["tree"] = CACHED_TREES[vim.bo.filetype][struct_name]
-	end
+	parser_settings["identifier_pos"] = identifier_pos
+	parser_settings["tree"] = CACHED_TREES[vim.bo.filetype][struct_name]
 
-	return node:range(), _get_struct_items(node, sections, parser_settings)
+	return _get_struct_items(node, sections, parser_settings)
 end
 
 return function(lang, style_name)
@@ -138,9 +133,15 @@ return function(lang, style_name)
 
 	local style = style_name and Spec:get_struct_style(lang, struct_name, style_name)
 		or Spec:_get_struct_main_style(lang, struct_name)
-	local identifier_pos = Spec.get_lang_identifier_pos(lang)
 
-	local pos, data = _item_parser(node, style.general.section_order, struct_name, style, identifier_pos)
+	local pos, data
+	if struct_name == "comment" then
+		pos = vim.api.nvim_win_get_cursor(0)[1] - 1
+		data = {}
+	else
+		pos = node:range()
+		data = _item_parser(node, style.general.section_order, struct_name, style, Spec.get_lang_identifier_pos(lang))
+	end
 
 	return struct_name, data, style, pos, opts
 end
