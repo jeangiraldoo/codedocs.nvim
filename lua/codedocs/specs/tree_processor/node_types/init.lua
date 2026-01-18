@@ -1,54 +1,21 @@
 local current_dir = "codedocs.specs.tree_processor.node_types."
 
 local function get_parsed_item_name_last(capture_name, node_text, current_item, include_type)
-	if capture_name == "item_name" then
-		return { name = node_text, type = current_item.type }, {}
-	elseif capture_name == "item_type" and include_type then
-		return nil, { name = current_item.name, type = node_text }
-	else
-		return nil, current_item
-	end
+	if capture_name == "item_name" then return { name = node_text, type = current_item.type }, {} end
+	if capture_name == "item_type" and include_type then return nil, { name = current_item.name, type = node_text } end
+	return nil, current_item
 end
 
 local function get_parsed_item_name_first(capture_name, node_text, current_item, include_type)
 	if capture_name == "item_name" then
-		if current_item.name ~= nil then
-			return current_item, { name = node_text }
-		else
-			return nil, { name = node_text }
-		end
-	elseif capture_name == "item_type" then
-		if include_type then
-			return { name = current_item.name, type = node_text }, {}
-		else
-			return { name = current_item.name }, {}
-		end
+		if current_item.name ~= nil then return current_item, { name = node_text } end
+		return nil, { name = node_text }
 	end
-end
 
-local function parse_items(node_captures, query_capture_tags, include_type, item_processor)
-	local items = {}
-	local current_item = {}
-	for id, capture_node, _ in node_captures do
-		local capture_name = query_capture_tags[id]
-		local node_text = vim.treesitter.get_node_text(capture_node, 0)
-
-		local new_item, new_current = item_processor(capture_name, node_text, current_item, include_type)
-		if new_item then table.insert(items, new_item) end
-		current_item = new_current
+	if capture_name == "item_type" then
+		if include_type then return { name = current_item.name, type = node_text }, {} end
+		return { name = current_item.name }, {}
 	end
-	if next(current_item) ~= nil then table.insert(items, current_item) end
-
-	return items
-end
-
-local function collect_target_capture_nodes(node_captures, query_capture_tags)
-	local nodes = {}
-	for id, capture_node, _ in node_captures do
-		local capture_name = query_capture_tags[id]
-		if capture_name == "target" then table.insert(nodes, capture_node) end
-	end
-	return nodes
 end
 
 local function parse_query(node, include_type, filetype, query, identifier_pos)
@@ -58,14 +25,33 @@ local function parse_query(node, include_type, filetype, query, identifier_pos)
 	local node_captures = query_obj:iter_captures(node, 0)
 	local query_capture_tags = query_obj.captures
 
-	local result
 	if vim.tbl_contains(query_capture_tags, "target") then
-		result = collect_target_capture_nodes(node_captures, query_capture_tags)
-	else
-		local item_processor = (identifier_pos and get_parsed_item_name_first or get_parsed_item_name_last)
-		result = parse_items(node_captures, query_capture_tags, include_type, item_processor)
+		local target_nodes = {}
+		for id, capture_node, _ in node_captures do
+			if query_capture_tags[id] == "target" then table.insert(target_nodes, capture_node) end
+		end
+		return target_nodes
 	end
-	return result
+
+	local items = {}
+	local current_item = {}
+	for id, capture_node, _ in node_captures do
+		local capture_name = query_capture_tags[id]
+		local node_text = vim.treesitter.get_node_text(capture_node, 0)
+
+		local new_item, new_current
+		if identifier_pos then
+			new_item, new_current = get_parsed_item_name_first(capture_name, node_text, current_item, include_type)
+		else
+			new_item, new_current = get_parsed_item_name_last(capture_name, node_text, current_item, include_type)
+		end
+
+		if new_item then table.insert(items, new_item) end
+		current_item = new_current
+	end
+	if next(current_item) ~= nil then table.insert(items, current_item) end
+
+	return items
 end
 
 local function node_processor(query, context)
