@@ -1,7 +1,5 @@
-local function get_node(data)
-	local template, node_processor = unpack(data)
-	local chain_node = template:new()
-	function chain_node:process(settings)
+return function(base_node, node_processor)
+	function base_node:process(settings)
 		local original_node = settings.node
 		local result_nodes = { original_node }
 		for _, child in ipairs(self.children) do
@@ -17,9 +15,5 @@ local function get_node(data)
 		settings.node = original_node
 		return result_nodes
 	end
-	return chain_node
+	return base_node
 end
-
-return {
-	get_node = get_node,
-}

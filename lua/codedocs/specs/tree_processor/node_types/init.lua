@@ -75,22 +75,8 @@ local function node_processor(query, context)
 	end
 end
 
-local node_template = {}
-function node_template:new(node_type, children, data)
-	local node = {
-		node_type = node_type,
-		data = data or {},
-		children = children or {},
-	}
-	setmetatable(node, self)
-	self.__index = self
-	return node
-end
-
-local function node_constructor(node_info)
+return function(node_info)
 	local node_type = node_info.type
-	local children = node_info.children
-	local data = node_info.data
 
 	local type_index = {
 		simple = "branch",
@@ -102,10 +88,11 @@ local function node_constructor(node_info)
 		group = "branch",
 	}
 	local node_category = type_index[node_type]
-	local getter_data = { node_template }
 
-	if node_category == "branch" then table.insert(getter_data, node_processor) end
-	return require(current_dir .. node_type).get_node(getter_data):new(node_type, children, data)
+	local new_node = vim.tbl_extend("force", {}, node_info)
+	local extend_new_node = require(current_dir .. node_type)
+
+	if node_category == "leaf" then return extend_new_node(new_node) end
+
+	return extend_new_node(new_node, node_processor)
 end
-
-return node_constructor

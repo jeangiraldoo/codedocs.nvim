@@ -12,10 +12,8 @@ local function iterate_child_nodes(node, node_type, result_table, collect)
 	end
 end
 
-local function get_node(data)
-	local template = data[1]
-	local finder_node = template:new()
-	function finder_node:process(settings)
+return function(base_node)
+	function base_node:process(settings)
 		local node = settings.node
 		local node_type = self.data.node_type
 		local def_val = self.data.def_val
@@ -33,9 +31,5 @@ local function get_node(data)
 			end
 		end
 	end
-	return finder_node
+	return base_node
 end
-
-return {
-	get_node = get_node,
-}

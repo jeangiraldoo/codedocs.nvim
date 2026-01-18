@@ -1,7 +1,5 @@
-local function get_node(data)
-	local template, node_processor = unpack(data)
-	local regex_node = template:new()
-	function regex_node:process(settings)
+return function(base_node, node_processor)
+	function base_node:process(settings)
 		local pattern = self.data.pattern
 		local node = self.children.nodes
 		local nodes = {}
@@ -16,9 +14,5 @@ local function get_node(data)
 		end
 		return vim.iter(nodes):flatten():totable()
 	end
-	return regex_node
+	return base_node
 end
-
-return {
-	get_node = get_node,
-}
