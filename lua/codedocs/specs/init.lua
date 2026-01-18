@@ -6,6 +6,13 @@ local opts = Spec.get_opts()
 
 local cached_styles = {}
 
+local function _get_lang_data(lang)
+	local success, data = pcall(require, "codedocs.specs._langs." .. lang)
+	if not success then return nil end
+
+	return data
+end
+
 function Spec.set_default_lang_style(new_styles)
 	for lang_name, new_default_style in pairs(new_styles) do
 		if type(new_default_style) ~= "string" then
@@ -16,7 +23,7 @@ function Spec.set_default_lang_style(new_styles)
 			error("There is no language called " .. lang_name .. " available in codedocs")
 		end
 
-		local lang_data = Spec.get_lang_data(lang_name)
+		local lang_data = _get_lang_data(lang_name)
 
 		if not lang_data.styles[new_default_style] then
 			error(lang_name .. " does not have a docstring style called " .. new_default_style)
@@ -180,24 +187,17 @@ function Spec:get_struct_style(lang, struct, style_name)
 	return cached_styles[lang][struct][style_name]
 end
 
-function Spec.get_lang_data(lang)
-	local success, data = pcall(require, "codedocs.specs._langs." .. lang)
-	if not success then return nil end
-
-	return data
-end
-
-function Spec.get_lang_identifier_pos(lang) return Spec.get_lang_data(lang).identifier_pos end
+function Spec.get_lang_identifier_pos(lang) return _get_lang_data(lang).identifier_pos end
 
 function Spec:_get_struct_main_style(lang, struct_name)
-	local default_style = Spec.get_lang_data(lang).default_style
+	local default_style = _get_lang_data(lang).default_style
 
 	local main_style_path = self:get_struct_style(lang, struct_name, default_style)
 	return main_style_path
 end
 
 function Spec.get_struct_identifiers(lang)
-	local lang_data = Spec.get_lang_data(lang)
+	local lang_data = _get_lang_data(lang)
 	return lang_data.struct_identifiers
 end
 
