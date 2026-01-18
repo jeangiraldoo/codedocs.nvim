@@ -1,10 +1,9 @@
 return {
-	sections = {
-		params = {
-			{
-				type = "simple",
-				children = {
-					[[
+	params = {
+		{
+			type = "simple",
+			children = {
+				[[
 						[
 							(method_definition
 								(formal_parameters
@@ -24,14 +23,14 @@ return {
 							)
 						]
 					]],
-				},
 			},
 		},
-		return_type = {
-			{
-				type = "simple",
-				children = {
-					[[
+	},
+	return_type = {
+		{
+			type = "simple",
+			children = {
+				[[
 						[
 							(method_definition
 								(type_annotation
@@ -51,15 +50,14 @@ return {
 							)
 						]
 					]],
-				},
 			},
-			{
-				type = "finder",
-				data = {
-					node_type = "return_statement",
-					mode = false,
-					def_val = "",
-				},
+		},
+		{
+			type = "finder",
+			data = {
+				node_type = "return_statement",
+				mode = false,
+				def_val = "",
 			},
 		},
 	},

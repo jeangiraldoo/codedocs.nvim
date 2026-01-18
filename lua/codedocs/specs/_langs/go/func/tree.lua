@@ -1,8 +1,9 @@
-local PARAMS = {
-	{
-		type = "group",
-		children = {
-			[[
+return {
+	params = {
+		{
+			type = "group",
+			children = {
+				[[
 				(function_declaration
 					(parameter_list
 						(parameter_declaration
@@ -12,34 +13,27 @@ local PARAMS = {
 					)
 				)
 			]],
+			},
 		},
 	},
-}
-
-local RETURN_TYPE = {
-	{
-		type = "simple",
-		children = {
-			[[
+	return_type = {
+		{
+			type = "simple",
+			children = {
+				[[
 				(function_declaration
 					(type_identifier) @item_type
 				)
 			]],
+			},
 		},
-	},
-	{
-		type = "finder",
-		data = {
-			node_type = "return_statement",
-			mode = false,
-			def_val = "",
+		{
+			type = "finder",
+			data = {
+				node_type = "return_statement",
+				mode = false,
+				def_val = "",
+			},
 		},
-	},
-}
-
-return {
-	sections = {
-		params = PARAMS,
-		return_type = RETURN_TYPE,
 	},
 }

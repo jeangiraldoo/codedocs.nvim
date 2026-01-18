@@ -61,8 +61,7 @@ local function _get_struct_section_items(node, tree, settings, include_type)
 end
 
 local function _get_struct_items(node, sections, settings)
-	local lang_node_trees = settings.tree
-	local struct_sections = lang_node_trees.sections
+	local struct_sections = settings.tree
 
 	local items = {}
 	for _, section_name in pairs(sections) do
@@ -97,32 +96,27 @@ local function _build_node(node)
 end
 
 local function _build_tree_list(list)
-	local final_tree = {
-		sections = {},
-	}
+	local final_tree = {}
 
-	for section_name, trees in pairs(list.sections) do
+	for section_name, trees in pairs(list) do
 		local section_list = {}
 
 		for i, tree in ipairs(trees) do
 			section_list[i] = _build_node(tree)
 		end
 
-		final_tree.sections[section_name] = section_list
+		final_tree[section_name] = section_list
 	end
 
 	return final_tree
 end
 
-local function _item_parser(node, sections, struct_name, style, identifier_pos)
+local function _item_parser(node, struct_name, sections, parser_settings)
 	if not CACHED_TREES[vim.bo.filetype] then CACHED_TREES[vim.bo.filetype] = {} end
 	if not CACHED_TREES[vim.bo.filetype][struct_name] then
 		local raw_tree_list = Spec:get_struct_tree(vim.bo.filetype, struct_name)
 		CACHED_TREES[vim.bo.filetype][struct_name] = _build_tree_list(raw_tree_list)
 	end
-
-	local parser_settings = _get_parser_settings(style, struct_name)
-	parser_settings["identifier_pos"] = identifier_pos
 	parser_settings["tree"] = CACHED_TREES[vim.bo.filetype][struct_name]
 
 	return _get_struct_items(node, sections, parser_settings)
@@ -140,7 +134,9 @@ return function(lang, style_name)
 		data = {}
 	else
 		pos = node:range()
-		data = _item_parser(node, style.general.section_order, struct_name, style, Spec.get_lang_identifier_pos(lang))
+		local parser_settings = _get_parser_settings(style, struct_name)
+		parser_settings["identifier_pos"] = Spec.get_lang_identifier_pos(lang)
+		data = _item_parser(node, struct_name, style.general.section_order, parser_settings)
 	end
 
 	return struct_name, data, style, pos, opts

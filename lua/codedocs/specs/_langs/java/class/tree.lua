@@ -29,24 +29,20 @@ local INCLUDE_INSTANCE_ATTRS = {
 	children = { GET_INSTANCE_ATTRS },
 }
 
-local ATTRS = {
-	{
-		type = "boolean",
-		children = {
-			{
-				type = "accumulator",
-				children = {
-					GET_CLASS_FIELDS,
-					INCLUDE_INSTANCE_ATTRS,
-				},
-			},
-			INCLUDE_INSTANCE_ATTRS,
-		},
-	},
-}
-
 return {
-	sections = {
-		attrs = ATTRS,
+	attrs = {
+		{
+			type = "boolean",
+			children = {
+				{
+					type = "accumulator",
+					children = {
+						GET_CLASS_FIELDS,
+						INCLUDE_INSTANCE_ATTRS,
+					},
+				},
+				INCLUDE_INSTANCE_ATTRS,
+			},
+		},
 	},
 }

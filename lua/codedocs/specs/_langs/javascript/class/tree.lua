@@ -80,24 +80,20 @@ local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 	children = { GET_INSTANCE_ATTRS },
 }
 
-local ATTRS = {
-	{
-		type = "boolean",
-		children = {
-			{
-				type = "accumulator",
-				children = {
-					GET_CLASS_ATTRS,
-					INCLUDE_INSTANCE_ATTRS_OR_NOT,
-				},
-			},
-			INCLUDE_INSTANCE_ATTRS_OR_NOT,
-		},
-	},
-}
-
 return {
-	sections = {
-		attrs = ATTRS,
+	attrs = {
+		{
+			type = "boolean",
+			children = {
+				{
+					type = "accumulator",
+					children = {
+						GET_CLASS_ATTRS,
+						INCLUDE_INSTANCE_ATTRS_OR_NOT,
+					},
+				},
+				INCLUDE_INSTANCE_ATTRS_OR_NOT,
+			},
+		},
 	},
 }

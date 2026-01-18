@@ -53,17 +53,18 @@ local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 	children = { GET_INSTANCE_ATTRS },
 }
 
-local ATTRS = {
-	{
-		type = "boolean",
-		children = {
-			{
-				type = "accumulator",
-				children = {
-					{
-						type = "simple",
-						children = {
-							[[
+return {
+	attrs = {
+		{
+			type = "boolean",
+			children = {
+				{
+					type = "accumulator",
+					children = {
+						{
+							type = "simple",
+							children = {
+								[[
 								(class_definition
 									body: (block
 										(expression_statement
@@ -74,18 +75,13 @@ local ATTRS = {
 									)
 								)
 							]],
+							},
 						},
+						INCLUDE_INSTANCE_ATTRS_OR_NOT,
 					},
-					INCLUDE_INSTANCE_ATTRS_OR_NOT,
 				},
+				INCLUDE_INSTANCE_ATTRS_OR_NOT,
 			},
-			INCLUDE_INSTANCE_ATTRS_OR_NOT,
 		},
-	},
-}
-
-return {
-	sections = {
-		attrs = ATTRS,
 	},
 }
