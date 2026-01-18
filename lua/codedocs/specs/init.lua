@@ -13,6 +13,12 @@ local function _get_lang_data(lang)
 	return data
 end
 
+local function _get_raw_style(lang, struct, style_name)
+	if Spec.is_lang_supported(lang) then
+		return require(string.format("codedocs.specs._langs.%s.%s.styles.%s", lang, struct, style_name))
+	end
+end
+
 function Spec.set_default_lang_style(new_styles)
 	for lang_name, new_default_style in pairs(new_styles) do
 		if type(new_default_style) ~= "string" then
@@ -178,7 +184,7 @@ function Spec:get_struct_style(lang, struct, style_name)
 	cached_styles[lang][struct] = cached_styles[lang][struct] or {}
 	cached_styles[lang][struct][style_name] = cached_styles[lang][struct][style_name]
 		or (function()
-			local raw = require("codedocs.specs._langs." .. lang .. "." .. struct .. ".styles." .. style_name)
+			local raw = _get_raw_style(lang, struct, style_name)
 			local style = _resolve_style(raw)
 			_validate_style_opts(opts, style, struct)
 			return style
