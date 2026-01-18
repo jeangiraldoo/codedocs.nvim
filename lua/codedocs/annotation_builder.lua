@@ -1,5 +1,5 @@
 local Debug_logger = require("codedocs.utils.debug_logger")
-local opts = require("codedocs.specs").reader.get_opts()
+local opts = require("codedocs.specs").get_opts()
 
 -- @param title string Section title
 -- @param title_gap boolean Whether to insert a blank line between the title and the first section item

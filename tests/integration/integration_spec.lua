@@ -1,10 +1,10 @@
-local Reader = require("codedocs.specs").reader
+local Spec = require("codedocs.specs")
 local annotation_builder = require("codedocs.annotation_builder")
 
 local project_root = vim.fn.expand("<sfile>:p:h")
 package.path = package.path .. ";" .. project_root .. "/tests/cases/?.lua"
 
-local LANGS_TO_TEST = Reader.get_supported_langs()
+local LANGS_TO_TEST = Spec.get_supported_langs()
 
 local function mock_buffer(structure, cursor_pos)
 	vim.api.nvim_buf_set_lines(0, 0, -1, false, structure)
