@@ -26,18 +26,8 @@ end
 
 local function _get_parser_settings(style, struct_name)
 	local settings = {
-		func = {
-			params = {
-				include_type = style.params and style.params[opts.include_type.val],
-			},
-			return_type = {
-				include_type = style.return_type and style.return_type[opts.include_type.val],
-			},
-		},
+		func = {},
 		class = {
-			attrs = {
-				include_type = style.attrs and style.attrs[opts.include_type.val],
-			},
 			boolean_condition = {
 				style.general[opts.include_class_body_attrs.val],
 				style.general[opts.include_instance_attrs.val],
@@ -48,10 +38,9 @@ local function _get_parser_settings(style, struct_name)
 	return settings[struct_name]
 end
 
-local function _get_struct_section_items(node, tree, settings, include_type)
+local function _get_struct_section_items(node, tree, settings)
 	local items
 	for _, tree_node in pairs(tree) do
-		settings.include_type = include_type
 		settings["node"] = node
 		items = tree_node:process(settings) or {}
 
@@ -108,9 +97,8 @@ local function _item_parser(node, struct_name, sections, parser_settings)
 
 	local items = {}
 	for _, section_name in pairs(sections) do
-		local include_type = parser_settings[section_name].include_type
 		local section_tree = CACHED_TREES[vim.bo.filetype][struct_name][section_name]
-		items[section_name] = _get_struct_section_items(node, section_tree, parser_settings, include_type)
+		items[section_name] = _get_struct_section_items(node, section_tree, parser_settings)
 	end
 	return items
 end

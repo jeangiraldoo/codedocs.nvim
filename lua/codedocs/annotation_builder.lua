@@ -79,7 +79,7 @@ local function _wrap_item_data(item, include_type, name_wrapper, type_wrapper)
 	local name_wrapper_copy, type_wrapper_copy = { unpack(name_wrapper) }, { unpack(type_wrapper) }
 
 	table.insert(name_wrapper_copy, 2, item.name or "")
-	table.insert(type_wrapper_copy, 2, include_type and item.type or "")
+	if include_type then table.insert(type_wrapper_copy, 2, item.type or "") end
 
 	return table.concat(name_wrapper_copy, ""), table.concat(type_wrapper_copy, "")
 end
@@ -107,7 +107,7 @@ local function _build_annotation_content(item_data, style)
 			),
 		}
 		for _, item in ipairs(section_items) do
-			local include_type = (item.type and style[opts.include_type.val])
+			local include_type = section_style[opts.include_type.val]
 			local wrapped_name, wrapped_type = _wrap_item_data(
 				item,
 				include_type,

@@ -1,4 +1,4 @@
-local function _new_item_builder(include_type)
+local function _new_item_builder()
 	return {
 		current = nil,
 		items = {},
@@ -10,7 +10,7 @@ local function _new_item_builder(include_type)
 			if self.current then self.current.name = name end
 		end,
 		set_type = function(self, type_)
-			if self.current and include_type then self.current.type = type_ end
+			if self.current then self.current.type = type_ end
 		end,
 
 		emit = function(self)
@@ -54,7 +54,6 @@ return function(base_node)
 	function base_node:process(context)
 		local node = context.node
 		local identifier_pos = context.identifier_pos
-		local include_type = context.include_type
 		local filetype = vim.bo.filetype
 		local query = self.query
 
@@ -72,7 +71,7 @@ return function(base_node)
 			return target_nodes
 		end
 
-		local builder = _new_item_builder(include_type)
+		local builder = _new_item_builder()
 		local name_first = identifier_pos
 
 		for id, capture_node in node_captures do
