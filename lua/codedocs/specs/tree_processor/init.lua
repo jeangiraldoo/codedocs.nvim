@@ -1,5 +1,4 @@
 local Spec = require("codedocs.specs")
-local node_constructor = require("codedocs.specs.tree_processor.node_types")
 local opts = Spec.get_opts()
 
 local CACHED_TREES = {}
@@ -42,7 +41,9 @@ local function _cache_lang_struct_tree(lang, struct_name)
 	local function _build_node(node)
 		local new_node = vim.tbl_extend("force", {}, node)
 		if new_node.children then new_node.children = vim.tbl_map(_build_node, node.children) end
-		return node_constructor(new_node)
+
+		local extend_new_node = require("codedocs.specs.tree_processor.node_types." .. new_node.type)
+		return extend_new_node(new_node)
 	end
 
 	CACHED_TREES[lang] = CACHED_TREES[lang] or {}
