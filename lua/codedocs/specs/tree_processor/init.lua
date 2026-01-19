@@ -38,17 +38,6 @@ local function _get_parser_settings(style, struct_name)
 	return settings[struct_name]
 end
 
-local function _get_struct_section_items(node, tree, settings)
-	local items
-	for _, tree_node in pairs(tree) do
-		settings["node"] = node
-		items = tree_node:process(settings) or {}
-
-		if items and #items > 0 then break end
-	end
-	return items
-end
-
 local function _cache_lang_struct_tree(lang, struct_name)
 	local function _build_node(node)
 		local new_node = vim.tbl_extend("force", {}, node)
@@ -71,10 +60,18 @@ end
 local function _item_parser(lang, node, struct_name, sections, parser_settings)
 	if not (CACHED_TREES[lang] and CACHED_TREES[lang][struct_name]) then _cache_lang_struct_tree(lang, struct_name) end
 
+	parser_settings["node"] = node
+	local struct_cache = CACHED_TREES[lang][struct_name]
+
 	local items = {}
 	for _, section_name in pairs(sections) do
-		local section_tree = CACHED_TREES[lang][struct_name][section_name]
-		items[section_name] = _get_struct_section_items(node, section_tree, parser_settings)
+		local section_tree = struct_cache[section_name]
+
+		items[section_name] = vim.iter(section_tree)
+			:map(function(tree_node) return tree_node:process(parser_settings) end)
+			:find(
+				function(section_items_list) return section_items_list and (not vim.tbl_isempty(section_items_list)) end
+			) or {}
 	end
 	return items
 end
