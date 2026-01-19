@@ -101,9 +101,11 @@ local GET_ONLY_CONSTRUCTOR_ATTRS = {
 
 local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 	type = "boolean",
+	condition_opt_key = "include_instance_attrs",
 	children = {
 		{
 			type = "boolean",
+			condition_opt_key = "include_only_construct_instance_attrs",
 			children = {
 				GET_ONLY_CONSTRUCTOR_ATTRS,
 				GET_ALL_INSTANCE_ATTRS,
@@ -116,6 +118,7 @@ return {
 	attrs = {
 		{
 			type = "boolean",
+			condition_opt_key = "include_class_attrs",
 			children = {
 				{
 					type = "accumulator",

@@ -16,6 +16,7 @@ local GET_CLASS_FIELDS = {
 
 local INCLUDE_INSTANCE_ATTRS = {
 	type = "boolean",
+	condition_opt_key = "include_instance_attrs",
 	children = {
 		{
 			type = "simple",
@@ -39,6 +40,7 @@ return {
 	attrs = {
 		{
 			type = "boolean",
+			condition_opt_key = "include_class_attrs",
 			children = {
 				{
 					type = "accumulator",
