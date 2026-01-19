@@ -1,28 +1,3 @@
-local GET_METHODS = {
-	type = "simple",
-	query = [[
-		(class_definition
-			body: (block
-				(function_definition) @target
-			)
-		)
-	]],
-}
-
-local GET_CONSTRUCTOR = {
-	type = "simple",
-	query = [[
-		(class_definition
-			body: (block
-				(function_definition
-					name: (identifier) @name
-					(#eq? @name "__init__")
-				) @target
-			)
-		)
-	]],
-}
-
 local GET_METHOD_ATTRS = {
 	type = "simple",
 	query = [[
@@ -44,22 +19,54 @@ local FIND_METHOD_ATTRS = {
 
 local GET_ALL_ATTRS = {
 	type = "chain",
-	children = { GET_METHODS, FIND_METHOD_ATTRS, GET_METHOD_ATTRS },
+	children = {
+		{
+			type = "simple",
+			query = [[
+				class_definition
+					body: (block
+						(function_definition) @target
+					)
+				)
+			]],
+		},
+		FIND_METHOD_ATTRS,
+		GET_METHOD_ATTRS,
+	},
 }
 
 local GET_ONLY_CONSTRUCTOR_ATTRS = {
 	type = "chain",
-	children = { GET_CONSTRUCTOR, FIND_METHOD_ATTRS, GET_METHOD_ATTRS },
-}
-
-local GET_INSTANCE_ATTRS = {
-	type = "boolean",
-	children = { GET_ONLY_CONSTRUCTOR_ATTRS, GET_ALL_ATTRS },
+	children = {
+		{
+			type = "simple",
+			query = [[
+				(class_definition
+					body: (block
+						(function_definition
+							name: (identifier) @name
+							(#eq? @name "__init__")
+						) @target
+					)
+				)
+			]],
+		},
+		FIND_METHOD_ATTRS,
+		GET_METHOD_ATTRS,
+	},
 }
 
 local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 	type = "boolean",
-	children = { GET_INSTANCE_ATTRS },
+	children = {
+		{
+			type = "boolean",
+			children = {
+				GET_ONLY_CONSTRUCTOR_ATTRS,
+				GET_ALL_ATTRS,
+			},
+		},
+	},
 }
 
 return {

@@ -55,14 +55,17 @@ local GET_COMPANION_OBJECT_ATTRS = {
 	]],
 }
 
-local GET_INSTANCE_ATTRS = {
-	type = "boolean",
-	children = { GET_CONSTRUCTOR_INSTANCE_ATTRS, GET_ALL_INSTANCE_ATTRS },
-}
-
 local INCLUDE_INSTANCE_ATTRS = {
 	type = "boolean",
-	children = { GET_INSTANCE_ATTRS },
+	children = {
+		{
+			type = "boolean",
+			children = {
+				GET_CONSTRUCTOR_INSTANCE_ATTRS,
+				GET_ALL_INSTANCE_ATTRS,
+			},
+		},
+	},
 }
 
 return {

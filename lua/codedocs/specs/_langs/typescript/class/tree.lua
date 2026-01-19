@@ -9,18 +9,6 @@ local GET_METHODS = {
 	]],
 }
 
-local GET_CONSTRUCTOR = {
-	type = "simple",
-	query = [[
-		(class_body
-			(method_definition
-				(property_identifier) @name
-				(#eq? @name "constructor")
-			) @target
-		)
-	]],
-}
-
 local GET_ATTRS_IN_METHODS = {
 	type = "simple",
 	query = [[
@@ -94,17 +82,34 @@ local GET_ALL_INSTANCE_ATTRS = {
 
 local GET_ONLY_CONSTRUCTOR_ATTRS = {
 	type = "chain",
-	children = { GET_CONSTRUCTOR, METHOD_ATTR_FINDER, GET_ATTRS_IN_METHODS },
-}
-
-local GET_INSTANCE_ATTRS = {
-	type = "boolean",
-	children = { GET_ONLY_CONSTRUCTOR_ATTRS, GET_ALL_INSTANCE_ATTRS },
+	children = {
+		{
+			type = "simple",
+			query = [[
+				(class_body
+					(method_definition
+						(property_identifier) @name
+						(#eq? @name "constructor")
+					) @target
+				)
+			]],
+		},
+		METHOD_ATTR_FINDER,
+		GET_ATTRS_IN_METHODS,
+	},
 }
 
 local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 	type = "boolean",
-	children = { GET_INSTANCE_ATTRS },
+	children = {
+		{
+			type = "boolean",
+			children = {
+				GET_ONLY_CONSTRUCTOR_ATTRS,
+				GET_ALL_INSTANCE_ATTRS,
+			},
+		},
+	},
 }
 
 return {
