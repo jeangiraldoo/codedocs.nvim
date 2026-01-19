@@ -1,6 +1,6 @@
 return {
 	general = {
-		struct = { '"""', "", '"""' },
+		structure = { '"""', "", '"""' },
 		direction = false,
 		title_pos = 2,
 		title_gap = true,

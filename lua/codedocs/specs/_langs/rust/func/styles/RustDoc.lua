@@ -1,6 +1,6 @@
 return {
 	general = {
-		struct = { "///", "///" },
+		structure = { "///", "///" },
 		direction = true,
 		title_pos = 1,
 		title_gap = true,

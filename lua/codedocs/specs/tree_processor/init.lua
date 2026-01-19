@@ -28,9 +28,9 @@ local function _get_parser_settings(style, struct_name)
 		func = {},
 		class = {
 			boolean = {
-				include_class_attrs = style.general[opts.include_class_body_attrs.val],
-				include_instance_attrs = style.general[opts.include_instance_attrs.val],
-				include_only_construct_instance_attrs = style.general[opts.include_only_constructor_instance_attrs.val],
+				include_class_attrs = style.general.include_class_body_attrs,
+				include_instance_attrs = style.general.include_instance_attrs,
+				include_only_construct_instance_attrs = style.general.include_only_constructor_instance_attrs,
 			},
 		},
 	}

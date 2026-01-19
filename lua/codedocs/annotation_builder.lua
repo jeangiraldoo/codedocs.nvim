@@ -1,5 +1,4 @@
 local Debug_logger = require("codedocs.utils.debug_logger")
-local opts = require("codedocs.specs").get_opts()
 
 -- @param title string Section title
 -- @param title_gap boolean Whether to insert a blank line between the title and the first section item
@@ -35,9 +34,9 @@ end
 -- @return string|table item_line_content If `style.inline` is true, returns a single formatted line.
 -- Otherwise, returns a two-element array of formatted lines.
 local function _format_item(style, wrapped_name, wrapped_type)
-	local inline = style[opts.inline.val]
+	local inline = style.inline
 
-	local item_type_kw = style[opts.type_kw.val]
+	local item_type_kw = style.type_kw
 	local type_with_kw = _join_strings(item_type_kw, wrapped_type)
 
 	local type_content
@@ -46,19 +45,19 @@ local function _format_item(style, wrapped_name, wrapped_type)
 	else
 		local name_with_type_kw = _join_or(item_type_kw, wrapped_name, type_with_kw)
 		local type_with_name = _join_or(name_with_type_kw, wrapped_type, wrapped_name)
-		type_content = style[opts.is_type_below_name_first.val] and type_with_name or type_with_kw
+		type_content = style.is_type_below_name_first and type_with_name or type_with_kw
 	end
 
-	local name_content = _join_strings(style[opts.name_kw.val], wrapped_name)
+	local name_content = _join_strings(style.name_kw, wrapped_name)
 
 	local first, second
-	if style[opts.type_first.val] then
+	if style.type_first then
 		first, second = type_content, name_content
 	else
 		first, second = name_content, type_content
 	end
 
-	local indent = style[opts.indent.val] and "\t" or ""
+	local indent = style.indent and "\t" or ""
 
 	if not inline then return {
 		indent .. first,
@@ -93,27 +92,23 @@ end
 local function _build_annotation_content(item_data, style)
 	local annotation_content = {}
 
-	for _, section_name in ipairs(style.general[opts.section_order.val]) do
+	for _, section_name in ipairs(style.general.section_order) do
 		local section_items = item_data[section_name]
 		local section_style = style[section_name]
 
 		local section_content = {
 			unpack(
 				_build_section_title(
-					section_style[opts.title.val],
-					style.general[opts.section_title_gap.val],
-					style.general[opts.section_underline.val]
+					section_style.title,
+					style.general.section_title_gap,
+					style.general.section_underline
 				)
 			),
 		}
 		for _, item in ipairs(section_items) do
-			local include_type = section_style[opts.include_type.val]
-			local wrapped_name, wrapped_type = _wrap_item_data(
-				item,
-				include_type,
-				section_style[opts.name_wrapper.val],
-				section_style[opts.type_wrapper.val]
-			)
+			local include_type = section_style.include_type
+			local wrapped_name, wrapped_type =
+				_wrap_item_data(item, include_type, section_style.name_wrapper, section_style.type_wrapper)
 
 			local item_line_content = _format_item(section_style, wrapped_name, wrapped_type)
 			local is_item_line_content_multiline = type(item_line_content) == "table"
@@ -139,28 +134,28 @@ end
 -- @return table Final formatted annotation as a flat list of lines
 local function _format_annotation_content(sections_data, style, annotation_structure)
 	local general_opts = style.general
-	local line_start = style.general[opts.struct.val][2]
+	local line_start = style.general.structure[2]
 
 	local annotation_structure_copy = vim.deepcopy(annotation_structure)
 
-	if general_opts[opts.title_gap.val] then
-		local title_gap_pos = general_opts[opts.title_pos.val] + 1
+	if general_opts.title_gap then
+		local title_gap_pos = general_opts.title_pos + 1
 		table.insert(annotation_structure_copy, title_gap_pos, line_start)
 	end
 
-	local sections_order = general_opts[opts.section_order.val]
+	local sections_order = general_opts.section_order
 	for section_idx, section_name in ipairs(sections_order) do
 		local section_content = sections_data[section_name]
 
 		for line_idx, line in ipairs(section_content) do
 			table.insert(annotation_structure_copy, #annotation_structure_copy, line_start .. line)
 
-			if general_opts[opts.item_gap.val] and section_content[line_idx + 1] then
+			if general_opts.item_gap and section_content[line_idx + 1] then
 				table.insert(annotation_structure_copy, #annotation_structure_copy, line_start)
 			end
 		end
 
-		if general_opts[opts.section_gap.val] and sections_order[section_idx + 1] then
+		if general_opts.section_gap and sections_order[section_idx + 1] then
 			table.insert(annotation_structure_copy, #annotation_structure_copy, line_start)
 		end
 	end

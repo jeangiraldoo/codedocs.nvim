@@ -25,12 +25,12 @@ function M.insert_docs()
 	Debug_logger.log("Item data: ", items_data)
 	Debug_logger.log("Style: ", style)
 
-	local struct = style.general[opts.struct.val]
+	local struct = style.general.structure
 
 	local docs = (struct_name == "comment") and struct or docs_builder(style, items_data, struct)
 	Debug_logger.log("Annotation:", docs)
 
-	require("codedocs.buf_writer")(docs, pos, style.general[opts.direction.val], style.general[opts.title_pos.val])
+	require("codedocs.buf_writer")(docs, pos, style.general.direction, style.general.title_pos)
 end
 
 return M

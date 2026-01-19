@@ -1,6 +1,6 @@
 return {
 	general = {
-		struct = { "/**", " * ", " */" },
+		structure = { "/**", " * ", " */" },
 		direction = true,
 		title_pos = 2,
 		title_gap = true,

@@ -13,10 +13,10 @@ end
 
 local function test_case(struct_name, expected_annotation)
 	for style_name, expected_docs in pairs(expected_annotation) do
-		local _, data, style, _, opts = require("codedocs.specs.tree_processor")(vim.bo.filetype, style_name)
-		local struct = style.general[opts.struct.val]
+		local _, data, style, _, _ = require("codedocs.specs.tree_processor")(vim.bo.filetype, style_name)
 
-		local docs = (struct_name == "comment") and struct or annotation_builder(style, data, struct)
+		local docs = (struct_name == "comment") and style.general.structure
+			or annotation_builder(style, data, style.general.structure)
 		assert.are.same(expected_docs, docs)
 	end
 end
