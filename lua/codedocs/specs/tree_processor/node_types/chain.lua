@@ -1,4 +1,4 @@
-return function(base_node, node_processor)
+return function(base_node)
 	function base_node:process(settings)
 		local original_node = settings.node
 		local result_nodes = { original_node }
@@ -6,8 +6,8 @@ return function(base_node, node_processor)
 			result_nodes = vim.iter(result_nodes)
 				:map(function(node)
 					settings.node = node
-					if type(child) ~= "string" then child.children.nodes = node end
-					return node_processor(child, settings)
+					if child.type ~= "simple" then child.children.nodes = node end
+					return child:process(settings)
 				end)
 				:flatten()
 				:totable()

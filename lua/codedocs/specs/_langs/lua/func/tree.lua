@@ -2,15 +2,13 @@ return {
 	params = {
 		{
 			type = "simple",
-			children = {
-				[[
+			query = [[
 				(function_declaration
 					(parameters
 						(identifier) @item_name
 					)
 				)
 			]],
-			},
 		},
 	},
 	return_type = {

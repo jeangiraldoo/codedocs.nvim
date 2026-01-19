@@ -2,55 +2,51 @@ return {
 	params = {
 		{
 			type = "simple",
-			children = {
-				[[
-						[
-							(method_definition
-								(formal_parameters
-									(required_parameter
-										(identifier) @item_name
-										(type_annotation) @item_type
-									)
-								)
+			query = [[
+				[
+					(method_definition
+						(formal_parameters
+							(required_parameter
+								(identifier) @item_name
+								(type_annotation) @item_type
 							)
-							(function_declaration
-								(formal_parameters
-									(required_parameter
-										(identifier) @item_name
-										(type_annotation) @item_type
-									)
-								)
+						)
+					)
+					(function_declaration
+						(formal_parameters
+							(required_parameter
+								(identifier) @item_name
+								(type_annotation) @item_type
 							)
-						]
-					]],
-			},
+						)
+					)
+				]
+			]],
 		},
 	},
 	return_type = {
 		{
 			type = "simple",
-			children = {
-				[[
-						[
-							(method_definition
-								(type_annotation
-									[
-										(predefined_type) @item_type
-										(array_type) @item_type
-									]
-								)
-							)
-							(function_declaration
-								(type_annotation
-									[
-										(predefined_type) @item_type
-										(array_type) @item_type
-									]
-								)
-							)
-						]
-					]],
-			},
+			query = [[
+				[
+					(method_definition
+						(type_annotation
+							[
+								(predefined_type) @item_type
+								(array_type) @item_type
+							]
+						)
+					)
+					(function_declaration
+						(type_annotation
+							[
+								(predefined_type) @item_type
+								(array_type) @item_type
+							]
+						)
+					)
+				]
+			]],
 		},
 		{
 			type = "finder",

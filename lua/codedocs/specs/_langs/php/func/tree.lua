@@ -2,8 +2,7 @@ return {
 	params = {
 		{
 			type = "simple",
-			children = {
-				[[
+			query = [[
 				[
 					(method_declaration
 						(formal_parameters
@@ -33,7 +32,6 @@ return {
 					)
 				]
 			]],
-			},
 		},
 	},
 	return_type = {

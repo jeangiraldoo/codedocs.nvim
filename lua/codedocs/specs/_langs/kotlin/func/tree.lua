@@ -2,8 +2,7 @@ return {
 	params = {
 		{
 			type = "simple",
-			children = {
-				[[
+			query = [[
 				(function_declaration
 					(function_value_parameters
 						(parameter
@@ -13,19 +12,16 @@ return {
 					)
 				)
 			]],
-			},
 		},
 	},
 	return_type = {
 		{
 			type = "simple",
-			children = {
-				[[
+			query = [[
 				(function_declaration
 					(user_type) @item_type
 				)
 			]],
-			},
 		},
 	},
 }

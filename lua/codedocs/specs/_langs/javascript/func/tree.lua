@@ -2,22 +2,20 @@ return {
 	params = {
 		{
 			type = "simple",
-			children = {
-				[[
-						[
-							(method_definition
-								(formal_parameters
-									(identifier) @item_name
-								)
-							)
-							(function_declaration
-								(formal_parameters
-									(identifier) @item_name
-								)
-							)
-						]
-					]],
-			},
+			query = [[
+				[
+					(method_definition
+						(formal_parameters
+							(identifier) @item_name
+						)
+					)
+					(function_declaration
+						(formal_parameters
+							(identifier) @item_name
+						)
+					)
+				]
+			]],
 		},
 	},
 	return_type = {

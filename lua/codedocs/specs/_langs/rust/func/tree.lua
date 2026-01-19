@@ -2,8 +2,7 @@ return {
 	params = {
 		{
 			type = "simple",
-			children = {
-				[[
+			query = [[
 				(function_item
 					(parameters
 						(parameter
@@ -13,14 +12,12 @@ return {
 					)
 				)
 			]],
-			},
 		},
 	},
 	return_type = {
 		{
 			type = "simple",
-			children = {
-				[[
+			query = [[
 				(function_item
 					[
 						(type_identifier) @item_type
@@ -29,7 +26,6 @@ return {
 					]
 				)
 			]],
-			},
 		},
 		{
 			type = "finder",

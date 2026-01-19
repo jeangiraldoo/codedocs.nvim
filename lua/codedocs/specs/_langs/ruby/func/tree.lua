@@ -2,15 +2,13 @@ return {
 	params = {
 		{
 			type = "simple",
-			children = {
-				[[
+			query = [[
 				(method
 					(method_parameters
 						(identifier) @item_name
 					)
 				)
 			]],
-			},
 		},
 	},
 	return_type = {

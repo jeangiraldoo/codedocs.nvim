@@ -1,49 +1,74 @@
-local GET_METHODS = [[
-	(class_body
-		(method_definition
-			(statement_block) @target
+local GET_METHODS = {
+	type = "simple",
+	query = [[
+		(class_body
+			(method_definition
+				(statement_block) @target
+			)
 		)
-	)
-]]
+	]],
+}
 
-local GET_CONSTRUCTOR = [[
-	(class_body
-		(method_definition
-			(property_identifier) @name
-			(#eq? @name "constructor")
-		) @target
-	)
-]]
-
-local GET_ATTRS_IN_METHODS = [[
-	(assignment_expression
-		(member_expression
-			(property_identifier) @item_name
+local GET_CONSTRUCTOR = {
+	type = "simple",
+	query = [[
+		(class_body
+			(method_definition
+				(property_identifier) @name
+				(#eq? @name "constructor")
+			) @target
 		)
-	)
-]]
+	]],
+}
 
-local GET_CLASS_ATTRS = [[
-	(class_body
-		(field_definition
-			"static"
-			(property_identifier) @item_name
+local GET_ATTRS_IN_METHODS = {
+	type = "simple",
+	query = [[
+		(assignment_expression
+			(member_expression
+				(property_identifier) @item_name
+			)
 		)
-	)
-]]
+	]],
+}
 
-local REGEX = {
-	type = "regex",
-	data = {
-		pattern = "%f[%a]static%f[%A]",
-		mode = false,
-		query = [[(property_identifier) @item_name]],
-	},
+local GET_CLASS_ATTRS = {
+	type = "simple",
+	query = [[
+		(class_body
+			(field_definition
+				"static"
+				(property_identifier) @item_name
+			)
+		)
+	]],
 }
 
 local GET_BODY_INSTANCE_ATTRS = {
 	type = "chain",
-	children = { [[(class_body) @target]], [[(field_definition) @target]], REGEX },
+	children = {
+		{
+			type = "simple",
+			query = [[(class_body) @target]],
+		},
+		{
+			type = "simple",
+			query = [[(field_definition) @target]],
+		},
+		{
+			type = "regex",
+			data = {
+				pattern = "%f[%a]static%f[%A]",
+				mode = false,
+			},
+			children = {
+				{
+					type = "simple",
+					query = [[(property_identifier) @item_name]],
+				},
+			},
+		},
+	},
 }
 
 local METHOD_ATTR_FINDER = {

@@ -3,29 +3,30 @@ return {
 		{
 			type = "group",
 			children = {
-				[[
-				(function_declaration
-					(parameter_list
-						(parameter_declaration
-							(identifier) @item_name
-							(type_identifier) @item_type
+				{
+					type = "simple",
+					query = [[
+						(function_declaration
+							(parameter_list
+								(parameter_declaration
+									(identifier) @item_name
+									(type_identifier) @item_type
+								)
+							)
 						)
-					)
-				)
-			]],
+					]],
+				},
 			},
 		},
 	},
 	return_type = {
 		{
 			type = "simple",
-			children = {
-				[[
+			query = [[
 				(function_declaration
 					(type_identifier) @item_type
 				)
 			]],
-			},
 		},
 		{
 			type = "finder",

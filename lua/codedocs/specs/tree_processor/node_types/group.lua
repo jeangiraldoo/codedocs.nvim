@@ -1,6 +1,6 @@
-return function(base_node, node_processor)
+return function(base_node)
 	function base_node:process(settings)
-		local items = node_processor(self.children[1], settings)
+		local items = self.children[1]:process(settings)
 		local groups = {}
 		local name_group = {}
 		for _, item_data in pairs(items) do

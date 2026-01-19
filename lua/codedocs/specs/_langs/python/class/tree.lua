@@ -1,28 +1,37 @@
-local GET_METHODS = [[
-	(class_definition
-		body: (block
-			(function_definition) @target
+local GET_METHODS = {
+	type = "simple",
+	query = [[
+		(class_definition
+			body: (block
+				(function_definition) @target
+			)
 		)
-	)
-]]
+	]],
+}
 
-local GET_CONSTRUCTOR = [[
-	(class_definition
-		body: (block
-			(function_definition
-				name: (identifier) @name
-				(#eq? @name "__init__")
-			) @target
+local GET_CONSTRUCTOR = {
+	type = "simple",
+	query = [[
+		(class_definition
+			body: (block
+				(function_definition
+					name: (identifier) @name
+					(#eq? @name "__init__")
+				) @target
+			)
 		)
-	)
-]]
+	]],
+}
 
-local GET_METHOD_ATTRS = [[
-	(attribute
-		(identifier) @item_name
-		(#not-eq? @item_name "self")
-	)
-]]
+local GET_METHOD_ATTRS = {
+	type = "simple",
+	query = [[
+		(attribute
+			(identifier) @item_name
+			(#not-eq? @item_name "self")
+		)
+	]],
+}
 
 local FIND_METHOD_ATTRS = {
 	type = "finder",
@@ -63,8 +72,7 @@ return {
 					children = {
 						{
 							type = "simple",
-							children = {
-								[[
+							query = [[
 								(class_definition
 									body: (block
 										(expression_statement
@@ -75,7 +83,6 @@ return {
 									)
 								)
 							]],
-							},
 						},
 						INCLUDE_INSTANCE_ATTRS_OR_NOT,
 					},

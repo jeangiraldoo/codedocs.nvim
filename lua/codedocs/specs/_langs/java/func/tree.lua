@@ -2,8 +2,7 @@ return {
 	params = {
 		{
 			type = "simple",
-			children = {
-				[[
+			query = [[
 				(method_declaration
 					(formal_parameters
 						(formal_parameter
@@ -13,19 +12,16 @@ return {
 					)
 				)
 			]],
-			},
 		},
 	},
 	return_type = {
 		{
 			type = "simple",
-			children = {
-				[[
+			query = [[
 				(method_declaration
 					(type_identifier) @item_type
 				)
 			]],
-			},
 		},
 		{
 			type = "finder",
