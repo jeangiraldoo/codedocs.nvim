@@ -49,55 +49,31 @@ local function _get_struct_section_items(node, tree, settings)
 	return items
 end
 
-local function _build_node(node)
-	local new_children
-	if node.children then
-		new_children = {}
-		for i, child in ipairs(node.children) do
-			if type(child) == "table" then
-				new_children[i] = _build_node(child)
-			else
-				table.insert(new_children, child)
-			end
+local function _cache_lang_struct_tree(lang, struct_name)
+	local function _build_node(node)
+		local new_node = vim.tbl_extend("force", {}, node)
+		if new_node.children then new_node.children = vim.tbl_map(_build_node, node.children) end
+		return node_constructor(new_node)
+	end
+
+	CACHED_TREES[lang] = CACHED_TREES[lang] or {}
+	if not CACHED_TREES[lang][struct_name] then
+		local struct_trees_list = Spec:get_struct_tree(lang, struct_name)
+
+		local final_tree = {}
+		for struct_section_name, trees in pairs(struct_trees_list) do
+			final_tree[struct_section_name] = vim.tbl_map(_build_node, trees)
 		end
+		CACHED_TREES[lang][struct_name] = final_tree
 	end
-
-	local new_node = {}
-	for key, value in pairs(node) do
-		if key ~= "children" then new_node[key] = value end
-	end
-
-	if new_children then new_node.children = new_children end
-
-	return node_constructor(new_node)
 end
 
-local function _build_tree_list(list)
-	local final_tree = {}
-
-	for section_name, trees in pairs(list) do
-		local section_list = {}
-
-		for i, tree in ipairs(trees) do
-			section_list[i] = _build_node(tree)
-		end
-
-		final_tree[section_name] = section_list
-	end
-
-	return final_tree
-end
-
-local function _item_parser(node, struct_name, sections, parser_settings)
-	if not CACHED_TREES[vim.bo.filetype] then CACHED_TREES[vim.bo.filetype] = {} end
-	if not CACHED_TREES[vim.bo.filetype][struct_name] then
-		local raw_tree_list = Spec:get_struct_tree(vim.bo.filetype, struct_name)
-		CACHED_TREES[vim.bo.filetype][struct_name] = _build_tree_list(raw_tree_list)
-	end
+local function _item_parser(lang, node, struct_name, sections, parser_settings)
+	if not (CACHED_TREES[lang] and CACHED_TREES[lang][struct_name]) then _cache_lang_struct_tree(lang, struct_name) end
 
 	local items = {}
 	for _, section_name in pairs(sections) do
-		local section_tree = CACHED_TREES[vim.bo.filetype][struct_name][section_name]
+		local section_tree = CACHED_TREES[lang][struct_name][section_name]
 		items[section_name] = _get_struct_section_items(node, section_tree, parser_settings)
 	end
 	return items
@@ -117,7 +93,7 @@ return function(lang, style_name)
 		pos = node:range()
 		local parser_settings = _get_parser_settings(style, struct_name)
 		parser_settings["identifier_pos"] = Spec.get_lang_identifier_pos(lang)
-		data = _item_parser(node, struct_name, style.general.section_order, parser_settings)
+		data = _item_parser(lang, node, struct_name, style.general.section_order, parser_settings)
 	end
 
 	return struct_name, data, style, pos, opts
