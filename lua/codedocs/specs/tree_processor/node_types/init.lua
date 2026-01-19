@@ -1,25 +1,59 @@
 local current_dir = "codedocs.specs.tree_processor.node_types."
 
-local function get_parsed_item_name_last(capture_name, node_text, current_item, include_type)
-	if capture_name == "item_name" then return { name = node_text, type = current_item.type }, {} end
-	if capture_name == "item_type" and include_type then return nil, { name = current_item.name, type = node_text } end
-	return nil, current_item
+local function new_item_builder(include_type)
+	return {
+		current = nil,
+		items = {},
+
+		start_name = function(self, name) self.current = { name = name } end,
+		start_type = function(self, type) self.current = { type = type } end,
+
+		set_name = function(self, name)
+			if self.current then self.current.name = name end
+		end,
+		set_type = function(self, type_)
+			if self.current and include_type then self.current.type = type_ end
+		end,
+
+		emit = function(self)
+			if self.current then
+				table.insert(self.items, self.current)
+				self.current = nil
+			end
+		end,
+	}
 end
 
-local function get_parsed_item_name_first(capture_name, node_text, current_item, include_type)
+local function handle_capture(builder, capture_name, node_text, name_first)
 	if capture_name == "item_name" then
-		if current_item.name ~= nil then return current_item, { name = node_text } end
-		return nil, { name = node_text }
+		if name_first then
+			builder:emit()
+			builder:start_name(node_text)
+		else
+			builder:set_name(node_text)
+			builder:emit()
+		end
+		return
 	end
 
 	if capture_name == "item_type" then
-		if include_type then return { name = current_item.name, type = node_text }, {} end
-		return { name = current_item.name }, {}
+		if name_first then
+			if builder.current == nil then
+				-- Edge case: handles items with only a type (e.g. function return type) by emitting a nameless item
+				builder:start_type(node_text)
+			else
+				builder:set_type(node_text)
+			end
+			builder:emit()
+		else
+			builder:emit()
+			builder:start_type(node_text)
+		end
 	end
 end
 
 local function parse_query(node, include_type, filetype, query, identifier_pos)
-	if query == nil then return {} end
+	if not query then return {} end
 
 	local query_obj = vim.treesitter.query.parse(filetype, query)
 	local node_captures = query_obj:iter_captures(node, 0)
@@ -27,31 +61,24 @@ local function parse_query(node, include_type, filetype, query, identifier_pos)
 
 	if vim.tbl_contains(query_capture_tags, "target") then
 		local target_nodes = {}
-		for id, capture_node, _ in node_captures do
+		for id, capture_node in node_captures do
 			if query_capture_tags[id] == "target" then table.insert(target_nodes, capture_node) end
 		end
 		return target_nodes
 	end
 
-	local items = {}
-	local current_item = {}
-	for id, capture_node, _ in node_captures do
+	local builder = new_item_builder(include_type)
+	local name_first = identifier_pos
+
+	for id, capture_node in node_captures do
 		local capture_name = query_capture_tags[id]
 		local node_text = vim.treesitter.get_node_text(capture_node, 0)
 
-		local new_item, new_current
-		if identifier_pos then
-			new_item, new_current = get_parsed_item_name_first(capture_name, node_text, current_item, include_type)
-		else
-			new_item, new_current = get_parsed_item_name_last(capture_name, node_text, current_item, include_type)
-		end
-
-		if new_item then table.insert(items, new_item) end
-		current_item = new_current
+		handle_capture(builder, capture_name, node_text, name_first)
 	end
-	if next(current_item) ~= nil then table.insert(items, current_item) end
 
-	return items
+	builder:emit()
+	return builder.items
 end
 
 local function node_processor(query, context)
