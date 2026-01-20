@@ -16,14 +16,14 @@ To ensure a smooth review and merge process, please follow these guidelines when
 submitting a pull request:
 
 - If you're contributing to the codebase, check out the
-    [Technical documentation](./lua/codedocs/README.md) to better understand its
-    structure and components.
+  [Technical documentation](./lua/codedocs/README.md) to better understand its
+  structure and components.
 - **Follow Conventional Commits** – All commits and pull requests must follow the
-    [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard.
+  [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard.
 - **Formatting & Linting** – Both code and Markdown documentation must be properly
-    formatted and linted. GitHub Actions will automatically check this on each pull
-    request. You can find more details in the [Code](#code-guidelines) and
-    [Markdown Documentation](#markdown-docs-guidelines) sections.
+  formatted and linted. GitHub Actions will automatically check this on each pull
+  request. You can find more details in the [Code](#code-guidelines) and
+  [Markdown Documentation](#markdown-docs-guidelines) sections.
 
 ### Code Guidelines
 
@@ -37,22 +37,22 @@ to install the appropriate parsers for the languages you're working with.
 To maintain code consistency, follow these formatting and linting rules:
 
 - **Formatting**: Use [Stylua](https://github.com/JohnnyMorganz/StyLua) (or manually
-    follow its guidelines).
-    Formatting rules that override Stylua's defaults are defined in the
-    `.stylua.toml` file at the root of the repository.
+  follow its guidelines).
+  Formatting rules that override Stylua's defaults are defined in the
+  `.stylua.toml` file at the root of the repository.
 - **Linting**: Run [Luacheck](https://github.com/mpeterv/luacheck) to catch issues
-    like unused variables and syntax errors.
+  like unused variables and syntax errors.
 
 #### Best Practices
 
 - **No global variables** – If you must use a global variable, explain why in your
-    pull request.
+  pull request.
 - **Use snake_case** for module, directory, and variable names.
 
 ### Markdown Docs Guidelines
 
-You're welcome to contribute to documentation improvements, whether it's fixing a
-typo, updating outdated sections, or any other type of improvement.
+You're welcome to contribute to documentation improvements, whether it's fixing
+a typo, updating outdated sections, or any other type of improvement.
 
 To maintain consistency and avoid common issues (e.g., broken links), Codedocs uses
 [markdownlint](https://github.com/DavidAnson/markdownlint) for linting.

@@ -33,7 +33,7 @@ local function _cache_lang_struct_tree(lang, struct_name)
 
 	CACHED_TREES[lang] = CACHED_TREES[lang] or {}
 	if not CACHED_TREES[lang][struct_name] then
-		local struct_trees_list = Spec:get_struct_tree(lang, struct_name)
+		local struct_trees_list = Spec.get_struct_tree(lang, struct_name)
 
 		local final_tree = {}
 		for struct_section_name, trees in pairs(struct_trees_list) do
@@ -64,7 +64,7 @@ end
 return function(lang, style_name)
 	local struct_name, node = _determine_struc_under_cursor(Spec.get_struct_identifiers(lang))
 
-	local struct_style = style_name and Spec:get_struct_style(lang, struct_name, style_name)
+	local struct_style = style_name and Spec.get_struct_style(lang, struct_name, style_name)
 		or Spec:_get_struct_main_style(lang, struct_name)
 
 	local pos, data

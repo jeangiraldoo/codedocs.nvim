@@ -33,7 +33,7 @@ end
 
 function Spec.process_style_structs(structs, style_name, lang_name)
 	for struct_name, struct_sections in pairs(structs) do
-		local struct_style = Spec:get_struct_style(lang_name, struct_name, style_name)
+		local struct_style = Spec.get_struct_style(lang_name, struct_name, style_name)
 		for section_name, section_opts in pairs(struct_sections) do
 			local struct_section = struct_style[section_name]
 			if struct_section == nil then
@@ -63,7 +63,7 @@ function Spec.update_style(user_opts)
 
 		for style_name, structs in pairs(styles) do
 			for struct_name, struct_sections in pairs(structs) do
-				local struct_style = Spec:get_struct_style(lang_name, struct_name, style_name)
+				local struct_style = Spec.get_struct_style(lang_name, struct_name, style_name)
 				for section_name, section_opts in pairs(struct_sections) do
 					local struct_section = struct_style[section_name]
 					if struct_section == nil then
@@ -109,7 +109,7 @@ end)()
 
 function Spec.is_lang_supported(lang) return vim.list_contains(Spec.get_supported_langs(), lang) end
 
-function Spec:get_struct_style(lang, struct_name, style_name)
+function Spec.get_struct_style(lang, struct_name, style_name)
 	local function _validate_value(setting_name, setting_type, value)
 		if setting_type == "number" and value < 1 then
 			error(
@@ -172,7 +172,7 @@ function Spec.get_lang_identifier_pos(lang) return _get_lang_data(lang).identifi
 function Spec:_get_struct_main_style(lang, struct_name)
 	local default_style = _get_lang_data(lang).default_style
 
-	local main_style_path = self:get_struct_style(lang, struct_name, default_style)
+	local main_style_path = self.get_struct_style(lang, struct_name, default_style)
 	return main_style_path
 end
 
@@ -181,7 +181,7 @@ function Spec.get_struct_identifiers(lang)
 	return lang_data.struct_identifiers
 end
 
-function Spec:get_struct_tree(lang, struct_name)
+function Spec.get_struct_tree(lang, struct_name)
 	local struct_path = "codedocs.specs._langs." .. lang .. "." .. struct_name
 	local lang_path = struct_path .. ".tree"
 	local tree = require(lang_path)
