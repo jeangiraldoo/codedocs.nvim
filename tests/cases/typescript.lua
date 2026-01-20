@@ -11,7 +11,7 @@ return {
 				TSDoc = {
 					"/**",
 					" * ",
-					" * ",
+					" *",
 					" * @param a -",
 					" * @param b -",
 					" * @param c -",
@@ -24,7 +24,7 @@ return {
 	class = {
 		{
 			structure = {
-				"public class Foo {",
+				"class Foo {",
 				"	a: String;",
 				"}",
 			},
@@ -33,7 +33,7 @@ return {
 				TSDoc = {
 					"/**",
 					" * ",
-					" * ",
+					" *",
 					" * Properties:",
 					" */",
 				},

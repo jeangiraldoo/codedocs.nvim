@@ -1,58 +1,70 @@
-local GET_METHODS = [[
-	(class_body
-		(method_definition
-			(statement_block) @target
+local GET_METHODS = {
+	type = "simple",
+	query = [[
+		(class_body
+			(method_definition
+				(statement_block) @target
+			)
 		)
-	)
-]]
+	]],
+}
 
-local GET_CONSTRUCTOR = [[
-	(class_body
-		(method_definition
-			(property_identifier) @name
-			(#eq? @name "constructor")
-		) @target
-	)
-]]
-
-local GET_ATTRS_IN_METHODS = [[
-	(assignment_expression
-		(member_expression
-			(property_identifier) @item_name
+local GET_ATTRS_IN_METHODS = {
+	type = "simple",
+	query = [[
+		(assignment_expression
+			(member_expression
+				(property_identifier) @item_name
+			)
 		)
-	)
-]]
+	]],
+}
 
-local GET_CLASS_ATTRS = [[
-	(class_body
-		(public_field_definition
-			"static"
-			(property_identifier) @item_name
+local GET_CLASS_ATTRS = {
+	type = "simple",
+	query = [[
+		(class_body
+			(public_field_definition
+				"static"
+				(property_identifier) @item_name
+			)
 		)
-	)
-]]
+	]],
+}
 
 local REGEX = {
 	type = "regex",
 	data = {
 		pattern = "%f[%a]static%f[%A]",
 		mode = false,
-		query = [[(property_identifier) @item_name]],
+	},
+	children = {
+		{
+			type = "simple",
+			query = [[(property_identifier) @item_name]],
+		},
 	},
 }
 
 local GET_BODY_INSTANCE_ATTRS = {
 	type = "chain",
-	children = { [[(class_body) @target]], [[(public_field_definition) @target]], REGEX },
+	children = {
+		{
+			type = "simple",
+			query = [[(class_body) @target]],
+		},
+		{
+			type = "simple",
+			query = [[(public_field_definition) @target]],
+		},
+		REGEX,
+	},
 }
 
 local METHOD_ATTR_FINDER = {
 	type = "finder",
-	data = {
-		node_type = "assignment_expression",
-		mode = true,
-		def_val = "",
-	},
+	collect_found_nodes = true,
+	target_node_type = "assignment_expression",
 }
 
 local GET_ALL_METHOD_ATTRS = {
@@ -67,37 +79,62 @@ local GET_ALL_INSTANCE_ATTRS = {
 
 local GET_ONLY_CONSTRUCTOR_ATTRS = {
 	type = "chain",
-	children = { GET_CONSTRUCTOR, METHOD_ATTR_FINDER, GET_ATTRS_IN_METHODS },
-}
-
-local GET_INSTANCE_ATTRS = {
-	type = "boolean",
-	children = { GET_ONLY_CONSTRUCTOR_ATTRS, GET_ALL_INSTANCE_ATTRS },
+	children = {
+		{
+			type = "simple",
+			query = [[
+				(class_body
+					(method_definition
+						(property_identifier) @name
+						(#eq? @name "constructor")
+					) @target
+				)
+			]],
+		},
+		METHOD_ATTR_FINDER,
+		GET_ATTRS_IN_METHODS,
+	},
 }
 
 local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 	type = "boolean",
-	children = { GET_INSTANCE_ATTRS },
-}
-
-local ATTRS = {
-	{
-		type = "boolean",
-		children = {
-			{
-				type = "accumulator",
-				children = {
-					GET_CLASS_ATTRS,
-					INCLUDE_INSTANCE_ATTRS_OR_NOT,
-				},
+	condition = {
+		section = "attrs",
+		opt_key = "include_instance_attrs",
+	},
+	children = {
+		{
+			type = "boolean",
+			condition = {
+				section = "attrs",
+				opt_key = "include_only_constructor_instance_attrs",
 			},
-			INCLUDE_INSTANCE_ATTRS_OR_NOT,
+			children = {
+				GET_ONLY_CONSTRUCTOR_ATTRS,
+				GET_ALL_INSTANCE_ATTRS,
+			},
 		},
 	},
 }
 
 return {
-	sections = {
-		attrs = ATTRS,
+	attrs = {
+		{
+			type = "boolean",
+			condition = {
+				section = "attrs",
+				opt_key = "include_class_attrs",
+			},
+			children = {
+				{
+					type = "accumulator",
+					children = {
+						GET_CLASS_ATTRS,
+						INCLUDE_INSTANCE_ATTRS_OR_NOT,
+					},
+				},
+				INCLUDE_INSTANCE_ATTRS_OR_NOT,
+			},
+		},
 	},
 }

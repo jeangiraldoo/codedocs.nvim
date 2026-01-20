@@ -1,6 +1,47 @@
-local GET_ALL_INSTANCE_ATTRS = [[
-	(class_declaration
-		[
+local GET_ALL_INSTANCE_ATTRS = {
+	type = "simple",
+	query = [[
+		(class_declaration
+			[
+				(class_body
+					(property_declaration
+						(variable_declaration
+							(simple_identifier) @item_name
+							(user_type) @item_type
+						)
+					)
+				)
+				(primary_constructor
+					(class_parameter
+						(binding_pattern_kind)
+						(simple_identifier) @item_name
+						(user_type) @item_type
+					)
+				)
+			]
+		)
+	]],
+}
+
+local GET_CONSTRUCTOR_INSTANCE_ATTRS = {
+	type = "simple",
+	query = [[
+		(class_declaration
+			(primary_constructor
+				(class_parameter
+					(binding_pattern_kind)
+					(simple_identifier) @item_name
+					(user_type) @item_type
+				)
+			)
+		)
+	]],
+}
+
+local GET_COMPANION_OBJECT_ATTRS = {
+	type = "simple",
+	query = [[
+		(companion_object
 			(class_body
 				(property_declaration
 					(variable_declaration
@@ -9,71 +50,49 @@ local GET_ALL_INSTANCE_ATTRS = [[
 					)
 				)
 			)
-			(primary_constructor
-				(class_parameter
-					(binding_pattern_kind)
-					(simple_identifier) @item_name
-					(user_type) @item_type
-				)
-			)
-		]
-	)
-]]
-
-local GET_CONSTRUCTOR_INSTANCE_ATTRS = [[
-	(class_declaration
-		(primary_constructor
-			(class_parameter
-				(binding_pattern_kind)
-				(simple_identifier) @item_name
-				(user_type) @item_type
-			)
 		)
-	)
-]]
-
-local GET_COMPANION_OBJECT_ATTRS = [[
-	(companion_object
-		(class_body
-			(property_declaration
-				(variable_declaration
-					(simple_identifier) @item_name
-					(user_type) @item_type
-				)
-			)
-		)
-	)
-
-]]
-
-local GET_INSTANCE_ATTRS = {
-	type = "boolean",
-	children = { GET_CONSTRUCTOR_INSTANCE_ATTRS, GET_ALL_INSTANCE_ATTRS },
+	]],
 }
 
 local INCLUDE_INSTANCE_ATTRS = {
 	type = "boolean",
-	children = { GET_INSTANCE_ATTRS },
-}
-
-local ATTRS = {
-	{
-		type = "boolean",
-		children = {
-			{
-				type = "accumulator",
-				children = {
-					GET_COMPANION_OBJECT_ATTRS,
-					INCLUDE_INSTANCE_ATTRS,
-				},
+	condition = {
+		section = "attrs",
+		opt_key = "include_instance_attrs",
+	},
+	children = {
+		{
+			type = "boolean",
+			condition = {
+				section = "attrs",
+				opt_key = "include_only_constructor_instance_attrs",
 			},
-			INCLUDE_INSTANCE_ATTRS,
+			children = {
+				GET_CONSTRUCTOR_INSTANCE_ATTRS,
+				GET_ALL_INSTANCE_ATTRS,
+			},
 		},
 	},
 }
 
 return {
-	sections = {
-		attrs = ATTRS,
+	attrs = {
+		{
+			type = "boolean",
+			condition = {
+				section = "attrs",
+				opt_key = "include_class_attrs",
+			},
+			children = {
+				{
+					type = "accumulator",
+					children = {
+						GET_COMPANION_OBJECT_ATTRS,
+						INCLUDE_INSTANCE_ATTRS,
+					},
+				},
+				INCLUDE_INSTANCE_ATTRS,
+			},
+		},
 	},
 }

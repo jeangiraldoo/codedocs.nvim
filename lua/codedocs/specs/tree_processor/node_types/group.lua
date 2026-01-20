@@ -1,8 +1,6 @@
-local function get_node(data)
-	local template, node_processor = unpack(data)
-	local group_node = template:new()
-	function group_node:process(settings)
-		local items = node_processor(self.children[1], settings)
+return function(base_node)
+	function base_node:process(ts_node, struct_style)
+		local items = self.children[1]:process(ts_node, struct_style)
 		local groups = {}
 		local name_group = {}
 		for _, item_data in pairs(items) do
@@ -21,9 +19,5 @@ local function get_node(data)
 		if #groups == 0 then return items end
 		return groups
 	end
-	return group_node
+	return base_node
 end
-
-return {
-	get_node = get_node,
-}

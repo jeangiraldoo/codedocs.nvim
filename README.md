@@ -215,22 +215,13 @@ The `general` section supports the following options:
 | `direction`         | boolean             | Determines where the docstring is inserted relative to the structure. `true` for above, `false` for below.         |
 | `title_pos`         | number              | Specifies the cursor position after inserting the docstring, relative to its first line.                           |
 | `title_gap`         | boolean             | Determines whether there is an empty line between the docstring's title and its content.                           |
-| `section_gap`       | boolean             | Determines whether there is an empty line between sections.                                                        |
+| `title_gap_text`    | string              | String to be inserted in between the annotation title and the section below                                        |
+| `section_gap`       | boolean             | Determines whether a specific string is inserted betwee sections                                                   |
+| `section_gap_text`  | string              | String to be inserted in between 2 sections                                                                        |
 | `section_underline` | string              | Represents a character placed underneath each section title. Assign an empty string (`""`) to disable underlining. |
 | `section_title_gap` | boolean             | Determines whether there is an empty line between a section title and its content.                                 |
 | `item_gap`          | boolean             | Determines whether there is an empty line between items.                                                           |
 | `section_order`     | table               | Specifies the order in which sections are added to the docstring.                                                  |
-
-##### General section extension for classes
-
-Classes have general options that are exclusive to them, as they modify the
-other sections in ways that are only relevant to classes.
-
-| Option Name                             | Expected Value Type | Behavior                                                               |
-| --------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
-| `include_class_attrs`                   | boolean             | Include class-level attributes in the docstring                        |
-| `include_instance_attrs`                | boolean             | Include instance attributes in the docstring                           |
-| `include_only_construct_instance_attrs` | boolean             | Only include instance attributes from the constructor, or document all |
 
 ##### Items
 
@@ -256,6 +247,17 @@ except `general`):
 | `type_kw`      | string              | Prefix for item type                                                          |
 | `name_wrapper` | table               | Strings surrounding item name (must contain two). Use empty string to disable |
 | `type_wrapper` | table               | Strings surrounding item type (must contain two). Use empty string to disable |
+
+##### Attrs section extension for classes
+
+The following `attrs` options are exclusive to classes, as they only apply to
+class attributes:
+
+| Option Name                               | Expected Value Type | Behavior                                                               |
+| ----------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
+| `include_class_attrs`                     | boolean             | Include class-level attributes in the annotation                       |
+| `include_instance_attrs`                  | boolean             | Include instance attributes in the annotation                          |
+| `include_only_constructor_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
 
 ##### Customization example
 

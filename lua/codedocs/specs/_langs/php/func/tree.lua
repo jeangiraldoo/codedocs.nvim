@@ -1,8 +1,8 @@
-local PARAMS = {
-	{
-		type = "simple",
-		children = {
-			[[
+return {
+	params = {
+		{
+			type = "simple",
+			query = [[
 				[
 					(method_declaration
 						(formal_parameters
@@ -34,22 +34,11 @@ local PARAMS = {
 			]],
 		},
 	},
-}
-
-local RETURN_TYPE = {
-	{
-		type = "finder",
-		data = {
-			node_type = "return_statement",
-			mode = false,
-			def_val = "",
+	return_type = {
+		{
+			type = "finder",
+			collect_found_nodes = false,
+			target_node_type = "return_statement",
 		},
-	},
-}
-
-return {
-	sections = {
-		params = PARAMS,
-		return_type = RETURN_TYPE,
 	},
 }

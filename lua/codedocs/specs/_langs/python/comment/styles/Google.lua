@@ -1,6 +1,6 @@
 return {
 	general = {
-		struct = { "# " },
+		structure = { "# " },
 		title_pos = 1,
 		direction = true,
 	},

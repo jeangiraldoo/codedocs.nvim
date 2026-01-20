@@ -10,7 +10,7 @@ return {
 			expected_annotation = {
 				YARD = {
 					"# ",
-					"# ",
+					"#",
 					"# @param a []",
 					"# @param b []",
 					"# @param c []",

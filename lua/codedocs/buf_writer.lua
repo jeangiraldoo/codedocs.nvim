@@ -20,7 +20,7 @@ local function compute_line_indent(line_row)
 end
 
 local function add_indent_to_docs(annotation, base_indent, insert_above)
-	local extra_indent = ""
+	local extra_indent
 	if insert_above then
 		extra_indent = ""
 	else -- Languages where annotations appear below the structure definition require an extra indentation level

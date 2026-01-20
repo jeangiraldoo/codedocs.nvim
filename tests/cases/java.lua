@@ -11,7 +11,7 @@ return {
 				JavaDoc = {
 					"/**",
 					" * ",
-					" * ",
+					" *",
 					" * @param a",
 					" * @param b",
 					" * @param c",
@@ -33,7 +33,7 @@ return {
 				JavaDoc = {
 					"/**",
 					" * ",
-					" * ",
+					" *",
 					" * Attributes:",
 					" */",
 				},

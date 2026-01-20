@@ -1,33 +1,8 @@
-local RETURN_TYPE = {
-	{
-		type = "simple",
-		children = {
-			[[
-				(function_item
-					[
-						(type_identifier) @item_type
-						(primitive_type) @item_type
-						(generic_type) @item_type
-					]
-				)
-			]],
-		},
-	},
-	{
-		type = "finder",
-		data = {
-			node_type = "return_expression",
-			mode = false,
-			def_val = "",
-		},
-	},
-}
-
-local PARAMS = {
-	{
-		type = "simple",
-		children = {
-			[[
+return {
+	params = {
+		{
+			type = "simple",
+			query = [[
 				(function_item
 					(parameters
 						(parameter
@@ -39,11 +14,23 @@ local PARAMS = {
 			]],
 		},
 	},
-}
-
-return {
-	sections = {
-		params = PARAMS,
-		return_type = RETURN_TYPE,
+	return_type = {
+		{
+			type = "simple",
+			query = [[
+				(function_item
+					[
+						(type_identifier) @item_type
+						(primitive_type) @item_type
+						(generic_type) @item_type
+					]
+				)
+			]],
+		},
+		{
+			type = "finder",
+			collect_found_nodes = false,
+			target_node_type = "return_expression",
+		},
 	},
 }

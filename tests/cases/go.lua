@@ -10,12 +10,12 @@ return {
 			expected_annotation = {
 				Godoc = {
 					"// ",
-					"// ",
+					"//",
 					"// Parameters:",
 					"// - a:",
 					"// - b:",
 					"// - c:",
-					"// ",
+					"//",
 					"// Returns:",
 					"// ",
 				},

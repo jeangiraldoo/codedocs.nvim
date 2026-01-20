@@ -1,8 +1,8 @@
-local PARAMS = {
-	{
-		type = "simple",
-		children = {
-			[[
+return {
+	params = {
+		{
+			type = "simple",
+			query = [[
 				(function_declaration
 					(function_value_parameters
 						(parameter
@@ -14,24 +14,14 @@ local PARAMS = {
 			]],
 		},
 	},
-}
-
-local RETURN_TYPE = {
-	{
-		type = "simple",
-		children = {
-			[[
+	return_type = {
+		{
+			type = "simple",
+			query = [[
 				(function_declaration
 					(user_type) @item_type
 				)
 			]],
 		},
-	},
-}
-
-return {
-	sections = {
-		params = PARAMS,
-		return_type = RETURN_TYPE,
 	},
 }

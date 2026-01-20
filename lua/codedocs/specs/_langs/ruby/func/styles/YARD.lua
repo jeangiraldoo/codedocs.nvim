@@ -1,10 +1,12 @@
 return {
 	general = {
-		struct = { "# ", "# " },
+		structure = { "# ", "# " },
 		direction = true,
 		title_pos = 1,
 		title_gap = true,
+		title_gap_text = "#",
 		section_gap = false,
+		section_gap_text = "#",
 		section_underline = "",
 		section_title_gap = false,
 		item_gap = false,

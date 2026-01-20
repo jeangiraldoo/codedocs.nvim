@@ -1,69 +1,94 @@
-local GET_METHODS = [[
-	(class_definition
-		body: (block
-			(function_definition) @target
+local GET_METHOD_ATTRS = {
+	type = "simple",
+	query = [[
+		(attribute
+			(identifier) @item_name
+			(#not-eq? @item_name "self")
 		)
-	)
-]]
-
-local GET_CONSTRUCTOR = [[
-	(class_definition
-		body: (block
-			(function_definition
-				name: (identifier) @name
-				(#eq? @name "__init__")
-			) @target
-		)
-	)
-]]
-
-local GET_METHOD_ATTRS = [[
-	(attribute
-		(identifier) @item_name
-		(#not-eq? @item_name "self")
-	)
-]]
+	]],
+}
 
 local FIND_METHOD_ATTRS = {
 	type = "finder",
-	data = {
-		node_type = "attribute",
-		mode = true,
-		def_val = "",
-	},
+	collect_found_nodes = true,
+	target_node_type = "attribute",
 }
 
 local GET_ALL_ATTRS = {
 	type = "chain",
-	children = { GET_METHODS, FIND_METHOD_ATTRS, GET_METHOD_ATTRS },
+	children = {
+		{
+			type = "simple",
+			query = [[
+				class_definition
+					body: (block
+						(function_definition) @target
+					)
+				)
+			]],
+		},
+		FIND_METHOD_ATTRS,
+		GET_METHOD_ATTRS,
+	},
 }
 
 local GET_ONLY_CONSTRUCTOR_ATTRS = {
 	type = "chain",
-	children = { GET_CONSTRUCTOR, FIND_METHOD_ATTRS, GET_METHOD_ATTRS },
-}
-
-local GET_INSTANCE_ATTRS = {
-	type = "boolean",
-	children = { GET_ONLY_CONSTRUCTOR_ATTRS, GET_ALL_ATTRS },
+	children = {
+		{
+			type = "simple",
+			query = [[
+				(class_definition
+					body: (block
+						(function_definition
+							name: (identifier) @name
+							(#eq? @name "__init__")
+						) @target
+					)
+				)
+			]],
+		},
+		FIND_METHOD_ATTRS,
+		GET_METHOD_ATTRS,
+	},
 }
 
 local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 	type = "boolean",
-	children = { GET_INSTANCE_ATTRS },
+	condition = {
+		section = "attrs",
+		opt_key = "include_instance_attrs",
+	},
+	children = {
+		{
+			type = "boolean",
+			condition = {
+				section = "attrs",
+				opt_key = "include_only_constructor_instance_attrs",
+			},
+			children = {
+				GET_ONLY_CONSTRUCTOR_ATTRS,
+				GET_ALL_ATTRS,
+			},
+		},
+	},
 }
 
-local ATTRS = {
-	{
-		type = "boolean",
-		children = {
-			{
-				type = "accumulator",
-				children = {
-					{
-						type = "simple",
-						children = {
-							[[
+return {
+	attrs = {
+		{
+			type = "boolean",
+			condition = {
+				section = "attrs",
+				opt_key = "include_class_attrs",
+			},
+			children = {
+				{
+					type = "accumulator",
+					children = {
+						{
+							type = "simple",
+							query = [[
 								(class_definition
 									body: (block
 										(expression_statement
@@ -75,17 +100,11 @@ local ATTRS = {
 								)
 							]],
 						},
+						INCLUDE_INSTANCE_ATTRS_OR_NOT,
 					},
-					INCLUDE_INSTANCE_ATTRS_OR_NOT,
 				},
+				INCLUDE_INSTANCE_ATTRS_OR_NOT,
 			},
-			INCLUDE_INSTANCE_ATTRS_OR_NOT,
 		},
-	},
-}
-
-return {
-	sections = {
-		attrs = ATTRS,
 	},
 }
