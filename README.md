@@ -223,17 +223,6 @@ The `general` section supports the following options:
 | `item_gap`          | boolean             | Determines whether there is an empty line between items.                                                           |
 | `section_order`     | table               | Specifies the order in which sections are added to the docstring.                                                  |
 
-##### General section extension for classes
-
-Classes have general options that are exclusive to them, as they modify the
-other sections in ways that are only relevant to classes.
-
-| Option Name                             | Expected Value Type | Behavior                                                               |
-| --------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
-| `include_class_attrs`                   | boolean             | Include class-level attributes in the docstring                        |
-| `include_instance_attrs`                | boolean             | Include instance attributes in the docstring                           |
-| `include_only_construct_instance_attrs` | boolean             | Only include instance attributes from the constructor, or document all |
-
 ##### Items
 
 An `item` is a part of a structure, having a `name` that identifies it, and a
@@ -258,6 +247,17 @@ except `general`):
 | `type_kw`      | string              | Prefix for item type                                                          |
 | `name_wrapper` | table               | Strings surrounding item name (must contain two). Use empty string to disable |
 | `type_wrapper` | table               | Strings surrounding item type (must contain two). Use empty string to disable |
+
+##### Attrs section extension for classes
+
+The following `attrs` options are exclusive to classes, as they only apply to
+class attributes:
+
+| Option Name                             | Expected Value Type | Behavior                                                               |
+| --------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
+| `include_class_attrs`                   | boolean             | Include class-level attributes in the annotation                       |
+| `include_instance_attrs`                | boolean             | Include instance attributes in the annotation                          |
+| `include_only_construct_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
 
 ##### Customization example
 

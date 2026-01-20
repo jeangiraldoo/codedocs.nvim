@@ -28,11 +28,11 @@ local item = {
 	is_type_below_name_first = "boolean", -- TODO: Verify logic and update description
 }
 
-local class_general = {
-	include_class_body_attrs = "boolean", -- Includes class attributes if true
+local class_attr_section_items = {
+	include_class_attrs = "boolean", -- Includes class attributes if true
 	include_instance_attrs = "boolean", -- Includes instance attributes if true
 	include_only_constructor_instance_attrs = "boolean", -- Includes only constructor-defined attributes if true
 }
 
-local opts = vim.tbl_extend("error", general, class_general, item)
+local opts = vim.tbl_extend("error", general, class_attr_section_items, item)
 return opts

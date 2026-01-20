@@ -28,9 +28,10 @@ local function _get_parser_settings(style, struct_name)
 		func = {},
 		class = {
 			boolean = {
-				include_class_attrs = style.general.include_class_body_attrs,
-				include_instance_attrs = style.general.include_instance_attrs,
-				include_only_construct_instance_attrs = style.general.include_only_constructor_instance_attrs,
+				include_class_attrs = style.attrs and style.attrs.include_class_attrs,
+				include_instance_attrs = style.attrs and style.attrs.include_instance_attrs,
+				include_only_construct_instance_attrs = style.attrs
+					and style.attrs.include_only_constructor_instance_attrs,
 			},
 		},
 	}

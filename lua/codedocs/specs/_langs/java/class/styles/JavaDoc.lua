@@ -11,13 +11,12 @@ return {
 		section_title_gap = false,
 		item_gap = false,
 		section_order = { "attrs" },
-		include_class_body_attrs = false,
-		include_instance_attrs = false,
-		-- Java attrs can only be declared in the class body
-		include_only_constructor_instance_attrs = nil,
 	},
 	attrs = {
 		title = "Attributes:",
+		include_class_attrs = false,
+		include_instance_attrs = false,
+		include_only_constructor_instance_attrs = nil, -- Java attrs can only be declared in the class body
 		inline = true,
 		indent = false,
 		include_type = false,
