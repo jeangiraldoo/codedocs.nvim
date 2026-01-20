@@ -1,7 +1,7 @@
 return function(base_node)
-	function base_node:process(settings)
+	function base_node:process(ts_node, settings)
 		local results = vim.iter(self.children)
-			:map(function(query) return query:process(settings) end)
+			:map(function(child) return child:process(ts_node, settings) end)
 			:flatten()
 			:totable()
 		return results

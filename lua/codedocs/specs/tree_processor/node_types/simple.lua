@@ -51,16 +51,15 @@ local function _handle_capture(builder, capture_name, node_text, name_first)
 end
 
 return function(base_node)
-	function base_node:process(context)
-		local node = context.node
-		local identifier_pos = context.identifier_pos
+	function base_node:process(ts_node)
 		local filetype = vim.bo.filetype
+		local identifier_pos = require("codedocs.specs").get_lang_identifier_pos(filetype)
 		local query = self.query
 
 		if not query then return {} end
 
 		local query_obj = vim.treesitter.query.parse(filetype, query)
-		local node_captures = query_obj:iter_captures(node, 0)
+		local node_captures = query_obj:iter_captures(ts_node, 0)
 		local query_capture_tags = query_obj.captures
 
 		if vim.tbl_contains(query_capture_tags, "target") then

@@ -62,7 +62,6 @@ end
 local function _item_parser(lang, node, struct_name, sections, parser_settings)
 	if not (CACHED_TREES[lang] and CACHED_TREES[lang][struct_name]) then _cache_lang_struct_tree(lang, struct_name) end
 
-	parser_settings["node"] = node
 	local struct_cache = CACHED_TREES[lang][struct_name]
 
 	local items = {}
@@ -70,7 +69,7 @@ local function _item_parser(lang, node, struct_name, sections, parser_settings)
 		local section_tree = struct_cache[section_name]
 
 		items[section_name] = vim.iter(section_tree)
-			:map(function(tree_node) return tree_node:process(parser_settings) end)
+			:map(function(tree_node) return tree_node:process(node, parser_settings) end)
 			:find(
 				function(section_items_list) return section_items_list and (not vim.tbl_isempty(section_items_list)) end
 			) or {}
@@ -91,7 +90,6 @@ return function(lang, style_name)
 	else
 		pos = node:range()
 		local parser_settings = _get_parser_settings(style, struct_name)
-		parser_settings["identifier_pos"] = Spec.get_lang_identifier_pos(lang)
 		data = _item_parser(lang, node, struct_name, style.general.section_order, parser_settings)
 	end
 
