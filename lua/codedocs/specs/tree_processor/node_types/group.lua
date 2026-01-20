@@ -1,6 +1,6 @@
 return function(base_node)
-	function base_node:process(ts_node, settings)
-		local items = self.children[1]:process(ts_node, settings)
+	function base_node:process(ts_node, struct_style)
+		local items = self.children[1]:process(ts_node, struct_style)
 		local groups = {}
 		local name_group = {}
 		for _, item_data in pairs(items) do

@@ -23,21 +23,6 @@ local function _determine_struc_under_cursor(struct_identifiers)
 	return "comment", node_at_cursor
 end
 
-local function _get_parser_settings(style, struct_name)
-	local settings = {
-		func = {},
-		class = {
-			boolean = {
-				include_class_attrs = style.attrs and style.attrs.include_class_attrs,
-				include_instance_attrs = style.attrs and style.attrs.include_instance_attrs,
-				include_only_constructor_instance_attrs = style.attrs
-					and style.attrs.include_only_constructor_instance_attrs,
-			},
-		},
-	}
-	return settings[struct_name]
-end
-
 local function _cache_lang_struct_tree(lang, struct_name)
 	local function _build_node(node)
 		local new_node = vim.tbl_extend("force", {}, node)
@@ -59,17 +44,17 @@ local function _cache_lang_struct_tree(lang, struct_name)
 	end
 end
 
-local function _item_parser(lang, node, struct_name, sections, parser_settings)
+local function _item_parser(lang, node, struct_name, struct_style)
 	if not (CACHED_TREES[lang] and CACHED_TREES[lang][struct_name]) then _cache_lang_struct_tree(lang, struct_name) end
 
 	local struct_cache = CACHED_TREES[lang][struct_name]
 
 	local items = {}
-	for _, section_name in pairs(sections) do
+	for _, section_name in pairs(struct_style.general.section_order) do
 		local section_tree = struct_cache[section_name]
 
 		items[section_name] = vim.iter(section_tree)
-			:map(function(tree_node) return tree_node:process(node, parser_settings) end)
+			:map(function(tree_node) return tree_node:process(node, struct_style) end)
 			:find(
 				function(section_items_list) return section_items_list and (not vim.tbl_isempty(section_items_list)) end
 			) or {}
@@ -80,7 +65,7 @@ end
 return function(lang, style_name)
 	local struct_name, node = _determine_struc_under_cursor(Spec.get_struct_identifiers(lang))
 
-	local style = style_name and Spec:get_struct_style(lang, struct_name, style_name)
+	local struct_style = style_name and Spec:get_struct_style(lang, struct_name, style_name)
 		or Spec:_get_struct_main_style(lang, struct_name)
 
 	local pos, data
@@ -89,9 +74,8 @@ return function(lang, style_name)
 		data = {}
 	else
 		pos = node:range()
-		local parser_settings = _get_parser_settings(style, struct_name)
-		data = _item_parser(lang, node, struct_name, style.general.section_order, parser_settings)
+		data = _item_parser(lang, node, struct_name, struct_style)
 	end
 
-	return struct_name, data, style, pos, opts
+	return struct_name, data, struct_style, pos, opts
 end

@@ -56,11 +56,17 @@ local GET_COMPANION_OBJECT_ATTRS = {
 
 local INCLUDE_INSTANCE_ATTRS = {
 	type = "boolean",
-	condition_opt_key = "include_instance_attrs",
+	condition = {
+		section = "attrs",
+		opt_key = "include_instance_attrs",
+	},
 	children = {
 		{
 			type = "boolean",
-			condition_opt_key = "include_only_constructor_instance_attrs",
+			condition = {
+				section = "attrs",
+				opt_key = "include_only_constructor_instance_attrs",
+			},
 			children = {
 				GET_CONSTRUCTOR_INSTANCE_ATTRS,
 				GET_ALL_INSTANCE_ATTRS,
@@ -73,7 +79,10 @@ return {
 	attrs = {
 		{
 			type = "boolean",
-			condition_opt_key = "include_class_attrs",
+			condition = {
+				section = "attrs",
+				opt_key = "include_class_attrs",
+			},
 			children = {
 				{
 					type = "accumulator",
