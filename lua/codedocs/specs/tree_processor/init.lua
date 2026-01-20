@@ -1,5 +1,4 @@
 local Spec = require("codedocs.specs")
-local opts = Spec.get_opts()
 
 local CACHED_TREES = {}
 
@@ -77,5 +76,5 @@ return function(lang, style_name)
 		data = _item_parser(lang, node, struct_name, struct_style)
 	end
 
-	return struct_name, data, struct_style, pos, opts
+	return struct_name, data, struct_style, pos
 end

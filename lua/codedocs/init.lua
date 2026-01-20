@@ -20,7 +20,7 @@ function M.insert_docs()
 		return
 	end
 
-	local struct_name, items_data, style, pos, opts = require("codedocs.specs.tree_processor")(lang)
+	local struct_name, items_data, style, pos = require("codedocs.specs.tree_processor")(lang)
 	Debug_logger.log("Structure name: " .. struct_name)
 	Debug_logger.log("Item data: ", items_data)
 	Debug_logger.log("Style: ", style)
