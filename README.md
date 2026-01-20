@@ -253,11 +253,11 @@ except `general`):
 The following `attrs` options are exclusive to classes, as they only apply to
 class attributes:
 
-| Option Name                             | Expected Value Type | Behavior                                                               |
-| --------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
-| `include_class_attrs`                   | boolean             | Include class-level attributes in the annotation                       |
-| `include_instance_attrs`                | boolean             | Include instance attributes in the annotation                          |
-| `include_only_construct_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
+| Option Name                               | Expected Value Type | Behavior                                                               |
+| ----------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
+| `include_class_attrs`                     | boolean             | Include class-level attributes in the annotation                       |
+| `include_instance_attrs`                  | boolean             | Include instance attributes in the annotation                          |
+| `include_only_constructor_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
 
 ##### Customization example
 

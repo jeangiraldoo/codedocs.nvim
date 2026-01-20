@@ -102,7 +102,7 @@ local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 	children = {
 		{
 			type = "boolean",
-			condition_opt_key = "include_only_construct_instance_attrs",
+			condition_opt_key = "include_only_constructor_instance_attrs",
 			children = {
 				GET_ONLY_CONSTRUCTOR_ATTRS,
 				GET_ALL_INSTANCE_ATTRS,
