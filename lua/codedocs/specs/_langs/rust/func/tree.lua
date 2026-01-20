@@ -29,11 +29,8 @@ return {
 		},
 		{
 			type = "finder",
-			data = {
-				node_type = "return_expression",
-				mode = false,
-				def_val = "",
-			},
+			collect_found_nodes = false,
+			target_node_type = "return_expression",
 		},
 	},
 }

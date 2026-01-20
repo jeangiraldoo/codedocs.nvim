@@ -1,35 +1,35 @@
-local function iterate_child_nodes(node, node_type, result_table, collect)
-	result_table = result_table or {}
-
-	if collect == false and node:type() == node_type then
-		return table.insert(result_table, true)
-	elseif collect == true and node:type() == node_type then
-		table.insert(result_table, node)
+local function _find_descendant_of_type(node, target_type)
+	for child in node:iter_children() do
+		if child:type() == target_type then return true end
+		if _find_descendant_of_type(child, target_type) then return true end
 	end
+	return false
+end
+
+local function _collect_descendants_of_type(node, target_type, descendant_collection)
+	descendant_collection = descendant_collection or {}
 
 	for child in node:iter_children() do
-		iterate_child_nodes(child, node_type, result_table, collect)
+		if child:type() == target_type then table.insert(descendant_collection, child) end
+		_collect_descendants_of_type(child, target_type, descendant_collection)
 	end
+
+	return descendant_collection
 end
 
 return function(base_node)
 	function base_node:process(settings)
-		local node = settings.node
-		local node_type = self.data.node_type
-		local def_val = self.data.def_val
-		local mode = self.data.mode
-		local child_data = {}
-		iterate_child_nodes(node, node_type, child_data, mode)
-		local final_data = {}
-		if mode then
-			final_data = child_data
-			return final_data
-		else
-			if child_data[1] then
-				final_data["type"] = def_val
-				return { final_data }
-			end
+		if self.collect_found_nodes then return _collect_descendants_of_type(settings.node, self.target_node_type) end
+
+		if _find_descendant_of_type(settings.node, self.target_node_type) then
+			return {
+				{
+					name = self.item_name_value_if_found or "",
+					type = self.item_type_value_if_found or "",
+				},
+			}
 		end
 	end
+
 	return base_node
 end

@@ -63,11 +63,8 @@ local GET_BODY_INSTANCE_ATTRS = {
 
 local METHOD_ATTR_FINDER = {
 	type = "finder",
-	data = {
-		node_type = "assignment_expression",
-		mode = true,
-		def_val = "",
-	},
+	collect_found_nodes = true,
+	target_node_type = "assignment_expression",
 }
 
 local GET_ALL_METHOD_ATTRS = {

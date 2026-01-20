@@ -14,11 +14,8 @@ return {
 	return_type = {
 		{
 			type = "finder",
-			data = {
-				node_type = "return_statement",
-				mode = false,
-				def_val = "",
-			},
+			collect_found_nodes = false,
+			target_node_type = "return_statement",
 		},
 	},
 }

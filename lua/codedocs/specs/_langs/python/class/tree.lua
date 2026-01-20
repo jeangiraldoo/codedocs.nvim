@@ -10,11 +10,8 @@ local GET_METHOD_ATTRS = {
 
 local FIND_METHOD_ATTRS = {
 	type = "finder",
-	data = {
-		node_type = "attribute",
-		mode = true,
-		def_val = "",
-	},
+	collect_found_nodes = true,
+	target_node_type = "attribute",
 }
 
 local GET_ALL_ATTRS = {
