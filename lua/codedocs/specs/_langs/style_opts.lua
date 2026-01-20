@@ -8,6 +8,7 @@ local general = {
 	title_pos = "number", -- Title line offset within the docstring
 	title_gap = "boolean", -- Adds a blank line after the title if there's a section
 	section_gap = "boolean", -- Adds spacing between sections if more than one exists
+	section_gap_text = "string", -- String to be inserted in between 2 sections
 	section_underline = "string", -- Character used to underline section titles
 	section_title_gap = "boolean", -- Adds spacing after the title if there's an item
 	item_gap = "boolean", -- Adds spacing between items if multiple exist

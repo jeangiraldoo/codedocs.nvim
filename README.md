@@ -215,7 +215,9 @@ The `general` section supports the following options:
 | `direction`         | boolean             | Determines where the docstring is inserted relative to the structure. `true` for above, `false` for below.         |
 | `title_pos`         | number              | Specifies the cursor position after inserting the docstring, relative to its first line.                           |
 | `title_gap`         | boolean             | Determines whether there is an empty line between the docstring's title and its content.                           |
-| `section_gap`       | boolean             | Determines whether there is an empty line between sections.                                                        |
+| `title_gap_text`    | string              | String to be inserted in between the annotation title and the section below                                        |
+| `section_gap`       | boolean             | Determines whether a specific string is inserted betwee sections                                                   |
+| `section_gap_text`  | string              | String to be inserted in between 2 sections                                                                        |
 | `section_underline` | string              | Represents a character placed underneath each section title. Assign an empty string (`""`) to disable underlining. |
 | `section_title_gap` | boolean             | Determines whether there is an empty line between a section title and its content.                                 |
 | `item_gap`          | boolean             | Determines whether there is an empty line between items.                                                           |

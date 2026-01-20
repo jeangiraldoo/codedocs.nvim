@@ -140,7 +140,7 @@ local function _format_annotation_content(sections_data, style, annotation_struc
 
 	if general_opts.title_gap then
 		local title_gap_pos = general_opts.title_pos + 1
-		table.insert(annotation_structure_copy, title_gap_pos, line_start)
+		table.insert(annotation_structure_copy, title_gap_pos, style.general.title_gap_text)
 	end
 
 	local sections_order = general_opts.section_order
@@ -156,7 +156,7 @@ local function _format_annotation_content(sections_data, style, annotation_struc
 		end
 
 		if general_opts.section_gap and sections_order[section_idx + 1] then
-			table.insert(annotation_structure_copy, #annotation_structure_copy, line_start)
+			table.insert(annotation_structure_copy, #annotation_structure_copy, style.general.section_gap_text)
 		end
 	end
 

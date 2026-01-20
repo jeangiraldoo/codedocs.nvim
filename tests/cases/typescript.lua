@@ -11,7 +11,7 @@ return {
 				TSDoc = {
 					"/**",
 					" * ",
-					" * ",
+					" *",
 					" * @param a -",
 					" * @param b -",
 					" * @param c -",
@@ -33,7 +33,7 @@ return {
 				TSDoc = {
 					"/**",
 					" * ",
-					" * ",
+					" *",
 					" * Properties:",
 					" */",
 				},
