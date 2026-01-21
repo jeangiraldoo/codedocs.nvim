@@ -5,7 +5,6 @@ labels:
     - "bug"
 projects:
     - "jeangiraldoo/4"
-type: bug
 body:
     - type: markdown
       attributes:
