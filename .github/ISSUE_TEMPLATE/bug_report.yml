@@ -1,0 +1,70 @@
+name: 🐛 Bug Report
+description: Report a problem with Codedocs
+title: "bug: "
+labels:
+    - "bug"
+projects:
+    - "jeangiraldoo/4"
+type: bug
+body:
+    - type: markdown
+      attributes:
+          value: Thanks in advance for helping Codedocs by taking the time to fill out this bug report!
+
+    - type: textarea
+      attributes:
+          label: Describe the bug
+          description: What happened, and what did you expect to happen?
+      validations:
+          required: true
+
+    - type: input
+      attributes:
+          label: "Operating system/version"
+          placeholder: "Windows 11, macOS 14.2, Ubuntu 22.04"
+      validations:
+          required: true
+
+    - type: textarea
+      attributes:
+          label: Neovim version
+          description: Paste the full output of `nvim --version`
+          render: shell
+      validations:
+          required: true
+
+    - type: textarea
+      attributes:
+          label: Plugin configuration
+          description: Paste the plugin's configuration you are using (minimal if possible)
+          placeholder: |
+              require("codedocs").setup({
+              })
+          render: lua
+      validations:
+          required: false
+
+    - type: textarea
+      id: logs
+      attributes:
+          label: Relevant log output
+          description: Paste any error messages, stack traces, or `:messages` output
+          render: shell
+      validations:
+          required: false
+
+    - type: textarea
+      attributes:
+          label: Steps to reproduce
+          description: |
+              Provide minimal steps to reproduce the issue.
+              If it happens on startup, say so explicitly.
+      validations:
+          required: true
+
+    - type: textarea
+      attributes:
+          label: Additional context
+          description: Anything else that might be relevant?
+      validations:
+          required: false
