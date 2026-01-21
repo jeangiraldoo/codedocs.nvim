@@ -1,0 +1,39 @@
+name: 💡 Feature Request
+description: Suggest a new feature
+title: "feature: "
+labels:
+    - enhancement
+type: feature
+body:
+    - type: markdown
+      attributes:
+          value: |
+              Thanks for taking the time to suggest an improvement for Codedocs!
+
+    - type: textarea
+      attributes:
+          label: Describe the problem or use case
+          description: What are you trying to achieve, and why is it currently difficult or impossible?
+      validations:
+          required: true
+
+    - type: textarea
+      attributes:
+          label: Describe the solution you'd like
+          description: A clear and concise description of what you want to happen
+      validations:
+          required: true
+
+    - type: textarea
+      attributes:
+          label: Alternatives or similar tools
+          description: Mention any apps, plugins, etc that achieve something similar to what you want
+      validations:
+          required: false
+
+    - type: textarea
+      attributes:
+          label: Additional context
+          description: Anything else that might be relevant?
+      validations:
+          required: false
