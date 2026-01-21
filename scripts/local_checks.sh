@@ -34,4 +34,6 @@ run_check "Linting commits:" "npx commitlint --from origin/main --to HEAD"
 
 run_check "Linting Markdown files:" "markdownlint ."
 
+run_check "Print statements found:" '! grep --recursive --line-number --colour=always "print" lua/'
+
 exit "$failed"

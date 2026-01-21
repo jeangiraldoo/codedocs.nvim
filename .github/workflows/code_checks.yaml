@@ -23,6 +23,10 @@ jobs:
             - name: Run linter check
               uses: lunarmodules/luacheck@v1
 
+            - name: Check for print statements
+              run: |
+                  ! grep --recursive --line-number --color=always "print" lua/
+
     formatting-check:
         name: Formatting check
         runs-on: ubuntu-latest
