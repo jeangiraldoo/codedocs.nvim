@@ -15,6 +15,13 @@ return {
 					"-- @param c",
 					"-- @return",
 				},
+				EmmyLua = {
+					"---",
+					"---@param a",
+					"---@param b",
+					"---@param c",
+					"---@return",
+				},
 			},
 		},
 	},

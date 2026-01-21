@@ -322,7 +322,7 @@ vim.keymap.set(
 
 | Languages  | Annotation styles         | Supported automatic annotation |
 | ---------- | ------------------------- | ------------------------------ |
-| Lua        | LDoc                      | `function`, `comment`          |
+| Lua        | EmmyLua, LDoc             | `function`, `comment`          |
 | Python     | Google, NumPy/SciPy, reST | `class`, `function`, `comment` |
 | JavaScript | JSDoc                     | `class`, `function`, `comment` |
 | TypeScript | TSDoc                     | `class`, `function`, `comment` |
