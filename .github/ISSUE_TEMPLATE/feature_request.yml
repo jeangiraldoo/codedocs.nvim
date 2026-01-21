@@ -3,7 +3,6 @@ description: Suggest a new feature
 title: "feature: "
 labels:
     - enhancement
-type: feature
 body:
     - type: markdown
       attributes:

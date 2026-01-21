@@ -1,3 +1,4 @@
 node_modules/
 .luarocks
 luarocks
+.github/pull_request_template.md
