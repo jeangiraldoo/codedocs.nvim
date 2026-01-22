@@ -8,16 +8,13 @@ return {
 			},
 			cursor_pos = 1,
 			expected_annotation = {
-				Godoc = { ---BUG: No section should be added
+				Godoc = {
 					"// ",
 					"//",
-					"// Parameters:",
-					"//",
-					"// Returns:",
 				},
 			},
 		},
-		---No parametres, return
+		---Only return type
 		{
 			structure = {
 				"func foo() int {",
@@ -25,16 +22,15 @@ return {
 			},
 			cursor_pos = 1,
 			expected_annotation = {
-				Godoc = { ---BUG: Only the return section should be present
+				Godoc = {
 					"// ",
-					"//",
-					"// Parameters:",
 					"//",
 					"// Returns:",
 					"// ",
 				},
 			},
 		},
+		---Parametres and return type
 		{
 			structure = {
 				"func foo(a int, b int, c int) int {",

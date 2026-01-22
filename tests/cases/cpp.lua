@@ -17,7 +17,7 @@ return {
 				},
 			},
 		},
-		---No parametres, return
+		---Only return type
 		{
 			structure = {
 				"int foo() {",

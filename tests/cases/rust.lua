@@ -8,14 +8,9 @@ return {
 			},
 			cursor_pos = 1,
 			expected_annotation = {
-				RustDoc = { ---BUG: No section should be present
+				RustDoc = {
 					"///",
-					"///",
-					"/// # Arguments",
-					"///",
-					"///",
-					"/// # Returns",
-					"///",
+					"///", ---BUG: Leftover line, likely item gap
 				},
 			},
 		},
@@ -27,10 +22,7 @@ return {
 			},
 			cursor_pos = 1,
 			expected_annotation = {
-				RustDoc = { ---BUG: only the return section should be present
-					"///",
-					"///",
-					"/// # Arguments",
+				RustDoc = {
 					"///",
 					"///",
 					"/// # Returns",
@@ -47,7 +39,7 @@ return {
 			},
 			cursor_pos = 1,
 			expected_annotation = {
-				RustDoc = { ---BUG: only the Arguments section should be present
+				RustDoc = {
 					"///",
 					"///",
 					"/// # Arguments",
@@ -55,8 +47,6 @@ return {
 					"/// * `a`",
 					"/// * `b`",
 					"/// * `c`",
-					"///",
-					"/// # Returns",
 					"///",
 				},
 			},
