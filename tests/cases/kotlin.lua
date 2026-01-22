@@ -26,8 +26,6 @@ return {
 				KDoc = {
 					"/**",
 					" * ",
-					" *",
-					" * @return", ---BUG: Shouldn't consider `Unit` a return type
 					" */",
 				},
 			},

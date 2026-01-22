@@ -37,7 +37,7 @@ return {
 			type = "simple",
 			query = [[
 				(function_definition
-					(primitive_type) @item_type
+					(primitive_type) @item_type (#not-eq? @item_type "void")
 				)
 			]],
 		},

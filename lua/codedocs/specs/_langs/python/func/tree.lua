@@ -24,7 +24,7 @@ return {
 			type = "simple",
 			query = [[
 				(function_definition
-					(type) @item_type
+					(type) @item_type (#not-eq? @item_type "None")
 				)
 			]],
 		},

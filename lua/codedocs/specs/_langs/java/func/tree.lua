@@ -19,7 +19,7 @@ return {
 			type = "simple",
 			query = [[
 				(method_declaration
-					(type_identifier) @item_type
+					(integral_type) @item_type (#not-eq? @item_type "void")
 				)
 			]],
 		},

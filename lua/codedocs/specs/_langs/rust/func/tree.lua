@@ -19,11 +19,7 @@ return {
 			type = "simple",
 			query = [[
 				(function_item
-					[
-						(type_identifier) @item_type
-						(primitive_type) @item_type
-						(generic_type) @item_type
-					]
+					(type_identifier) @item_type (#not-eq? @item_type "()")
 				)
 			]],
 		},

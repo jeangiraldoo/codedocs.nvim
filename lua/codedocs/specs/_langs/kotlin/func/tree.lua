@@ -19,7 +19,7 @@ return {
 			type = "simple",
 			query = [[
 				(function_declaration
-					(user_type) @item_type
+					(user_type) @item_type (#not-eq? @item_type "Unit")
 				)
 			]],
 		},

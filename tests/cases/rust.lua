@@ -16,7 +16,7 @@ return {
 		---No parametres, return
 		{
 			structure = {
-				"fn foo() --> String {",
+				"fn foo() -> String {",
 				"}",
 			},
 			cursor_pos = 1,

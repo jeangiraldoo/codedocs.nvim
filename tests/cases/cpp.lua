@@ -11,8 +11,6 @@ return {
 				Doxygen = {
 					"/**",
 					" * ",
-					" *",
-					" * @return", ---BUG: shouln't have a return section
 					" */",
 				},
 			},

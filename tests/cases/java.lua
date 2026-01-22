@@ -26,6 +26,8 @@ return {
 				JavaDoc = {
 					"/**",
 					" * ",
+					" *",
+					" * @return",
 					" */",
 				},
 			},
@@ -46,7 +48,7 @@ return {
 					" * @param a",
 					" * @param b",
 					" * @param c",
-					---BUG: should detect int as the return type
+					" * @return",
 					" */",
 				},
 			},
