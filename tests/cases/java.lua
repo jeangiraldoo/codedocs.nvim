@@ -46,7 +46,7 @@ return {
 					" * @param a",
 					" * @param b",
 					" * @param c",
-					" * @return",
+					---BUG: should detect int as the return type
 					" */",
 				},
 			},

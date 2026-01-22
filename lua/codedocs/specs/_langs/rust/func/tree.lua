@@ -27,10 +27,5 @@ return {
 				)
 			]],
 		},
-		{
-			type = "finder",
-			collect_found_nodes = false,
-			target_node_type = "return_expression",
-		},
 	},
 }
