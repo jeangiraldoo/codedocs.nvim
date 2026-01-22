@@ -10,7 +10,6 @@ return {
 			expected_annotation = {
 				RustDoc = {
 					"///",
-					"///", ---BUG: Leftover line, likely item gap
 				},
 			},
 		},

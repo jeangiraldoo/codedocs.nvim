@@ -11,7 +11,6 @@ return {
 				JavaDoc = {
 					"/**",
 					" * ",
-					" *", ---BUG: Seems like the title gap is being applied even if theres no sections
 					" */",
 				},
 			},
@@ -27,7 +26,6 @@ return {
 				JavaDoc = {
 					"/**",
 					" * ",
-					" *", ---BUG: Seems like the title gap is being applied even if theres no sections
 					" */",
 				},
 			},
@@ -66,7 +64,6 @@ return {
 				JavaDoc = {
 					"/**",
 					" * ",
-					" *",
 					" */",
 				},
 			},
@@ -82,7 +79,6 @@ return {
 				JavaDoc = {
 					"/**",
 					" * ",
-					" *",
 					" */",
 				},
 			},

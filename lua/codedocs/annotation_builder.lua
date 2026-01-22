@@ -141,7 +141,7 @@ local function _format_annotation_content(sections_data, style, annotation_struc
 
 	local annotation_structure_copy = vim.deepcopy(annotation_structure)
 
-	if general_opts.title_gap then
+	if general_opts.title_gap and vim.tbl_count(sections_data) > 0 then
 		local title_gap_pos = general_opts.title_pos + 1
 		table.insert(annotation_structure_copy, title_gap_pos, style.general.title_gap_text)
 	end

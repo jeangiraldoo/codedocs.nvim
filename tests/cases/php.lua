@@ -14,7 +14,6 @@ return {
 				PHPDoc = {
 					"/**",
 					" * ",
-					" *",
 					" */",
 				},
 			},
@@ -33,8 +32,6 @@ return {
 				PHPDoc = {
 					"/**",
 					" * ",
-					" *",
-					---BUG: return type annotation not considered as return
 					" */",
 				},
 			},

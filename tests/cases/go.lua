@@ -10,7 +10,6 @@ return {
 			expected_annotation = {
 				Godoc = {
 					"// ",
-					"//",
 				},
 			},
 		},

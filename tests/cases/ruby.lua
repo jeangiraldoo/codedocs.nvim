@@ -10,7 +10,6 @@ return {
 			expected_annotation = {
 				YARD = {
 					"# ",
-					"#", ---BUG: shouldn't have title gap
 				},
 			},
 		},

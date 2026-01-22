@@ -11,7 +11,6 @@ return {
 				JSDoc = {
 					"/**",
 					" * ",
-					" *", ---BUG: shouln't have a title gap
 					" */",
 				},
 			},
@@ -68,7 +67,6 @@ return {
 				JSDoc = {
 					"/**",
 					" * ",
-					" *",
 					" */",
 				},
 			},
