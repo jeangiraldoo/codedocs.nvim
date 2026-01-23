@@ -1,5 +1,39 @@
 return {
 	func = {
+		---No parametres, no return
+		{
+			structure = {
+				"function foo() {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				JSDoc = {
+					"/**",
+					" * ",
+					" */",
+				},
+			},
+		},
+		---No parametres, return
+		{
+			structure = {
+				"function foo() {",
+				"    return 2;",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				JSDoc = {
+					"/**",
+					" * ",
+					" *",
+					" * @returns {}",
+					" */",
+				},
+			},
+		},
+		---Parametres and return
 		{
 			structure = {
 				"function foo(a, b, c) {",
@@ -33,7 +67,6 @@ return {
 				JSDoc = {
 					"/**",
 					" * ",
-					" *",
 					" */",
 				},
 			},

@@ -19,14 +19,9 @@ return {
 			type = "simple",
 			query = [[
 				(method_declaration
-					(type_identifier) @item_type
+					(integral_type) @item_type (#not-eq? @item_type "void")
 				)
 			]],
-		},
-		{
-			type = "finder",
-			collect_found_nodes = false,
-			target_node_type = "return_statement",
 		},
 	},
 }

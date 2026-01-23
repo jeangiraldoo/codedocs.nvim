@@ -31,14 +31,9 @@ return {
 			type = "simple",
 			query = [[
 				(function_definition
-					(primitive_type) @item_type
+					(primitive_type) @item_type (#not-eq? @item_type "void")
 				)
 			]],
-		},
-		{
-			type = "finder",
-			collect_found_nodes = false,
-			target_node_type = "return_statement",
 		},
 	},
 }

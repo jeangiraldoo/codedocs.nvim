@@ -1,5 +1,38 @@
 return {
 	func = {
+		---No parametres, no return
+		{
+			structure = {
+				"public void foo() {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				JavaDoc = {
+					"/**",
+					" * ",
+					" */",
+				},
+			},
+		},
+		---No parametres, return
+		{
+			structure = {
+				"public int foo() {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				JavaDoc = {
+					"/**",
+					" * ",
+					" *",
+					" * @return",
+					" */",
+				},
+			},
+		},
+		---Parametres and return
 		{
 			structure = {
 				"public int foo(int a, int b, int c) {",
@@ -22,6 +55,21 @@ return {
 		},
 	},
 	class = {
+		---No attributes
+		{
+			structure = {
+				"public class Foo {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				JavaDoc = {
+					"/**",
+					" * ",
+					" */",
+				},
+			},
+		},
 		{
 			structure = {
 				"public class Foo {",
@@ -33,8 +81,6 @@ return {
 				JavaDoc = {
 					"/**",
 					" * ",
-					" *",
-					" * Attributes:",
 					" */",
 				},
 			},

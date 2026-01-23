@@ -32,7 +32,7 @@ return {
 					(method_definition
 						(type_annotation
 							[
-								(predefined_type) @item_type
+								(predefined_type) @item_type (#not-eq? @item_type "void")
 								(array_type) @item_type
 							]
 						)
@@ -40,7 +40,7 @@ return {
 					(function_declaration
 						(type_annotation
 							[
-								(predefined_type) @item_type
+								(predefined_type) @item_type (#not-eq? @item_type "void")
 								(array_type) @item_type
 							]
 						)

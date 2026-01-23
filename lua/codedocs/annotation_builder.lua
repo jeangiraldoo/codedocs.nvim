@@ -96,6 +96,8 @@ local function _build_annotation_content(item_data, style)
 		local section_items = item_data[section_name]
 		local section_style = style[section_name]
 
+		if #section_items == 0 then goto skip_section end ---A section with no items effectively has no content
+
 		local section_content = {
 			unpack(
 				_build_section_title(
@@ -123,6 +125,7 @@ local function _build_annotation_content(item_data, style)
 		end
 
 		annotation_content[section_name] = section_content
+		::skip_section::
 	end
 	return annotation_content
 end
@@ -138,7 +141,7 @@ local function _format_annotation_content(sections_data, style, annotation_struc
 
 	local annotation_structure_copy = vim.deepcopy(annotation_structure)
 
-	if general_opts.title_gap then
+	if general_opts.title_gap and vim.tbl_count(sections_data) > 0 then
 		local title_gap_pos = general_opts.title_pos + 1
 		table.insert(annotation_structure_copy, title_gap_pos, style.general.title_gap_text)
 	end
@@ -146,6 +149,8 @@ local function _format_annotation_content(sections_data, style, annotation_struc
 	local sections_order = general_opts.section_order
 	for section_idx, section_name in ipairs(sections_order) do
 		local section_content = sections_data[section_name]
+
+		if section_content == nil then goto skip_section end ---A section without content shouldn't be added to the annotation
 
 		for line_idx, line in ipairs(section_content) do
 			table.insert(annotation_structure_copy, #annotation_structure_copy, line_start .. line)
@@ -158,6 +163,7 @@ local function _format_annotation_content(sections_data, style, annotation_struc
 		if general_opts.section_gap and sections_order[section_idx + 1] then
 			table.insert(annotation_structure_copy, #annotation_structure_copy, style.general.section_gap_text)
 		end
+		::skip_section::
 	end
 
 	-- Elements are inserted at the index of the last element, shifting that element to the right. As a result,

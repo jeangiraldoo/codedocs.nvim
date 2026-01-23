@@ -19,18 +19,9 @@ return {
 			type = "simple",
 			query = [[
 				(function_item
-					[
-						(type_identifier) @item_type
-						(primitive_type) @item_type
-						(generic_type) @item_type
-					]
+					(type_identifier) @item_type (#not-eq? @item_type "()")
 				)
 			]],
-		},
-		{
-			type = "finder",
-			collect_found_nodes = false,
-			target_node_type = "return_expression",
 		},
 	},
 }

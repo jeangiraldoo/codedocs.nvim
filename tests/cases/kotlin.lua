@@ -1,5 +1,53 @@
 return {
 	func = {
+		---No parametres, no explicit return
+		{
+			structure = {
+				"fun foo() {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				KDoc = {
+					"/**",
+					" * ",
+					" */",
+				},
+			},
+		},
+		---No parametres, nothing returned explicitely
+		{
+			structure = {
+				"fun foo(): Unit {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				KDoc = {
+					"/**",
+					" * ",
+					" */",
+				},
+			},
+		},
+		---No parametres, return
+		{
+			structure = {
+				"fun foo(): int {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				KDoc = {
+					"/**",
+					" * ",
+					" *",
+					" * @return",
+					" */",
+				},
+			},
+		},
+		---Parametres and return
 		{
 			structure = {
 				"fun foo(a: Int, b: Int, c: Int): Int {",
@@ -22,6 +70,21 @@ return {
 		},
 	},
 	class = {
+		---No attributes
+		{
+			structure = {
+				"public class Foo {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				KDoc = {
+					"/**",
+					" * ",
+					" */",
+				},
+			},
+		},
 		{
 			structure = {
 				"public class Foo {",
@@ -33,7 +96,6 @@ return {
 				KDoc = {
 					"/**",
 					" * ",
-					" *",
 					" */",
 				},
 			},

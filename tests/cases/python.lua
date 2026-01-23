@@ -1,5 +1,67 @@
+---BUG: most stuff needs help
 return {
 	func = {
+		---No parametres, no return
+		{
+			structure = {
+				"def foo():",
+				"	pass",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				Google = {
+					'"""',
+					"",
+					'"""',
+				},
+				reST = {
+					'"""',
+					"",
+					'"""',
+				},
+				Numpy = {
+					'"""',
+					"",
+					'"""',
+				},
+			},
+		},
+		--Only return type annotation
+		{
+			structure = {
+				"def foo() -> bool:",
+				"	pass",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				Google = {
+					'"""',
+					"",
+					"",
+					"Returns:",
+					"	bool:",
+					'"""',
+				},
+				reST = {
+					'"""',
+					"",
+					"",
+					":return:",
+					":rtype: bool",
+					'"""',
+				},
+				Numpy = {
+					'"""',
+					"",
+					"",
+					"Returns",
+					"-------",
+					"bool",
+					'"""',
+				},
+			},
+		},
+		---Parametres (no annotation) and return statement
 		{
 			structure = {
 				"def foo(a, b, c):",
