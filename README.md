@@ -320,20 +320,23 @@ vim.keymap.set(
 
 ### <a id="supported-languages"></a>🌐 Supported languages
 
-| Languages  | Annotation styles         | Supported automatic annotation |
-| ---------- | ------------------------- | ------------------------------ |
-| Lua        | EmmyLua, LDoc             | `function`, `comment`          |
-| Python     | Google, NumPy/SciPy, reST | `class`, `function`, `comment` |
-| JavaScript | JSDoc                     | `class`, `function`, `comment` |
-| TypeScript | TSDoc                     | `class`, `function`, `comment` |
-| Ruby       | YARD                      | `function`, `comment`          |
-| PHP        | PHPDoc                    | `function`, `comment`          |
-| Java       | JavaDoc                   | `class`, `function`, `comment` |
-| Kotlin     | KDoc                      | `class`, `function`, `comment` |
-| Rust       | RustDoc                   | `function`, `comment`          |
-| Go         | Godoc                     | `function`, `comment`          |
-| C          | Doxygen                   | `function`, `comment`          |
-| C++        | Doxygen                   | `function`, `comment`          |
+> [!INFO]
+> Annotation style names wrapped in [] indicate the default style for that language
+
+| Languages  | Annotation styles           | Supported automatic annotation |
+| ---------- | --------------------------- | ------------------------------ |
+| Lua        | [EmmyLua], LDoc             | `function`, `comment`          |
+| Python     | Google, NumPy/SciPy, [reST] | `class`, `function`, `comment` |
+| JavaScript | [JSDoc]                     | `class`, `function`, `comment` |
+| TypeScript | [TSDoc]                     | `class`, `function`, `comment` |
+| Ruby       | [YARD]                      | `function`, `comment`          |
+| PHP        | [PHPDoc]                    | `function`, `comment`          |
+| Java       | [JavaDoc]                   | `class`, `function`, `comment` |
+| Kotlin     | [KDoc]                      | `class`, `function`, `comment` |
+| Rust       | [RustDoc]                   | `function`, `comment`          |
+| Go         | [Godoc]                     | `function`, `comment`          |
+| C          | [Doxygen]                   | `function`, `comment`          |
+| C++        | [Doxygen]                   | `function`, `comment`          |
 
 #### 1. **Function**
 
