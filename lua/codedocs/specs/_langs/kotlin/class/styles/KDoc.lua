@@ -10,14 +10,12 @@ return {
 		section = {
 			gap = false,
 			gap_text = " *",
-			underline_char = "",
-			title_gap = false,
 			order = { "attrs" },
 		},
 		item_gap = false,
 	},
 	attrs = {
-		title = "",
+		layout = {},
 		include_class_attrs = false,
 		include_instance_attrs = false,
 		include_only_constructor_instance_attrs = false,

@@ -10,18 +10,17 @@ return {
 		section = {
 			gap = false,
 			gap_text = " *",
-			underline_char = "",
-			title_gap = false,
 			order = { "attrs" },
 		},
 		item_gap = false,
 	},
 	attrs = {
-		section_title = "Properties:",
+		layout = {
+			"Properties:",
+		},
 		include_class_attrs = true,
 		include_instance_attrs = false,
 		include_only_constructor_instance_attrs = false,
-		inline = true,
 		indent = false,
 		item_name = {
 			keyword = "",

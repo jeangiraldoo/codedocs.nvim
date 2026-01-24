@@ -18,13 +18,11 @@ return {
 			},
 			gap = false,
 			gap_text = " *",
-			title_underline_char = "",
-			title_gap = false,
 		},
 		item_gap = false,
 	},
 	params = {
-		section_title = "",
+		layout = {},
 		indent = false,
 		include_type = false,
 		template = {
@@ -32,7 +30,7 @@ return {
 		},
 	},
 	return_type = {
-		section_title = "",
+		layout = {},
 		indent = false,
 		include_type = false,
 		template = {

@@ -13,8 +13,6 @@ return {
 		section = {
 			gap = true,
 			gap_text = "//",
-			underline_char = "",
-			title_gap = false,
 			order = {
 				"params",
 				"return_type",
@@ -23,14 +21,18 @@ return {
 		item_gap = false,
 	},
 	params = {
-		section_title = "Parameters:",
+		layout = {
+			"Parameters:",
+		},
 		indent = false,
 		template = {
 			"- %item_name:",
 		},
 	},
 	return_type = {
-		section_title = "Returns:",
+		layout = {
+			"Returns:",
+		},
 		indent = false,
 		template = {
 			"",

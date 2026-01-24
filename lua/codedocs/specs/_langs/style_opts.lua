@@ -10,8 +10,6 @@ local general = {
 	section = {
 		gap = "boolean", -- Adds spacing between sections if more than one exists
 		gap_text = "string", -- String to be inserted in between 2 sections
-		title_underline_char = "string", -- Character used to underline section titles
-		title_gap = "boolean", -- Adds spacing after the title if there's an item
 		order = "table", -- Specifies the order of docstring sections
 	},
 	item_gap = "boolean", -- Adds spacing between items if multiple exist
@@ -19,7 +17,6 @@ local general = {
 
 local item = {
 	section_title = "string", -- Section title
-	inline = "boolean", -- True if name and type are on the same line
 	indent = "boolean", -- Indents items if true
 	item_name = {
 		keyword = "string", -- Keyword prefixed to item names

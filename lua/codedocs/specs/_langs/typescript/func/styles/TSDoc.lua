@@ -10,21 +10,19 @@ return {
 		section = {
 			gap = false,
 			gap_text = " *",
-			underline_char = "",
-			title_gap = false,
 			order = { "params", "return_type" },
 		},
 		item_gap = false,
 	},
 	params = {
-		section_title = "",
+		layout = {},
 		indent = false,
 		template = {
 			"@param %item_name -",
 		},
 	},
 	return_type = {
-		section_title = "",
+		layout = {},
 		indent = false,
 		template = {
 			"@returns",

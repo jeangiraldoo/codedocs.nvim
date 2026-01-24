@@ -10,21 +10,25 @@ return {
 		section = {
 			gap = true,
 			gap_text = "///",
-			underline_char = "",
-			title_gap = true,
 			order = { "params", "return_type" },
 		},
 		item_gap = false,
 	},
 	params = {
-		section_title = " # Arguments",
+		layout = {
+			" # Arguments",
+			"",
+		},
 		indent = false,
 		template = {
 			" * `%item_name`",
 		},
 	},
 	return_type = {
-		section_title = " # Returns",
+		layout = {
+			" # Returns",
+			"",
+		},
 		indent = false,
 		template = {
 			"",

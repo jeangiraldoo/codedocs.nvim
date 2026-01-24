@@ -9,19 +9,18 @@ return {
 		},
 		section = {
 			gap = false,
-			gap_text = "",
-			underline_char = "_",
-			title_gap = false,
 			order = { "attrs" },
 		},
 		item_gap = false,
 	},
 	attrs = {
-		section_title = "Attributes:",
+		layout = {
+			"Attributes:",
+			"___________",
+		},
 		include_class_attrs = true,
 		include_instance_attrs = true,
 		include_only_constructor_instance_attrs = true,
-		inline = true,
 		indent = false,
 		include_type = true,
 		template = {

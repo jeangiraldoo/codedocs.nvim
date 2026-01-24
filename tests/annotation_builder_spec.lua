@@ -69,21 +69,19 @@ local COMMON_DATA = {
 				section = {
 					gap = false,
 					gap_text = " *",
-					underline_char = "",
-					title_gap = false,
 					order = { "primary_section", "secondary_section" },
 				},
 				item_gap = false,
 			},
 			primary_section = {
-				section_title = "",
+				layout = {},
 				indent = false,
 				template = {
-					{ "@item", "%item_name" },
+					{ "@item", "%item_name", "%item_type" },
 				},
 			},
 			secondary_section = {
-				section_title = "",
+				layout = {},
 				indent = false,
 				template = {
 					{ "@secondary_item", "%item_name" },
@@ -98,6 +96,7 @@ local GENERAL_SECTION_CASES = {
 		expected_annotation = {
 			"---",
 			"--* ",
+			" *",
 			"--* @item a",
 			"--* @item b",
 			"--* @item c",
@@ -114,9 +113,6 @@ local GENERAL_SECTION_CASES = {
 					"---",
 					"--* ",
 					" ]-",
-				},
-				annotation_title = {
-					gap = false,
 				},
 			},
 		},
@@ -151,7 +147,6 @@ local GENERAL_SECTION_CASES = {
 			"/**",
 			" * ",
 			" *",
-			" * ", ---BUG: This shouldnt be here
 			" * @secondary_item d",
 			" * @secondary_item e",
 			" * @secondary_item f",
@@ -168,8 +163,6 @@ local GENERAL_SECTION_CASES = {
 		opts_to_change = {
 			general = {
 				section = {
-					underline_char = "*",
-					title_gap = true,
 					order = {
 						"secondary_section",
 						"primary_section",
@@ -177,7 +170,11 @@ local GENERAL_SECTION_CASES = {
 				},
 			},
 			primary_section = {
-				section_title = "This is the primary section",
+				layout = {
+					"This is the primary section",
+					"***************************",
+					"",
+				},
 			},
 		},
 	},
@@ -232,9 +229,7 @@ local ITEM_CASES = {
 		opts_to_change = {
 			primary_section = {
 				indent = true,
-				item_type = {
-					include = true,
-				},
+				include_type = true,
 			},
 		},
 	},
@@ -255,21 +250,9 @@ local ITEM_CASES = {
 		},
 		opts_to_change = {
 			primary_section = {
-				item_name = {
-					keyword = "@the_name",
-					delimiters = {
-						"{",
-						"}",
-					},
-				},
-				item_type = {
-					include = true,
-					is_before_name = true,
-					keyword = "@the_type",
-					delimiters = {
-						"[",
-						"]",
-					},
+				include_type = true,
+				template = {
+					{ "@the_type", "[%item_type]", "@the_name", "{%item_name}" },
 				},
 			},
 		},
@@ -279,7 +262,7 @@ local ITEM_CASES = {
 
 local CASES = {
 	general = GENERAL_SECTION_CASES,
-	-- item = ITEM_CASES,
+	item = ITEM_CASES,
 }
 
 local function test_case(name, case)

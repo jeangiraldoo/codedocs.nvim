@@ -1,21 +1,5 @@
 local Debug_logger = require("codedocs.utils.debug_logger")
 
--- @param title string Section title
--- @param title_gap boolean Whether to insert a blank line between the title and the first section item
--- @param underline_char string Character used to underline the title (one per title character)
--- @return table
-local function _build_section_title(title, title_gap, underline_char)
-	local title_struct = {}
-
-	if title ~= "" then
-		table.insert(title_struct, title)
-		if underline_char ~= "" then table.insert(title_struct, string.rep(underline_char, #title)) end
-	end
-
-	if title_gap then table.insert(title_struct, "") end
-	return title_struct
-end
-
 local function _handle_string(string, item_name, item_type, include_type)
 	local result = string:gsub("%%item_name", item_name or "")
 	result = include_type and result:gsub("%%item_type", item_type or "") or result:gsub("%%item_type", "")
@@ -37,15 +21,7 @@ local function _build_annotation_content(item_data, style)
 
 		if #section_items == 0 then goto skip_section end ---A section with no items effectively has no content
 
-		local section_content = {
-			unpack(
-				_build_section_title(
-					section_style.section_title,
-					style.general.section.title_gap,
-					style.general.section.underline_char
-				)
-			),
-		}
+		local section_content = vim.deepcopy(section_style.layout)
 		for _, item in ipairs(section_items) do
 			local indent = section_style.indent and "\t" or ""
 			for _, line in ipairs(section_style.template) do
