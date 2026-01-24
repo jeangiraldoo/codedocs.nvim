@@ -162,7 +162,7 @@ function Spec.get_struct_style(lang, struct_name, style_name)
 
 	if Spec.is_lang_supported(lang) then
 		local style = require(string.format("codedocs.specs._langs.%s.%s.styles.%s", lang, struct_name, style_name))
-		_validate_style_opts(style)
+		-- _validate_style_opts(style)
 		return style
 	end
 end

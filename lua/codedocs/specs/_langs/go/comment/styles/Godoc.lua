@@ -1,7 +1,11 @@
 return {
 	general = {
-		structure = { "// " },
-		title_pos = 1,
+		layout = {
+			"// ",
+		},
 		direction = true,
+		annotation_title = {
+			pos = 1,
+		},
 	},
 }

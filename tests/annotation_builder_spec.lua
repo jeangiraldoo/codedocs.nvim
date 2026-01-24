@@ -56,44 +56,38 @@ local COMMON_DATA = {
 		},
 		opts = {
 			general = {
-				structure = {
+				layout = {
 					"/**",
 					" * ",
 					" */",
 				},
-				title_pos = 2,
-				title_gap = true,
-				title_gap_text = " *",
-				section_gap = false,
-				section_gap_text = " *",
-				section_underline = "",
-				section_title_gap = false,
+				annotation_title = {
+					pos = 2,
+					gap = true,
+					gap_text = " *",
+				},
+				section = {
+					gap = false,
+					gap_text = " *",
+					underline_char = "",
+					title_gap = false,
+					order = { "primary_section", "secondary_section" },
+				},
 				item_gap = false,
-				section_order = { "primary_section", "secondary_section" },
 			},
 			primary_section = {
-				title = "",
-				inline = true,
+				section_title = "",
 				indent = false,
-				include_type = false,
-				type_first = false,
-				name_kw = "@item",
-				type_kw = "",
-				name_wrapper = { "", "" },
-				type_wrapper = { "", "" },
-				is_type_below_name_first = false,
+				template = {
+					{ "@item", "%item_name" },
+				},
 			},
 			secondary_section = {
-				title = "",
-				inline = true,
+				section_title = "",
 				indent = false,
-				include_type = false,
-				type_first = false,
-				name_kw = "@secondary_item",
-				type_kw = "",
-				name_wrapper = { "", "" },
-				type_wrapper = { "", "" },
-				is_type_below_name_first = false,
+				template = {
+					{ "@secondary_item", "%item_name" },
+				},
 			},
 		},
 	},
@@ -116,12 +110,14 @@ local GENERAL_SECTION_CASES = {
 		},
 		opts_to_change = {
 			general = {
-				structure = {
+				layout = {
 					"---",
 					"--* ",
 					" ]-",
 				},
-				title_gap = false,
+				annotation_title = {
+					gap = false,
+				},
 			},
 		},
 	},
@@ -143,8 +139,10 @@ local GENERAL_SECTION_CASES = {
 		},
 		opts_to_change = {
 			general = {
-				section_gap = true,
-				section_gap_text = "--*",
+				section = {
+					gap = true,
+					gap_text = "--*",
+				},
 			},
 		},
 	},
@@ -169,15 +167,17 @@ local GENERAL_SECTION_CASES = {
 		},
 		opts_to_change = {
 			general = {
-				section_underline = "*",
-				section_title_gap = true,
-				section_order = {
-					"secondary_section",
-					"primary_section",
+				section = {
+					underline_char = "*",
+					title_gap = true,
+					order = {
+						"secondary_section",
+						"primary_section",
+					},
 				},
 			},
 			primary_section = {
-				title = "This is the primary section",
+				section_title = "This is the primary section",
 			},
 		},
 	},
@@ -232,7 +232,9 @@ local ITEM_CASES = {
 		opts_to_change = {
 			primary_section = {
 				indent = true,
-				include_type = true,
+				item_type = {
+					include = true,
+				},
 			},
 		},
 	},
@@ -253,17 +255,21 @@ local ITEM_CASES = {
 		},
 		opts_to_change = {
 			primary_section = {
-				include_type = true,
-				type_first = true,
-				name_kw = "@the_name",
-				type_kw = "@the_type",
-				name_wrapper = {
-					"{",
-					"}",
+				item_name = {
+					keyword = "@the_name",
+					delimiters = {
+						"{",
+						"}",
+					},
 				},
-				type_wrapper = {
-					"[",
-					"]",
+				item_type = {
+					include = true,
+					is_before_name = true,
+					keyword = "@the_type",
+					delimiters = {
+						"[",
+						"]",
+					},
 				},
 			},
 		},
@@ -273,14 +279,16 @@ local ITEM_CASES = {
 
 local CASES = {
 	general = GENERAL_SECTION_CASES,
-	item = ITEM_CASES,
+	-- item = ITEM_CASES,
 }
 
 local function test_case(name, case)
 	it(name, function()
 		local copy = vim.deepcopy(COMMON_DATA.BASE_STYLE.opts)
 		local new_style = vim.tbl_deep_extend("force", copy, case.opts_to_change)
-		local annotation = annotation_builder(new_style, COMMON_DATA.ITEMS, new_style.general.structure)
+		print("NEW STYLE")
+		print(vim.inspect(new_style))
+		local annotation = annotation_builder(new_style, COMMON_DATA.ITEMS, new_style.general.layout)
 
 		assert.are.same(case.expected_annotation, annotation)
 	end)

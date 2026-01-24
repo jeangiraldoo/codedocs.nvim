@@ -1,30 +1,29 @@
 return {
 	general = {
-		structure = { "/**", " * ", " */" },
+		layout = { "/**", " * ", " */" },
 		direction = true,
-		title_pos = 2,
-		title_gap = true,
-		title_gap_text = " *",
-		section_gap = false,
-		section_gap_text = " *",
-		section_underline = "",
-		section_title_gap = false,
+		annotation_title = {
+			pos = 2,
+			gap = true,
+			gap_text = " *",
+		},
+		section = {
+			gap = false,
+			gap_text = " *",
+			underline_char = "",
+			title_gap = false,
+			order = { "attrs" },
+		},
 		item_gap = false,
-		section_order = { "attrs" },
 	},
 	attrs = {
 		title = "Attributes:",
 		include_class_attrs = false,
 		include_instance_attrs = false,
 		include_only_constructor_instance_attrs = nil, -- Java attrs can only be declared in the class body
-		inline = true,
 		indent = false,
-		include_type = false,
-		type_first = false,
-		name_kw = "",
-		type_kw = "",
-		name_wrapper = { "- ", ": " },
-		type_wrapper = { "", "" },
-		is_type_below_name_first = false,
+		template = {
+			"- %item_name:",
+		},
 	},
 }
