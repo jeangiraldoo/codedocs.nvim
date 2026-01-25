@@ -10,7 +10,6 @@ return {
 		section = {
 			order = { "attrs" },
 		},
-		item_gap = false,
 	},
 	attrs = {
 		layout = {},
@@ -22,6 +21,7 @@ return {
 			text = "",
 		},
 		items = {
+			insert_gap_between = false,
 			indent = false,
 			include_type = true,
 			template = {

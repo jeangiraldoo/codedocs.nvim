@@ -69,7 +69,6 @@ local COMMON_DATA = {
 				section = {
 					order = { "primary_section", "secondary_section" },
 				},
-				item_gap = false,
 			},
 			primary_section = {
 				layout = {},
@@ -78,6 +77,7 @@ local COMMON_DATA = {
 					text = " *",
 				},
 				items = {
+					insert_gap_between = false,
 					indent = false,
 					include_type = false,
 					template = {
@@ -92,6 +92,7 @@ local COMMON_DATA = {
 					text = " *",
 				},
 				items = {
+					insert_gap_between = false,
 					include_type = false,
 					indent = false,
 					template = {
@@ -218,8 +219,15 @@ local GENERAL_SECTION_CASES = {
 			" */",
 		},
 		opts_to_change = {
-			general = {
-				item_gap = true,
+			primary_section = {
+				items = {
+					insert_gap_between = true,
+				},
+			},
+			secondary_section = {
+				items = {
+					insert_gap_between = true,
+				},
 			},
 		},
 	},

@@ -10,7 +10,6 @@ local general = {
 	section = {
 		order = "table", -- Specifies the order of docstring sections
 	},
-	item_gap = "boolean", -- Adds spacing between items if multiple exist
 }
 
 local item = {
@@ -19,6 +18,7 @@ local item = {
 		text = "string", -- String to be inserted in between 2 sections
 	},
 	items = {
+		insert_gap_between = "boolean", -- Adds spacing between items if multiple exist
 		include_type = "boolean", -- Includes item type if true
 		indent = "boolean", -- Whether or not to indent items
 		template = "table", -- List of lines representing an item

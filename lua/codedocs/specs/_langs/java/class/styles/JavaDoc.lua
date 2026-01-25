@@ -10,7 +10,6 @@ return {
 		section = {
 			order = { "attrs" },
 		},
-		item_gap = false,
 	},
 	attrs = {
 		layout = {
@@ -24,6 +23,7 @@ return {
 		include_instance_attrs = false,
 		include_only_constructor_instance_attrs = nil, -- Java attrs can only be declared in the class body
 		items = {
+			insert_gap_between = false,
 			indent = false,
 			include_type = false,
 			template = {

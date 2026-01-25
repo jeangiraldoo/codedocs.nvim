@@ -16,7 +16,6 @@ return {
 				"return_type",
 			},
 		},
-		item_gap = false,
 	},
 	params = {
 		layout = {
@@ -27,6 +26,7 @@ return {
 			text = "//",
 		},
 		items = {
+			insert_gap_between = false,
 			indent = false,
 			include_type = false,
 			template = {
@@ -43,6 +43,7 @@ return {
 			text = "//",
 		},
 		items = {
+			insert_gap_between = false,
 			indent = false,
 			include_type = false,
 			template = {

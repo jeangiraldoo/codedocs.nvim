@@ -72,7 +72,7 @@ local function _format_annotation_content(sections_data, style, annotation_layou
 		for line_idx, line in ipairs(section_content) do
 			table.insert(annotation_layout_copy, #annotation_layout_copy, line_start .. line)
 
-			if general_opts.item_gap and section_content[line_idx + 1] then
+			if style[section_name].items.insert_gap_between and section_content[line_idx + 1] then
 				table.insert(annotation_layout_copy, #annotation_layout_copy, line_start)
 			end
 		end
