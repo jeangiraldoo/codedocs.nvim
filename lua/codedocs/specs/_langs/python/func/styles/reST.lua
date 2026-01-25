@@ -14,28 +14,32 @@ return {
 	},
 	params = {
 		layout = {},
-		indent = false,
-		include_type = true,
 		gap = {
 			enabled = false,
 			text = "",
 		},
-		template = {
-			":param %item_name:",
-			":type %item_name:",
+		items = {
+			indent = false,
+			include_type = true,
+			template = {
+				":param %item_name:",
+				":type %item_name:",
+			},
 		},
 	},
 	return_type = {
 		layout = {},
-		indent = false,
-		include_type = true,
 		gap = {
 			enabled = false,
 			text = "",
 		},
-		template = {
-			":return:",
-			{ ":rtype:", "%item_type" },
+		items = {
+			indent = false,
+			include_type = true,
+			template = {
+				":return:",
+				{ ":rtype:", "%item_type" },
+			},
 		},
 	},
 }

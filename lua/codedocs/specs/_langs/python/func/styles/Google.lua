@@ -16,28 +16,32 @@ return {
 		layout = {
 			"Args:",
 		},
-		indent = true,
-		include_type = true,
 		gap = {
 			enabled = false,
 			text = "",
 		},
-		template = {
-			"%item_name (%item_type):",
+		items = {
+			indent = true,
+			include_type = true,
+			template = {
+				"%item_name (%item_type):",
+			},
 		},
 	},
 	return_type = {
 		layout = {
 			"Returns:",
 		},
-		indent = true,
-		include_type = true,
 		gap = {
 			enabled = false,
 			text = "",
 		},
-		template = {
-			"%item_type:",
+		items = {
+			indent = true,
+			include_type = true,
+			template = {
+				"%item_type:",
+			},
 		},
 	},
 }

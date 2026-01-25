@@ -19,21 +19,16 @@ return {
 		include_class_attrs = true,
 		include_instance_attrs = false,
 		include_only_constructor_instance_attrs = false,
-		indent = false,
 		gap = {
 			enabled = false,
 			text = " *",
 		},
-		item_name = {
-			keyword = "",
-			delimiters = { "- `", "`" },
+		items = {
+			indent = false,
+			include_type = false,
+			template = {
+				"- `%item_name`",
+			},
 		},
-		item_type = {
-			include = false,
-			is_before_name = false,
-			keyword = "",
-			delimiters = { "", "" },
-		},
-		is_type_below_name_first = false,
 	},
 }

@@ -14,23 +14,15 @@ local general = {
 }
 
 local item = {
-	section_title = "string", -- Section title
-	indent = "boolean", -- Indents items if true
 	gap = {
 		enabled = "boolean", -- Adds spacing between sections if more than one exists
 		text = "string", -- String to be inserted in between 2 sections
 	},
-	item_name = {
-		keyword = "string", -- Keyword prefixed to item names
-		delimiters = "table", -- Strings surrounding item names
+	items = {
+		include_type = "boolean", -- Includes item type if true
+		indent = "boolean", -- Whether or not to indent items
+		template = "table", -- List of lines representing an item
 	},
-	item_type = {
-		include = "boolean", -- Includes item type if true
-		keyword = "string", -- Keyword prefixed to item types
-		delimiters = "table", -- Strings surrounding item types
-		is_before_name = "boolean", -- Places type before name if true
-	},
-	is_type_below_name_first = "boolean", -- TODO: Verify logic and update description
 }
 
 local class_attr_section_items = {

@@ -14,16 +14,19 @@ return {
 	},
 	attrs = {
 		layout = {},
-		include_class_attrs = false,
-		include_instance_attrs = false,
-		include_only_constructor_instance_attrs = false,
-		indent = false,
 		gap = {
 			enabled = false,
 			text = " *",
 		},
-		format = {
-			"@property %item_name",
+		include_class_attrs = false,
+		include_instance_attrs = false,
+		include_only_constructor_instance_attrs = false,
+		items = {
+			indent = false,
+			include_type = false,
+			format = {
+				{ "@property %item_name", "%item_type" },
+			},
 		},
 	},
 }

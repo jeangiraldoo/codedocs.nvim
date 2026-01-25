@@ -17,13 +17,16 @@ return {
 			" # Arguments",
 			"",
 		},
-		indent = false,
 		gap = {
 			enabled = true,
 			text = "///",
 		},
-		template = {
-			" * `%item_name`",
+		items = {
+			include_type = false,
+			indent = false,
+			template = {
+				" * `%item_name`",
+			},
 		},
 	},
 	return_type = {
@@ -31,13 +34,16 @@ return {
 			" # Returns",
 			"",
 		},
-		indent = false,
 		gap = {
 			enabled = true,
 			text = "///",
 		},
-		template = {
-			"",
+		items = {
+			indent = false,
+			include_type = false,
+			template = {
+				"",
+			},
 		},
 	},
 }

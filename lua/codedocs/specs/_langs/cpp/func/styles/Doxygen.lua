@@ -21,26 +21,30 @@ return {
 	},
 	params = {
 		layout = {},
-		indent = false,
-		include_type = false,
 		gap = {
 			enabled = false,
 			text = " *",
 		},
-		template = {
-			{ "@param %item_name", "%item_type" },
+		items = {
+			indent = false,
+			include_type = false,
+			template = {
+				{ "@param %item_name", "%item_type" },
+			},
 		},
 	},
 	return_type = {
 		layout = {},
-		indent = false,
-		include_type = false,
 		gap = {
 			enabled = false,
 			text = " *",
 		},
-		template = {
-			{ "@return", "%item_type" },
+		items = {
+			indent = false,
+			include_type = false,
+			template = {
+				{ "@return", "%item_type" },
+			},
 		},
 	},
 }

@@ -17,15 +17,17 @@ return {
 		include_class_attrs = true,
 		include_instance_attrs = true,
 		include_only_constructor_instance_attrs = true,
-		indent = false,
-		include_type = true,
 		gap = {
 			enabled = false,
 			text = "",
 		},
-		template = {
-			{ ":var", "%item_name:" },
-			{ ":vartype", "%item_name:", "%item_type" },
+		items = {
+			indent = false,
+			include_type = true,
+			template = {
+				{ ":var", "%item_name:" },
+				{ ":vartype", "%item_name:", "%item_type" },
+			},
 		},
 	},
 }

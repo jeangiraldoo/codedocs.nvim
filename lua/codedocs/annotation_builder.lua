@@ -23,16 +23,16 @@ local function _build_annotation_content(item_data, style)
 
 		local section_content = vim.deepcopy(section_style.layout)
 		for _, item in ipairs(section_items) do
-			local indent = section_style.indent and "\t" or ""
-			for _, line in ipairs(section_style.template) do
+			local indent = section_style.items.indent and "\t" or ""
+			for _, line in ipairs(section_style.items.template) do
 				local line_type = type(line)
 
 				local final = ""
 				if line_type == "string" then
-					final = _handle_string(line, item.name, item.type, section_style.include_type)
+					final = _handle_string(line, item.name, item.type, section_style.items.include_type)
 				elseif line_type == "table" then
 					for idx, line_part in ipairs(line) do
-						local result = _handle_string(line_part, item.name, item.type, section_style.include_type)
+						local result = _handle_string(line_part, item.name, item.type, section_style.items.include_type)
 						if idx ~= 1 and result ~= "" then final = final .. " " end
 						if result ~= "" then final = final .. result end
 					end

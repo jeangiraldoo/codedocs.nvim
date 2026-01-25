@@ -17,14 +17,16 @@ return {
 			"Parameters",
 			"----------",
 		},
-		indent = false,
-		include_type = true,
 		gap = {
 			enabled = true,
 			text = "",
 		},
-		template = {
-			{ "%item_name : ", "%item_type" },
+		items = {
+			indent = false,
+			include_type = true,
+			template = {
+				{ "%item_name : ", "%item_type" },
+			},
 		},
 	},
 	return_type = {
@@ -32,14 +34,16 @@ return {
 			"Returns",
 			"-------",
 		},
-		indent = false,
-		include_type = true,
 		gap = {
 			enabled = true,
 			text = "",
 		},
-		template = {
-			"%item_type",
+		items = {
+			indent = false,
+			include_type = true,
+			template = {
+				"%item_type",
+			},
 		},
 	},
 }

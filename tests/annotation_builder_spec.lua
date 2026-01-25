@@ -73,24 +73,30 @@ local COMMON_DATA = {
 			},
 			primary_section = {
 				layout = {},
-				indent = false,
 				gap = {
 					enabled = false,
 					text = " *",
 				},
-				template = {
-					{ "@item", "%item_name", "%item_type" },
+				items = {
+					indent = false,
+					include_type = false,
+					template = {
+						{ "@item", "%item_name", "%item_type" },
+					},
 				},
 			},
 			secondary_section = {
 				layout = {},
-				indent = false,
 				gap = {
 					enabled = false,
 					text = " *",
 				},
-				template = {
-					{ "@secondary_item", "%item_name" },
+				items = {
+					include_type = false,
+					indent = false,
+					template = {
+						{ "@secondary_item", "%item_name" },
+					},
 				},
 			},
 		},
@@ -240,8 +246,10 @@ local ITEM_CASES = {
 		},
 		opts_to_change = {
 			primary_section = {
-				indent = true,
-				include_type = true,
+				items = {
+					indent = true,
+					include_type = true,
+				},
 			},
 		},
 	},
@@ -262,9 +270,11 @@ local ITEM_CASES = {
 		},
 		opts_to_change = {
 			primary_section = {
-				include_type = true,
-				template = {
-					{ "@the_type", "[%item_type]", "@the_name", "{%item_name}" },
+				items = {
+					include_type = true,
+					template = {
+						{ "@the_type", "[%item_type]", "@the_name", "{%item_name}" },
+					},
 				},
 			},
 		},

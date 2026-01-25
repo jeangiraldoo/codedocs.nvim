@@ -19,14 +19,16 @@ return {
 		include_class_attrs = true,
 		include_instance_attrs = true,
 		include_only_constructor_instance_attrs = true,
-		indent = true,
-		include_type = true,
 		gap = {
 			enabled = false,
 			text = "",
 		},
-		template = {
-			"%item_name (%item_type):",
+		items = {
+			indent = true,
+			include_type = true,
+			template = {
+				"%item_name (%item_type):",
+			},
 		},
 	},
 }

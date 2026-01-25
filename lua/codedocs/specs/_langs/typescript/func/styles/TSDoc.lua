@@ -14,24 +14,30 @@ return {
 	},
 	params = {
 		layout = {},
-		indent = false,
 		gap = {
 			enabled = false,
 			text = " *",
 		},
-		template = {
-			"@param %item_name -",
+		items = {
+			indent = false,
+			include_type = false,
+			template = {
+				"@param %item_name -",
+			},
 		},
 	},
 	return_type = {
 		layout = {},
-		indent = false,
 		gap = {
 			enabled = false,
 			text = " *",
 		},
-		template = {
-			"@returns",
+		items = {
+			indent = false,
+			include_type = false,
+			template = {
+				"@returns",
+			},
 		},
 	},
 }
