@@ -66,8 +66,9 @@ local COMMON_DATA = {
 					gap = true,
 					gap_text = " *",
 				},
-				section = {
-					order = { "primary_section", "secondary_section" },
+				section_order = {
+					"primary_section",
+					"secondary_section",
 				},
 			},
 			primary_section = {
@@ -181,11 +182,9 @@ local GENERAL_SECTION_CASES = {
 		},
 		opts_to_change = {
 			general = {
-				section = {
-					order = {
-						"secondary_section",
-						"primary_section",
-					},
+				section_order = {
+					"secondary_section",
+					"primary_section",
 				},
 			},
 			primary_section = {

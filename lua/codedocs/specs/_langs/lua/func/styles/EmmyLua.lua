@@ -7,8 +7,9 @@ return {
 			gap = false,
 			gap_text = "--",
 		},
-		section = {
-			order = { "params", "return_type" },
+		section_order = {
+			"params",
+			"return_type",
 		},
 	},
 	params = {

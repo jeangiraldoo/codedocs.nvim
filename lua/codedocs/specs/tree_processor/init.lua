@@ -49,7 +49,7 @@ local function _item_parser(lang, node, struct_name, struct_style)
 	local struct_cache = CACHED_TREES[lang][struct_name]
 
 	local items = {}
-	for _, section_name in pairs(struct_style.general.section.order) do
+	for _, section_name in pairs(struct_style.general.section_order) do
 		local section_tree = struct_cache[section_name]
 
 		items[section_name] = vim.iter(section_tree)

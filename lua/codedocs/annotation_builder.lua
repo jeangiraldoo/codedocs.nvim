@@ -15,7 +15,7 @@ end
 local function _build_annotation_content(item_data, style)
 	local annotation_content = {}
 
-	for _, section_name in ipairs(style.general.section.order) do
+	for _, section_name in ipairs(style.general.section_order) do
 		local section_items = item_data[section_name]
 		local section_style = style[section_name]
 
@@ -63,7 +63,7 @@ local function _format_annotation_content(sections_data, style, annotation_layou
 		table.insert(annotation_layout_copy, title_gap_pos, style.general.annotation_title.gap_text)
 	end
 
-	local sections_order = general_opts.section.order
+	local sections_order = general_opts.section_order
 	for section_idx, section_name in ipairs(sections_order) do
 		local section_content = sections_data[section_name]
 

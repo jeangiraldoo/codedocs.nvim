@@ -7,9 +7,7 @@ local general = {
 		line_offset = "number", -- Title line offset within the docstring
 		gap = "boolean", -- Adds a blank line after the title if there's a section
 	},
-	section = {
-		order = "table", -- Specifies the order of docstring sections
-	},
+	section_order = "table", -- Specifies the order of docstring sections
 }
 
 local item = {

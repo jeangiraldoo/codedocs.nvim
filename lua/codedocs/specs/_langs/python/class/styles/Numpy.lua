@@ -7,8 +7,8 @@ return {
 			gap = true,
 			gap_text = "",
 		},
-		section = {
-			order = { "attrs" },
+		section_order = {
+			"attrs",
 		},
 	},
 	attrs = {
