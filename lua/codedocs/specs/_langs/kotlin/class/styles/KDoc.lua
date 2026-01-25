@@ -8,8 +8,6 @@ return {
 			gap_text = " *",
 		},
 		section = {
-			gap = false,
-			gap_text = " *",
 			order = { "attrs" },
 		},
 		item_gap = false,
@@ -20,6 +18,10 @@ return {
 		include_instance_attrs = false,
 		include_only_constructor_instance_attrs = false,
 		indent = false,
+		gap = {
+			enabled = false,
+			text = " *",
+		},
 		format = {
 			"@property %item_name",
 		},

@@ -8,8 +8,6 @@ return {
 			gap_text = " *",
 		},
 		section = {
-			gap = false,
-			gap_text = " *",
 			order = { "attrs" },
 		},
 		item_gap = false,
@@ -22,6 +20,10 @@ return {
 		include_instance_attrs = false,
 		include_only_constructor_instance_attrs = nil, -- Java attrs can only be declared in the class body
 		indent = false,
+		gap = {
+			enabled = false,
+			text = " *",
+		},
 		template = {
 			"- %item_name:",
 		},

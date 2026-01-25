@@ -8,8 +8,6 @@ return {
 			gap_text = " *",
 		},
 		section = {
-			gap = false,
-			gap_text = " *",
 			order = { "params", "return_type" },
 		},
 		item_gap = false,
@@ -17,6 +15,10 @@ return {
 	params = {
 		layout = {},
 		indent = false,
+		gap = {
+			enabled = false,
+			text = " *",
+		},
 		template = {
 			"@param %item_name -",
 		},
@@ -24,6 +26,10 @@ return {
 	return_type = {
 		layout = {},
 		indent = false,
+		gap = {
+			enabled = false,
+			text = " *",
+		},
 		template = {
 			"@returns",
 		},

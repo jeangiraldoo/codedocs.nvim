@@ -77,8 +77,8 @@ local function _format_annotation_content(sections_data, style, annotation_layou
 			end
 		end
 
-		if general_opts.section.gap and sections_order[section_idx + 1] then
-			table.insert(annotation_layout_copy, #annotation_layout_copy, style.general.section.gap_text)
+		if style[section_name].gap.enabled and sections_order[section_idx + 1] then
+			table.insert(annotation_layout_copy, #annotation_layout_copy, style[section_name].gap.text)
 		end
 		::skip_section::
 	end

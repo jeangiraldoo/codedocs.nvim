@@ -8,8 +8,6 @@ return {
 			gap_text = "",
 		},
 		section = {
-			gap = false,
-			gap_text = "",
 			order = { "attrs" },
 		},
 		item_gap = false,
@@ -23,6 +21,10 @@ return {
 		include_only_constructor_instance_attrs = true,
 		indent = true,
 		include_type = true,
+		gap = {
+			enabled = false,
+			text = "",
+		},
 		template = {
 			"%item_name (%item_type):",
 		},

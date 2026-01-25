@@ -8,8 +8,6 @@ local general = {
 		gap = "boolean", -- Adds a blank line after the title if there's a section
 	},
 	section = {
-		gap = "boolean", -- Adds spacing between sections if more than one exists
-		gap_text = "string", -- String to be inserted in between 2 sections
 		order = "table", -- Specifies the order of docstring sections
 	},
 	item_gap = "boolean", -- Adds spacing between items if multiple exist
@@ -18,6 +16,10 @@ local general = {
 local item = {
 	section_title = "string", -- Section title
 	indent = "boolean", -- Indents items if true
+	gap = {
+		enabled = "boolean", -- Adds spacing between sections if more than one exists
+		text = "string", -- String to be inserted in between 2 sections
+	},
 	item_name = {
 		keyword = "string", -- Keyword prefixed to item names
 		delimiters = "table", -- Strings surrounding item names

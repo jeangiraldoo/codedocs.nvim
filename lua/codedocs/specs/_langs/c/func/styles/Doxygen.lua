@@ -16,14 +16,16 @@ return {
 				"params",
 				"return_type",
 			},
-			gap = false,
-			gap_text = " *",
 		},
 		item_gap = false,
 	},
 	params = {
 		layout = {},
 		indent = false,
+		gap = {
+			enabled = false,
+			text = " *",
+		},
 		include_type = false,
 		template = {
 			{ "@param %item_name", "%item_type" },
@@ -32,6 +34,10 @@ return {
 	return_type = {
 		layout = {},
 		indent = false,
+		gap = {
+			enabled = false,
+			text = " *",
+		},
 		include_type = false,
 		template = {
 			{ "@return", "%item_type" },

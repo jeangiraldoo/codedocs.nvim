@@ -8,8 +8,6 @@ return {
 			gap_text = "///",
 		},
 		section = {
-			gap = true,
-			gap_text = "///",
 			order = { "params", "return_type" },
 		},
 		item_gap = false,
@@ -20,6 +18,10 @@ return {
 			"",
 		},
 		indent = false,
+		gap = {
+			enabled = true,
+			text = "///",
+		},
 		template = {
 			" * `%item_name`",
 		},
@@ -30,6 +32,10 @@ return {
 			"",
 		},
 		indent = false,
+		gap = {
+			enabled = true,
+			text = "///",
+		},
 		template = {
 			"",
 		},

@@ -8,8 +8,6 @@ return {
 			gap_text = "",
 		},
 		section = {
-			gap = false,
-			gap_text = "",
 			order = { "params", "return_type" },
 		},
 		item_gap = false,
@@ -20,6 +18,10 @@ return {
 		},
 		indent = true,
 		include_type = true,
+		gap = {
+			enabled = false,
+			text = "",
+		},
 		template = {
 			"%item_name (%item_type):",
 		},
@@ -30,6 +32,10 @@ return {
 		},
 		indent = true,
 		include_type = true,
+		gap = {
+			enabled = false,
+			text = "",
+		},
 		template = {
 			"%item_type:",
 		},

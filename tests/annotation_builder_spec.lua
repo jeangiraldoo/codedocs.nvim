@@ -67,8 +67,6 @@ local COMMON_DATA = {
 					gap_text = " *",
 				},
 				section = {
-					gap = false,
-					gap_text = " *",
 					order = { "primary_section", "secondary_section" },
 				},
 				item_gap = false,
@@ -76,6 +74,10 @@ local COMMON_DATA = {
 			primary_section = {
 				layout = {},
 				indent = false,
+				gap = {
+					enabled = false,
+					text = " *",
+				},
 				template = {
 					{ "@item", "%item_name", "%item_type" },
 				},
@@ -83,6 +85,10 @@ local COMMON_DATA = {
 			secondary_section = {
 				layout = {},
 				indent = false,
+				gap = {
+					enabled = false,
+					text = " *",
+				},
 				template = {
 					{ "@secondary_item", "%item_name" },
 				},
@@ -134,10 +140,16 @@ local GENERAL_SECTION_CASES = {
 			" */",
 		},
 		opts_to_change = {
-			general = {
-				section = {
-					gap = true,
-					gap_text = "--*",
+			primary_section = {
+				gap = {
+					enabled = true,
+					text = "--*",
+				},
+			},
+			secondary_section = {
+				gap = {
+					enabled = true,
+					text = "--*",
 				},
 			},
 		},
@@ -269,8 +281,6 @@ local function test_case(name, case)
 	it(name, function()
 		local copy = vim.deepcopy(COMMON_DATA.BASE_STYLE.opts)
 		local new_style = vim.tbl_deep_extend("force", copy, case.opts_to_change)
-		print("NEW STYLE")
-		print(vim.inspect(new_style))
 		local annotation = annotation_builder(new_style, COMMON_DATA.ITEMS, new_style.general.layout)
 
 		assert.are.same(case.expected_annotation, annotation)
