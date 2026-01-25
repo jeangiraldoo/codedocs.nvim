@@ -13,7 +13,7 @@ return {
 	},
 	attrs = {
 		layout = {
-			"Properties:",
+			" * Properties:",
 		},
 		include_class_attrs = true,
 		include_instance_attrs = false,
@@ -27,7 +27,7 @@ return {
 			indent = false,
 			include_type = false,
 			template = {
-				"- `%item_name`",
+				" * - `%item_name`",
 			},
 		},
 	},

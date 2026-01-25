@@ -23,7 +23,7 @@ return {
 			indent = false,
 			include_type = true,
 			template = {
-				{ "@param", "%item_type", "%item_name" },
+				{ " * @param", "%item_type", "%item_name" },
 			},
 		},
 	},
@@ -38,7 +38,7 @@ return {
 			indent = false,
 			include_type = false,
 			template = {
-				"@return",
+				" * @return",
 			},
 		},
 	},

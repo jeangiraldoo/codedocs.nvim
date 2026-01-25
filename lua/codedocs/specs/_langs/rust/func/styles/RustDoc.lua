@@ -14,8 +14,8 @@ return {
 	},
 	params = {
 		layout = {
-			" # Arguments",
-			"",
+			"/// # Arguments",
+			"///",
 		},
 		gap = {
 			enabled = true,
@@ -26,14 +26,14 @@ return {
 			include_type = false,
 			indent = false,
 			template = {
-				" * `%item_name`",
+				"/// * `%item_name`",
 			},
 		},
 	},
 	return_type = {
 		layout = {
-			" # Returns",
-			"",
+			"/// # Returns",
+			"///",
 		},
 		gap = {
 			enabled = true,
@@ -44,7 +44,7 @@ return {
 			indent = false,
 			include_type = false,
 			template = {
-				"",
+				"///",
 			},
 		},
 	},

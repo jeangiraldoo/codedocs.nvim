@@ -17,7 +17,7 @@ return {
 	},
 	params = {
 		layout = {
-			"Parameters:",
+			"// Parameters:",
 		},
 		gap = {
 			enabled = true,
@@ -28,13 +28,13 @@ return {
 			indent = false,
 			include_type = false,
 			template = {
-				{ "- %item_name:", "%item_type" },
+				{ "// - %item_name:", "%item_type" },
 			},
 		},
 	},
 	return_type = {
 		layout = {
-			"Returns:",
+			"// Returns:",
 		},
 		gap = {
 			enabled = true,
@@ -45,7 +45,7 @@ return {
 			indent = false,
 			include_type = false,
 			template = {
-				"%item_type",
+				"// %item_type",
 			},
 		},
 	},

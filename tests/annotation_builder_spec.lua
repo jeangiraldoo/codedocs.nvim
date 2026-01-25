@@ -82,7 +82,7 @@ local COMMON_DATA = {
 					indent = false,
 					include_type = false,
 					template = {
-						{ "@item", "%item_name", "%item_type" },
+						{ " * @item", "%item_name", "%item_type" },
 					},
 				},
 			},
@@ -97,7 +97,7 @@ local COMMON_DATA = {
 					include_type = false,
 					indent = false,
 					template = {
-						{ "@secondary_item", "%item_name" },
+						{ " * @secondary_item", "%item_name" },
 					},
 				},
 			},
@@ -127,6 +127,20 @@ local GENERAL_SECTION_CASES = {
 					"---",
 					"--* ",
 					" ]-",
+				},
+			},
+			primary_section = {
+				items = {
+					template = {
+						{ "--* @item", "%item_name", "%item_type" },
+					},
+				},
+			},
+			secondary_section = {
+				items = {
+					template = {
+						{ "--* @secondary_item", "%item_name" },
+					},
 				},
 			},
 		},
@@ -189,9 +203,9 @@ local GENERAL_SECTION_CASES = {
 			},
 			primary_section = {
 				layout = {
-					"This is the primary section",
-					"***************************",
-					"",
+					" * This is the primary section",
+					" * ***************************",
+					" * ",
 				},
 			},
 		},
@@ -241,30 +255,6 @@ local ITEM_CASES = {
 			"/**",
 			" * ",
 			" *",
-			" * 	@item a int",
-			" * 	@item b",
-			" * 	@item c int",
-			" * 	@item string",
-			" * @secondary_item d",
-			" * @secondary_item e",
-			" * @secondary_item f",
-			" * @secondary_item",
-			" */",
-		},
-		opts_to_change = {
-			primary_section = {
-				items = {
-					indent = true,
-					include_type = true,
-				},
-			},
-		},
-	},
-	{
-		expected_annotation = {
-			"/**",
-			" * ",
-			" *",
 			" * @the_type [int] @the_name {a}",
 			" * @the_type [] @the_name {b}",
 			" * @the_type [int] @the_name {c}",
@@ -280,7 +270,7 @@ local ITEM_CASES = {
 				items = {
 					include_type = true,
 					template = {
-						{ "@the_type", "[%item_type]", "@the_name", "{%item_name}" },
+						{ " * @the_type", "[%item_type]", "@the_name", "{%item_name}" },
 					},
 				},
 			},

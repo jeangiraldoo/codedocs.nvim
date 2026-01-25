@@ -13,7 +13,7 @@ return {
 	},
 	attrs = {
 		layout = {
-			"Attributes:",
+			" * Attributes:",
 		},
 		gap = {
 			enabled = false,
@@ -27,7 +27,7 @@ return {
 			indent = false,
 			include_type = false,
 			template = {
-				{ "- %item_name:", "%item_type" },
+				{ " * - %item_name:", "%item_type" },
 			},
 		},
 	},

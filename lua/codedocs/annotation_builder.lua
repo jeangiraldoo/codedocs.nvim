@@ -70,7 +70,7 @@ local function _format_annotation_content(sections_data, style, annotation_layou
 		if section_content == nil then goto skip_section end ---A section without content shouldn't be added to the annotation
 
 		for line_idx, line in ipairs(section_content) do
-			table.insert(annotation_layout_copy, #annotation_layout_copy, line_start .. line)
+			table.insert(annotation_layout_copy, #annotation_layout_copy, line)
 
 			if style[section_name].items.insert_gap_between and section_content[line_idx + 1] then
 				table.insert(annotation_layout_copy, #annotation_layout_copy, line_start)

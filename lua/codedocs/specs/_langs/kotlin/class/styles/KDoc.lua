@@ -25,7 +25,7 @@ return {
 			indent = false,
 			include_type = false,
 			format = {
-				{ "@property %item_name", "%item_type" },
+				{ " * @property %item_name", "%item_type" },
 			},
 		},
 	},
