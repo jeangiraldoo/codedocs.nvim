@@ -54,7 +54,6 @@ end
 -- @return table Final formatted annotation as a flat list of lines
 local function _format_annotation_content(sections_data, style, annotation_layout)
 	local general_opts = style.general
-	local line_start = style.general.layout[2]
 
 	local annotation_layout_copy = vim.deepcopy(annotation_layout)
 
@@ -72,8 +71,12 @@ local function _format_annotation_content(sections_data, style, annotation_layou
 		for line_idx, line in ipairs(section_content) do
 			table.insert(annotation_layout_copy, #annotation_layout_copy, line)
 
-			if style[section_name].items.insert_gap_between and section_content[line_idx + 1] then
-				table.insert(annotation_layout_copy, #annotation_layout_copy, line_start)
+			if style[section_name].items.insert_gap_between.enabled and section_content[line_idx + 1] then
+				table.insert(
+					annotation_layout_copy,
+					#annotation_layout_copy,
+					style[section_name].items.insert_gap_between.text
+				)
 			end
 		end
 

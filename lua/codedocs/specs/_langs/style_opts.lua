@@ -16,7 +16,10 @@ local item = {
 		text = "string", -- String to be inserted in between 2 sections
 	},
 	items = {
-		insert_gap_between = "boolean", -- Adds spacing between items if multiple exist
+		insert_gap_between = {
+			enabled = "boolean", -- Adds spacing between items if multiple exist
+			text = "string", -- String to be inserted between items
+		},
 		include_type = "boolean", -- Includes item type if true
 		indent = "boolean", -- Whether or not to indent items
 		template = "table", -- List of lines representing an item

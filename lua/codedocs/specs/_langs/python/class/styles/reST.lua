@@ -21,7 +21,10 @@ return {
 			text = "",
 		},
 		items = {
-			insert_gap_between = false,
+			insert_gap_between = {
+				enabled = false,
+				text = "",
+			},
 			indent = false,
 			include_type = true,
 			template = {

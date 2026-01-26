@@ -21,7 +21,10 @@ return {
 		include_instance_attrs = false,
 		include_only_constructor_instance_attrs = false,
 		items = {
-			insert_gap_between = false,
+			insert_gap_between = {
+				enabled = false,
+				text = " *",
+			},
 			indent = false,
 			include_type = false,
 			template = {
