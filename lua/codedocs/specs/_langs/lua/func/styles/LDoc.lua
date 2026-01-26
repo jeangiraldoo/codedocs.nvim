@@ -1,15 +1,21 @@
 return {
 	general = {
-		layout = { "--- ", "-- " },
+		layout = {},
 		direction = true,
-		annotation_title = {
-			pos = 1,
-			gap = false,
-			gap_text = "--",
-		},
+		insert_at = 1,
 		section_order = {
 			"params",
 			"return_type",
+		},
+	},
+	title = {
+		layout = {
+			"--- ",
+		},
+		cursor_pos = 1,
+		gap = {
+			enabled = false,
+			text = "--",
 		},
 	},
 	params = {

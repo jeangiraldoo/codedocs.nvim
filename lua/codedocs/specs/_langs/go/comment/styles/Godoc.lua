@@ -4,8 +4,10 @@ return {
 			"// ",
 		},
 		direction = true,
-		annotation_title = {
-			pos = 1,
-		},
+		insert_at = 1,
+	},
+	title = {
+		layout = {},
+		cursor_pos = 1,
 	},
 }

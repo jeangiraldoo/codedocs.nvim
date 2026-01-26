@@ -30,7 +30,8 @@ function M.insert_docs()
 	local docs = (struct_name == "comment") and layout or docs_builder(style, items_data, layout)
 	Debug_logger.log("Annotation:", docs)
 
-	require("codedocs.buf_writer")(docs, pos, style.general.direction, style.general.annotation_title.pos)
+	local cursor_pos = style.general.insert_at + (style.title.cursor_pos - 1)
+	require("codedocs.buf_writer")(docs, pos, style.general.direction, cursor_pos)
 end
 
 return M

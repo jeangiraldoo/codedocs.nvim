@@ -58,17 +58,22 @@ local COMMON_DATA = {
 			general = {
 				layout = {
 					"/**",
-					" * ",
 					" */",
 				},
-				annotation_title = {
-					pos = 2,
-					gap = true,
-					gap_text = " *",
-				},
+				insert_at = 2,
 				section_order = {
 					"primary_section",
 					"secondary_section",
+				},
+			},
+			title = {
+				layout = {
+					" * ",
+				},
+				cursor_pos = 1,
+				gap = {
+					enabled = true,
+					text = " *",
 				},
 			},
 			primary_section = {
@@ -131,8 +136,12 @@ local GENERAL_SECTION_CASES = {
 			general = {
 				layout = {
 					"---",
-					"--* ",
 					" ]-",
+				},
+			},
+			title = {
+				layout = {
+					"--* ",
 				},
 			},
 			primary_section = {

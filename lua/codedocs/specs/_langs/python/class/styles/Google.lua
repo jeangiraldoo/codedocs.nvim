@@ -1,14 +1,23 @@
 return {
 	general = {
-		layout = { '"""', "", '"""' },
-		direction = false,
-		annotation_title = {
-			pos = 2,
-			gap = true,
-			gap_text = "",
+		layout = {
+			'"""',
+			'"""',
 		},
+		insert_at = 2,
+		direction = false,
 		section_order = {
 			"attrs",
+		},
+	},
+	title = {
+		layout = {
+			"",
+		},
+		cursor_pos = 1,
+		gap = {
+			enabled = true,
+			text = "",
 		},
 	},
 	attrs = {

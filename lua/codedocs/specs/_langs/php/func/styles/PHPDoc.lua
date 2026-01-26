@@ -1,15 +1,24 @@
 return {
 	general = {
-		layout = { "/**", " * ", " */" },
-		direction = true,
-		annotation_title = {
-			pos = 2,
-			gap = true,
-			gap_text = " *",
+		layout = {
+			"/**",
+			" */",
 		},
+		insert_at = 2,
+		direction = true,
 		section_order = {
 			"params",
 			"return_type",
+		},
+	},
+	title = {
+		layout = {
+			" * ",
+		},
+		cursor_pos = 1,
+		gap = {
+			enabled = true,
+			text = " *",
 		},
 	},
 	params = {

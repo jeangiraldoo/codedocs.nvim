@@ -1,9 +1,11 @@
 return {
 	general = {
 		layout = { "// " },
-		annotation_title = {
-			pos = 1,
-		},
 		direction = true,
+		insert_at = 1,
+	},
+	title = {
+		layout = {},
+		cursor_pos = 1,
 	},
 }

@@ -57,9 +57,18 @@ local function _format_annotation_content(sections_data, style, annotation_layou
 
 	local annotation_layout_copy = vim.deepcopy(annotation_layout)
 
-	if general_opts.annotation_title.gap and vim.tbl_count(sections_data) > 0 then
-		local title_gap_pos = general_opts.annotation_title.pos + 1
-		table.insert(annotation_layout_copy, title_gap_pos, style.general.annotation_title.gap_text)
+	local insertion_pos = general_opts.insert_at
+
+	---Title
+	for _, title_line in ipairs(style.title.layout) do
+		table.insert(annotation_layout_copy, insertion_pos, title_line)
+		insertion_pos = insertion_pos + 1
+	end
+
+	if style.title.gap.enabled and vim.tbl_count(sections_data) > 0 then
+		-- local title_gap_pos = general_opts.annotation_title.pos + 1
+		table.insert(annotation_layout_copy, insertion_pos, style.title.gap.text)
+		insertion_pos = insertion_pos + 1
 	end
 
 	local sections_order = general_opts.section_order
@@ -69,19 +78,18 @@ local function _format_annotation_content(sections_data, style, annotation_layou
 		if section_content == nil then goto skip_section end ---A section without content shouldn't be added to the annotation
 
 		for line_idx, line in ipairs(section_content) do
-			table.insert(annotation_layout_copy, #annotation_layout_copy, line)
+			table.insert(annotation_layout_copy, insertion_pos, line)
+			insertion_pos = insertion_pos + 1
 
 			if style[section_name].items.insert_gap_between.enabled and section_content[line_idx + 1] then
-				table.insert(
-					annotation_layout_copy,
-					#annotation_layout_copy,
-					style[section_name].items.insert_gap_between.text
-				)
+				table.insert(annotation_layout_copy, insertion_pos, style[section_name].items.insert_gap_between.text)
+				insertion_pos = insertion_pos + 1
 			end
 		end
 
 		if style[section_name].gap.enabled and sections_order[section_idx + 1] then
-			table.insert(annotation_layout_copy, #annotation_layout_copy, style[section_name].gap.text)
+			table.insert(annotation_layout_copy, insertion_pos, style[section_name].gap.text)
+			insertion_pos = insertion_pos + 1
 		end
 		::skip_section::
 	end
@@ -89,7 +97,7 @@ local function _format_annotation_content(sections_data, style, annotation_layou
 	-- Elements are inserted at the index of the last element, shifting that element to the right. As a result,
 	-- the original last element of the base annotation structure ends up at the very end of the final annotation.
 	-- This is desired when the base structure has three parts, but becomes a leftover element when it has only two
-	if #annotation_layout == 2 then table.remove(annotation_layout_copy, #annotation_layout_copy) end
+	-- if #annotation_layout == 2 then table.remove(annotation_layout_copy, #annotation_layout_copy) end
 
 	return annotation_layout_copy
 end
