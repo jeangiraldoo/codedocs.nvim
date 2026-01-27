@@ -36,7 +36,7 @@ return {
 			},
 			indent = false,
 			include_type = false,
-			format = {
+			template = {
 				{ " * @property %item_name", "%item_type" },
 			},
 		},
