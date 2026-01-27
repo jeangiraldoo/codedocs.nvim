@@ -193,11 +193,25 @@ In this case, we:
 To customize an annotation style, you have to keep in mind that it is nothing
 but a table where each key is an option, spread across many sections:
 
-| Structure | Sections                           |
-| --------- | ---------------------------------- |
-| `func`    | `general`, `params`, `return_type` |
-| `class`   | `general`, `attrs`                 |
-| `comment` | `general`                          |
+| Structure | Sections                                    |
+| --------- | ------------------------------------------- |
+| `func`    | `general`, `title`, `params`, `return_type` |
+| `class`   | `general`, `title`, `attrs`                 |
+| `comment` | `general`, `title`                          |
+
+##### Options common to all sections
+
+| Option Name | Expected Value Type | Behavior                                                           |
+| ----------- | ------------------- | ------------------------------------------------------------------ |
+| layout      | `table`             | Defines the base lines that compose an annotation section          |
+| gap         | `table`             | Sets up a gap in between the current section and the section below |
+
+###### `gap` suboptions
+
+| Suboption Name | Expected Value Type | Behavior                    |
+| -------------- | ------------------- | --------------------------- |
+| enabled        | `boolean`           | Whether the gap is inserted |
+| text           | `string`            | String used as the gap      |
 
 ##### General section
 
@@ -209,18 +223,19 @@ All other sections are focused on configuring how the items they contain are dis
 
 The `general` section supports the following options:
 
-| Option Name        | Expected Value Type | Behavior                                                                                                           |
-| ------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `structure`        | table               | Defines the structure of a docstring. Each item in the table represents one line. At least two items are required. |
-| `direction`        | boolean             | Determines where the docstring is inserted relative to the structure. `true` for above, `false` for below.         |
-| `title_pos`        | number              | Specifies the cursor position after inserting the docstring, relative to its first line.                           |
-| `title_gap_text`   | string              | String to be inserted in between the annotation title and the section below                                        |
-| `section_gap`      | boolean             | Determines whether a specific string is inserted betwee sections                                                   |
-| `section_gap_text` | string              | String to be inserted in between 2 sections                                                                        |
-| `item_gap`         | boolean             | Determines whether there is an empty line between items.                                                           |
-| `section_order`    | table               | Specifies the order in which sections are added to the docstring.                                                  |
+| Option Name     | Expected Value Type | Behavior                                                                          |
+| --------------- | ------------------- | --------------------------------------------------------------------------------- |
+| `direction`     | boolean             | Determines where the annotation is inserted. `true` for above, `false` for below. |
+| `insert_at`     | boolean             | Position in the `layout` option to insert the annotation content into             |
+| `section_order` | table               | Specifies the order in which sections are added to the docstring.                 |
 
-##### Items
+##### Title section
+
+| Option Name  | Expected Value Type | Behavior                                                             |
+| ------------ | ------------------- | -------------------------------------------------------------------- |
+| `cursor_pos` | number              | Determines what line from the `layout` option to place the cursor on |
+
+##### Item-based sections
 
 An `item` is a part of a structure, having a `name` that identifies it, and a
 `data type`.
@@ -230,20 +245,20 @@ The following is a mapping of structures to their respective items:
 - Function: Parameters (`params` section), return type (`return_type` section).
 - Class: Attributes (`attrs` section).
 
-Below are the available options (they are available to all structure sections
-except `general`):
+| Option Name | Expected Value Type | Behavior                                   |
+| ----------- | ------------------- | ------------------------------------------ |
+| `items`     | table               | Controls how individual items are rendered |
 
-| Option Name    | Expected Value Type | Behavior                                                                      |
-| -------------- | ------------------- | ----------------------------------------------------------------------------- |
-| `title`        | string              | Section title                                                                 |
-| `inline`       | boolean             | Show item name and type on the same line or separate lines                    |
-| `indent`       | boolean             | Indent items                                                                  |
-| `include_type` | boolean             | Include item type in the docstring if available                               |
-| `type_first`   | boolean             | Place item type before item name                                              |
-| `name_kw`      | string              | Prefix for item name                                                          |
-| `type_kw`      | string              | Prefix for item type                                                          |
-| `name_wrapper` | table               | Strings surrounding item name (must contain two). Use empty string to disable |
-| `type_wrapper` | table               | Strings surrounding item type (must contain two). Use empty string to disable |
+###### `items` suboptions
+
+| Suboption                          | Expected Type | Description                                      |
+| ---------------------------------- | ------------- | ------------------------------------------------ |
+| `items.insert_gap_between`         | `table`       | Controls spacing between consecutive items       |
+| `items.insert_gap_between.enabled` | `boolean`     | Whether to insert a gap between items            |
+| `items.insert_gap_between.text`    | `string`      | String inserted between items                    |
+| `include_type`                     | `boolean`     | Whether to include the item’s type               |
+| `indent`                           | `boolean`     | Whether item lines are indented                  |
+| `items.template`                   | `table`       | List of lines describing how an item is rendered |
 
 ##### Attrs section extension for classes
 
