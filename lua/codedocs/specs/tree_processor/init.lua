@@ -1,5 +1,3 @@
-local Spec = require("codedocs.specs")
-
 local function _item_parser(node, struct_tree, struct_style)
 	local items = {}
 	for _, section_name in pairs(struct_style.general.section_order) do
@@ -14,10 +12,7 @@ local function _item_parser(node, struct_tree, struct_style)
 	return items
 end
 
-return function(lang, struct_name, struct_tree, node, style_name)
-	local struct_style = style_name and Spec.get_struct_style(lang, struct_name, style_name)
-		or Spec:_get_struct_main_style(lang, struct_name)
-
+return function(struct_style, struct_name, struct_tree, node)
 	local pos, data
 	if struct_name == "comment" then
 		pos = vim.api.nvim_win_get_cursor(0)[1] - 1
@@ -27,5 +22,5 @@ return function(lang, struct_name, struct_tree, node, style_name)
 		data = _item_parser(node, struct_tree, struct_style)
 	end
 
-	return data, struct_style, pos
+	return data, pos
 end

@@ -22,19 +22,20 @@ function M.insert_docs()
 
 	local struct_name, node = require("codedocs.struct_detector")(Spec.get_struct_identifiers(lang))
 	local struct_tree = Spec.get_struct_tree(lang, struct_name)
+	local struct_style = Spec:_get_struct_main_style(lang, struct_name)
 
-	local items_data, style, pos = require("codedocs.specs.tree_processor")(lang, struct_name, struct_tree, node)
+	local items_data, pos = require("codedocs.specs.tree_processor")(struct_style, struct_name, struct_tree, node)
 	Debug_logger.log("Structure name: " .. struct_name)
 	Debug_logger.log("Item data: ", items_data)
-	Debug_logger.log("Style: ", style)
+	Debug_logger.log("Style: ", struct_style)
 
-	local layout = style.general.layout
+	local layout = struct_style.general.layout
 
-	local docs = (struct_name == "comment") and layout or docs_builder(style, items_data, layout)
+	local docs = (struct_name == "comment") and layout or docs_builder(struct_style, items_data, layout)
 	Debug_logger.log("Annotation:", docs)
 
-	local cursor_pos = style.general.insert_at + (style.title.cursor_pos - 1)
-	require("codedocs.buf_writer")(docs, pos, style.general.direction, cursor_pos)
+	local cursor_pos = struct_style.general.insert_at + (struct_style.title.cursor_pos - 1)
+	require("codedocs.buf_writer")(docs, pos, struct_style.general.direction, cursor_pos)
 end
 
 return M

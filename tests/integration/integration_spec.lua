@@ -15,11 +15,11 @@ local function test_case(lang, expected_annotation)
 	for style_name, expected_docs in pairs(expected_annotation) do
 		local struct_name, node = require("codedocs.struct_detector")(Spec.get_struct_identifiers(lang))
 		local struct_tree = Spec.get_struct_tree(lang, struct_name)
-		local data, style, _ =
-			require("codedocs.specs.tree_processor")(vim.bo.filetype, struct_name, struct_tree, node, style_name)
+		local struct_style = Spec.get_struct_style(lang, struct_name, style_name)
+		local data, _ = require("codedocs.specs.tree_processor")(struct_style, struct_name, struct_tree, node)
 
-		local docs = (struct_name == "comment") and style.general.layout
-			or annotation_builder(style, data, style.general.layout)
+		local docs = (struct_name == "comment") and struct_style.general.layout
+			or annotation_builder(struct_style, data, struct_style.general.layout)
 		assert.are.same(expected_docs, docs)
 	end
 end
