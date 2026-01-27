@@ -1,39 +1,57 @@
 return {
 	general = {
-		structure = { "--- ", "-- " },
+		layout = {},
 		direction = true,
-		title_pos = 1,
-		title_gap = false,
-		title_gap_text = "--",
-		section_gap = false,
-		section_gap_text = "--",
-		section_underline = "",
-		section_title_gap = false,
-		item_gap = false,
-		section_order = { "params", "return_type" },
+		insert_at = 1,
+		section_order = {
+			"params",
+			"return_type",
+		},
+	},
+	title = {
+		layout = {
+			"--- ",
+		},
+		cursor_pos = 1,
+		gap = {
+			enabled = false,
+			text = "--",
+		},
 	},
 	params = {
-		title = "",
-		inline = true,
-		indent = false,
-		include_type = true,
-		type_first = false,
-		name_kw = "@param",
-		type_kw = "",
-		name_wrapper = { "", "" },
-		type_wrapper = { "", "" },
-		is_type_below_name_first = false,
+		layout = {},
+		gap = {
+			enabled = false,
+			text = "--",
+		},
+		items = {
+			insert_gap_between = {
+				enabled = false,
+				text = "--",
+			},
+			indent = false,
+			include_type = false,
+			template = {
+				"-- @param %item_name",
+			},
+		},
 	},
 	return_type = {
-		title = "",
-		inline = true,
-		indent = false,
-		include_type = false,
-		type_first = false,
-		name_kw = "",
-		type_kw = "@return",
-		name_wrapper = { "", "" },
-		type_wrapper = { "", "" },
-		is_type_below_name_first = false,
+		layout = {},
+		gap = {
+			enabled = false,
+			text = "--",
+		},
+		items = {
+			insert_gap_between = {
+				enabled = false,
+				text = "--",
+			},
+			indent = false,
+			include_type = false,
+			template = {
+				"-- @return",
+			},
+		},
 	},
 }

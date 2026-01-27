@@ -56,44 +56,61 @@ local COMMON_DATA = {
 		},
 		opts = {
 			general = {
-				structure = {
+				layout = {
 					"/**",
-					" * ",
 					" */",
 				},
-				title_pos = 2,
-				title_gap = true,
-				title_gap_text = " *",
-				section_gap = false,
-				section_gap_text = " *",
-				section_underline = "",
-				section_title_gap = false,
-				item_gap = false,
-				section_order = { "primary_section", "secondary_section" },
+				insert_at = 2,
+				section_order = {
+					"primary_section",
+					"secondary_section",
+				},
+			},
+			title = {
+				layout = {
+					" * ",
+				},
+				cursor_pos = 1,
+				gap = {
+					enabled = true,
+					text = " *",
+				},
 			},
 			primary_section = {
-				title = "",
-				inline = true,
-				indent = false,
-				include_type = false,
-				type_first = false,
-				name_kw = "@item",
-				type_kw = "",
-				name_wrapper = { "", "" },
-				type_wrapper = { "", "" },
-				is_type_below_name_first = false,
+				layout = {},
+				gap = {
+					enabled = false,
+					text = " *",
+				},
+				items = {
+					insert_gap_between = {
+						enabled = false,
+						text = " * ",
+					},
+					indent = false,
+					include_type = false,
+					template = {
+						{ " * @item", "%item_name", "%item_type" },
+					},
+				},
 			},
 			secondary_section = {
-				title = "",
-				inline = true,
-				indent = false,
-				include_type = false,
-				type_first = false,
-				name_kw = "@secondary_item",
-				type_kw = "",
-				name_wrapper = { "", "" },
-				type_wrapper = { "", "" },
-				is_type_below_name_first = false,
+				layout = {},
+				gap = {
+					enabled = false,
+					text = " * ",
+				},
+				items = {
+					insert_gap_between = {
+						enabled = false,
+						text = " * ",
+					},
+					include_type = false,
+					indent = false,
+					template = {
+						{ " * @secondary_item", "%item_name" },
+					},
+				},
 			},
 		},
 	},
@@ -104,6 +121,7 @@ local GENERAL_SECTION_CASES = {
 		expected_annotation = {
 			"---",
 			"--* ",
+			" *",
 			"--* @item a",
 			"--* @item b",
 			"--* @item c",
@@ -116,12 +134,29 @@ local GENERAL_SECTION_CASES = {
 		},
 		opts_to_change = {
 			general = {
-				structure = {
+				layout = {
 					"---",
-					"--* ",
 					" ]-",
 				},
-				title_gap = false,
+			},
+			title = {
+				layout = {
+					"--* ",
+				},
+			},
+			primary_section = {
+				items = {
+					template = {
+						{ "--* @item", "%item_name", "%item_type" },
+					},
+				},
+			},
+			secondary_section = {
+				items = {
+					template = {
+						{ "--* @secondary_item", "%item_name" },
+					},
+				},
 			},
 		},
 	},
@@ -142,9 +177,17 @@ local GENERAL_SECTION_CASES = {
 			" */",
 		},
 		opts_to_change = {
-			general = {
-				section_gap = true,
-				section_gap_text = "--*",
+			primary_section = {
+				gap = {
+					enabled = true,
+					text = "--*",
+				},
+			},
+			secondary_section = {
+				gap = {
+					enabled = true,
+					text = "--*",
+				},
 			},
 		},
 	},
@@ -153,7 +196,6 @@ local GENERAL_SECTION_CASES = {
 			"/**",
 			" * ",
 			" *",
-			" * ", ---BUG: This shouldnt be here
 			" * @secondary_item d",
 			" * @secondary_item e",
 			" * @secondary_item f",
@@ -169,15 +211,17 @@ local GENERAL_SECTION_CASES = {
 		},
 		opts_to_change = {
 			general = {
-				section_underline = "*",
-				section_title_gap = true,
 				section_order = {
 					"secondary_section",
 					"primary_section",
 				},
 			},
 			primary_section = {
-				title = "This is the primary section",
+				layout = {
+					" * This is the primary section",
+					" * ***************************",
+					" * ",
+				},
 			},
 		},
 	},
@@ -203,8 +247,19 @@ local GENERAL_SECTION_CASES = {
 			" */",
 		},
 		opts_to_change = {
-			general = {
-				item_gap = true,
+			primary_section = {
+				items = {
+					insert_gap_between = {
+						enabled = true,
+					},
+				},
+			},
+			secondary_section = {
+				items = {
+					insert_gap_between = {
+						enabled = true,
+					},
+				},
 			},
 		},
 	},
@@ -214,28 +269,6 @@ local GENERAL_SECTION_CASES = {
 ---and those options only affect their own section,
 ---it’s enough to test them in one section
 local ITEM_CASES = {
-	{
-		expected_annotation = {
-			"/**",
-			" * ",
-			" *",
-			" * 	@item a int",
-			" * 	@item b",
-			" * 	@item c int",
-			" * 	@item string",
-			" * @secondary_item d",
-			" * @secondary_item e",
-			" * @secondary_item f",
-			" * @secondary_item",
-			" */",
-		},
-		opts_to_change = {
-			primary_section = {
-				indent = true,
-				include_type = true,
-			},
-		},
-	},
 	{
 		expected_annotation = {
 			"/**",
@@ -253,17 +286,11 @@ local ITEM_CASES = {
 		},
 		opts_to_change = {
 			primary_section = {
-				include_type = true,
-				type_first = true,
-				name_kw = "@the_name",
-				type_kw = "@the_type",
-				name_wrapper = {
-					"{",
-					"}",
-				},
-				type_wrapper = {
-					"[",
-					"]",
+				items = {
+					include_type = true,
+					template = {
+						{ " * @the_type", "[%item_type]", "@the_name", "{%item_name}" },
+					},
 				},
 			},
 		},
@@ -280,7 +307,7 @@ local function test_case(name, case)
 	it(name, function()
 		local copy = vim.deepcopy(COMMON_DATA.BASE_STYLE.opts)
 		local new_style = vim.tbl_deep_extend("force", copy, case.opts_to_change)
-		local annotation = annotation_builder(new_style, COMMON_DATA.ITEMS, new_style.general.structure)
+		local annotation = annotation_builder(new_style, COMMON_DATA.ITEMS, new_style.general.layout)
 
 		assert.are.same(case.expected_annotation, annotation)
 	end)

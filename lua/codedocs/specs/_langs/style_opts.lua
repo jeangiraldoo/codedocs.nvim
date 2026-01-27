@@ -1,38 +1,92 @@
 --- Here are all the available opts for all languages
---- An option is composed of 3 parts:
---- Its value or name, the data type it expects and a description
 
-local general = {
-	structure = "table", --Defines the docstring structure with at least two parts
-	direction = "boolean", -- True for above, false for below the function
-	title_pos = "number", -- Title line offset within the docstring
-	title_gap = "boolean", -- Adds a blank line after the title if there's a section
-	section_gap = "boolean", -- Adds spacing between sections if more than one exists
-	section_gap_text = "string", -- String to be inserted in between 2 sections
-	section_underline = "string", -- Character used to underline section titles
-	section_title_gap = "boolean", -- Adds spacing after the title if there's an item
-	item_gap = "boolean", -- Adds spacing between items if multiple exist
-	section_order = "table", -- Specifies the order of docstring sections
+local COMMON_OPTS = {
+	layout = {
+		expected_type = "table", --Defines the docstring structure with at least two parts
+	},
+	gap = {
+		expected_type = "table",
+		sub_opts = {
+			enabled = {
+				expected_type = "boolean",
+			},
+			text = {
+				expected_type = "string",
+			},
+		},
+	},
 }
 
-local item = {
-	title = "string", -- Section title
-	inline = "boolean", -- True if name and type are on the same line
-	indent = "boolean", -- Indents items if true
-	include_type = "boolean", -- Includes item type if true
-	type_first = "boolean", -- Places type before name if true
-	name_kw = "string", -- Keyword prefixed to item names
-	type_kw = "string", -- Keyword prefixed to item types
-	name_wrapper = "table", -- Strings surrounding item names
-	type_wrapper = "table", -- Strings surrounding item types
-	is_type_below_name_first = "boolean", -- TODO: Verify logic and update description
+local GENERAL_OPTS = {
+	direction = {
+		expected_type = "boolean", -- True for above, false for below the function
+	},
+	insert_at = {
+		expected_type = "number", -- Position at which lines are inserted
+	},
+	section_order = {
+		expected_type = "table", -- Specifies the order of docstring sections
+	},
 }
+GENERAL_OPTS = vim.tbl_extend("force", GENERAL_OPTS, COMMON_OPTS)
 
-local class_attr_section_items = {
-	include_class_attrs = "boolean", -- Includes class attributes if true
-	include_instance_attrs = "boolean", -- Includes instance attributes if true
-	include_only_constructor_instance_attrs = "boolean", -- Includes only constructor-defined attributes if true
+local TITLE_OPTS = {
+	cursor_pos = {
+		expected_type = "number", -- Title line offset within the docstring
+	},
+	gap = {
+		expected_type = "boolean", -- Adds a blank line after the title if there's a section
+	},
 }
+TITLE_OPTS = vim.tbl_extend("force", TITLE_OPTS, COMMON_OPTS)
 
-local opts = vim.tbl_extend("error", general, class_attr_section_items, item)
-return opts
+local SECTION_WITH_ITEMS_OPTS = {
+	items = {
+		expected_type = "table",
+		sub_opts = {
+			insert_gap_between = {
+				expected_type = "table",
+				sub_opts = {
+					enabled = {
+						expected_type = "boolean", -- Adds spacing between items if multiple exist
+					},
+					text = {
+						expected_type = "string", -- String to be inserted between items
+					},
+				},
+			},
+			include_type = { -- Includes item type if true
+				expected_type = "boolean",
+			},
+			indent = {
+				expected_type = "boolean", -- Whether or not to indent items
+			},
+			template = {
+				expected_type = "table", -- List of lines representing an item
+			},
+		},
+	},
+}
+SECTION_WITH_ITEMS_OPTS = vim.tbl_extend("force", SECTION_WITH_ITEMS_OPTS, COMMON_OPTS)
+
+local ATTRS_OPTS = {
+	include_class_attrs = { -- Includes class attributes if true
+		expected_type = "boolean",
+	},
+	include_instance_attrs = { -- Includes instance attributes if true
+		expected_type = "boolean",
+	},
+	include_only_constructor_instance_attrs = { -- Includes only constructor-defined attributes if true
+		expected_type = "boolean",
+	},
+}
+ATTRS_OPTS = vim.tbl_extend("force", ATTRS_OPTS, COMMON_OPTS)
+ATTRS_OPTS = vim.tbl_extend("force", ATTRS_OPTS, SECTION_WITH_ITEMS_OPTS)
+
+return {
+	general = GENERAL_OPTS,
+	title = TITLE_OPTS,
+	params = SECTION_WITH_ITEMS_OPTS,
+	return_type = SECTION_WITH_ITEMS_OPTS,
+	attrs = ATTRS_OPTS,
+}

@@ -1,86 +1,25 @@
 local Debug_logger = require("codedocs.utils.debug_logger")
 
--- @param title string Section title
--- @param title_gap boolean Whether to insert a blank line between the title and the first section item
--- @param underline_char string Character used to underline the title (one per title character)
--- @return table
-local function _build_section_title(title, title_gap, underline_char)
-	local title_struct = {}
+local function _handle_string(string, item_name, item_type, include_type)
+	local result = string:gsub("%%item_name", item_name or "")
+	result = include_type and result:gsub("%%item_type", item_type or "") or result:gsub("%%item_type", "")
+	return result
+end
 
-	if title ~= "" then
-		table.insert(title_struct, title)
-		if underline_char ~= "" then table.insert(title_struct, string.rep(underline_char, #title)) end
+local function _build_line(line, item, opts)
+	local line_type = type(line)
+
+	if line_type == "string" then return _handle_string(line, item.name, item.type, opts.items.include_type) end
+
+	local final = ""
+	if line_type == "table" then
+		for idx, line_part in ipairs(line) do
+			local result = _handle_string(line_part, item.name, item.type, opts.items.include_type)
+			if idx ~= 1 and result ~= "" then final = final .. " " end
+			if result ~= "" then final = final .. result end
+		end
 	end
-
-	if title_gap then table.insert(title_struct, "") end
-	return title_struct
-end
-
-local function _join_strings(a, b)
-	if a == "" then return b end
-	if b == "" then return a end
-	return a .. " " .. b
-end
-
-local function _join_or(val_1, val_2, fallback)
-	if val_1 == "" and val_2 == "" then return fallback end
-	return _join_strings(val_1, val_2)
-end
-
---- Formats a single item line according to the given style options
--- @param style table Configuration options for the current section
--- @param wrapped_name string Item name already wrapped with its delimiters
--- @param wrapped_type string Item type already wrapped with its delimiters
--- @return string|table item_line_content If `style.inline` is true, returns a single formatted line.
--- Otherwise, returns a two-element array of formatted lines.
-local function _format_item(style, wrapped_name, wrapped_type)
-	local inline = style.inline
-
-	local item_type_kw = style.type_kw
-	local type_with_kw = _join_strings(item_type_kw, wrapped_type)
-
-	local type_content
-	if inline then
-		type_content = type_with_kw
-	else
-		local name_with_type_kw = _join_or(item_type_kw, wrapped_name, type_with_kw)
-		local type_with_name = _join_or(name_with_type_kw, wrapped_type, wrapped_name)
-		type_content = style.is_type_below_name_first and type_with_name or type_with_kw
-	end
-
-	local name_content = _join_strings(style.name_kw, wrapped_name)
-
-	local first, second
-	if style.type_first then
-		first, second = type_content, name_content
-	else
-		first, second = name_content, type_content
-	end
-
-	local indent = style.indent and "\t" or ""
-
-	if not inline then return {
-		indent .. first,
-		indent .. second,
-	} end
-
-	return indent .. _join_strings(first, second)
-end
-
---- Wraps the item name and type using their respective wrapper pairs
--- @param item table Item data containing `name` and `type`
--- @param include_type boolean Whether to include and wrap the item type
--- @param name_wrapper table Two-element table used to wrap the item name
--- @param type_wrapper table Two-element table used to wrap the item type
--- @return string Wrapped item name
--- @return string Wrapped item type
-local function _wrap_item_data(item, include_type, name_wrapper, type_wrapper)
-	local name_wrapper_copy, type_wrapper_copy = { unpack(name_wrapper) }, { unpack(type_wrapper) }
-
-	table.insert(name_wrapper_copy, 2, item.name or "")
-	if include_type then table.insert(type_wrapper_copy, 2, item.type or "") end
-
-	return table.concat(name_wrapper_copy, ""), table.concat(type_wrapper_copy, "")
+	return final
 end
 
 --- Builds the raw annotation content for each section, without applying the final structure
@@ -92,91 +31,74 @@ end
 local function _build_annotation_content(item_data, style)
 	local annotation_content = {}
 
-	for _, section_name in ipairs(style.general.section_order) do
+	for section_idx, section_name in ipairs(style.general.section_order) do
 		local section_items = item_data[section_name]
 		local section_style = style[section_name]
 
 		if #section_items == 0 then goto skip_section end ---A section with no items effectively has no content
 
-		local section_content = {
-			unpack(
-				_build_section_title(
-					section_style.title,
-					style.general.section_title_gap,
-					style.general.section_underline
-				)
-			),
-		}
-		for _, item in ipairs(section_items) do
-			local include_type = section_style.include_type
-			local wrapped_name, wrapped_type =
-				_wrap_item_data(item, include_type, section_style.name_wrapper, section_style.type_wrapper)
+		local section_content = vim.deepcopy(section_style.layout)
+		vim.list_extend(annotation_content, section_content)
+		for item_idx, item in ipairs(section_items) do
+			local indent = section_style.items.indent and "\t" or ""
+			for _, line in ipairs(section_style.items.template) do
+				table.insert(annotation_content, indent .. _build_line(line, item, section_style))
 
-			local item_line_content = _format_item(section_style, wrapped_name, wrapped_type)
-			local is_item_line_content_multiline = type(item_line_content) == "table"
-
-			if is_item_line_content_multiline then
-				for _, val in ipairs(item_line_content) do
-					table.insert(section_content, val)
+				local should_insert_item_gap = section_style.items.insert_gap_between.enabled
+					and section_items[item_idx + 1]
+				if should_insert_item_gap then
+					table.insert(annotation_content, section_style.items.insert_gap_between.text)
 				end
-			else
-				table.insert(section_content, item_line_content)
 			end
 		end
 
-		annotation_content[section_name] = section_content
+		local should_insert_section_gap = style[section_name].gap.enabled
+			and style.general.section_order[section_idx + 1]
+		if should_insert_section_gap then table.insert(annotation_content, style[section_name].gap.text) end
+
 		::skip_section::
 	end
 	return annotation_content
 end
 
---- Formats the annotation content into the final annotation structure
--- @param sections_data table Section-formatted annotation content
--- @param style table Style configuration for all sections and general options
--- @param annotation_structure table Base annotation structure to populate
--- @return table Final formatted annotation as a flat list of lines
-local function _format_annotation_content(sections_data, style, annotation_structure)
-	local general_opts = style.general
-	local line_start = style.general.structure[2]
+---Formats the annotation content into the final annotation structure
+---@param annotation_layout string[] Base annotation structure to populate
+---@param content string[] Lines that will be inserted as the annotation content
+---@param insert_at number Position to insert annotation lines into
+---@param title_opts table Title section opts
+---@return string[] annotation Final formatted annotation as a flat list of lines
+local function _format_annotation_content(annotation_layout, content, insert_at, title_opts)
+	local annotation = {}
 
-	local annotation_structure_copy = vim.deepcopy(annotation_structure)
-
-	if general_opts.title_gap and vim.tbl_count(sections_data) > 0 then
-		local title_gap_pos = general_opts.title_pos + 1
-		table.insert(annotation_structure_copy, title_gap_pos, style.general.title_gap_text)
+	for i = 1, (insert_at - 1) do
+		-- Add all lines from the original layout that appear before the position where the content is to be inserted.
+		--
+		-- This is done to avoid inserting lines one by one at the insertion position,
+		-- since that would shift all following layout lines every time and be inefficient
+		table.insert(annotation, annotation_layout[i])
 	end
 
-	local sections_order = general_opts.section_order
-	for section_idx, section_name in ipairs(sections_order) do
-		local section_content = sections_data[section_name]
-
-		if section_content == nil then goto skip_section end ---A section without content shouldn't be added to the annotation
-
-		for line_idx, line in ipairs(section_content) do
-			table.insert(annotation_structure_copy, #annotation_structure_copy, line_start .. line)
-
-			if general_opts.item_gap and section_content[line_idx + 1] then
-				table.insert(annotation_structure_copy, #annotation_structure_copy, line_start)
-			end
-		end
-
-		if general_opts.section_gap and sections_order[section_idx + 1] then
-			table.insert(annotation_structure_copy, #annotation_structure_copy, style.general.section_gap_text)
-		end
-		::skip_section::
+	for _, title_line in ipairs(title_opts.layout) do
+		table.insert(annotation, title_line)
 	end
 
-	-- Elements are inserted at the index of the last element, shifting that element to the right. As a result,
-	-- the original last element of the base annotation structure ends up at the very end of the final annotation.
-	-- This is desired when the base structure has three parts, but becomes a leftover element when it has only two
-	if #annotation_structure == 2 then table.remove(annotation_structure_copy, #annotation_structure_copy) end
+	if title_opts.gap.enabled and vim.tbl_count(content) > 0 then table.insert(annotation, title_opts.gap.text) end
 
-	return annotation_structure_copy
+	for _, line in ipairs(content) do
+		table.insert(annotation, line)
+	end
+
+	for i = insert_at, #annotation_layout do
+		-- Add all lines from the original layout that appear after the position where the content is to be inserted
+		table.insert(annotation, annotation_layout[i])
+	end
+
+	return annotation
 end
 
 return function(style, data, annotation_structure)
 	local annotation_content = _build_annotation_content(data, style)
 	Debug_logger.log("Annotation content:", annotation_content)
 
-	return _format_annotation_content(annotation_content, style, annotation_structure)
+	return _format_annotation_content(annotation_structure, annotation_content, style.general.insert_at, style.title)
 end

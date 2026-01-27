@@ -1,30 +1,44 @@
 return {
 	general = {
-		structure = { "/**", " * ", " */" },
+		layout = {
+			"/**",
+			" */",
+		},
 		direction = true,
-		title_pos = 2,
-		title_gap = true,
-		title_gap_text = " *",
-		section_gap = false,
-		section_gap_text = " *",
-		section_underline = "",
-		section_title_gap = false,
-		item_gap = false,
-		section_order = { "attrs" },
+		insert_at = 2,
+		section_order = {
+			"attrs",
+		},
+	},
+	title = {
+		layout = {
+			" * ",
+		},
+		cursor_pos = 1,
+		gap = {
+			enabled = true,
+			text = " *",
+		},
 	},
 	attrs = {
-		title = "",
+		layout = {},
+		gap = {
+			enabled = false,
+			text = " *",
+		},
 		include_class_attrs = false,
 		include_instance_attrs = false,
 		include_only_constructor_instance_attrs = false,
-		inline = true,
-		indent = false,
-		include_type = false,
-		type_first = true,
-		name_kw = "",
-		type_kw = "@property",
-		name_wrapper = { "", "" },
-		type_wrapper = { "{", "}" },
-		is_type_below_name_first = false,
+		items = {
+			insert_gap_between = {
+				enabled = false,
+				text = " *",
+			},
+			indent = false,
+			include_type = false,
+			template = {
+				" * @property {%item_type} %item_name",
+			},
+		},
 	},
 }

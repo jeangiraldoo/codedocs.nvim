@@ -1,8 +1,4 @@
-local Spec = {
-	get_opts = function() return require("codedocs.specs._langs.style_opts") end,
-}
-
-local opts = Spec.get_opts()
+local Spec = {}
 
 local function _get_lang_data(lang)
 	local success, data = pcall(require, "codedocs.specs._langs." .. lang)
@@ -64,22 +60,24 @@ function Spec.update_style(user_opts)
 		for style_name, structs in pairs(styles) do
 			for struct_name, struct_sections in pairs(structs) do
 				local struct_style = Spec.get_struct_style(lang_name, struct_name, style_name)
-				for section_name, section_opts in pairs(struct_sections) do
-					local struct_section = struct_style[section_name]
-					if struct_section == nil then
-						error(
-							"There is no section called "
-								.. section_name
-								.. " in the "
-								.. struct_name
-								.. " structrure in "
-								.. lang_name
-						)
-					end
+				if struct_style then
+					for section_name, section_opts in pairs(struct_sections) do
+						local struct_section = struct_style[section_name]
+						if struct_section == nil then
+							error(
+								"There is no section called "
+									.. section_name
+									.. " in the "
+									.. struct_name
+									.. " structrure in "
+									.. lang_name
+							)
+						end
 
-					for opt_name, opt_val in pairs(section_opts) do
-						local opt_default_val = struct_section[opt_name]
-						if opt_default_val ~= nil then struct_section[opt_name] = opt_val end
+						for opt_name, opt_val in pairs(section_opts) do
+							local opt_default_val = struct_section[opt_name]
+							if opt_default_val ~= nil then struct_section[opt_name] = opt_val end
+						end
 					end
 				end
 			end
@@ -109,60 +107,66 @@ end)()
 
 function Spec.is_lang_supported(lang) return vim.list_contains(Spec.get_supported_langs(), lang) end
 
-function Spec.get_struct_style(lang, struct_name, style_name)
-	local function _validate_value(setting_name, setting_type, value)
-		if setting_type == "number" and value < 1 then
-			error(
-				string.format(
-					"%s setting for %s must be a number greater than 0. Received %s",
-					setting_name,
-					vim.bo.filetype,
-					value
+function Spec._validate_style_opts(style)
+	local function validate(expected_opts, section_name, opts)
+		for actual_section_opt_name, actual_section_opt_value in pairs(opts) do
+			if expected_opts[actual_section_opt_name] == nil then
+				return false, string.format("Invalid opt in '%s' section: %s", section_name, actual_section_opt_name)
+			end
+			local expected_opt_schema = expected_opts[actual_section_opt_name]
+
+			if expected_opt_schema.expected_type ~= type(actual_section_opt_value) then
+				vim.notify(
+					string.format(
+						"Invalid value for %s option in %s section: %s",
+						actual_section_opt_name,
+						section_name,
+						type(actual_section_opt_value)
+					),
+					vim.log.levels.ERROR
 				)
-			)
-		end
-
-		if setting_type == "table" then
-			if vim.tbl_isempty(table) then
-				error(setting_name .. " setting for " .. vim.bo.filetype .. " has no items")
+				return false
 			end
 
-			if struct_name == "func" and vim.tbl_count(table) < 2 then
-				error(setting_name .. " setting for " .. vim.bo.filetype .. " expects at least 2 items")
-			end
-
-			if not vim.iter(table):all(function(item) return type(item) == "string" end) then
-				error(setting_name .. " setting for " .. vim.bo.filetype .. " must contain a table with only strings")
-			end
-		end
-	end
-
-	local function _validate_style_opts(style)
-		for opt_name, expected_opt_type in pairs(opts) do
-			for _, section_opts in pairs(style) do
-				if section_opts[opt_name] then
-					local actual_type = type(section_opts[opt_name])
-					if actual_type ~= expected_opt_type then
-						error(
-							string.format(
-								"%s setting for %s must be a %s. Received %s",
-								opt_name,
-								vim.bo.filetype,
-								expected_opt_type,
-								actual_type
-							)
+			if expected_opt_schema.expected_type == "table" then
+				if expected_opt_schema.sub_opts then
+					local success, error_msg =
+						validate(expected_opt_schema.sub_opts, section_name, actual_section_opt_value)
+					if not success then return false, error_msg end
+				elseif
+					actual_section_opt_name ~= "template"
+					and not (vim.iter(actual_section_opt_value):all(function(v) return type(v) == "string" end))
+				then
+					return false,
+						string.format(
+							"'%s' option in the '%s' must contain only strings",
+							actual_section_opt_name,
+							section_name
 						)
-					end
-					_validate_value(opt_name, actual_type, section_opts[opt_name])
 				end
 			end
 		end
+
 		return true
 	end
 
+	local EXPECTED_OPTS_PER_SECTION = require("codedocs.specs._langs.style_opts")
+	for section_name, section_opts in pairs(style) do
+		local expected_opts = EXPECTED_OPTS_PER_SECTION[section_name]
+		if not expected_opts then error(string.format("'%s' section_name is not supported", section_name), 0) end
+
+		local are_opts_correct, error_msg = validate(expected_opts, section_name, section_opts)
+		if not are_opts_correct then return false, error_msg end
+	end
+	return true
+end
+
+function Spec.get_struct_style(lang, struct_name, style_name)
 	if Spec.is_lang_supported(lang) then
 		local style = require(string.format("codedocs.specs._langs.%s.%s.styles.%s", lang, struct_name, style_name))
-		_validate_style_opts(style)
+		local is_style_correct, error_msg = Spec._validate_style_opts(style)
+		if not is_style_correct then error(error_msg) end
+
 		return style
 	end
 end

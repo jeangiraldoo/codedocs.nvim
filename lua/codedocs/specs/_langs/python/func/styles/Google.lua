@@ -1,39 +1,64 @@
 return {
 	general = {
-		structure = { '"""', "", '"""' },
+		layout = {
+			'"""',
+			'"""',
+		},
 		direction = false,
-		title_pos = 2,
-		title_gap = true,
-		title_gap_text = "",
-		section_gap = false,
-		section_gap_text = "",
-		section_underline = "",
-		section_title_gap = false,
-		item_gap = false,
-		section_order = { "params", "return_type" },
+		insert_at = 2,
+		section_order = {
+			"params",
+			"return_type",
+		},
+	},
+	title = {
+		layout = {
+			"",
+		},
+		cursor_pos = 1,
+		gap = {
+			enabled = true,
+			text = "",
+		},
 	},
 	params = {
-		title = "Args:",
-		inline = true,
-		indent = true,
-		include_type = true,
-		type_first = false,
-		name_kw = "",
-		type_kw = "",
-		name_wrapper = { "", "" },
-		type_wrapper = { "(", "):" },
-		is_type_below_name_first = false,
+		layout = {
+			"Args:",
+		},
+		gap = {
+			enabled = false,
+			text = "",
+		},
+		items = {
+			insert_gap_between = {
+				enabled = false,
+				text = "",
+			},
+			indent = true,
+			include_type = true,
+			template = {
+				"%item_name (%item_type):",
+			},
+		},
 	},
 	return_type = {
-		title = "Returns:",
-		inline = true,
-		indent = true,
-		include_type = true,
-		type_first = false,
-		name_kw = "",
-		type_kw = "",
-		name_wrapper = { "", "" },
-		type_wrapper = { "", ":" },
-		is_type_below_name_first = false,
+		layout = {
+			"Returns:",
+		},
+		gap = {
+			enabled = false,
+			text = "",
+		},
+		items = {
+			insert_gap_between = {
+				enabled = false,
+				text = "",
+			},
+			indent = true,
+			include_type = true,
+			template = {
+				"%item_type:",
+			},
+		},
 	},
 }

@@ -1,39 +1,60 @@
 return {
 	general = {
-		structure = { "/**", " * ", " */" },
+		layout = {
+			"/**",
+			" */",
+		},
+		insert_at = 2,
 		direction = true,
-		title_pos = 2,
-		title_gap = true,
-		title_gap_text = " *",
-		section_gap = false,
-		section_gap_text = " *",
-		section_underline = "",
-		section_title_gap = false,
-		item_gap = false,
-		section_order = { "params", "return_type" },
+		section_order = {
+			"params",
+			"return_type",
+		},
+	},
+	title = {
+		layout = {
+			" * ",
+		},
+		cursor_pos = 1,
+		gap = {
+			enabled = true,
+			text = " *",
+		},
 	},
 	params = {
-		title = "",
-		inline = true,
-		indent = false,
-		include_type = true,
-		type_first = true,
-		name_kw = "",
-		type_kw = "@param",
-		name_wrapper = { "", "" },
-		type_wrapper = { "", "" },
-		is_type_below_name_first = false,
+		layout = {},
+		gap = {
+			enabled = false,
+			text = " *",
+		},
+		items = {
+			insert_gap_between = {
+				enabled = false,
+				text = " *",
+			},
+			indent = false,
+			include_type = true,
+			template = {
+				{ " * @param", "%item_type", "%item_name" },
+			},
+		},
 	},
 	return_type = {
-		title = "",
-		inline = true,
-		indent = false,
-		include_type = false,
-		type_first = true,
-		name_kw = "",
-		type_kw = "@return",
-		name_wrapper = { "", "" },
-		type_wrapper = { "", "" },
-		is_type_below_name_first = false,
+		layout = {},
+		gap = {
+			enabled = false,
+			text = " *",
+		},
+		items = {
+			insert_gap_between = {
+				enabled = false,
+				text = " *",
+			},
+			indent = false,
+			include_type = false,
+			template = {
+				" * @return",
+			},
+		},
 	},
 }
