@@ -2,26 +2,6 @@ local Spec = require("codedocs.specs")
 
 local CACHED_TREES = {}
 
--- @param structs Structure types to check for
--- @return string Structure name
--- @return vim.treesitter._tsnode
-local function _determine_struc_under_cursor(struct_identifiers)
-	vim.treesitter.get_parser(0):parse()
-	local node_at_cursor = vim.treesitter.get_node()
-
-	if node_at_cursor == nil then return "comment", node_at_cursor end
-
-	while node_at_cursor do
-		local node_type = node_at_cursor:type()
-		local struct_name = struct_identifiers[node_type]
-
-		if struct_name then return struct_name, node_at_cursor end
-
-		node_at_cursor = node_at_cursor:parent()
-	end
-	return "comment", node_at_cursor
-end
-
 local function _cache_lang_struct_tree(lang, struct_name)
 	local function _build_node(node)
 		local new_node = vim.tbl_extend("force", {}, node)
@@ -61,9 +41,7 @@ local function _item_parser(lang, node, struct_name, struct_style)
 	return items
 end
 
-return function(lang, style_name)
-	local struct_name, node = _determine_struc_under_cursor(Spec.get_struct_identifiers(lang))
-
+return function(lang, struct_name, node, style_name)
 	local struct_style = style_name and Spec.get_struct_style(lang, struct_name, style_name)
 		or Spec:_get_struct_main_style(lang, struct_name)
 

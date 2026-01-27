@@ -11,9 +11,11 @@ local function mock_buffer(structure, cursor_pos)
 	vim.api.nvim_win_set_cursor(0, { cursor_pos, 0 })
 end
 
-local function test_case(struct_name, expected_annotation)
+local function test_case(lang, expected_annotation)
 	for style_name, expected_docs in pairs(expected_annotation) do
-		local _, data, style, _ = require("codedocs.specs.tree_processor")(vim.bo.filetype, style_name)
+		local struct_name, node = require("codedocs.struct_detector")(Spec.get_struct_identifiers(lang))
+		local _, data, style, _ =
+			require("codedocs.specs.tree_processor")(vim.bo.filetype, struct_name, node, style_name)
 
 		local docs = (struct_name == "comment") and style.general.layout
 			or annotation_builder(style, data, style.general.layout)
@@ -27,10 +29,10 @@ describe("Annotation building using default options", function()
 			vim.api.nvim_command("enew")
 			vim.bo.filetype = lang
 
-			for struct_name, cases in pairs(require(lang)) do
+			for _, cases in pairs(require(lang)) do
 				for _, case in ipairs(cases) do
 					mock_buffer(case.structure, case.cursor_pos)
-					test_case(struct_name, case.expected_annotation)
+					test_case(lang, case.expected_annotation)
 				end
 			end
 		end)
