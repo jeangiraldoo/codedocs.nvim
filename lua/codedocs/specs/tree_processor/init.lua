@@ -1,4 +1,6 @@
-local function _item_parser(node, struct_tree, struct_style)
+return function(struct_style, struct_tree, node)
+	local pos = node:range()
+
 	local items = {}
 	for _, section_name in pairs(struct_style.general.section_order) do
 		local section_tree = struct_tree[section_name]
@@ -9,18 +11,6 @@ local function _item_parser(node, struct_tree, struct_style)
 				function(section_items_list) return section_items_list and (not vim.tbl_isempty(section_items_list)) end
 			) or {}
 	end
-	return items
-end
 
-return function(struct_style, struct_name, struct_tree, node)
-	local pos, data
-	if struct_name == "comment" then
-		pos = vim.api.nvim_win_get_cursor(0)[1] - 1
-		data = {}
-	else
-		pos = node:range()
-		data = _item_parser(node, struct_tree, struct_style)
-	end
-
-	return data, pos
+	return items, pos
 end
