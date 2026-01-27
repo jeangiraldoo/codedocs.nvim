@@ -1,5 +1,7 @@
 local Spec = {}
 
+local CACHED_TREES = {}
+
 local function _get_lang_data(lang)
 	local success, data = pcall(require, "codedocs.specs._langs." .. lang)
 	if not success then return nil end
@@ -186,10 +188,28 @@ function Spec.get_struct_identifiers(lang)
 end
 
 function Spec.get_struct_tree(lang, struct_name)
-	local struct_path = "codedocs.specs._langs." .. lang .. "." .. struct_name
-	local lang_path = struct_path .. ".tree"
-	local tree = require(lang_path)
-	return tree
+	local function _build_node(node)
+		local new_node = vim.tbl_extend("force", {}, node)
+		if new_node.children then new_node.children = vim.tbl_map(_build_node, node.children) end
+
+		local extend_new_node = require("codedocs.specs.tree_processor.node_types." .. new_node.type)
+		return extend_new_node(new_node)
+	end
+
+	CACHED_TREES[lang] = CACHED_TREES[lang] or {}
+	if not CACHED_TREES[lang][struct_name] then
+		local struct_path = "codedocs.specs._langs." .. lang .. "." .. struct_name
+		local lang_path = struct_path .. ".tree"
+		local struct_trees_list = require(lang_path)
+
+		local final_tree = {}
+		for struct_section_name, trees in pairs(struct_trees_list) do
+			final_tree[struct_section_name] = vim.tbl_map(_build_node, trees)
+		end
+		CACHED_TREES[lang][struct_name] = final_tree
+	end
+
+	return CACHED_TREES[lang][struct_name]
 end
 
 return Spec

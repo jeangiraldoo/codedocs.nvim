@@ -21,8 +21,9 @@ function M.insert_docs()
 	end
 
 	local struct_name, node = require("codedocs.struct_detector")(Spec.get_struct_identifiers(lang))
+	local struct_tree = Spec.get_struct_tree(lang, struct_name)
 
-	local items_data, style, pos = require("codedocs.specs.tree_processor")(lang, struct_name, node)
+	local items_data, style, pos = require("codedocs.specs.tree_processor")(lang, struct_name, struct_tree, node)
 	Debug_logger.log("Structure name: " .. struct_name)
 	Debug_logger.log("Item data: ", items_data)
 	Debug_logger.log("Style: ", style)
