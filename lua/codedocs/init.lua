@@ -34,7 +34,7 @@ function M.insert_docs()
 	end
 
 	local struct_tree = Spec.get_struct_tree(lang, struct_name)
-	local items_data, pos = require("codedocs.specs.tree_processor")(struct_style, struct_tree, node)
+	local items_data, pos = Spec.process_tree(struct_style, struct_tree, node)
 	Debug_logger.log("Item data: ", items_data)
 
 	local docs = docs_builder(struct_style, items_data, layout)

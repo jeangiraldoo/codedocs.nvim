@@ -192,7 +192,7 @@ function Spec.get_struct_tree(lang, struct_name)
 		local new_node = vim.tbl_extend("force", {}, node)
 		if new_node.children then new_node.children = vim.tbl_map(_build_node, node.children) end
 
-		local extend_new_node = require("codedocs.specs.tree_processor.node_types." .. new_node.type)
+		local extend_new_node = require("codedocs.specs.node_types." .. new_node.type)
 		return extend_new_node(new_node)
 	end
 
@@ -210,6 +210,23 @@ function Spec.get_struct_tree(lang, struct_name)
 	end
 
 	return CACHED_TREES[lang][struct_name]
+end
+
+function Spec.process_tree(struct_style, struct_tree, node)
+	local pos = node:range()
+
+	local items = {}
+	for _, section_name in pairs(struct_style.general.section_order) do
+		local section_tree = struct_tree[section_name]
+
+		items[section_name] = vim.iter(section_tree)
+			:map(function(tree_node) return tree_node:process(node, struct_style) end)
+			:find(
+				function(section_items_list) return section_items_list and (not vim.tbl_isempty(section_items_list)) end
+			) or {}
+	end
+
+	return items, pos
 end
 
 return Spec
