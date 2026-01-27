@@ -9,6 +9,24 @@ local function _get_lang_data(lang)
 	return data
 end
 
+---Builds a list of the styles supported by a specific language
+---
+---It is assumed that all language structures support the same styles,
+---hence it is only necessary to check what styles the `comment` structure supports
+---@param lang_name string Language to get the supported styles from
+---@return string[] style_names List of supported styles
+function Spec.get_supported_styles(lang_name)
+	if not Spec.is_lang_supported(lang_name) then return {} end
+
+	local base_path = vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ":p:h")
+
+	local relative_path = "/_langs/" .. lang_name .. "/comment/styles"
+	local files = vim.fn.readdir(vim.fs.joinpath(base_path, relative_path))
+
+	local style_names = vim.tbl_map(function(filename) return vim.fn.fnamemodify(filename, ":r") end, files)
+	return style_names
+end
+
 function Spec.set_default_lang_style(new_styles)
 	for lang_name, new_default_style in pairs(new_styles) do
 		if type(new_default_style) ~= "string" then
