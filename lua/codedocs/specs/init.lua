@@ -78,6 +78,11 @@ function Spec.set_default_lang_style(new_styles)
 	end
 end
 
+function Spec.get_default_style(lang_name)
+	local lang_data = _get_lang_data(lang_name)
+	return lang_data.default_style
+end
+
 function Spec.process_style_structs(structs, style_name, lang_name)
 	for struct_name, struct_sections in pairs(structs) do
 		local struct_style = Spec.get_struct_style(lang_name, struct_name, style_name)
