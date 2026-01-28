@@ -65,16 +65,15 @@ function Spec.set_default_lang_style(new_styles)
 			return
 		end
 
-		local lang_data = _get_lang_data(lang_name)
-
-		if not lang_data.styles[new_default_style] then
+		if not Spec.is_style_supported(lang_name, new_default_style) then
 			vim.notify(
-				lang_name .. " does not have a docstring style called " .. new_default_style,
+				"No style called " .. new_default_style .. " is supported by " .. lang_name,
 				vim.log.levels.ERROR
 			)
 			return
 		end
 
+		local lang_data = _get_lang_data(lang_name)
 		lang_data.default_style = new_default_style
 	end
 end
