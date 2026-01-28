@@ -27,6 +27,15 @@ function Spec.get_supported_styles(lang_name)
 	return style_names
 end
 
+---Checks wether or not a style is supported by a specific language
+---@param lang_name string
+---@param style_name string
+---@return boolean
+function Spec.is_style_supported(lang_name, style_name)
+	local supported_styles = Spec.get_supported_styles(lang_name)
+	return vim.list_contains(supported_styles, style_name)
+end
+
 ---Builds a list with the names of the structures a language supports
 ---@param lang_name string Language to get the supported struct names from
 ---@return string[] supported_struct_names
