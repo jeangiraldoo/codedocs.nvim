@@ -27,6 +27,20 @@ function Spec.get_supported_styles(lang_name)
 	return style_names
 end
 
+---Builds a list with the names of the structures a language supports
+---@param lang_name string Language to get the supported struct names from
+---@return string[] supported_struct_names
+function Spec.get_supported_structs(lang_name)
+	local struct_identifiers = Spec.get_struct_identifiers(lang_name)
+
+	local values = vim.tbl_values(struct_identifiers)
+	table.sort(values)
+	local supported_struct_names = vim.fn.uniq(values)
+	table.insert(supported_struct_names, "comment")
+
+	return supported_struct_names
+end
+
 function Spec.set_default_lang_style(new_styles)
 	for lang_name, new_default_style in pairs(new_styles) do
 		if type(new_default_style) ~= "string" then
