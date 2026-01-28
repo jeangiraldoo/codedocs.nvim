@@ -53,17 +53,26 @@ end
 function Spec.set_default_lang_style(new_styles)
 	for lang_name, new_default_style in pairs(new_styles) do
 		if type(new_default_style) ~= "string" then
-			error("The value assigned as the default docstring style for " .. lang_name .. " must be a string")
+			vim.notify(
+				"The value assigned as the default docstring style for " .. lang_name .. " must be a string",
+				vim.log.levels.ERROR
+			)
+			return
 		end
 
 		if not Spec.is_lang_supported(lang_name) then
-			error("There is no language called " .. lang_name .. " available in codedocs")
+			vim.notify("There is no language called " .. lang_name .. " available in codedocs", vim.log.levels.ERROR)
+			return
 		end
 
 		local lang_data = _get_lang_data(lang_name)
 
 		if not lang_data.styles[new_default_style] then
-			error(lang_name .. " does not have a docstring style called " .. new_default_style)
+			vim.notify(
+				lang_name .. " does not have a docstring style called " .. new_default_style,
+				vim.log.levels.ERROR
+			)
+			return
 		end
 
 		lang_data.default_style = new_default_style
