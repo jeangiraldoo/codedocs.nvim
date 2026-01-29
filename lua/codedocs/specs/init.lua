@@ -151,32 +151,40 @@ function Spec.process_style_structs(structs, style_name, lang_name)
 end
 
 function Spec.update_style(user_opts)
-	for lang_name, styles in pairs(user_opts) do
+	for lang_name, user_styles in pairs(user_opts) do
 		if not Spec.is_lang_supported(lang_name) then
 			error("There is no language called " .. lang_name .. " available in codedocs")
 		end
 
-		for style_name, structs in pairs(styles) do
-			for struct_name, struct_sections in pairs(structs) do
-				local struct_style = Spec.get_struct_style(lang_name, struct_name, style_name)
+		for user_style_name, user_style_structs in pairs(user_styles) do
+			for user_struct_name, user_struct_sections in pairs(user_style_structs) do
+				local struct_style = Spec.get_struct_style(lang_name, user_struct_name, user_style_name)
 				if struct_style then
-					for section_name, section_opts in pairs(struct_sections) do
+					for section_name, section_opts in pairs(user_struct_sections) do
 						local struct_section = struct_style[section_name]
 						if struct_section == nil then
-							error(
-								"There is no section called "
-									.. section_name
-									.. " in the "
-									.. struct_name
-									.. " structrure in "
-									.. lang_name
+							vim.notify(
+								string.format(
+									"No section called %s in the %s structure in %s",
+									section_name,
+									user_struct_name,
+									lang_name
+								),
+								vim.log.levels.ERROR
 							)
+							return
 						end
 
-						for opt_name, opt_val in pairs(section_opts) do
-							local opt_default_val = struct_section[opt_name]
-							if opt_default_val ~= nil then struct_section[opt_name] = opt_val end
+						local user_section_opts_are_valid, msg =
+							_validate_section_opts(EXPECTED_OPTS_PER_SECTION[section_name], section_name, section_opts)
+
+						if not user_section_opts_are_valid and msg then
+							vim.notify(msg, vim.log.levels.ERROR)
+							return
 						end
+
+						struct_style[section_name] =
+							vim.tbl_deep_extend("force", struct_style[section_name], section_opts)
 					end
 				end
 			end
