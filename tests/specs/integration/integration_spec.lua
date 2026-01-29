@@ -2,7 +2,7 @@ local Spec = require("codedocs.specs")
 local annotation_builder = require("codedocs.annotation_builder")
 
 local project_root = vim.fn.expand("<sfile>:p:h")
-package.path = package.path .. ";" .. project_root .. "/tests/cases/?.lua"
+package.path = package.path .. ";" .. project_root .. "/tests/specs/cases/?.lua"
 
 local LANGS_TO_TEST = Spec.get_supported_langs()
 
