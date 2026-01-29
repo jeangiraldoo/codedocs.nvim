@@ -126,30 +126,6 @@ function Spec.get_default_style(lang_name)
 	return lang_data.default_style
 end
 
-function Spec.process_style_structs(structs, style_name, lang_name)
-	for struct_name, struct_sections in pairs(structs) do
-		local struct_style = Spec.get_struct_style(lang_name, struct_name, style_name)
-		for section_name, section_opts in pairs(struct_sections) do
-			local struct_section = struct_style[section_name]
-			if struct_section == nil then
-				error(
-					"There is no section called "
-						.. section_name
-						.. " in the "
-						.. struct_name
-						.. " structrure in "
-						.. lang_name
-				)
-			end
-
-			for opt_name, opt_val in pairs(section_opts) do
-				local opt_default_val = struct_section[opt_name]
-				if opt_default_val ~= nil then struct_section[opt_name] = opt_val end
-			end
-		end
-	end
-end
-
 function Spec.update_style(user_opts)
 	for lang_name, user_styles in pairs(user_opts) do
 		if not Spec.is_lang_supported(lang_name) then
