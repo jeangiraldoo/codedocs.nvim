@@ -32,20 +32,6 @@ local GET_CLASS_ATTRS = {
 	]],
 }
 
-local REGEX = {
-	type = "regex",
-	data = {
-		pattern = "%f[%a]static%f[%A]",
-		mode = false,
-	},
-	children = {
-		{
-			type = "simple",
-			query = [[(property_identifier) @item_name]],
-		},
-	},
-}
-
 local GET_BODY_INSTANCE_ATTRS = {
 	type = "chain",
 	children = {
@@ -57,7 +43,13 @@ local GET_BODY_INSTANCE_ATTRS = {
 			type = "simple",
 			query = [[(public_field_definition) @target]],
 		},
-		REGEX,
+		{
+			type = "simple",
+			query = [[
+				(property_identifier) @item_name
+				(#not-match? @item_name "static")
+			]],
+		},
 	},
 }
 
