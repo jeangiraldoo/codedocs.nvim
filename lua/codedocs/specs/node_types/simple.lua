@@ -51,8 +51,7 @@ local function _handle_capture(builder, capture_name, node_text, name_first)
 end
 
 return function(base_node)
-	function base_node:process(ts_node)
-		local filetype = vim.bo.filetype
+	function base_node:process(ts_node, filetype)
 		local identifier_pos = require("codedocs.specs").get_lang_identifier_pos(filetype)
 		local query = self.query
 

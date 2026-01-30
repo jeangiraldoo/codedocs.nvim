@@ -14,7 +14,8 @@ end
 
 function M.insert_docs()
 	Debug_logger.log("Plugin triggered")
-	local lang = vim.bo.filetype
+	local lang = Spec.get_buffer_lang_name()
+	Debug_logger.log("Language: " .. lang)
 	if not vim.treesitter.get_parser(0, lang, { error = false }) then
 		vim.notify("Tree-sitter parser for " .. lang .. " is not installed", vim.log.levels.ERROR)
 		return
@@ -34,7 +35,7 @@ function M.insert_docs()
 	end
 
 	local struct_tree = Spec.get_struct_tree(lang, struct_name)
-	local items_data, pos = Spec.process_tree(struct_style, struct_tree, node)
+	local items_data, pos = Spec.process_tree(lang, struct_style, struct_tree, node)
 	Debug_logger.log("Item data: ", items_data)
 
 	local docs = docs_builder(struct_style, items_data, layout)

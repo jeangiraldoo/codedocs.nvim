@@ -1,5 +1,5 @@
 return function(base_node)
-	function base_node:process(ts_node, struct_style)
+	function base_node:process(ts_node, lang_name, struct_style)
 		local pattern = self.data.pattern
 		local nodes = {}
 		local node_text = vim.treesitter.get_node_text(ts_node, 0)
@@ -7,7 +7,7 @@ return function(base_node)
 		local result = string.find(node_text, pattern)
 		local expected_result = self.data.mode and true or nil
 		if result == expected_result then
-			local final = self.children[1]:process(ts_node, struct_style)
+			local final = self.children[1]:process(ts_node, lang_name, struct_style)
 			table.insert(nodes, final)
 		end
 		return vim.iter(nodes):flatten():totable()
