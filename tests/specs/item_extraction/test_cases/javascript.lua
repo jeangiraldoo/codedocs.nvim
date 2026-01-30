@@ -39,12 +39,15 @@ return {
 				params = {
 					{
 						name = "a",
+						type = "",
 					},
 					{
 						name = "b",
+						type = "",
 					},
 					{
 						name = "c",
+						type = "",
 					},
 				},
 				return_type = {

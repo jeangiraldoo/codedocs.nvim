@@ -21,6 +21,7 @@ return {
 				params = {},
 				return_type = {
 					{
+						name = "",
 						type = "int",
 					},
 				},
@@ -50,6 +51,7 @@ return {
 				},
 				return_type = {
 					{
+						name = "",
 						type = "int",
 					},
 				},
