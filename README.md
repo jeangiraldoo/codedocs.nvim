@@ -288,13 +288,29 @@ require("codedocs").setup({
         python = { -- language name
             Google = { -- name of the style to customize
                 func = { -- structure name
-                    general = { -- general section. Options here will modify other sections
-                        item_gap = true, -- general section option
-                        section_gap = true -- general section option
+                    general = {
+                        gap = {
+                            enabled = true
+                        },
                     },
-                    params = { -- params section. Options here will modify how parameters are displayed
-                        include_type = true -- item option
+                    params = {
+                        gap = {
+                            enabled = true
+                        },
+                        items = {
+                            insert_gap_between = {
+                                enabled = true
+                            },
+                            include_type = true
+                        },
                     },
+                    return_type = {
+                        items = {
+                            insert_gap_between = {
+                                enabled = true
+                            }
+                        },
+                    }
                 }
             },
         },
