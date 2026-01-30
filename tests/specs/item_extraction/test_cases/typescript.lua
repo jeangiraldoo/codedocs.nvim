@@ -21,6 +21,7 @@ return {
 				params = {},
 				return_type = {
 					{
+						name = "",
 						type = "number",
 					},
 				},

@@ -21,6 +21,7 @@ return {
 				params = {},
 				return_type = {
 					{
+						name = "",
 						type = "bool",
 					},
 				},
@@ -36,12 +37,15 @@ return {
 				params = {
 					{
 						name = "a",
+						type = "",
 					},
 					{
 						name = "b",
+						type = "",
 					},
 					{
 						name = "c",
+						type = "",
 					},
 				},
 				return_type = {
@@ -64,6 +68,7 @@ return {
 				attrs = {
 					{
 						name = "a",
+						type = "",
 					},
 				},
 			},

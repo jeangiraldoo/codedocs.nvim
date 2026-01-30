@@ -21,6 +21,7 @@ return {
 				params = {},
 				return_type = {
 					{
+						name = "",
 						type = "String",
 					},
 				},
@@ -74,6 +75,7 @@ return {
 				},
 				return_type = {
 					{
+						name = "",
 						type = "String",
 					},
 				},

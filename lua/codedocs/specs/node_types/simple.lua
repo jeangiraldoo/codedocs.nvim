@@ -38,10 +38,9 @@ local function _handle_capture(builder, capture_name, node_text, name_first)
 		if name_first then
 			if builder.current == nil then
 				-- Edge case: handles items with only a type (e.g. function return type) by emitting a nameless item
-				builder:start_type(node_text)
-			else
-				builder:set_type(node_text)
+				builder:start_name("")
 			end
+			builder:set_type(node_text)
 			builder:emit()
 		else
 			builder:emit()
@@ -81,7 +80,14 @@ return function(base_node)
 		end
 
 		builder:emit()
-		return builder.items
+		return vim.tbl_map(function(item)
+			if not item.name then
+				item.name = ""
+			elseif not item.type then
+				item.type = ""
+			end
+			return item
+		end, builder.items)
 	end
 	return base_node
 end

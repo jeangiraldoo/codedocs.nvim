@@ -21,12 +21,12 @@ return {
 				params = {},
 				return_type = {
 					{
+						name = "",
 						type = "int",
 					},
 				},
 			},
 		},
-		---Parametres and return
 		{
 			structure = {
 				"int add(int a, int b, int c) {",
@@ -51,6 +51,7 @@ return {
 				},
 				return_type = {
 					{
+						name = "",
 						type = "int",
 					},
 				},
