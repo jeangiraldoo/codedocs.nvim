@@ -251,14 +251,14 @@ The following is a mapping of structures to their respective items:
 
 ###### `items` suboptions
 
-| Suboption                          | Expected Type | Description                                      |
-| ---------------------------------- | ------------- | ------------------------------------------------ |
-| `items.insert_gap_between`         | `table`       | Controls spacing between consecutive items       |
-| `items.insert_gap_between.enabled` | `boolean`     | Whether to insert a gap between items            |
-| `items.insert_gap_between.text`    | `string`      | String inserted between items                    |
-| `include_type`                     | `boolean`     | Whether to include the item’s type               |
-| `indent`                           | `boolean`     | Whether item lines are indented                  |
-| `items.template`                   | `table`       | List of lines describing how an item is rendered |
+| Suboption                    | Expected Type | Description                                      |
+| ---------------------------- | ------------- | ------------------------------------------------ |
+| `insert_gap_between`         | `table`       | Controls spacing between consecutive items       |
+| `insert_gap_between.enabled` | `boolean`     | Whether to insert a gap between items            |
+| `insert_gap_between.text`    | `string`      | String inserted between items                    |
+| `include_type`               | `boolean`     | Whether to include the item’s type               |
+| `indent`                     | `boolean`     | Whether item lines are indented                  |
+| `template`                   | `table`       | List of lines describing how an item is rendered |
 
 ##### Attrs section extension for classes
 
@@ -288,13 +288,29 @@ require("codedocs").setup({
         python = { -- language name
             Google = { -- name of the style to customize
                 func = { -- structure name
-                    general = { -- general section. Options here will modify other sections
-                        item_gap = true, -- general section option
-                        section_gap = true -- general section option
+                    general = {
+                        gap = {
+                            enabled = true
+                        },
                     },
-                    params = { -- params section. Options here will modify how parameters are displayed
-                        include_type = true -- item option
+                    params = {
+                        gap = {
+                            enabled = true
+                        },
+                        items = {
+                            insert_gap_between = {
+                                enabled = true
+                            },
+                            include_type = true
+                        },
                     },
+                    return_type = {
+                        items = {
+                            insert_gap_between = {
+                                enabled = true
+                            }
+                        },
+                    }
                 }
             },
         },
@@ -332,7 +348,7 @@ vim.keymap.set(
 
 ### <a id="supported-languages"></a>🌐 Supported languages
 
-> [!INFO]
+> [!NOTE]
 > Annotation style names wrapped in [] indicate the default style for that language
 
 | Languages  | Annotation styles           | Supported automatic annotation |
