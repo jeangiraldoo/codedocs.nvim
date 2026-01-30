@@ -53,15 +53,15 @@ return {
 				params = {
 					{
 						name = "a",
-						type = ": number",
+						type = "number",
 					},
 					{
 						name = "b",
-						type = ": number",
+						type = "number",
 					},
 					{
 						name = "c",
-						type = ": number",
+						type = "number",
 					},
 				},
 				return_type = {},
@@ -78,15 +78,15 @@ return {
 				params = {
 					{
 						name = "a",
-						type = ": number",
+						type = "number",
 					},
 					{
 						name = "b",
-						type = ": number",
+						type = "number",
 					},
 					{
 						name = "c",
-						type = ": number",
+						type = "number",
 					},
 				},
 				return_type = {

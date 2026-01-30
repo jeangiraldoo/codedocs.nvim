@@ -8,7 +8,9 @@ return {
 						(formal_parameters
 							(required_parameter
 								(identifier) @item_name
-								(type_annotation) @item_type
+								(type_annotation
+									(predefined_type) @item_type
+								)
 							)
 						)
 					)
@@ -16,7 +18,9 @@ return {
 						(formal_parameters
 							(required_parameter
 								(identifier) @item_name
-								(type_annotation) @item_type
+								(type_annotation
+									(predefined_type) @item_type
+								)
 							)
 						)
 					)
