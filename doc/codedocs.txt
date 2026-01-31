@@ -1,257 +1,524 @@
-*codedocs.txt*     For Neovim >= 0.10.0     Last change: 2025 February 22
+*codedocs.txt*           For NVIM v0.10+          Last change: 2026 January 31
 
 ==============================================================================
-Codedocs
+Table of Contents                                 *codedocs-table-of-contents*
+
+1. codedocs.nvim                                      |codedocs-codedocs.nvim|
+  - Table of contents               |codedocs-codedocs.nvim-table-of-contents|
+
+==============================================================================
+1. codedocs.nvim                                      *codedocs-codedocs.nvim*
+
+
+
+
+
+
 
 Codedocs.nvim automatically recognizes various language structures such as
 functions, classes, variables, and more, and inserts appropriate documentation
-strings based on the programming language you are using.
+strings based on the |codedocs-programming-language| you are using.
 
 You can easily modify the structure of the documentation strings to suit your
 specific needs, add support for new languages by defining their documentation
 formats, or just use codedocs as it is! :)
 
-Table of Contents                               *codedocs-table-of-contents*
 
-  - Features                   |codedocs-features|
-  - Requirements               |codedocs-requirements|
-  - Installation               |codedocs-installation|
-  - Configuration              |codedocs-configuration|
-  - Usage                      |codedocs-usage|
-  - Supported languages        |codedocs-supported-languages|
-  - Customize docstrings       |codedocs-customize-docstrings|
-  - Contributing               |codedocs-contributing|
-  - Motivation                 |codedocs-motivation|
-  - License                    |codedocs-license|
+TABLE OF CONTENTS                   *codedocs-codedocs.nvim-table-of-contents*
 
-Features                                               *codedocs-features*
+- |codedocs-features|
+- |codedocs-requirements|
+- |codedocs-installation|
+- |codedocs-configuration|
+- |codedocs-usage|
+- |codedocs-supported-languages|
+- |codedocs-roadmap|
+- Technical documentation <./lua/codedocs/README.md>
+- |codedocs-contributing|
+- |codedocs-motivation|
+- |codedocs-license|
 
-- Works out-of-the-box: Integrates with Neovim instantly—no configuration
-  needed.
-- Auto Documentation: Detects and documents code structures with a simple
-  keybind.
-- Multi-language Support: Generates docstrings for various programming
-  languages.
-- Customizable: Easily modify existing formats or add new ones in just a few
-  simple steps.
 
-Requirements                                          *codedocs-requirements*
+FEATURES ~
+
+- Works out-of-the-box.
+- Detects and documents code structures with a simple keybind.
+- Supports multiple languages and structures.
+- Easily customize existing formats or add new ones.
+
+
+REQUIREMENTS ~
 
 Codedocs relies on Treesitter for its core functionality. Neovim includes
-built-in Treesitter parsers for the following languages—meaning no extra setup
-is needed for:
+built-in Treesitter parsers for the following languages—meaning no extra
+setup is needed for:
 
 - Lua
-- Python
 - C
 
-For any other language, you'll need to install the corresponding Treesitter
-parser. The simplest way to do this is with nvim-treesitter.
+For any other language, you’ll need to install the corresponding Treesitter
+parser. The simplest way to do this is with **nvim-treesitter**.
 
-Once you have the necessary parsers, you're all set to install Codedocs.
 
-Installation                                         *codedocs-installation*
+INSTALLATION ~
 
-To install Codedocs with your plugin manager, follow the instructions for your
-preferred manager below. As noted in the Requirements section, nvim-treesitter
-is only needed if you plan to use it for installing additional Treesitter
-parsers. If you're only working with Lua and C, or prefer to manage parsers
-manually, you can safely omit it.
+Use the snippet for your plugin manager:
 
-- lazy.nvim:
 
-{
-    "jeangiraldoo/codedocs.nvim",
-    dependencies = {
-        "nvim-treesitter/nvim-treesitter" -- Remove this if you don't plan on using nvim-treesitter
+VIM.PACK
+
+>lua
+    vim.pack.add({
+        { src = "https://github.com/jeangiraldoo/codedocs.nvim" }
+    })
+<
+
+
+LAZY.NVIM
+
+>lua
+    {
+        "jeangiraldoo/codedocs.nvim",
     }
-}
+<
 
-- packer.nvim:
 
-use {
-    "jeangiraldoo/codedocs.nvim",
-    requires = {
-        "nvim-treesitter/nvim-treesitter" -- Remove this if you don't plan on using nvim-treesitter
+PACKER.NVIM
+
+>lua
+    use {
+        "jeangiraldoo/codedocs.nvim",
     }
-}
+<
 
-- vim-plug:
 
-Plug 'jeangiraldoo/codedocs.nvim'
-Plug 'nvim-treesitter/nvim-treesitter' " Remove this if you don't plan on using nvim-treesitter
+VIM-PLUG
 
-- mini.deps
+>vim
+    Plug 'jeangiraldoo/codedocs.nvim'
+<
 
-require("mini.deps").add({
-    source = "jeangiraldoo/codedocs.nvim",
-    depends = { "nvim-treesitter/nvim-treesitter" } -- Remove this if you don't plan on using nvim-treesitter
-})
 
-- minpac:
+MINI.DEPS
 
-packadd minpac
-call minpac#add('jeangiraldoo/codedocs.nvim')
-call minpac#add('nvim-treesitter/nvim-treesitter') " Remove this if you don't plan on using nvim-treesitter
+>lua
+    require("mini.deps").add({
+        source = "jeangiraldoo/codedocs.nvim",
+    })
+<
 
-- paq-nvim:
 
-require("paq") {
-    "jeangiraldoo/codedocs.nvim",
-    "nvim-treesitter/nvim-treesitter", -- Remove this if you don't plan on using nvim-treesitter
-}
+MINPAC
 
-Configuration                                           *codedocs-configuration*
+>vim
+    packadd minpac
+    call minpac#add('jeangiraldoo/codedocs.nvim')
+<
 
-Configuring Codedocs is not mandatory, as it works out of the box. However, if
-the default settings don’t meet your needs, you can easily customize the plugin.
 
-- Change the default docstring style used in a language
+PAQ-NVIM
 
-  You can change the docstring style for any language that supports more than one
-  style.
+>lua
+    require("paq") {
+        "jeangiraldoo/codedocs.nvim",
+    }
+<
 
-  Keep in mind that the name of the docstring style must be spelled exactly as
-  shown in the table of [supported languages](#supported-languages-and-structures). For example, `reST`
-  must be written as `reST` (not `ReST` or any other variation).
 
-  Although this example demonstrates changing the style for a single language, you
-  can customize as many languages as you want by adding their names to the table
-  and assigning the respective style names.
+CONFIGURATION ~
 
-  In this case, we are changing Python's docstring style from the default to
-  "reST":
 
-  require("codedocs").setup {
-      default_styles = {python = "reST"}
-  }
+CHANGE A LANGUAGE’S DEFAULT ANNOTATION STYLE
 
-- Customize a docstring style
+Default styles are defined using the `default_styles` key:
 
-You can refer to the "Customize docstring style" section
-for detailed information about the process and the options available!
+>lua
+    require("codedocs").setup {
+        default_styles = {
+            --- Default styles definitions
+        }
+    }
+<
 
-Usage                                                        *codedocs-usage*
+For example, let’s set the default styles for Python and Lua:
 
-When your cursor is placed on top of a language's structure (e.g., a function
-declaration, class, etc.) that you want to document and you trigger the
-docstring insertion, Codedocs will check if it has a docstring style for
-such structure in the programming language you are using. If a docstring
-style is available, it will generate and insert a docstring above or below the
-structure, depending on the language's docstring style.
+>lua
+    require("codedocs").setup {
+        default_styles = {
+            lua = "EmmyLua",
+            python = "reST"
+        }
+    }
+<
 
-If the structure under the cursor isn't supported by Codedocs, an empty
-single-line comment will be inserted.
 
-You can start the docstring insertion either by using a command or a keymap:
+  [!WARNING] Keep in mind that the name of the docstring style must be spelled
+  exactly as shown in the table of |codedocs-supported-languages|.
 
-- **Command**
+CUSTOMIZE AN ANNOTATION STYLE
 
-  Codedocs creates the `:Codedocs` command, which can be called manually like
-  this:
+You can customize almost (for now!) every aspect of an annotation style.
+Whether you want to make a simple change, like modifying the characters
+wrapping the parameter type:
 
-      :Codedocs
+>python
+    def cool_function_with_type_hints(a: int, b: bool) -> str:
+        """
+        <title goes here>
+    
+        Args:
+            a <int>:
+            b <bool>:
+        Returns:
+            str:
+        """
+        self.sum = 1 + 1
+        return <value>
+<
 
-- **Keymap**
+Or if you want to go all out with customization:
 
-  For a more convenient experience, you can bind the docstring insertion to a
-  keymap. For example:
+>python
+    def cool_function_with_type_hints(a: int, b: bool) -> str:
+            """
+            <title goes here>
+    
+            Some cool customized title!:
+                a (づ ◕‿◕ )づ int ⊂(´• ω •`⊂):
+    
+                b (づ ◕‿◕ )づ bool ⊂(´• ω •`⊂):
+            This is some return type...:
+                (￢_￢;) str:
+            """
+            self.sum = 1 + 1
+            return <value>
+<
 
-      vim.keymap.set("n", "<leader>k", require('codedocs').insert_docs,
-          { desc = "Inserts a docstring" })
+In this case, we:
 
-  This keymap will insert a docstring when pressing `<leader>k`. Feel free to
-  customize the key combination to your liking.
+- Increased spacing between items in the parameters section.
+- Wrapped parameter types with two Kaomojis <https://kaomoji.ru/en/>.
+- Added a third kaomoji to wrap the left side of the return type.
+- Customized the titles for both the parameters and return sections.
 
-Supported languages                            *codedocs-supported-languages*
+To customize an annotation style, you have to keep in mind that it is nothing
+but a table where each key is an option, spread across many sections:
 
-Codedocs supports a variety of programming languages and provides automatic
-annotations tailored to each language's style. Below is a breakdown of how
-Codedocs handles annotations for different code structures:
+  Structure   Sections
+  ----------- -------------------------------------
+  func        general, title, params, return_type
+  class       general, title, attrs
+  comment     general, title
 
-1. Function
+OPTIONS COMMON TO ALL SECTIONS
 
-   - Parameters: Included if present in the function signature.
-   - Parameter Type: Added if specified through a type hint or if the language
-     is statically typed.
-   - Return Section: Included only if a return type is explicitly defined in
-     the function signature.
+  ------------------------------------------------------------------------
+  Option   Expected Value Behavior
+  Name     Type           
+  -------- -------------- ------------------------------------------------
+  layout   table          Defines the base lines that compose an
+                          annotation section
 
-2. Class
+  gap      table          Sets up a gap in between the current section and
+                          the section below
+  ------------------------------------------------------------------------
 
-   - Attributes: Class attributes are documented when available.
+GAP SUBOPTIONS
 
-3. Comment
+  Suboption Name   Expected Value Type   Behavior
+  ---------------- --------------------- -----------------------------
+  enabled          boolean               Whether the gap is inserted
+  text             string                String used as the gap
 
-   - If no supported structure is detected under the cursor, Codedocs will insert
-     an empty inline comment as a shortcut for adding regular comments.
+GENERAL SECTION
 
-This table lists the structures and their supported docstring styles for each
-language:
+As you can see, all structures have a `general` section, as it is used for
+configuring all other sections in a given structure by defining options that
+are available to all structures.
 
-    Languages   | Annotation Styles           | Supported Automatic Annotation
-    ------------|-----------------------------|-------------------------------
-    Lua         | LDoc                        | function, comment
-    Python      | Google, NumPy/SciPy, reST   | class, function, comment
-    JavaScript  | JSDoc                       | class, function, comment
-    TypeScript  | TSDoc                       | class, function, comment
-    Ruby        | YARD                        | function, comment
-    PHP         | PHPDoc                      | function, comment
-    Java        | JavaDoc                     | class, function, comment
-    Kotlin      | KDoc                        | class, function, comment
-    Rust        | RustDoc                     | function, comment
-    Go          | Godoc                       | function, comment
-    C           | Doxygen                     | function, comment
-    C++         | Doxygen                     | function, comment
+All other sections are focused on configuring how the items they contain are
+displayed.
 
-Want to see what docstrings look like by default? Check out the
-Docstring Examples to explore different formats across multiple languages.
+The `general` section supports the following options:
 
-Contributing                                             *codedocs-contributing*
+  ------------------------------------------------------------------------------
+  Option Name     Expected    Behavior
+                  Value Type  
+  --------------- ----------- --------------------------------------------------
+  direction       boolean     Determines where the annotation is inserted. true
+                              for above, false for below.
 
-Thank you for your interest in contributing to Codedocs! There are several
+  insert_at       boolean     Position in the layout option to insert the
+                              annotation content into
+
+  section_order   table       Specifies the order in which sections are added to
+                              the docstring.
+  ------------------------------------------------------------------------------
+
+TITLE SECTION
+
+  ---------------------------------------------------------------------------
+  Option Name  Expected      Behavior
+               Value Type    
+  ------------ ------------- ------------------------------------------------
+  cursor_pos   number        Determines what line from the layout option to
+                             place the cursor on
+
+  ---------------------------------------------------------------------------
+
+ITEM-BASED SECTIONS
+
+An `item` is a part of a structure, having a `name` that identifies it, and a
+`data type`.
+
+The following is a mapping of structures to their respective items:
+
+- Function: Parameters (`params` section), return type (`return_type` section).
+- Class: Attributes (`attrs` section).
+
+  -----------------------------------------------------------------------
+  Option     Expected Value     Behavior
+  Name       Type               
+  ---------- ------------------ -----------------------------------------
+  items      table              Controls how individual items are
+                                rendered
+
+  -----------------------------------------------------------------------
+
+ITEMS SUBOPTIONS
+
+  ------------------------------------------------------------------------------
+  Suboption                    Expected   Description
+                               Type       
+  ---------------------------- ---------- --------------------------------------
+  insert_gap_between           table      Controls spacing between consecutive
+                                          items
+
+  insert_gap_between.enabled   boolean    Whether to insert a gap between items
+
+  insert_gap_between.text      string     String inserted between items
+
+  include_type                 boolean    Whether to include the item’s type
+
+  indent                       boolean    Whether item lines are indented
+
+  template                     table      List of lines describing how an item
+                                          is rendered
+  ------------------------------------------------------------------------------
+
+ATTRS SECTION EXTENSION FOR CLASSES
+
+The following `attrs` options are exclusive to classes, as they only apply to
+class attributes:
+
+  -------------------------------------------------------------------------------------------
+  Option Name                               Expected   Behavior
+                                            Value Type 
+  ----------------------------------------- ---------- --------------------------------------
+  include_class_attrs                       boolean    Include class-level attributes in the
+                                                       annotation
+
+  include_instance_attrs                    boolean    Include instance attributes in the
+                                                       annotation
+
+  include_only_constructor_instance_attrs   boolean    Only include instance attributes from
+                                                       the constructor, or annotate all
+  -------------------------------------------------------------------------------------------
+
+CUSTOMIZATION EXAMPLE
+
+Say we want to make the following changes to Python’s Google annotation style
+for functions:
+
+- Add a gap in between all items.
+- Add a gap in between sections (functions have a `params` and `return_type` section)
+- Include the parameter types.
+
+This is what such customization would look like:
+
+>lua
+    require("codedocs").setup({
+        styles = { -- Modifications to styles are done in the `styles` key
+            python = { -- language name
+                Google = { -- name of the style to customize
+                    func = { -- structure name
+                        general = {
+                            gap = {
+                                enabled = true
+                            },
+                        },
+                        params = {
+                            gap = {
+                                enabled = true
+                            },
+                            items = {
+                                insert_gap_between = {
+                                    enabled = true
+                                },
+                                include_type = true
+                            },
+                        },
+                        return_type = {
+                            items = {
+                                insert_gap_between = {
+                                    enabled = true
+                                }
+                            },
+                        }
+                    }
+                },
+            },
+        }
+    })
+<
+
+
+USAGE ~
+
+When an annotation insertion is triggered, the plugin generates one for the
+structure under the cursor. If no supported structure is detected, it inserts
+an inline comment instead.
+
+An annotation insertion can be triggered in the following ways:
+
+
+COMMAND
+
+The simplest way to use the plugin is with the following command:
+
+>lua
+    :Codedocs
+<
+
+
+KEYMAP
+
+For a more convenient experience, you can bind the annotation insertion to a
+keymap. For example:
+
+>lua
+    vim.keymap.set(
+        "n", "<leader>k", require('codedocs').insert_docs,
+        { desc = "Insert docstring" }
+    )
+<
+
+
+SUPPORTED LANGUAGES ~
+
+
+  [!NOTE] Annotation style names wrapped in [] indicate the default style for
+  that language
+  -------------------------------------------------------------------------
+  Languages    Annotation styles            Supported automatic annotation
+  ------------ ---------------------------- -------------------------------
+  Bash         [Google]                     function, comment
+
+  Lua          [EmmyLua], LDoc              function, comment
+
+  Python       Google, NumPy/SciPy, [reST]  class, function, comment
+
+  JavaScript   [JSDoc]                      class, function, comment
+
+  TypeScript   [TSDoc]                      class, function, comment
+
+  Ruby         [YARD]                       function, comment
+
+  PHP          [PHPDoc]                     function, comment
+
+  Java         [JavaDoc]                    class, function, comment
+
+  Kotlin       [KDoc]                       class, function, comment
+
+  Rust         [RustDoc]                    function, comment
+
+  Go           [Godoc]                      function, comment
+
+  C            [Doxygen]                    function, comment
+
+  C++          [Doxygen]                    function, comment
+  -------------------------------------------------------------------------
+
+1. FUNCTION
+
+- **Parameters**: Included if present in the function signature.
+- **Parameter Type**: Added if specified through a type hint or if the language
+    is statically typed.
+- **Return Section**: Included only if a return type is explicitly defined in
+    the function signature.
+
+
+2. CLASS
+
+- **Attributes**: Class attributes are documented when available.
+
+
+3. COMMENT
+
+If no structure is detected under the cursor, an empty inline comment will be
+inserted.
+
+
+  [!TIP] Want to see what docstrings look like by default? Check out the
+  Docstring Examples <./DOCSTRING_EXAMPLES.md> to explore different formats
+  across multiple languages.
+
+ROADMAP ~
+
+You can see what’s being worked on and which features are planned by checking
+the GitHub Milestones
+<https://github.com/jeangiraldoo/codedocs.nvim/milestones>.
+
+
+CONTRIBUTING ~
+
+Thank you for your interest in contributing to **Codedocs**! There are several
 ways you can help improve the project:
 
-  - Propose new features: If you have an idea for a new feature, please open a
-    discussion in the Discussions section.
-  - Contribute to feature development: You can help by working on features
-    listed in the Roadmap. For a deeper understanding of the codebase, check out
-    the Technical documentation.
-  - Report or fix bugs: If you encounter a bug, you can report it by creating a
-    new discussion or GitHub issue. If you're able to fix the bug yourself, your
+- **Propose new features**: If you have an idea for a new feature, please open a
+    discussion in the
+    Discussions section <https://github.com/jeangiraldoo/codedocs.nvim/discussions>.
+- **Contribute to feature development**: You can help by working on features
+    listed in the |codedocs-roadmap|. For a deeper understanding of the codebase,
+    check out the Technical documentation <./lua/codedocs/README.md>.
+- **Report or fix bugs**: If you encounter a bug, you can report it by creating
+    a new discussion or GitHub issue. If you’re able to fix the bug yourself, your
     help in resolving it is greatly appreciated!
-  - Enhance the documentation: If you spot any typos, outdated information, or
+- **Enhance the documentation**: If you spot any typos, outdated information, or
     areas where the documentation could be clearer, feel free to suggest
     improvements.
 
 Every contribution, no matter how big or small, is valuable and highly
 appreciated!
 
-Motivation                                             *codedocs-motivation*
 
-I started workng on Codedocs because I wanted to enhance my experience with
+MOTIVATION ~
+
+I started working on Codedocs because I wanted to enhance my experience with
 Neovim, which I started using daily for my side projects and university
 assignments. I wanted a tool to make documenting my code easier and to
 contribute something useful to the community! :D
 
-While I found a few plugins with similar functionality, none of them offered the
-level of customization and simplicity I was looking for. Sometimes, I feel that
-apps and plugins could be more intuitive and user-friendly while still providing
-the same powerful features.
+While I found a few plugins with similar functionality, none of them offered
+the level of customization and simplicity I was looking for. Sometimes, I feel
+that apps and plugins could be more intuitive and user-friendly while still
+providing the same powerful features.
 
 TL;DR: I built Codedocs to improve productivity by automatically generating
 documentation strings, allowing for easy customization, and providing a simple
 yet powerful solution for both personal and community use. Plus, it is a fun
 project to work on!
 
-License                                               *codedocs-license*
 
-Codedocs is licensed under the MIT License. This means you are free to download,
-install, modify, share, and use the plugin for both personal and commercial
-purposes.
+LICENSE ~
+
+Codedocs is licensed under the MIT License. This means you are free to
+download, install, modify, share, and use the plugin for both personal and
+commercial purposes.
 
 The only requirement is that if you modify and redistribute the code, you must
 include the same LICENSE file found in this repository.
 
-================================================================================
-vim:tw=80:ts=2:ft=help:norl:syntax=help:
+Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
+
+vim:tw=78:ts=8:noet:ft=help:norl:
