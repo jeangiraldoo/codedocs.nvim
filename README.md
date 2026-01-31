@@ -353,6 +353,7 @@ vim.keymap.set(
 
 | Languages  | Annotation styles           | Supported automatic annotation |
 | ---------- | --------------------------- | ------------------------------ |
+| Bash       | [Google]                    | `function`, `comment`          |
 | Lua        | [EmmyLua], LDoc             | `function`, `comment`          |
 | Python     | Google, NumPy/SciPy, [reST] | `class`, `function`, `comment` |
 | JavaScript | [JSDoc]                     | `class`, `function`, `comment` |

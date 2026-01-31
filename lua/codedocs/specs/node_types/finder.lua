@@ -16,12 +16,19 @@ local function _collect_descendants_of_type(ts_node, target_type, descendant_col
 
 	return descendant_collection
 end
+local function get_root(node)
+	while node:parent() do
+		node = node:parent()
+	end
+	return node
+end
 
 return function(base_node)
 	function base_node:process(ts_node)
-		if self.collect_found_nodes then return _collect_descendants_of_type(ts_node, self.target_node_type) end
+		local node = self.find_from_root and get_root(ts_node) or ts_node
+		if self.collect_found_nodes then return _collect_descendants_of_type(node, self.target_node_type) end
 
-		if _find_descendant_of_type(ts_node, self.target_node_type) then
+		if _find_descendant_of_type(node, self.target_node_type) then
 			return {
 				{
 					name = self.item_name_value_if_found or "",

@@ -14,12 +14,9 @@ local function test_case(lang, expected_items)
 	local struct_name, node = require("codedocs.struct_detector")(Spec.get_struct_identifiers(lang))
 	local struct_tree = Spec.get_struct_tree(lang, struct_name)
 	local struct_style = Spec.get_struct_style(lang, struct_name, Spec.get_default_style(lang))
-	local data, _ = Spec.process_tree(struct_style, struct_tree, node)
+	local data, _ = Spec.process_tree(lang, struct_style, struct_tree, node)
 
 	assert.are.same(expected_items, data)
-	-- local docs = (struct_name == "comment") and struct_style.general.layout
-	-- 	or annotation_builder(struct_style, data, struct_style.general.layout)
-	-- assert.are.same(expected_docs, docs)
 end
 
 describe("Annotation building using default options", function()

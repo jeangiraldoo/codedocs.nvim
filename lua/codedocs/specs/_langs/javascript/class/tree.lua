@@ -30,20 +30,12 @@ local GET_BODY_INSTANCE_ATTRS = {
 		},
 		{
 			type = "simple",
-			query = [[(field_definition) @target]],
-		},
-		{
-			type = "regex",
-			data = {
-				pattern = "%f[%a]static%f[%A]",
-				mode = false,
-			},
-			children = {
-				{
-					type = "simple",
-					query = [[(property_identifier) @item_name]],
-				},
-			},
+			query = [[
+				(field_definition
+					(property_identifier) @item_name
+					(#not-match? @field "static")
+				) @field
+			]],
 		},
 	},
 }

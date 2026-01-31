@@ -250,7 +250,7 @@ function Spec.get_struct_tree(lang, struct_name)
 	return CACHED_TREES[lang][struct_name]
 end
 
-function Spec.process_tree(struct_style, struct_tree, node)
+function Spec.process_tree(lang_name, struct_style, struct_tree, node)
 	local pos = node:range()
 
 	local items = {}
@@ -258,13 +258,18 @@ function Spec.process_tree(struct_style, struct_tree, node)
 		local section_tree = struct_tree[section_name]
 
 		items[section_name] = vim.iter(section_tree)
-			:map(function(tree_node) return tree_node:process(node, struct_style) end)
+			:map(function(tree_node) return tree_node:process(node, lang_name, struct_style) end)
 			:find(
 				function(section_items_list) return section_items_list and (not vim.tbl_isempty(section_items_list)) end
 			) or {}
 	end
 
 	return items, pos
+end
+
+function Spec.get_buffer_lang_name()
+	local buffer_filetype = vim.bo.filetype
+	return require("codedocs.specs._langs.aliases")[buffer_filetype] or buffer_filetype
 end
 
 return Spec
