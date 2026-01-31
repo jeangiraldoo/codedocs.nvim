@@ -348,24 +348,25 @@ vim.keymap.set(
 
 ### <a id="supported-languages"></a>🌐 Supported languages
 
+<!-- prettier-ignore -->
 > [!NOTE]
-> Annotation style names wrapped in [] indicate the default style for that language
+> \* indicates the default style for that language
 
 | Languages  | Annotation styles           | Supported automatic annotation |
 | ---------- | --------------------------- | ------------------------------ |
-| Bash       | [Google]                    | `comment`, `function`          |
-| C          | [Doxygen]                   | `comment`, `function`          |
-| C++        | [Doxygen]                   | `comment`, `function`          |
-| Go         | [Godoc]                     | `comment`, `function`          |
-| JavaScript | [JSDoc]                     | `comment`, `function`, `class` |
-| Java       | [JavaDoc]                   | `comment`, `function`, `class` |
-| Kotlin     | [KDoc]                      | `comment`, `function`, `class` |
-| Lua        | [EmmyLua], LDoc             | `comment`, `function`          |
-| Python     | Google, NumPy/SciPy, [reST] | `comment`, `function`, `class` |
-| PHP        | [PHPDoc]                    | `comment`, `function`          |
-| Ruby       | [YARD]                      | `comment`, `function`          |
-| Rust       | [RustDoc]                   | `comment`, `function`          |
-| TypeScript | [TSDoc]                     | `comment`, `function`, `class` |
+| Bash       | \*Google                    | `comment`, `function`          |
+| C          | \*Doxygen                   | `comment`, `function`          |
+| C++        | \*Doxygen                   | `comment`, `function`          |
+| Go         | \*Godoc                     | `comment`, `function`          |
+| JavaScript | \*JSDoc                     | `comment`, `function`, `class` |
+| Java       | \*JavaDoc                   | `comment`, `function`, `class` |
+| Kotlin     | \*KDoc                      | `comment`, `function`, `class` |
+| Lua        | \*EmmyLua, LDoc             | `comment`, `function`          |
+| Python     | Google, NumPy/SciPy, \*reST | `comment`, `function`, `class` |
+| PHP        | \*PHPDoc                    | `comment`, `function`          |
+| Ruby       | \*YARD                      | `comment`, `function`          |
+| Rust       | \*RustDoc                   | `comment`, `function`          |
+| TypeScript | \*TSDoc                     | `comment`, `function`, `class` |
 
 #### 1. **Function**
 
