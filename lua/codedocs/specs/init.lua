@@ -251,20 +251,49 @@ function Spec.get_struct_tree(lang, struct_name)
 end
 
 function Spec.process_tree(lang_name, struct_style, struct_tree, node)
+	local function remove_duplicate_items_by_name(items)
+		local seen = {}
+		local deduplicated_list = {}
+
+		for _, item in ipairs(items) do
+			if not seen[item.name] then
+				seen[item.name] = true
+				table.insert(deduplicated_list, item)
+			end
+		end
+
+		return deduplicated_list
+	end
+
+	local function normalize_item_fields(items)
+		return vim.tbl_map(function(item)
+			if not item.name then
+				item.name = ""
+			elseif not item.type then
+				item.type = ""
+			end
+			return item
+		end, items)
+	end
+
 	local pos = node:range()
 
-	local items = {}
+	local items_list = {}
 	for _, section_name in pairs(struct_style.general.section_order) do
 		local section_tree = struct_tree[section_name]
 
-		items[section_name] = vim.iter(section_tree)
+		local raw_items = vim.iter(section_tree)
 			:map(function(tree_node) return tree_node:process(node, lang_name, struct_style) end)
 			:find(
 				function(section_items_list) return section_items_list and (not vim.tbl_isempty(section_items_list)) end
 			) or {}
+
+		if #raw_items > 1 then raw_items = remove_duplicate_items_by_name(raw_items) end
+
+		items_list[section_name] = normalize_item_fields(raw_items)
 	end
 
-	return items, pos
+	return items_list, pos
 end
 
 function Spec.get_buffer_lang_name()

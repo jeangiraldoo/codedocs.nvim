@@ -25,9 +25,11 @@ return {
 				params = {
 					{
 						name = "1",
+						type = "",
 					},
 					{
 						name = "2",
+						type = "",
 					},
 				},
 				return_type = {},
@@ -49,9 +51,11 @@ return {
 				globals = {
 					{
 						name = "GLOBAL_VAR",
+						type = "",
 					},
 					{
 						name = "inner_global",
+						type = "",
 					},
 				},
 				params = {},
@@ -75,17 +79,21 @@ return {
 				globals = {
 					{
 						name = "GLOBAL_VAR",
+						type = "",
 					},
 					{
 						name = "inner_global",
+						type = "",
 					},
 				},
 				params = {
 					{
 						name = "1",
+						type = "",
 					},
 					{
 						name = "2",
+						type = "",
 					},
 				},
 				return_type = {},
