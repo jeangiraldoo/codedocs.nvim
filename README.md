@@ -141,7 +141,7 @@ require("codedocs").setup {
 ```
 
 > [!WARNING]
-> Keep in mind that the name of the docstring style must be spelled exactly as
+> Keep in mind that the name of the annotation style must be spelled exactly as
 > shown in the table of [supported languages](#supported-languages).
 
 #### Customize an annotation style
@@ -227,7 +227,7 @@ The `general` section supports the following options:
 | --------------- | ------------------- | --------------------------------------------------------------------------------- |
 | `direction`     | boolean             | Determines where the annotation is inserted. `true` for above, `false` for below. |
 | `insert_at`     | boolean             | Position in the `layout` option to insert the annotation content into             |
-| `section_order` | table               | Specifies the order in which sections are added to the docstring.                 |
+| `section_order` | table               | Specifies the order in which sections are added to the annotation.                |
 
 ##### Title section
 
@@ -342,14 +342,14 @@ keymap. For example:
 ```lua
 vim.keymap.set(
     "n", "<leader>k", require('codedocs').insert_docs,
-    { desc = "Insert docstring" }
+    { desc = "Insert annotation" }
 )
 ```
 
 ### <a id="supported-languages"></a>🌐 Supported languages
 
 > [!TIP]
-> Want to see how annotations look by default? Take a look at the [Annotation Examples](./DOCSTRING_EXAMPLES.md)
+> Want to see how annotations look by default? Take a look at the [Annotation Examples](./ANNOTATION_EXAMPLES.md)
 
 <!-- prettier-ignore -->
 > [!NOTE]
