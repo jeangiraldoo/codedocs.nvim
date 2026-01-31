@@ -265,6 +265,17 @@ function Spec.process_tree(lang_name, struct_style, struct_tree, node)
 		return deduplicated_list
 	end
 
+	local function normalize_item_fields(items)
+		return vim.tbl_map(function(item)
+			if not item.name then
+				item.name = ""
+			elseif not item.type then
+				item.type = ""
+			end
+			return item
+		end, items)
+	end
+
 	local pos = node:range()
 
 	local items_list = {}
@@ -279,7 +290,7 @@ function Spec.process_tree(lang_name, struct_style, struct_tree, node)
 
 		if #raw_items > 1 then raw_items = remove_duplicate_items_by_name(raw_items) end
 
-		items_list[section_name] = raw_items
+		items_list[section_name] = normalize_item_fields(raw_items)
 	end
 
 	return items_list, pos

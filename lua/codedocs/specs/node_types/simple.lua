@@ -79,14 +79,7 @@ return function(base_node)
 		end
 
 		builder:emit()
-		return vim.tbl_map(function(item)
-			if not item.name then
-				item.name = ""
-			elseif not item.type then
-				item.type = ""
-			end
-			return item
-		end, builder.items)
+		return builder.items
 	end
 	return base_node
 end
