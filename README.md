@@ -42,7 +42,7 @@ formats, or just use codedocs as it is! :)
 
 - Works out-of-the-box.
 - Detects and documents code structures with a simple keybind.
-- Supports multiple languages and structures.
+- Supports multiple [languages and styles](#supported-languages).
 - Easily customize existing formats or add new ones.
 
 ### <a id="requirements"></a>📋 Requirements
