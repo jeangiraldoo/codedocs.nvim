@@ -42,7 +42,7 @@ formats, or just use codedocs as it is! :)
 
 - Works out-of-the-box.
 - Detects and documents code structures with a simple keybind.
-- Supports multiple languages and structures.
+- Supports multiple [languages and styles](#supported-languages).
 - Easily customize existing formats or add new ones.
 
 ### <a id="requirements"></a>📋 Requirements
@@ -117,6 +117,10 @@ require("paq") {
 
 ### <a id="configuration"></a>⚙️ Configuration
 
+> [!WARNING]
+> Language, struct and style names must be spelled exactly as shown in the
+> [supported languages section](#supported-languages).
+
 #### Change a language's default annotation style
 
 Default styles are defined using the `default_styles` key:
@@ -139,10 +143,6 @@ require("codedocs").setup {
     }
 }
 ```
-
-> [!WARNING]
-> Keep in mind that the name of the docstring style must be spelled exactly as
-> shown in the table of [supported languages](#supported-languages).
 
 #### Customize an annotation style
 
@@ -227,7 +227,7 @@ The `general` section supports the following options:
 | --------------- | ------------------- | --------------------------------------------------------------------------------- |
 | `direction`     | boolean             | Determines where the annotation is inserted. `true` for above, `false` for below. |
 | `insert_at`     | boolean             | Position in the `layout` option to insert the annotation content into             |
-| `section_order` | table               | Specifies the order in which sections are added to the docstring.                 |
+| `section_order` | table               | Specifies the order in which sections are added to the annotation.                |
 
 ##### Title section
 
@@ -342,51 +342,34 @@ keymap. For example:
 ```lua
 vim.keymap.set(
     "n", "<leader>k", require('codedocs').insert_docs,
-    { desc = "Insert docstring" }
+    { desc = "Insert annotation" }
 )
 ```
 
 ### <a id="supported-languages"></a>🌐 Supported languages
 
+> [!TIP]
+> Want to see how annotations look by default? Take a look at the [Annotation Examples](./ANNOTATION_EXAMPLES.md)
+
+<!-- prettier-ignore -->
 > [!NOTE]
-> Annotation style names wrapped in [] indicate the default style for that language
+> \* indicates the default style for that language
 
 | Languages  | Annotation styles           | Supported automatic annotation |
 | ---------- | --------------------------- | ------------------------------ |
-| Bash       | [Google]                    | `function`, `comment`          |
-| Lua        | [EmmyLua], LDoc             | `function`, `comment`          |
-| Python     | Google, NumPy/SciPy, [reST] | `class`, `function`, `comment` |
-| JavaScript | [JSDoc]                     | `class`, `function`, `comment` |
-| TypeScript | [TSDoc]                     | `class`, `function`, `comment` |
-| Ruby       | [YARD]                      | `function`, `comment`          |
-| PHP        | [PHPDoc]                    | `function`, `comment`          |
-| Java       | [JavaDoc]                   | `class`, `function`, `comment` |
-| Kotlin     | [KDoc]                      | `class`, `function`, `comment` |
-| Rust       | [RustDoc]                   | `function`, `comment`          |
-| Go         | [Godoc]                     | `function`, `comment`          |
-| C          | [Doxygen]                   | `function`, `comment`          |
-| C++        | [Doxygen]                   | `function`, `comment`          |
-
-#### 1. **Function**
-
-- **Parameters**: Included if present in the function signature.
-- **Parameter Type**: Added if specified through a type hint or if the language
-  is statically typed.
-- **Return Section**: Included only if a return type is explicitly defined in
-  the function signature.
-
-#### 2. **Class**
-
-- **Attributes**: Class attributes are documented when available.
-
-#### 3. **Comment**
-
-If no structure is detected under the cursor, an empty inline comment will be inserted.
-
-> [!TIP]
-> Want to see what docstrings look like by default? Check out the
-> [Docstring Examples](./DOCSTRING_EXAMPLES.md) to explore different formats
-> across multiple languages.
+| Bash       | \*Google                    | `comment`, `function`          |
+| C          | \*Doxygen                   | `comment`, `function`          |
+| C++        | \*Doxygen                   | `comment`, `function`          |
+| Go         | \*Godoc                     | `comment`, `function`          |
+| JavaScript | \*JSDoc                     | `comment`, `function`, `class` |
+| Java       | \*JavaDoc                   | `comment`, `function`, `class` |
+| Kotlin     | \*KDoc                      | `comment`, `function`, `class` |
+| Lua        | \*EmmyLua, LDoc             | `comment`, `function`          |
+| Python     | Google, NumPy/SciPy, \*reST | `comment`, `function`, `class` |
+| PHP        | \*PHPDoc                    | `comment`, `function`          |
+| Ruby       | \*YARD                      | `comment`, `function`          |
+| Rust       | \*RustDoc                   | `comment`, `function`          |
+| TypeScript | \*TSDoc                     | `comment`, `function`, `class` |
 
 ### <a id="roadmap"></a>🗺️ Roadmap
 
@@ -396,24 +379,8 @@ the
 
 ### <a id="contributing"></a>🤝 Contributing
 
-Thank you for your interest in contributing to **Codedocs**! There are several
-ways you can help improve the project:
-
-- **Propose new features**: If you have an idea for a new feature, please open a
-  discussion in the
-  [Discussions section](https://github.com/jeangiraldoo/codedocs.nvim/discussions).
-- **Contribute to feature development**: You can help by working on features
-  listed in the [Roadmap](#roadmap). For a deeper understanding of the codebase,
-  check out the [Technical documentation](./lua/codedocs/README.md).
-- **Report or fix bugs**: If you encounter a bug, you can report it by creating
-  a new discussion or GitHub issue. If you're able to fix the bug yourself, your
-  help in resolving it is greatly appreciated!
-- **Enhance the documentation**: If you spot any typos, outdated information, or
-  areas where the documentation could be clearer, feel free to suggest
-  improvements.
-
-Every contribution, no matter how big or small, is valuable and highly
-appreciated!
+Thank you for your interest in contributing to **Codedocs**! Feel free to read
+the [Contribution guide](./CONTRIBUTING.md) to get started.
 
 ### <a id="motivation"></a>💡 Motivation
 
