@@ -117,6 +117,10 @@ require("paq") {
 
 ### <a id="configuration"></a>⚙️ Configuration
 
+> [!WARNING]
+> Language, struct and style names must be spelled exactly as shown in the
+> [supported languages section](#supported-languages).
+
 #### Change a language's default annotation style
 
 Default styles are defined using the `default_styles` key:
@@ -139,10 +143,6 @@ require("codedocs").setup {
     }
 }
 ```
-
-> [!WARNING]
-> Keep in mind that the name of the annotation style must be spelled exactly as
-> shown in the table of [supported languages](#supported-languages).
 
 #### Customize an annotation style
 
