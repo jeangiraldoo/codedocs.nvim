@@ -368,22 +368,6 @@ vim.keymap.set(
 | Rust       | \*RustDoc                   | `comment`, `function`          |
 | TypeScript | \*TSDoc                     | `comment`, `function`, `class` |
 
-#### 1. **Function**
-
-- **Parameters**: Included if present in the function signature.
-- **Parameter Type**: Added if specified through a type hint or if the language
-  is statically typed.
-- **Return Section**: Included only if a return type is explicitly defined in
-  the function signature.
-
-#### 2. **Class**
-
-- **Attributes**: Class attributes are documented when available.
-
-#### 3. **Comment**
-
-If no structure is detected under the cursor, an empty inline comment will be inserted.
-
 > [!TIP]
 > Want to see what docstrings look like by default? Check out the
 > [Docstring Examples](./DOCSTRING_EXAMPLES.md) to explore different formats
