@@ -88,5 +88,6 @@ return {
 	title = TITLE_OPTS,
 	params = SECTION_WITH_ITEMS_OPTS,
 	return_type = SECTION_WITH_ITEMS_OPTS,
+	globals = SECTION_WITH_ITEMS_OPTS,
 	attrs = ATTRS_OPTS,
 }

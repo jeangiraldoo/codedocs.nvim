@@ -1,2 +1,3 @@
 return {
+	sh = "bash",
 }
