@@ -353,19 +353,19 @@ vim.keymap.set(
 
 | Languages  | Annotation styles           | Supported automatic annotation |
 | ---------- | --------------------------- | ------------------------------ |
-| Bash       | [Google]                    | `function`, `comment`          |
-| Lua        | [EmmyLua], LDoc             | `function`, `comment`          |
-| Python     | Google, NumPy/SciPy, [reST] | `class`, `function`, `comment` |
-| JavaScript | [JSDoc]                     | `class`, `function`, `comment` |
-| TypeScript | [TSDoc]                     | `class`, `function`, `comment` |
-| Ruby       | [YARD]                      | `function`, `comment`          |
-| PHP        | [PHPDoc]                    | `function`, `comment`          |
-| Java       | [JavaDoc]                   | `class`, `function`, `comment` |
-| Kotlin     | [KDoc]                      | `class`, `function`, `comment` |
-| Rust       | [RustDoc]                   | `function`, `comment`          |
-| Go         | [Godoc]                     | `function`, `comment`          |
-| C          | [Doxygen]                   | `function`, `comment`          |
-| C++        | [Doxygen]                   | `function`, `comment`          |
+| Bash       | [Google]                    | `comment`, `function`          |
+| Lua        | [EmmyLua], LDoc             | `comment`, `function`          |
+| Python     | Google, NumPy/SciPy, [reST] | `comment`, `function`, `class` |
+| JavaScript | [JSDoc]                     | `comment`, `function`, `class` |
+| TypeScript | [TSDoc]                     | `comment`, `function`, `class` |
+| Ruby       | [YARD]                      | `comment`, `function`          |
+| PHP        | [PHPDoc]                    | `comment`, `function`          |
+| Java       | [JavaDoc]                   | `comment`, `function`, `class` |
+| Kotlin     | [KDoc]                      | `comment`, `function`, `class` |
+| Rust       | [RustDoc]                   | `comment`, `function`          |
+| Go         | [Godoc]                     | `comment`, `function`          |
+| C          | [Doxygen]                   | `comment`, `function`          |
+| C++        | [Doxygen]                   | `comment`, `function`          |
 
 #### 1. **Function**
 
