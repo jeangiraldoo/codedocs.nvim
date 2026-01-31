@@ -354,18 +354,18 @@ vim.keymap.set(
 | Languages  | Annotation styles           | Supported automatic annotation |
 | ---------- | --------------------------- | ------------------------------ |
 | Bash       | [Google]                    | `comment`, `function`          |
-| Lua        | [EmmyLua], LDoc             | `comment`, `function`          |
-| Python     | Google, NumPy/SciPy, [reST] | `comment`, `function`, `class` |
-| JavaScript | [JSDoc]                     | `comment`, `function`, `class` |
-| TypeScript | [TSDoc]                     | `comment`, `function`, `class` |
-| Ruby       | [YARD]                      | `comment`, `function`          |
-| PHP        | [PHPDoc]                    | `comment`, `function`          |
-| Java       | [JavaDoc]                   | `comment`, `function`, `class` |
-| Kotlin     | [KDoc]                      | `comment`, `function`, `class` |
-| Rust       | [RustDoc]                   | `comment`, `function`          |
-| Go         | [Godoc]                     | `comment`, `function`          |
 | C          | [Doxygen]                   | `comment`, `function`          |
 | C++        | [Doxygen]                   | `comment`, `function`          |
+| Go         | [Godoc]                     | `comment`, `function`          |
+| JavaScript | [JSDoc]                     | `comment`, `function`, `class` |
+| Java       | [JavaDoc]                   | `comment`, `function`, `class` |
+| Kotlin     | [KDoc]                      | `comment`, `function`, `class` |
+| Lua        | [EmmyLua], LDoc             | `comment`, `function`          |
+| Python     | Google, NumPy/SciPy, [reST] | `comment`, `function`, `class` |
+| PHP        | [PHPDoc]                    | `comment`, `function`          |
+| Ruby       | [YARD]                      | `comment`, `function`          |
+| Rust       | [RustDoc]                   | `comment`, `function`          |
+| TypeScript | [TSDoc]                     | `comment`, `function`, `class` |
 
 #### 1. **Function**
 
