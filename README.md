@@ -348,6 +348,9 @@ vim.keymap.set(
 
 ### <a id="supported-languages"></a>🌐 Supported languages
 
+> [!TIP]
+> Want to see how annotations look by default? Take a look at the [Annotation Examples](./DOCSTRING_EXAMPLES.md)
+
 <!-- prettier-ignore -->
 > [!NOTE]
 > \* indicates the default style for that language
@@ -367,11 +370,6 @@ vim.keymap.set(
 | Ruby       | \*YARD                      | `comment`, `function`          |
 | Rust       | \*RustDoc                   | `comment`, `function`          |
 | TypeScript | \*TSDoc                     | `comment`, `function`, `class` |
-
-> [!TIP]
-> Want to see what docstrings look like by default? Check out the
-> [Docstring Examples](./DOCSTRING_EXAMPLES.md) to explore different formats
-> across multiple languages.
 
 ### <a id="roadmap"></a>🗺️ Roadmap
 
