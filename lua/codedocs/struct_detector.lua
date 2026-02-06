@@ -2,6 +2,11 @@
 -- @return string Structure name
 -- @return vim.treesitter._tsnode
 return function(struct_identifiers)
+	assert(
+		type(struct_identifiers) == "table",
+		"struct_identifiers must be a table (got " .. type(struct_identifiers) .. ")"
+	)
+
 	vim.treesitter.get_parser(0):parse()
 	local node_at_cursor = vim.treesitter.get_node()
 

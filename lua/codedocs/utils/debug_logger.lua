@@ -3,6 +3,9 @@ local is_debug_mode_on = false
 local Debug_logging = {}
 
 function Debug_logging.log(msg, tbl)
+	assert(type(msg) == "string", "'msg' must be a string, got " .. type(msg))
+	assert(tbl == nil or type(tbl) == "table", "'tbl' must be a string, got " .. type(tbl))
+
 	local log_msg = "[Codedocs Debug] " .. msg
 
 	if tbl and type(tbl) == "table" then log_msg = string.format("%s %s", log_msg, vim.inspect(tbl)) end
