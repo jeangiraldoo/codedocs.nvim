@@ -26,11 +26,21 @@ function M.insert_docs()
 	local layout = struct_style.general.layout
 	local cursor_pos = struct_style.general.insert_at + (struct_style.title.cursor_pos - 1)
 
+	local target_positions = {
+		title_offset = cursor_pos,
+	}
+
 	Debug_logger.log("Structure name: " .. struct_name)
 	Debug_logger.log("Style: ", struct_style)
 	if struct_name == "comment" then
-		local pos = vim.api.nvim_win_get_cursor(0)[1] - 1
-		require("codedocs.buf_writer")(layout, pos, struct_style.general.direction, cursor_pos)
+		target_positions.annotation_row = vim.api.nvim_win_get_cursor(0)[1] - 1
+
+		require("codedocs.buf_writer")(
+			layout,
+			target_positions,
+			-- Languages where annotations appear below the structure definition require an extra indentation level
+			not struct_style.general.direction
+		)
 		return
 	end
 
@@ -41,7 +51,14 @@ function M.insert_docs()
 	local docs = docs_builder(struct_style, items_data, layout)
 	Debug_logger.log("Annotation:", docs)
 
-	require("codedocs.buf_writer")(docs, pos, struct_style.general.direction, cursor_pos)
+	target_positions.annotation_row = struct_style.general.direction and pos or pos + 1
+
+	require("codedocs.buf_writer")(
+		docs,
+		target_positions,
+		-- Languages where annotations appear below the structure definition require an extra indentation level
+		not struct_style.general.direction --TODO: there should be an option to indent or not the annotation
+	)
 end
 
 return M
