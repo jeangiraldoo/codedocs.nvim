@@ -70,7 +70,6 @@ local COMMON_DATA = {
 				layout = {
 					" * ",
 				},
-				cursor_pos = 1,
 				gap = {
 					enabled = true,
 					text = " *",
@@ -290,6 +289,37 @@ local ITEM_CASES = {
 					include_type = true,
 					template = {
 						{ " * @the_type", "[%item_type]", "@the_name", "{%item_name}" },
+					},
+				},
+			},
+		},
+	},
+	{
+		expected_annotation = {
+			"/**",
+			" * ",
+			" *",
+			" * @the_type [int] @the_name {a} ${1:description}",
+			" * @the_type [] @the_name {b} ${2:description}",
+			" * @the_type [int] @the_name {c} ${3:description}",
+			" * @the_type [string] @the_name {} ${4:description}",
+			" * @secondary_item d",
+			" * @secondary_item e",
+			" * @secondary_item f",
+			" * @secondary_item",
+			" */",
+		},
+		opts_to_change = {
+			primary_section = {
+				items = {
+					include_type = true,
+					template = {
+						{
+							" * @the_type",
+							"[%item_type]",
+							"@the_name",
+							"{%item_name} ${%snippet_tabstop_idx:description}",
+						},
 					},
 				},
 			},

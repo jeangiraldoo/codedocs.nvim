@@ -31,9 +31,6 @@ local GENERAL_OPTS = {
 GENERAL_OPTS = vim.tbl_extend("force", GENERAL_OPTS, COMMON_OPTS)
 
 local TITLE_OPTS = {
-	cursor_pos = {
-		expected_type = "number", -- Title line offset within the docstring
-	},
 	gap = {
 		expected_type = "boolean", -- Adds a blank line after the title if there's a section
 	},

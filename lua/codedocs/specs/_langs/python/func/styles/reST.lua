@@ -13,9 +13,8 @@ return {
 	},
 	title = {
 		layout = {
-			"",
+			"${%snippet_tabstop_idx:title}",
 		},
-		cursor_pos = 1,
 		gap = {
 			enabled = true,
 			text = "",
@@ -35,8 +34,8 @@ return {
 			indent = false,
 			include_type = true,
 			template = {
-				":param %item_name:",
-				":type %item_name:",
+				":param %item_name: ${%snippet_tabstop_idx:description}",
+				":type %item_name: ${%snippet_tabstop_idx:%item_type}",
 			},
 		},
 	},

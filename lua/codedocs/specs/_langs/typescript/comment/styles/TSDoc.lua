@@ -6,8 +6,7 @@ return {
 	},
 	title = {
 		layout = {
-			"// ",
+			"// ${%snippet_tabstop_idx:description}",
 		},
-		cursor_pos = 1,
 	},
 }

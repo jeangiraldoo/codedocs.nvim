@@ -9,10 +9,14 @@ return {
 							[
 								(simple_parameter
 									(primitive_type) @item_type
-									(variable_name) @item_name
+									(variable_name
+										(name) @item_name
+									)
 								)
 								(simple_parameter
-									(variable_name) @item_name
+									(variable_name
+										(name) @item_name
+									)
 								)
 							]
 						)
@@ -22,10 +26,14 @@ return {
 							[
 								(simple_parameter
 									(primitive_type) @item_type
-									(variable_name) @item_name
+									(variable_name
+										(name) @item_name
+									)
 								)
 								(simple_parameter
-									(variable_name) @item_name
+									(variable_name
+										(name) @item_name
+									)
 								)
 							]
 						)

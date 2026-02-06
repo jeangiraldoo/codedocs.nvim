@@ -24,19 +24,20 @@ function M.insert_docs()
 	local struct_name, node = require("codedocs.struct_detector")(Spec.get_struct_identifiers(lang))
 	local struct_style = Spec:_get_struct_main_style(lang, struct_name)
 	local layout = struct_style.general.layout
-	local cursor_pos = struct_style.general.insert_at + (struct_style.title.cursor_pos - 1)
 
 	local target_positions = {
-		title_offset = cursor_pos,
+		title_offset = struct_style.general.insert_at,
 	}
 
 	Debug_logger.log("Structure name: " .. struct_name)
 	Debug_logger.log("Style: ", struct_style)
 	if struct_name == "comment" then
 		target_positions.annotation_row = vim.api.nvim_win_get_cursor(0)[1] - 1
+		local docs = docs_builder(struct_style, {}, layout)
 
 		require("codedocs.buf_writer")(
-			layout,
+			docs,
+			-- layout,
 			target_positions,
 			-- Languages where annotations appear below the structure definition require an extra indentation level
 			not struct_style.general.direction

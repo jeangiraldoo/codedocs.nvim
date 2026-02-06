@@ -13,9 +13,8 @@ return {
 	},
 	title = {
 		layout = {
-			"",
+			"${%snippet_tabstop_idx:title}",
 		},
-		cursor_pos = 1,
 		gap = {
 			enabled = true,
 			text = "",

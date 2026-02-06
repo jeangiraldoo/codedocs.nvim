@@ -1,13 +1,12 @@
 return {
 	general = {
-		layout = {
-			"// ",
-		},
+		layout = {},
 		insert_at = 1,
 		direction = true,
 	},
 	title = {
-		layout = {},
-		cursor_pos = 1,
+		layout = {
+			"// ${%snippet_tabstop_idx:description}",
+		},
 	},
 }

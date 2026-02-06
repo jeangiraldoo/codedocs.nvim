@@ -231,9 +231,7 @@ The `general` section supports the following options:
 
 ##### Title section
 
-| Option Name  | Expected Value Type | Behavior                                                             |
-| ------------ | ------------------- | -------------------------------------------------------------------- |
-| `cursor_pos` | number              | Determines what line from the `layout` option to place the cursor on |
+Only options common to all sections.
 
 ##### Item-based sections
 
