@@ -7,7 +7,7 @@ return {
 		direction = true,
 		insert_at = 2,
 		section_order = {
-			"params",
+			"parameters",
 			"return_type",
 		},
 	},
@@ -20,7 +20,7 @@ return {
 			text = " *",
 		},
 	},
-	params = {
+	parameters = {
 		layout = {},
 		insert_gap_between = {
 			enabled = false,

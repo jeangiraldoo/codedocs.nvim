@@ -2,7 +2,7 @@
 
 local ITEM_SECTIONS = {
 	"attrs",
-	"params",
+	"parameters",
 	"return_type",
 	"globals",
 }

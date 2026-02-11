@@ -8,7 +8,7 @@ return {
 			cursor_pos = 1,
 			expected_items = {
 				globals = {},
-				params = {},
+				parameters = {},
 				return_type = {},
 			},
 		},
@@ -22,7 +22,7 @@ return {
 			cursor_pos = 1,
 			expected_items = {
 				globals = {},
-				params = {
+				parameters = {
 					{
 						name = "1",
 						type = "",
@@ -58,7 +58,7 @@ return {
 						type = "",
 					},
 				},
-				params = {},
+				parameters = {},
 				return_type = {},
 			},
 		},
@@ -86,7 +86,7 @@ return {
 						type = "",
 					},
 				},
-				params = {
+				parameters = {
 					{
 						name = "1",
 						type = "",

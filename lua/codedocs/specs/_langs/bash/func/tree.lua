@@ -61,7 +61,7 @@ return {
 			},
 		},
 	},
-	params = {
+	parameters = {
 		{
 			type = "chain",
 			children = {

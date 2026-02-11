@@ -1,5 +1,5 @@
 return {
-	params = {
+	parameters = {
 		{
 			type = "simple",
 			query = [[
