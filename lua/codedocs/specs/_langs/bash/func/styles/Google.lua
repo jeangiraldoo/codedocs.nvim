@@ -17,7 +17,7 @@ return {
 		layout = {
 			"# ${%snippet_tabstop_idx:title}",
 		},
-		gap = {
+		insert_gap_between = {
 			enabled = false,
 			text = "",
 		},
@@ -26,7 +26,7 @@ return {
 		layout = {
 			"# Globals:",
 		},
-		gap = {
+		insert_gap_between = {
 			enabled = false,
 			text = "",
 		},
@@ -45,7 +45,7 @@ return {
 		layout = {
 			"# Arguments:",
 		},
-		gap = {
+		insert_gap_between = {
 			enabled = false,
 			text = "",
 		},
@@ -64,7 +64,7 @@ return {
 		layout = {
 			"Returns:",
 		},
-		gap = {
+		insert_gap_between = {
 			enabled = false,
 			text = "",
 		},

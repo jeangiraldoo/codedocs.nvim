@@ -21,7 +21,7 @@ return {
 		layout = {
 			" * ${%snippet_tabstop_idx:title}",
 		},
-		gap = {
+		insert_gap_between = {
 			enabled = true,
 			text = " *",
 		},
@@ -30,7 +30,7 @@ return {
 		layout = {
 			" * Attributes:",
 		},
-		gap = {
+		insert_gap_between = {
 			enabled = false,
 			text = " *",
 		},

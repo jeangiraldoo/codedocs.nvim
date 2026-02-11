@@ -201,12 +201,12 @@ but a table where each key is an option, spread across many sections:
 
 ##### Options common to all sections
 
-| Option Name | Expected Value Type | Behavior                                                           |
-| ----------- | ------------------- | ------------------------------------------------------------------ |
-| layout      | `table`             | Defines the base lines that compose an annotation section          |
-| gap         | `table`             | Sets up a gap in between the current section and the section below |
+| Option Name        | Expected Value Type | Behavior                                                           |
+| ------------------ | ------------------- | ------------------------------------------------------------------ |
+| layout             | `table`             | Defines the base lines that compose an annotation section          |
+| insert_gap_between | `table`             | Sets up a gap in between the current section and the section below |
 
-###### `gap` suboptions
+###### `insert_gap_between` suboptions
 
 | Suboption Name | Expected Value Type | Behavior                    |
 | -------------- | ------------------- | --------------------------- |
@@ -283,12 +283,12 @@ require("codedocs").setup({
             Google = { -- name of the style to customize
                 func = { -- structure name
                     general = {
-                        gap = {
+                        insert_gap_between = {
                             enabled = true
                         },
                     },
                     params = {
-                        gap = {
+                        insert_gap_between = {
                             enabled = true
                         },
                         items = {

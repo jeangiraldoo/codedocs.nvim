@@ -12,14 +12,14 @@ return {
 		layout = {
 			"// ${%snippet_tabstop_idx:title}",
 		},
-		gap = {
+		insert_gap_between = {
 			enabled = false,
 			text = "//",
 		},
 	},
 	params = {
 		layout = {},
-		gap = {
+		insert_gap_between = {
 			enabled = false,
 			text = "//",
 		},
@@ -34,7 +34,7 @@ return {
 	},
 	return_type = {
 		layout = {},
-		gap = {
+		insert_gap_between = {
 			enabled = false,
 			text = "//",
 		},

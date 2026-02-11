@@ -70,14 +70,14 @@ local COMMON_DATA = {
 				layout = {
 					" * ",
 				},
-				gap = {
+				insert_gap_between = {
 					enabled = true,
 					text = " *",
 				},
 			},
 			primary_section = {
 				layout = {},
-				gap = {
+				insert_gap_between = {
 					enabled = false,
 					text = " *",
 				},
@@ -94,7 +94,7 @@ local COMMON_DATA = {
 			},
 			secondary_section = {
 				layout = {},
-				gap = {
+				insert_gap_between = {
 					enabled = false,
 					text = " * ",
 				},
@@ -175,13 +175,13 @@ local GENERAL_SECTION_CASES = {
 		},
 		opts_to_change = {
 			primary_section = {
-				gap = {
+				insert_gap_between = {
 					enabled = true,
 					text = "--*",
 				},
 			},
 			secondary_section = {
-				gap = {
+				insert_gap_between = {
 					enabled = true,
 					text = "--*",
 				},

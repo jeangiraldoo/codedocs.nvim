@@ -9,7 +9,7 @@ return {
 		layout = {
 			"# ${%snippet_tabstop_idx:description}",
 		},
-		gap = {
+		insert_gap_between = {
 			enabled = false,
 			text = "",
 		},
