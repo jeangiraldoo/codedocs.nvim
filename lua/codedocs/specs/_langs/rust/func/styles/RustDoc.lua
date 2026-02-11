@@ -31,7 +31,6 @@ return {
 				enabled = false,
 				text = "///",
 			},
-			include_type = false,
 			indent = false,
 			template = {
 				"/// * `%item_name` - ${%snippet_tabstop_idx:description}",
@@ -53,7 +52,6 @@ return {
 				text = "///",
 			},
 			indent = false,
-			include_type = false,
 			template = {
 				"/// ${%snippet_tabstop_idx:description}",
 			},

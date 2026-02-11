@@ -34,7 +34,6 @@ return {
 				text = " *",
 			},
 			indent = false,
-			include_type = false,
 			template = {},
 		},
 	},

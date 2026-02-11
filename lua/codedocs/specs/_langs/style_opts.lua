@@ -52,9 +52,6 @@ local SECTION_WITH_ITEMS_OPTS = {
 					},
 				},
 			},
-			include_type = { -- Includes item type if true
-				expected_type = "boolean",
-			},
 			indent = {
 				expected_type = "boolean", -- Whether or not to indent items
 			},

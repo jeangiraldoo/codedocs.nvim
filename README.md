@@ -254,7 +254,6 @@ The following is a mapping of structures to their respective items:
 | `insert_gap_between`         | `table`       | Controls spacing between consecutive items       |
 | `insert_gap_between.enabled` | `boolean`     | Whether to insert a gap between items            |
 | `insert_gap_between.text`    | `string`      | String inserted between items                    |
-| `include_type`               | `boolean`     | Whether to include the item’s type               |
 | `indent`                     | `boolean`     | Whether item lines are indented                  |
 | `template`                   | `table`       | List of lines describing how an item is rendered |
 
@@ -276,7 +275,6 @@ for functions:
 
 - Add a gap in between all items.
 - Add a gap in between sections (functions have a `params` and `return_type` section)
-- Include the parameter types.
 
 This is what such customization would look like:
 
@@ -299,7 +297,6 @@ require("codedocs").setup({
                             insert_gap_between = {
                                 enabled = true
                             },
-                            include_type = true
                         },
                     },
                     return_type = {
