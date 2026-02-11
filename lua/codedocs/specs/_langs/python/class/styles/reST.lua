@@ -34,7 +34,6 @@ return {
 				text = "",
 			},
 			indent = false,
-			include_type = true,
 			template = {
 				":var %item_name: ${%snippet_tabstop_idx:description}",
 				{ ":vartype", "%item_name:", "%item_type" },

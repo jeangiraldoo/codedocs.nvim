@@ -42,7 +42,6 @@ local BASE_MOCKED_OPTS = {
 				"some template %item_name",
 			},
 			indent = true,
-			include_type = true,
 		},
 	},
 }

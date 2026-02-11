@@ -87,7 +87,6 @@ local COMMON_DATA = {
 						text = " * ",
 					},
 					indent = false,
-					include_type = false,
 					template = {
 						" * @item %item_name",
 					},
@@ -104,7 +103,6 @@ local COMMON_DATA = {
 						enabled = false,
 						text = " * ",
 					},
-					include_type = false,
 					indent = false,
 					template = {
 						" * @secondary_item %item_name",
@@ -286,7 +284,6 @@ local ITEM_CASES = {
 		opts_to_change = {
 			primary_section = {
 				items = {
-					include_type = true,
 					template = {
 						" * @the_type [%item_type] @the_name {%item_name}",
 					},
@@ -312,7 +309,6 @@ local ITEM_CASES = {
 		opts_to_change = {
 			primary_section = {
 				items = {
-					include_type = true,
 					template = {
 						" * @the_type [%item_type] @the_name {%item_name} ${%snippet_tabstop_idx:description}",
 					},

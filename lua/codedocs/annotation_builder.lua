@@ -1,13 +1,11 @@
 local Debug_logger = require("codedocs.utils.debug_logger")
 
-local function _handle_string(string, item_name, item_type, include_type)
+local function _handle_string(string, item_name, item_type)
 	assert(type(string) == "string", "'string' must be a string, got " .. type(string))
 	assert(type(item_name) == "string", "'item_name' must be a string, got " .. type(item_name))
 	assert(type(item_type) == "string", "'item_type' must be a string, got " .. type(item_type))
-	assert(type(include_type) == "boolean", "'include_type' must be a string, got " .. type(include_type))
 
-	local result = string:gsub("%%item_name", item_name or "")
-	result = include_type and result:gsub("%%item_type", item_type or "") or result:gsub("%%item_type", "")
+	local result = string:gsub("%%item_name", item_name or ""):gsub("%%item_type", item_type)
 	return result
 end
 
@@ -34,10 +32,7 @@ local function _build_annotation_content(item_data, style)
 		for item_idx, item in ipairs(section_items) do
 			local indent = section_style.items.indent and "\t" or ""
 			for _, line in ipairs(section_style.items.template) do
-				table.insert(
-					annotation_content,
-					indent .. _handle_string(line, item.name, item.type, section_style.items.include_type)
-				)
+				table.insert(annotation_content, indent .. _handle_string(line, item.name, item.type))
 
 				local should_insert_item_gap = section_style.items.insert_gap_between.enabled
 					and section_items[item_idx + 1]

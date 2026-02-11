@@ -34,7 +34,6 @@ return {
 				text = "",
 			},
 			indent = true,
-			include_type = true,
 			template = {
 				"%item_name (${%snippet_tabstop_idx:%item_type}): ${%snippet_tabstop_idx:description}",
 			},
@@ -54,7 +53,6 @@ return {
 				text = "",
 			},
 			indent = true,
-			include_type = true,
 			template = {
 				"${%snippet_tabstop_idx:%item_type}: ${%snippet_tabstop_idx:description}",
 			},

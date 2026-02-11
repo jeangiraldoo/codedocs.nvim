@@ -37,7 +37,6 @@ return {
 				text = "",
 			},
 			indent = false,
-			include_type = true,
 			template = {
 				{ "%item_name :", "%item_type" },
 			},

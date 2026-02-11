@@ -32,7 +32,6 @@ return {
 				text = " *",
 			},
 			indent = false,
-			include_type = false,
 			template = {
 				" * @param {${%snippet_tabstop_idx:type}} %item_name ${%snippet_tabstop_idx:description}",
 			},
@@ -50,7 +49,6 @@ return {
 				text = " *",
 			},
 			indent = false,
-			include_type = false,
 			template = {
 				" * @returns {${%snippet_tabstop_idx:type}} ${%snippet_tabstop_idx:description}",
 			},

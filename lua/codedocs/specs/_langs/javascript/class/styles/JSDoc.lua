@@ -34,7 +34,6 @@ return {
 				text = " *",
 			},
 			indent = false,
-			include_type = false,
 			template = {
 				" * @property {%item_type} %item_name ${%snippet_tabstop_idx:description}",
 			},
