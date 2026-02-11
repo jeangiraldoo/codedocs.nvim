@@ -283,7 +283,9 @@ function Spec.process_tree(lang_name, struct_style, struct_tree, node)
 		local section_tree = struct_tree[section_name]
 
 		local raw_items = vim.iter(section_tree)
-			:map(function(tree_node) return tree_node:process(node, lang_name, struct_style) end)
+			:map(
+				function(tree_node) return tree_node:process(node, lang_name, struct_style.general.item_extraction) end
+			)
 			:find(
 				function(section_items_list) return section_items_list and (not vim.tbl_isempty(section_items_list)) end
 			) or {}

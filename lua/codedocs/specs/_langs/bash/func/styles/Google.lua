@@ -11,6 +11,7 @@ return {
 			"params",
 			"return_type",
 		},
+		item_extraction = {},
 	},
 	title = {
 		layout = {

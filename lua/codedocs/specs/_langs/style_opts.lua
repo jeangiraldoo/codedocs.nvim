@@ -27,6 +27,9 @@ local GENERAL_OPTS = {
 	section_order = {
 		expected_type = "table", -- Specifies the order of docstring sections
 	},
+	item_extraction = {
+		expected_type = "table",
+	},
 }
 GENERAL_OPTS = vim.tbl_extend("force", GENERAL_OPTS, COMMON_OPTS)
 

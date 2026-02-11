@@ -9,6 +9,13 @@ return {
 		section_order = {
 			"attrs",
 		},
+		item_extraction = {
+			attrs = {
+				include_class_attrs = true,
+				include_instance_attrs = true,
+				include_only_constructor_instance_attrs = true,
+			},
+		},
 	},
 	title = {
 		layout = {
@@ -21,9 +28,6 @@ return {
 	},
 	attrs = {
 		layout = {},
-		include_class_attrs = true,
-		include_instance_attrs = true,
-		include_only_constructor_instance_attrs = true,
 		gap = {
 			enabled = false,
 			text = "",
@@ -36,7 +40,7 @@ return {
 			indent = false,
 			template = {
 				":var %item_name: ${%snippet_tabstop_idx:description}",
-				{ ":vartype", "%item_name:", "%item_type" },
+				":vartype %item_name: ${%snippet_tabstop_idx:%item_type}",
 			},
 		},
 	},

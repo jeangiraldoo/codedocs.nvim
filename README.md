@@ -223,11 +223,20 @@ All other sections are focused on configuring how the items they contain are dis
 
 The `general` section supports the following options:
 
-| Option Name     | Expected Value Type | Behavior                                                                          |
-| --------------- | ------------------- | --------------------------------------------------------------------------------- |
-| `direction`     | boolean             | Determines where the annotation is inserted. `true` for above, `false` for below. |
-| `insert_at`     | boolean             | Position in the `layout` option to insert the annotation content into             |
-| `section_order` | table               | Specifies the order in which sections are added to the annotation.                |
+| Option Name       | Expected Value Type | Behavior                                                                          |
+| ----------------- | ------------------- | --------------------------------------------------------------------------------- |
+| `direction`       | boolean             | Determines where the annotation is inserted. `true` for above, `false` for below. |
+| `insert_at`       | boolean             | Position in the `layout` option to insert the annotation content into             |
+| `section_order`   | table               | Specifies the order in which sections are added to the annotation.                |
+| `item_extraction` | table               | Controls how items for a specific section are parsed                              |
+
+###### Item extraction suboptions for class attributes
+
+| Option Name                               | Expected Value Type | Behavior                                                               |
+| ----------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
+| `include_class_attrs`                     | boolean             | Include class-level attributes in the annotation                       |
+| `include_instance_attrs`                  | boolean             | Include instance attributes in the annotation                          |
+| `include_only_constructor_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
 
 ##### Title section
 
@@ -256,17 +265,6 @@ The following is a mapping of structures to their respective items:
 | `insert_gap_between.text`    | `string`      | String inserted between items                    |
 | `indent`                     | `boolean`     | Whether item lines are indented                  |
 | `template`                   | `table`       | List of lines describing how an item is rendered |
-
-##### Attrs section extension for classes
-
-The following `attrs` options are exclusive to classes, as they only apply to
-class attributes:
-
-| Option Name                               | Expected Value Type | Behavior                                                               |
-| ----------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
-| `include_class_attrs`                     | boolean             | Include class-level attributes in the annotation                       |
-| `include_instance_attrs`                  | boolean             | Include instance attributes in the annotation                          |
-| `include_only_constructor_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
 
 ##### Customization example
 
