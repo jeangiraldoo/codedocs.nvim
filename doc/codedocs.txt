@@ -1,4 +1,4 @@
-*codedocs.txt*           For NVIM v0.10+          Last change: 2026 January 31
+*codedocs.txt*          For NVIM v0.10+          Last change: 2026 February 11
 
 ==============================================================================
 Table of Contents                                 *codedocs-table-of-contents*
@@ -257,14 +257,8 @@ The `general` section supports the following options:
 
 TITLE SECTION
 
-  ---------------------------------------------------------------------------
-  Option Name  Expected      Behavior
-               Value Type    
-  ------------ ------------- ------------------------------------------------
-  cursor_pos   number        Determines what line from the layout option to
-                             place the cursor on
+Only options common to all sections.
 
-  ---------------------------------------------------------------------------
 
 ITEM-BASED SECTIONS
 
