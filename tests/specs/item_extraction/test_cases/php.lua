@@ -60,15 +60,15 @@ return {
 			expected_items = {
 				params = {
 					{
-						name = "$a",
+						name = "a",
 						type = "int",
 					},
 					{
-						name = "$b",
+						name = "b",
 						type = "int",
 					},
 					{
-						name = "$c",
+						name = "c",
 						type = "int",
 					},
 				},
@@ -88,15 +88,15 @@ return {
 			expected_items = {
 				params = {
 					{
-						name = "$a",
+						name = "a",
 						type = "int",
 					},
 					{
-						name = "$b",
+						name = "b",
 						type = "int",
 					},
 					{
-						name = "$c",
+						name = "c",
 						type = "int",
 					},
 				},

@@ -28,7 +28,12 @@ local function _handle_capture(builder, capture_name, node_text, name_first)
 			builder:emit()
 			builder:start_name(node_text)
 		else
-			builder:set_name(node_text)
+			if builder.current == nil then
+				-- Edge case: handles items where the type is optional, but when it is present it goes before the name
+				builder:start_name(node_text)
+			else
+				builder:set_name(node_text)
+			end
 			builder:emit()
 		end
 		return

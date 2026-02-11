@@ -56,9 +56,16 @@ return function(annotation_lines, positions, should_indent_annotation)
 	for i, annotation_line in ipairs(annotation_lines) do
 		indented_lines[i] = structure_indent_string .. annotation_line
 	end
-	vim.api.nvim_buf_set_lines(0, positions.annotation_row, positions.annotation_row, false, indented_lines)
 
-	vim.api.nvim_win_set_cursor(0, { positions.annotation_row + positions.title_offset, 0 })
-	vim.cmd("normal! $")
-	vim.cmd("startinsert!")
+	if vim.api.nvim_get_current_line() ~= "" then
+		vim.api.nvim_buf_set_lines(
+			0,
+			positions.annotation_row > 0 and positions.annotation_row or 0,
+			positions.annotation_row > 0 and positions.annotation_row or 0,
+			false,
+			{ "" }
+		)
+	end
+	vim.api.nvim_win_set_cursor(0, { positions.annotation_row + 1, 0 })
+	vim.snippet.expand(table.concat(indented_lines, "\n"))
 end

@@ -7,7 +7,10 @@ return {
 					(parameters
 						(parameter
 							(identifier) @item_name
-							(type_identifier) @item_type
+							[
+								(type_identifier)
+								(primitive_type)
+							] @item_type
 						)
 					)
 				)
@@ -19,7 +22,10 @@ return {
 			type = "simple",
 			query = [[
 				(function_item
-					(type_identifier) @item_type (#not-eq? @item_type "()")
+					[
+						(primitive_type)
+						(type_identifier)
+					] @item_type (#not-eq? @item_type "()")
 				)
 			]],
 		},

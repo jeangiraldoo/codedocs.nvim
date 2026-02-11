@@ -10,20 +10,17 @@ return {
 	},
 	title = {
 		layout = {
-			"// ",
+			"// ${%snippet_tabstop_idx:title}",
 		},
-		cursor_pos = 1,
 		gap = {
-			enabled = true,
+			enabled = false,
 			text = "//",
 		},
 	},
 	params = {
-		layout = {
-			"// Parameters:",
-		},
+		layout = {},
 		gap = {
-			enabled = true,
+			enabled = false,
 			text = "//",
 		},
 		items = {
@@ -33,17 +30,13 @@ return {
 			},
 			indent = false,
 			include_type = false,
-			template = {
-				{ "// - %item_name:", "%item_type" },
-			},
+			template = {},
 		},
 	},
 	return_type = {
-		layout = {
-			"// Returns:",
-		},
+		layout = {},
 		gap = {
-			enabled = true,
+			enabled = false,
 			text = "//",
 		},
 		items = {
@@ -53,9 +46,7 @@ return {
 			},
 			indent = false,
 			include_type = false,
-			template = {
-				"// %item_type",
-			},
+			template = {},
 		},
 	},
 }

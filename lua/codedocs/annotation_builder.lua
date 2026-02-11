@@ -87,36 +87,56 @@ local function _format_annotation_content(annotation_layout, content, insert_at,
 	assert(type(insert_at) == "number", "'insert_at' must be a number, got " .. type(insert_at))
 	assert(insert_at >= 0, "'insert_at' must be 0 or higher, got " .. insert_at)
 
+	local snippet_tabstop = {
+		idx_counter = 1,
+		pattern = "%%snippet_tabstop_idx",
+	}
+
 	local annotation = {}
+
+	local function handle_line(line)
+		if line:match(snippet_tabstop.pattern) then
+			line = line:gsub(snippet_tabstop.pattern, function()
+				local snippet_tabstop_idx_label = tostring(snippet_tabstop.idx_counter)
+
+				snippet_tabstop.idx_counter = snippet_tabstop.idx_counter + 1
+
+				return snippet_tabstop_idx_label
+			end)
+		end
+		table.insert(annotation, line)
+	end
 
 	for i = 1, (insert_at - 1) do
 		-- Add all lines from the original layout that appear before the position where the content is to be inserted.
 		--
 		-- This is done to avoid inserting lines one by one at the insertion position,
 		-- since that would shift all following layout lines every time and be inefficient
-		table.insert(annotation, annotation_layout[i])
+		handle_line(annotation_layout[i])
 	end
 
 	for _, title_line in ipairs(title_opts.layout) do
-		table.insert(annotation, title_line)
+		handle_line(title_line)
 	end
 
-	if title_opts.gap.enabled and vim.tbl_count(content) > 0 then table.insert(annotation, title_opts.gap.text) end
+	if (title_opts.gap and title_opts.gap.enabled) and vim.tbl_count(content) > 0 then
+		table.insert(annotation, title_opts.gap.text)
+	end
 
 	for _, line in ipairs(content) do
-		table.insert(annotation, line)
+		handle_line(line)
 	end
 
 	for i = insert_at, #annotation_layout do
 		-- Add all lines from the original layout that appear after the position where the content is to be inserted
-		table.insert(annotation, annotation_layout[i])
+		handle_line(annotation_layout[i])
 	end
 
 	return annotation
 end
 
 return function(style, data, annotation_structure)
-	local annotation_content = _build_annotation_content(data, style)
+	local annotation_content = vim.tbl_isempty(data) and {} or _build_annotation_content(data, style)
 	Debug_logger.log("Annotation content:", annotation_content)
 
 	return _format_annotation_content(annotation_structure, annotation_content, style.general.insert_at, style.title)
