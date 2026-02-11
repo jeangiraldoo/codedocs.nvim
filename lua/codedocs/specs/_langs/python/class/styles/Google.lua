@@ -9,6 +9,13 @@ return {
 		section_order = {
 			"attrs",
 		},
+		item_extraction = {
+			attrs = {
+				include_class_attrs = true,
+				include_instance_attrs = true,
+				include_only_constructor_instance_attrs = true,
+			},
+		},
 	},
 	title = {
 		layout = {
@@ -23,9 +30,6 @@ return {
 		layout = {
 			"Attributes:",
 		},
-		include_class_attrs = true,
-		include_instance_attrs = true,
-		include_only_constructor_instance_attrs = true,
 		gap = {
 			enabled = false,
 			text = "",

@@ -9,6 +9,13 @@ return {
 		section_order = {
 			"attrs",
 		},
+		item_extraction = {
+			attrs = {
+				include_class_attrs = false,
+				include_instance_attrs = false,
+				include_only_constructor_instance_attrs = nil, -- Java attrs can only be declared in the class body
+			},
+		},
 	},
 	title = {
 		layout = {
@@ -27,16 +34,15 @@ return {
 			enabled = false,
 			text = " *",
 		},
-		include_class_attrs = false,
-		include_instance_attrs = false,
-		include_only_constructor_instance_attrs = nil, -- Java attrs can only be declared in the class body
 		items = {
 			insert_gap_between = {
 				enabled = false,
 				text = " *",
 			},
 			indent = false,
-			template = {},
+			template = {
+				"// %item_name",
+			},
 		},
 	},
 }
