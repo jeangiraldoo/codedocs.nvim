@@ -10,7 +10,7 @@ return {
 	},
 	title = {
 		layout = {
-			"///${%snippet_tabstop_idx:title}",
+			"/// ${%snippet_tabstop_idx:title}",
 		},
 		gap = {
 			enabled = true,
@@ -34,7 +34,7 @@ return {
 			include_type = false,
 			indent = false,
 			template = {
-				"/// * `%item_name` ${%snippet_tabstop_idx:description}",
+				"/// * `%item_name` - ${%snippet_tabstop_idx:description}",
 			},
 		},
 	},
@@ -55,7 +55,7 @@ return {
 			indent = false,
 			include_type = false,
 			template = {
-				"///${%snippet_tabstop_idx:description}",
+				"/// ${%snippet_tabstop_idx:description}",
 			},
 		},
 	},

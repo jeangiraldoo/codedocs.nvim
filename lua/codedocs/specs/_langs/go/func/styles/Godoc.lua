@@ -13,16 +13,14 @@ return {
 			"// ${%snippet_tabstop_idx:title}",
 		},
 		gap = {
-			enabled = true,
+			enabled = false,
 			text = "//",
 		},
 	},
 	params = {
-		layout = {
-			"// Parameters:",
-		},
+		layout = {},
 		gap = {
-			enabled = true,
+			enabled = false,
 			text = "//",
 		},
 		items = {
@@ -32,17 +30,13 @@ return {
 			},
 			indent = false,
 			include_type = false,
-			template = {
-				{ "// - %item_name:", "%item_type", "${%snippet_tabstop_idx:description}" },
-			},
+			template = {},
 		},
 	},
 	return_type = {
-		layout = {
-			"// Returns:",
-		},
+		layout = {},
 		gap = {
-			enabled = true,
+			enabled = false,
 			text = "//",
 		},
 		items = {
@@ -52,9 +46,7 @@ return {
 			},
 			indent = false,
 			include_type = false,
-			template = {
-				"// %item_type ${%snippet_tabstop_idx}",
-			},
+			template = {},
 		},
 	},
 }

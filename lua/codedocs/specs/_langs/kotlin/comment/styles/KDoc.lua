@@ -6,7 +6,7 @@ return {
 	},
 	title = {
 		layout = {
-			"// ${%snippet_tabstop_idx:title}",
+			"// ${%snippet_tabstop_idx:description}",
 		},
 	},
 }

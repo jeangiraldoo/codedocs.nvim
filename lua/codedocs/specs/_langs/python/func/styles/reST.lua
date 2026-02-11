@@ -53,8 +53,8 @@ return {
 			indent = false,
 			include_type = true,
 			template = {
-				":return:",
-				{ ":rtype:", "%item_type" },
+				":return: ${%snippet_tabstop_idx:description}",
+				":rtype: ${%snippet_tabstop_idx:%item_type}",
 			},
 		},
 	},

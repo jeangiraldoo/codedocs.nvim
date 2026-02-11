@@ -25,7 +25,7 @@ return {
 			"Args:",
 		},
 		gap = {
-			enabled = false,
+			enabled = true,
 			text = "",
 		},
 		items = {
@@ -36,7 +36,7 @@ return {
 			indent = true,
 			include_type = true,
 			template = {
-				"%item_name (%item_type): ${%snippet_tabstop_idx:description}",
+				"%item_name (${%snippet_tabstop_idx:%item_type}): ${%snippet_tabstop_idx:description}",
 			},
 		},
 	},
@@ -56,7 +56,7 @@ return {
 			indent = true,
 			include_type = true,
 			template = {
-				"${%snippet_tabstop_idx:%item_type}:",
+				"${%snippet_tabstop_idx:%item_type}: ${%snippet_tabstop_idx:description}",
 			},
 		},
 	},

@@ -34,7 +34,7 @@ return {
 			indent = false,
 			include_type = false,
 			template = {
-				" * @param %item_name -",
+				" * @param %item_name - ${%snippet_tabstop_idx:description}",
 			},
 		},
 	},
@@ -52,7 +52,7 @@ return {
 			indent = false,
 			include_type = false,
 			template = {
-				" * @returns",
+				" * @returns ${%snippet_tabstop_idx:description}",
 			},
 		},
 	},

@@ -37,9 +37,7 @@ return {
 			},
 			indent = false,
 			include_type = false,
-			template = {
-				{ " * - %item_name:", "%item_type", "${%snippet_tabstop_idx:description}" },
-			},
+			template = {},
 		},
 	},
 }
