@@ -1,5 +1,12 @@
 --- Here are all the available opts for all languages
 
+local ITEM_SECTIONS = {
+	"attrs",
+	"params",
+	"return_type",
+	"globals",
+}
+
 local COMMON_OPTS = {
 	layout = {
 		expected_type = "table", --Defines the docstring structure with at least two parts
@@ -18,6 +25,7 @@ local COMMON_OPTS = {
 }
 
 local GENERAL_OPTS = {
+	layout = COMMON_OPTS.layout,
 	direction = {
 		expected_type = "boolean", -- True for above, false for below the function
 	},
@@ -31,14 +39,6 @@ local GENERAL_OPTS = {
 		expected_type = "table",
 	},
 }
-GENERAL_OPTS = vim.tbl_extend("force", GENERAL_OPTS, COMMON_OPTS)
-
-local TITLE_OPTS = {
-	gap = {
-		expected_type = "boolean", -- Adds a blank line after the title if there's a section
-	},
-}
-TITLE_OPTS = vim.tbl_extend("force", TITLE_OPTS, COMMON_OPTS)
 
 local SECTION_WITH_ITEMS_OPTS = {
 	items = {
@@ -66,25 +66,13 @@ local SECTION_WITH_ITEMS_OPTS = {
 }
 SECTION_WITH_ITEMS_OPTS = vim.tbl_extend("force", SECTION_WITH_ITEMS_OPTS, COMMON_OPTS)
 
-local ATTRS_OPTS = {
-	include_class_attrs = { -- Includes class attributes if true
-		expected_type = "boolean",
-	},
-	include_instance_attrs = { -- Includes instance attributes if true
-		expected_type = "boolean",
-	},
-	include_only_constructor_instance_attrs = { -- Includes only constructor-defined attributes if true
-		expected_type = "boolean",
-	},
-}
-ATTRS_OPTS = vim.tbl_extend("force", ATTRS_OPTS, COMMON_OPTS)
-ATTRS_OPTS = vim.tbl_extend("force", ATTRS_OPTS, SECTION_WITH_ITEMS_OPTS)
-
-return {
+local STYLE_OPTS = {
 	general = GENERAL_OPTS,
-	title = TITLE_OPTS,
-	params = SECTION_WITH_ITEMS_OPTS,
-	return_type = SECTION_WITH_ITEMS_OPTS,
-	globals = SECTION_WITH_ITEMS_OPTS,
-	attrs = ATTRS_OPTS,
+	title = COMMON_OPTS,
 }
+
+for _, section_name in ipairs(ITEM_SECTIONS) do
+	STYLE_OPTS[section_name] = SECTION_WITH_ITEMS_OPTS
+end
+
+return STYLE_OPTS
