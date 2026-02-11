@@ -89,7 +89,7 @@ local COMMON_DATA = {
 					indent = false,
 					include_type = false,
 					template = {
-						{ " * @item", "%item_name", "%item_type" },
+						" * @item %item_name",
 					},
 				},
 			},
@@ -107,7 +107,7 @@ local COMMON_DATA = {
 					include_type = false,
 					indent = false,
 					template = {
-						{ " * @secondary_item", "%item_name" },
+						" * @secondary_item %item_name",
 					},
 				},
 			},
@@ -124,11 +124,11 @@ local GENERAL_SECTION_CASES = {
 			"--* @item a",
 			"--* @item b",
 			"--* @item c",
-			"--* @item",
+			"--* @item ",
 			"--* @secondary_item d",
 			"--* @secondary_item e",
 			"--* @secondary_item f",
-			"--* @secondary_item",
+			"--* @secondary_item ",
 			" ]-",
 		},
 		opts_to_change = {
@@ -146,14 +146,14 @@ local GENERAL_SECTION_CASES = {
 			primary_section = {
 				items = {
 					template = {
-						{ "--* @item", "%item_name", "%item_type" },
+						"--* @item %item_name",
 					},
 				},
 			},
 			secondary_section = {
 				items = {
 					template = {
-						{ "--* @secondary_item", "%item_name" },
+						"--* @secondary_item %item_name",
 					},
 				},
 			},
@@ -167,12 +167,12 @@ local GENERAL_SECTION_CASES = {
 			" * @item a",
 			" * @item b",
 			" * @item c",
-			" * @item",
+			" * @item ",
 			"--*",
 			" * @secondary_item d",
 			" * @secondary_item e",
 			" * @secondary_item f",
-			" * @secondary_item",
+			" * @secondary_item ",
 			" */",
 		},
 		opts_to_change = {
@@ -198,14 +198,14 @@ local GENERAL_SECTION_CASES = {
 			" * @secondary_item d",
 			" * @secondary_item e",
 			" * @secondary_item f",
-			" * @secondary_item",
+			" * @secondary_item ",
 			" * This is the primary section",
 			" * ***************************",
 			" * ", ---BUG: section_gap_text option needed
 			" * @item a",
 			" * @item b",
 			" * @item c",
-			" * @item",
+			" * @item ",
 			" */",
 		},
 		opts_to_change = {
@@ -235,14 +235,14 @@ local GENERAL_SECTION_CASES = {
 			" * ",
 			" * @item c",
 			" * ",
-			" * @item",
+			" * @item ",
 			" * @secondary_item d",
 			" * ",
 			" * @secondary_item e",
 			" * ",
 			" * @secondary_item f",
 			" * ",
-			" * @secondary_item",
+			" * @secondary_item ",
 			" */",
 		},
 		opts_to_change = {
@@ -280,7 +280,7 @@ local ITEM_CASES = {
 			" * @secondary_item d",
 			" * @secondary_item e",
 			" * @secondary_item f",
-			" * @secondary_item",
+			" * @secondary_item ",
 			" */",
 		},
 		opts_to_change = {
@@ -288,7 +288,7 @@ local ITEM_CASES = {
 				items = {
 					include_type = true,
 					template = {
-						{ " * @the_type", "[%item_type]", "@the_name", "{%item_name}" },
+						" * @the_type [%item_type] @the_name {%item_name}",
 					},
 				},
 			},
@@ -306,7 +306,7 @@ local ITEM_CASES = {
 			" * @secondary_item d",
 			" * @secondary_item e",
 			" * @secondary_item f",
-			" * @secondary_item",
+			" * @secondary_item ",
 			" */",
 		},
 		opts_to_change = {
@@ -314,12 +314,7 @@ local ITEM_CASES = {
 				items = {
 					include_type = true,
 					template = {
-						{
-							" * @the_type",
-							"[%item_type]",
-							"@the_name",
-							"{%item_name} ${%snippet_tabstop_idx:description}",
-						},
+						" * @the_type [%item_type] @the_name {%item_name} ${%snippet_tabstop_idx:description}",
 					},
 				},
 			},

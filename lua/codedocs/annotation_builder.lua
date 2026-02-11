@@ -11,26 +11,6 @@ local function _handle_string(string, item_name, item_type, include_type)
 	return result
 end
 
-local function _build_line(line, item, opts)
-	assert(type(line) == "string" or type(line) == "table", "'line' must be a table or a string, got " .. type(line))
-	assert(type(item) == "table", "'item' must be a table, got " .. type(item))
-	assert(type(opts) == "table", "'opts' must be a table, got " .. type(opts))
-
-	local line_type = type(line)
-
-	if line_type == "string" then return _handle_string(line, item.name, item.type, opts.items.include_type) end
-
-	local final = ""
-	if line_type == "table" then
-		for idx, line_part in ipairs(line) do
-			local result = _handle_string(line_part, item.name, item.type, opts.items.include_type)
-			if idx ~= 1 and result ~= "" then final = final .. " " end
-			if result ~= "" then final = final .. result end
-		end
-	end
-	return final
-end
-
 --- Builds the raw annotation content for each section, without applying the final structure
 -- Iterates through the sections in the configured order, formats each item according to
 -- its section style, and groups the resulting lines by section name
@@ -54,7 +34,10 @@ local function _build_annotation_content(item_data, style)
 		for item_idx, item in ipairs(section_items) do
 			local indent = section_style.items.indent and "\t" or ""
 			for _, line in ipairs(section_style.items.template) do
-				table.insert(annotation_content, indent .. _build_line(line, item, section_style))
+				table.insert(
+					annotation_content,
+					indent .. _handle_string(line, item.name, item.type, section_style.items.include_type)
+				)
 
 				local should_insert_item_gap = section_style.items.insert_gap_between.enabled
 					and section_items[item_idx + 1]
