@@ -42,9 +42,11 @@ local function _build_annotation_content(item_data, style)
 			end
 		end
 
-		local should_insert_section_gap = style[section_name].gap.enabled
+		local should_insert_section_gap = style[section_name].insert_gap_between.enabled
 			and style.general.section_order[section_idx + 1]
-		if should_insert_section_gap then table.insert(annotation_content, style[section_name].gap.text) end
+		if should_insert_section_gap then
+			table.insert(annotation_content, style[section_name].insert_gap_between.text)
+		end
 
 		::skip_section::
 	end
@@ -97,8 +99,8 @@ local function _format_annotation_content(annotation_layout, content, insert_at,
 		handle_line(title_line)
 	end
 
-	if (title_opts.gap and title_opts.gap.enabled) and vim.tbl_count(content) > 0 then
-		table.insert(annotation, title_opts.gap.text)
+	if (title_opts.insert_gap_between and title_opts.insert_gap_between.enabled) and vim.tbl_count(content) > 0 then
+		table.insert(annotation, title_opts.insert_gap_between.text)
 	end
 
 	for _, line in ipairs(content) do

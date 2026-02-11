@@ -11,7 +11,7 @@ local COMMON_OPTS = {
 	layout = {
 		expected_type = "table", --Defines the docstring structure with at least two parts
 	},
-	gap = {
+	insert_gap_between = {
 		expected_type = "table",
 		sub_opts = {
 			enabled = {

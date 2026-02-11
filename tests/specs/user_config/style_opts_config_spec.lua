@@ -31,7 +31,7 @@ local BASE_MOCKED_OPTS = {
 		---They share the same code path as the options common to all item-related sections,
 		---so validating the common ones is sufficient to guarantee correct behavior at this
 		---level
-		gap = {
+		insert_gap_between = {
 			enabled = true,
 		},
 		items = {
