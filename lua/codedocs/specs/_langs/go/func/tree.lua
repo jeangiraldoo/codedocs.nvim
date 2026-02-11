@@ -1,5 +1,5 @@
 return {
-	params = {
+	parameters = {
 		{
 			type = "function",
 			callback = function(node, children, lang_name, struct_style)

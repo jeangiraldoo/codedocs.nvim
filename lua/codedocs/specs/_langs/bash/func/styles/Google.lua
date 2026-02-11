@@ -8,7 +8,7 @@ return {
 		insert_at = 2,
 		section_order = {
 			"globals",
-			"params",
+			"parameters",
 			"return_type",
 		},
 		item_extraction = {},
@@ -41,7 +41,7 @@ return {
 			},
 		},
 	},
-	params = {
+	parameters = {
 		layout = {
 			"# Arguments:",
 		},

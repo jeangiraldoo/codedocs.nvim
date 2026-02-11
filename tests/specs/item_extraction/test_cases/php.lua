@@ -10,7 +10,7 @@ return {
 			},
 			cursor_pos = 3,
 			expected_items = {
-				params = {},
+				parameters = {},
 				return_type = {},
 			},
 		},
@@ -24,7 +24,7 @@ return {
 			},
 			cursor_pos = 3,
 			expected_items = {
-				params = {},
+				parameters = {},
 				return_type = {},
 			},
 		},
@@ -39,7 +39,7 @@ return {
 			},
 			cursor_pos = 3,
 			expected_items = {
-				params = {},
+				parameters = {},
 				return_type = {
 					{
 						name = "",
@@ -58,7 +58,7 @@ return {
 			},
 			cursor_pos = 3,
 			expected_items = {
-				params = {
+				parameters = {
 					{
 						name = "a",
 						type = "int",
@@ -86,7 +86,7 @@ return {
 			},
 			cursor_pos = 3,
 			expected_items = {
-				params = {
+				parameters = {
 					{
 						name = "a",
 						type = "int",
