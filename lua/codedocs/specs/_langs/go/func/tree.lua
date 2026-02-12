@@ -39,7 +39,7 @@ return {
 			},
 		},
 	},
-	return_type = {
+	returns = {
 		{
 			type = "simple",
 			query = [[

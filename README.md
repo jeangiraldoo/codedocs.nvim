@@ -193,11 +193,11 @@ In this case, we:
 To customize an annotation style, you have to keep in mind that it is nothing
 but a table where each key is an option, spread across many sections:
 
-| Structure | Sections                                        |
-| --------- | ----------------------------------------------- |
-| `func`    | `general`, `title`, `parameters`, `return_type` |
-| `class`   | `general`, `title`, `attrs`                     |
-| `comment` | `general`, `title`                              |
+| Structure | Sections                                    |
+| --------- | ------------------------------------------- |
+| `func`    | `general`, `title`, `parameters`, `returns` |
+| `class`   | `general`, `title`, `attrs`                 |
+| `comment` | `general`, `title`                          |
 
 ##### Options common to all sections
 
@@ -249,7 +249,7 @@ An `item` is a part of a structure, having a `name` that identifies it, and a
 
 The following is a mapping of structures to their respective items:
 
-- Function: Parameters (`parameters` section), return type (`return_type` section).
+- Function: Parameters (`parameters` section), return type (`returns` section).
 - Class: Attributes (`attrs` section).
 
 | Option Name | Expected Value Type | Behavior                                   |
@@ -272,7 +272,7 @@ Say we want to make the following changes to Python's Google annotation style
 for functions:
 
 - Add a gap in between all items.
-- Add a gap in between sections (functions have a `parameters` and `return_type`
+- Add a gap in between sections (functions have a `parameters` and `returns`
   section)
 
 This is what such customization would look like:
@@ -298,7 +298,7 @@ require("codedocs").setup({
                             },
                         },
                     },
-                    return_type = {
+                    returns = {
                         items = {
                             insert_gap_between = {
                                 enabled = true

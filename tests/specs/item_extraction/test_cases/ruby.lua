@@ -8,7 +8,7 @@ return {
 			cursor_pos = 1,
 			expected_items = {
 				parameters = {},
-				return_type = {},
+				returns = {},
 			},
 		},
 		{
@@ -20,7 +20,7 @@ return {
 			cursor_pos = 1,
 			expected_items = {
 				parameters = {},
-				return_type = {
+				returns = {
 					{
 						name = "",
 						type = "",
@@ -49,7 +49,7 @@ return {
 						type = "",
 					},
 				},
-				return_type = {},
+				returns = {},
 			},
 		},
 		{
@@ -74,7 +74,7 @@ return {
 						type = "",
 					},
 				},
-				return_type = {
+				returns = {
 					{
 						name = "",
 						type = "",

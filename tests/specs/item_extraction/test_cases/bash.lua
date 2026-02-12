@@ -9,7 +9,7 @@ return {
 			expected_items = {
 				globals = {},
 				parameters = {},
-				return_type = {},
+				returns = {},
 			},
 		},
 		{
@@ -32,7 +32,7 @@ return {
 						type = "",
 					},
 				},
-				return_type = {},
+				returns = {},
 			},
 		},
 		{
@@ -59,7 +59,7 @@ return {
 					},
 				},
 				parameters = {},
-				return_type = {},
+				returns = {},
 			},
 		},
 		{
@@ -96,7 +96,7 @@ return {
 						type = "",
 					},
 				},
-				return_type = {},
+				returns = {},
 			},
 		},
 	},

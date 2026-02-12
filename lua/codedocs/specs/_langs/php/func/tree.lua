@@ -42,7 +42,7 @@ return {
 			]],
 		},
 	},
-	return_type = {
+	returns = {
 		{
 			type = "finder",
 			collect_found_nodes = false,

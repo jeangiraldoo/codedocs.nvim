@@ -5,7 +5,7 @@ return {
 		insert_at = 1,
 		section_order = {
 			"parameters",
-			"return_type",
+			"returns",
 		},
 	},
 	title = {
@@ -37,7 +37,7 @@ return {
 			},
 		},
 	},
-	return_type = {
+	returns = {
 		layout = {
 			"/// # Returns",
 			"///",
