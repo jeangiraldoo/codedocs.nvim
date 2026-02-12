@@ -17,29 +17,31 @@ return {
 			},
 		},
 	},
-	title = {
-		layout = {
-			" * ${%snippet_tabstop_idx:title}",
+	sections = {
+		title = {
+			layout = {
+				" * ${%snippet_tabstop_idx:title}",
+			},
+			insert_gap_between = {
+				enabled = true,
+				text = " *",
+			},
 		},
-		insert_gap_between = {
-			enabled = true,
-			text = " *",
-		},
-	},
-	attrs = {
-		layout = {},
-		insert_gap_between = {
-			enabled = false,
-			text = " *",
-		},
-		items = {
+		attrs = {
+			layout = {},
 			insert_gap_between = {
 				enabled = false,
 				text = " *",
 			},
-			indent = false,
-			template = {
-				" * @property {%item_type} %item_name ${%snippet_tabstop_idx:description}",
+			items = {
+				insert_gap_between = {
+					enabled = false,
+					text = " *",
+				},
+				indent = false,
+				template = {
+					" * @property {%item_type} %item_name ${%snippet_tabstop_idx:description}",
+				},
 			},
 		},
 	},

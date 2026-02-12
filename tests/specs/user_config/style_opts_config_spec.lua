@@ -19,10 +19,12 @@ local BASE_MOCKED_OPTS = {
 			direction = false,
 			insert_at = 3,
 		},
-		title = {
-			layout = {
-				"--------",
-				"",
+		sections = {
+			title = {
+				layout = {
+					"--------",
+					"",
+				},
 			},
 		},
 	},
@@ -48,11 +50,15 @@ local BASE_MOCKED_OPTS = {
 
 local MOCKED_USER_STRUCT_OPTS = vim.iter({
 	class = {
-		attrs = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+		sections = {
+			attrs = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+		},
 	},
 	func = {
-		parameters = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
-		returns = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+		sections = {
+			parameters = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+			returns = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+		},
 	},
 	comment = {},
 }):fold({}, function(acc, struct_name, struct_sections)
