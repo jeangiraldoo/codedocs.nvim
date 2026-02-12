@@ -38,14 +38,14 @@ formats, or just use codedocs as it is! :)
 - [Motivation](#motivation)
 - [License](#license)
 
-### <a id="features"></a>🚀 Features
+## <a id="features"></a>🚀 Features
 
 - Works out-of-the-box.
 - Detects and documents code structures with a simple keybind.
 - Supports multiple [languages and styles](#supported-languages).
 - Easily customize existing formats or add new ones.
 
-### <a id="requirements"></a>📋 Requirements
+## <a id="requirements"></a>📋 Requirements
 
 Codedocs relies on Treesitter for its core functionality. Neovim includes
 built-in Treesitter parsers for the following languages—meaning no extra setup
@@ -58,11 +58,11 @@ For any other language, you'll need to install the corresponding Treesitter
 parser. The simplest way to do this is with
 **[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)**.
 
-### <a id="installation"></a>📦 Installation
+## <a id="installation"></a>📦 Installation
 
 Use the snippet for your plugin manager:
 
-#### [vim.pack](https://neovim.io/doc/user/pack.html#vim.pack)
+### [vim.pack](https://neovim.io/doc/user/pack.html#vim.pack)
 
 ```lua
 vim.pack.add({
@@ -70,7 +70,7 @@ vim.pack.add({
 })
 ```
 
-#### [lazy.nvim](http://www.lazyvim.org/)
+### [lazy.nvim](http://www.lazyvim.org/)
 
 ```lua
 {
@@ -78,7 +78,7 @@ vim.pack.add({
 }
 ```
 
-#### [packer.nvim](https://github.com/wbthomason/packer.nvim)
+### [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
 use {
@@ -86,13 +86,13 @@ use {
 }
 ```
 
-#### [vim-plug](https://github.com/junegunn/vim-plug)
+### [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
 Plug 'jeangiraldoo/codedocs.nvim'
 ```
 
-#### [mini.deps](https://github.com/echasnovski/mini.deps)
+### [mini.deps](https://github.com/echasnovski/mini.deps)
 
 ```lua
 require("mini.deps").add({
@@ -100,14 +100,14 @@ require("mini.deps").add({
 })
 ```
 
-#### [minpac](https://github.com/k-takata/minpac)
+### [minpac](https://github.com/k-takata/minpac)
 
 ```vim
 packadd minpac
 call minpac#add('jeangiraldoo/codedocs.nvim')
 ```
 
-#### [paq-nvim](https://github.com/savq/paq-nvim)
+### [paq-nvim](https://github.com/savq/paq-nvim)
 
 ```lua
 require("paq") {
@@ -115,13 +115,13 @@ require("paq") {
 }
 ```
 
-### <a id="configuration"></a>⚙️ Configuration
+## <a id="configuration"></a>⚙️ Configuration
 
 > [!WARNING]
 > Language, struct and style names must be spelled exactly as shown in the
 > [supported languages section](#supported-languages).
 
-#### Change a language's default annotation style
+### Change a language's default annotation style
 
 Default styles are defined using the `default_styles` key:
 
@@ -144,7 +144,7 @@ require("codedocs").setup {
 }
 ```
 
-#### Customize an annotation style
+### Customize an annotation style
 
 You can customize almost (for now!) every aspect of an annotation
 style. Whether you want to make a simple change, like modifying the characters
@@ -195,7 +195,7 @@ but a table where each key is an option.
 
 Options are grouped in the form of settings and sections:
 
-##### Settings options
+#### Settings options
 
 > [!NOTE]
 > All structures have a `settings` field as it is used for configuring
@@ -208,7 +208,7 @@ Options are grouped in the form of settings and sections:
 | `section_order`   | table               | Specifies the order in which sections are added to the annotation.                |
 | `item_extraction` | table               | Controls how items for a specific section are parsed                              |
 
-###### Item extraction suboptions for class attributes
+##### Item extraction suboptions for class attributes
 
 | Option Name                               | Expected Value Type | Behavior                                                               |
 | ----------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
@@ -216,7 +216,7 @@ Options are grouped in the form of settings and sections:
 | `include_instance_attrs`                  | boolean             | Include instance attributes in the annotation                          |
 | `include_only_constructor_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
 
-##### Sections
+#### Sections
 
 > [!NOTE]
 > Section options are only concerned with styling. For fundamental aspects of an
@@ -230,7 +230,7 @@ The following sections are available:
 | `class`   | `title`, `attrs`                 |
 | `comment` | `title`                          |
 
-###### Options common to all sections
+##### Options common to all sections
 
 | Option Name        | Expected Value Type | Behavior                                                           |
 | ------------------ | ------------------- | ------------------------------------------------------------------ |
@@ -244,11 +244,11 @@ The `insert_gap_between` option has the following suboptions:
 | enabled        | `boolean`           | Whether the gap is inserted |
 | text           | `string`            | String used as the gap      |
 
-###### Title section
+##### Title section
 
 Only options common to all sections.
 
-###### Item-based sections
+##### Item-based sections
 
 An `item` is a part of a structure, having a `name` that identifies it, and a
 `data type`.
@@ -272,7 +272,7 @@ The `items` option has the following suboptions:
 | `indent`                     | `boolean`     | Whether item lines are indented                  |
 | `template`                   | `table`       | List of lines describing how an item is rendered |
 
-##### Customization example
+#### Customization example
 
 Say we want to make the following changes to Python's Google annotation style
 for functions:
@@ -318,7 +318,7 @@ require("codedocs").setup({
 })
 ```
 
-### <a id="usage"></a>💻 Usage
+## <a id="usage"></a>💻 Usage
 
 When an annotation insertion is triggered, the plugin generates one for the
 structure under the cursor. If no supported structure is detected, it inserts an
@@ -326,7 +326,7 @@ inline comment instead.
 
 An annotation insertion can be triggered in the following ways:
 
-#### Command
+### Command
 
 The simplest way to use the plugin is with the following command:
 
@@ -334,7 +334,7 @@ The simplest way to use the plugin is with the following command:
 :Codedocs
 ```
 
-#### Keymap
+### Keymap
 
 For a more convenient experience, you can bind the annotation insertion to a
 keymap. For example:
@@ -346,7 +346,7 @@ vim.keymap.set(
 )
 ```
 
-### <a id="supported-languages"></a>🌐 Supported languages
+## <a id="supported-languages"></a>🌐 Supported languages
 
 > [!TIP]
 > Want to see how annotations look by default? Take a look at the [Annotation Examples](./ANNOTATION_EXAMPLES.md)
@@ -371,18 +371,18 @@ vim.keymap.set(
 | Rust       | \*RustDoc                   | `comment`, `function`          |
 | TypeScript | \*TSDoc                     | `comment`, `function`, `class` |
 
-### <a id="roadmap"></a>🗺️ Roadmap
+## <a id="roadmap"></a>🗺️ Roadmap
 
 You can see what's being worked on and which features are planned by checking
 the
 [GitHub Milestones](https://github.com/jeangiraldoo/codedocs.nvim/milestones).
 
-### <a id="contributing"></a>🤝 Contributing
+## <a id="contributing"></a>🤝 Contributing
 
 Thank you for your interest in contributing to **Codedocs**! Feel free to read
 the [Contribution guide](./CONTRIBUTING.md) to get started.
 
-### <a id="motivation"></a>💡 Motivation
+## <a id="motivation"></a>💡 Motivation
 
 I started working on Codedocs because I wanted to enhance my experience with
 Neovim, which I started using daily for my side projects and university
@@ -399,7 +399,7 @@ documentation strings, allowing for easy customization, and providing a simple
 yet powerful solution for both personal and community use. Plus, it is a fun
 project to work on!
 
-### <a id="license"></a>📜 License
+## <a id="license"></a>📜 License
 
 Codedocs is licensed under the MIT License. This means you are free to download,
 install, modify, share, and use the plugin for both personal and commercial
