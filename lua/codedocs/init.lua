@@ -23,10 +23,10 @@ function M.insert_docs()
 
 	local struct_name, node = require("codedocs.struct_detector")(Spec.get_struct_identifiers(lang))
 	local struct_style = Spec:_get_struct_main_style(lang, struct_name)
-	local layout = struct_style.general.layout
+	local layout = struct_style.settings.layout
 
 	local target_positions = {
-		title_offset = struct_style.general.insert_at,
+		title_offset = struct_style.settings.insert_at,
 	}
 
 	Debug_logger.log("Structure name: " .. struct_name)
@@ -40,7 +40,7 @@ function M.insert_docs()
 			-- layout,
 			target_positions,
 			-- Languages where annotations appear below the structure definition require an extra indentation level
-			not struct_style.general.direction
+			not struct_style.settings.direction
 		)
 		return
 	end
@@ -52,13 +52,13 @@ function M.insert_docs()
 	local docs = docs_builder(struct_style, items_data, layout)
 	Debug_logger.log("Annotation:", docs)
 
-	target_positions.annotation_row = struct_style.general.direction and pos or pos + 1
+	target_positions.annotation_row = struct_style.settings.direction and pos or pos + 1
 
 	require("codedocs.buf_writer")(
 		docs,
 		target_positions,
 		-- Languages where annotations appear below the structure definition require an extra indentation level
-		not struct_style.general.direction --TODO: there should be an option to indent or not the annotation
+		not struct_style.settings.direction --TODO: there should be an option to indent or not the annotation
 	)
 end
 

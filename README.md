@@ -191,37 +191,15 @@ In this case, we:
 - Customized the titles for both the parameters and return sections.
 
 To customize an annotation style, you have to keep in mind that it is nothing
-but a table where each key is an option, spread across many sections:
+but a table where each key is an option.
 
-| Structure | Sections                                    |
-| --------- | ------------------------------------------- |
-| `func`    | `general`, `title`, `parameters`, `returns` |
-| `class`   | `general`, `title`, `attrs`                 |
-| `comment` | `general`, `title`                          |
+Options are grouped in the form of settings and sections:
 
-##### Options common to all sections
+##### Settings options
 
-| Option Name        | Expected Value Type | Behavior                                                           |
-| ------------------ | ------------------- | ------------------------------------------------------------------ |
-| layout             | `table`             | Defines the base lines that compose an annotation section          |
-| insert_gap_between | `table`             | Sets up a gap in between the current section and the section below |
-
-###### `insert_gap_between` suboptions
-
-| Suboption Name | Expected Value Type | Behavior                    |
-| -------------- | ------------------- | --------------------------- |
-| enabled        | `boolean`           | Whether the gap is inserted |
-| text           | `string`            | String used as the gap      |
-
-##### General section
-
-As you can see, all structures have a `general` section, as it is used for configuring
-all other sections in a given structure by defining options that are available
-to all structures.
-
-All other sections are focused on configuring how the items they contain are displayed.
-
-The `general` section supports the following options:
+> [!NOTE]
+> All structures have a `settings` field as it is used for configuring
+> fundamental aspects of an annotation style
 
 | Option Name       | Expected Value Type | Behavior                                                                          |
 | ----------------- | ------------------- | --------------------------------------------------------------------------------- |
@@ -238,11 +216,39 @@ The `general` section supports the following options:
 | `include_instance_attrs`                  | boolean             | Include instance attributes in the annotation                          |
 | `include_only_constructor_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
 
-##### Title section
+##### Sections
+
+> [!NOTE]
+> Section options are only concerned with styling. For fundamental aspects of an
+> annotation check the [Settings options](#settings-options)
+
+The following sections are available:
+
+| Structure | Sections                         |
+| --------- | -------------------------------- |
+| `func`    | `title`, `parameters`, `returns` |
+| `class`   | `title`, `attrs`                 |
+| `comment` | `title`                          |
+
+###### Options common to all sections
+
+| Option Name        | Expected Value Type | Behavior                                                           |
+| ------------------ | ------------------- | ------------------------------------------------------------------ |
+| layout             | `table`             | Defines the base lines that compose an annotation section          |
+| insert_gap_between | `table`             | Sets up a gap in between the current section and the section below |
+
+The `insert_gap_between` option has the following suboptions:
+
+| Suboption Name | Expected Value Type | Behavior                    |
+| -------------- | ------------------- | --------------------------- |
+| enabled        | `boolean`           | Whether the gap is inserted |
+| text           | `string`            | String used as the gap      |
+
+###### Title section
 
 Only options common to all sections.
 
-##### Item-based sections
+###### Item-based sections
 
 An `item` is a part of a structure, having a `name` that identifies it, and a
 `data type`.
@@ -256,7 +262,7 @@ The following is a mapping of structures to their respective items:
 | ----------- | ------------------- | ------------------------------------------ |
 | `items`     | table               | Controls how individual items are rendered |
 
-###### `items` suboptions
+The `items` option has the following suboptions:
 
 | Suboption                    | Expected Type | Description                                      |
 | ---------------------------- | ------------- | ------------------------------------------------ |
@@ -283,7 +289,7 @@ require("codedocs").setup({
         python = { -- language name
             Google = { -- name of the style to customize
                 func = { -- structure name
-                    general = {
+                    settings = {
                         insert_gap_between = {
                             enabled = true
                         },

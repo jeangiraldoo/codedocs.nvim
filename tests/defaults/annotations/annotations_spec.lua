@@ -16,7 +16,7 @@ local function test_case(lang, style_name, expected_annotation)
 	local struct_style = Spec.get_struct_style(lang, struct_name, style_name)
 
 	if struct_name == "comment" then
-		local docs = require("codedocs.annotation_builder")(struct_style, {}, struct_style.general.layout)
+		local docs = require("codedocs.annotation_builder")(struct_style, {}, struct_style.settings.layout)
 		assert.are.same(expected_annotation, docs)
 		return
 	end
@@ -24,7 +24,7 @@ local function test_case(lang, style_name, expected_annotation)
 	local struct_tree = Spec.get_struct_tree(lang, struct_name)
 	local data, _ = Spec.process_tree(lang, struct_style, struct_tree, node)
 
-	local annotation = require("codedocs.annotation_builder")(struct_style, data, struct_style.general.layout)
+	local annotation = require("codedocs.annotation_builder")(struct_style, data, struct_style.settings.layout)
 
 	assert.are.same(expected_annotation, annotation)
 end

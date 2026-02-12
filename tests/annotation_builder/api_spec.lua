@@ -55,7 +55,7 @@ local COMMON_DATA = {
 			" */",
 		},
 		opts = {
-			general = {
+			settings = {
 				layout = {
 					"/**",
 					" */",
@@ -113,7 +113,7 @@ local COMMON_DATA = {
 	},
 }
 
-local GENERAL_SECTION_CASES = {
+local SETTINGS_CASES = {
 	{
 		expected_annotation = {
 			"---",
@@ -130,7 +130,7 @@ local GENERAL_SECTION_CASES = {
 			" ]-",
 		},
 		opts_to_change = {
-			general = {
+			settings = {
 				layout = {
 					"---",
 					" ]-",
@@ -207,7 +207,7 @@ local GENERAL_SECTION_CASES = {
 			" */",
 		},
 		opts_to_change = {
-			general = {
+			settings = {
 				section_order = {
 					"secondary_section",
 					"primary_section",
@@ -320,7 +320,7 @@ local ITEM_CASES = {
 }
 
 local CASES = {
-	general = GENERAL_SECTION_CASES,
+	settings = SETTINGS_CASES,
 	item = ITEM_CASES,
 }
 
@@ -328,7 +328,7 @@ local function test_case(name, case)
 	it(name, function()
 		local copy = vim.deepcopy(COMMON_DATA.BASE_STYLE.opts)
 		local new_style = vim.tbl_deep_extend("force", copy, case.opts_to_change)
-		local annotation = annotation_builder(new_style, COMMON_DATA.ITEMS, new_style.general.layout)
+		local annotation = annotation_builder(new_style, COMMON_DATA.ITEMS, new_style.settings.layout)
 
 		assert.are.same(case.expected_annotation, annotation)
 	end)
