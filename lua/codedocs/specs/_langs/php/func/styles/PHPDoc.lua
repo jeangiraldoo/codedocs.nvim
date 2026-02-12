@@ -8,7 +8,7 @@ return {
 		direction = true,
 		section_order = {
 			"parameters",
-			"return_type",
+			"returns",
 		},
 	},
 	title = {
@@ -37,7 +37,7 @@ return {
 			},
 		},
 	},
-	return_type = {
+	returns = {
 		layout = {},
 		insert_gap_between = {
 			enabled = false,

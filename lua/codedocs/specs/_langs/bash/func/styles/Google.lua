@@ -9,7 +9,7 @@ return {
 		section_order = {
 			"globals",
 			"parameters",
-			"return_type",
+			"returns",
 		},
 		item_extraction = {},
 	},
@@ -60,7 +60,7 @@ return {
 			},
 		},
 	},
-	return_type = {
+	returns = {
 		layout = {
 			"Returns:",
 		},

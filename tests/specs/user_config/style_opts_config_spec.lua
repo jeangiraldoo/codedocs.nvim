@@ -52,7 +52,7 @@ local MOCKED_USER_STRUCT_OPTS = vim.iter({
 	},
 	func = {
 		parameters = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
-		return_type = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+		returns = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
 	},
 	comment = {},
 }):fold({}, function(acc, struct_name, struct_sections)
