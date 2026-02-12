@@ -13,7 +13,7 @@ end
 -- Iterates through the sections in the configured order, formats each item according to
 -- its section style, and groups the resulting lines by section name
 -- @param item_data table Mapping of section names to item lists
--- @param style table Style configuration for all sections and general options
+-- @param style table Style configuration for all sections and settings options
 -- @return table Table mapping section names to their formatted content lines
 local function _build_annotation_content(item_data, style)
 	assert(type(item_data) == "table", "'item_data' must be a table, got " .. type(item_data))
@@ -21,7 +21,7 @@ local function _build_annotation_content(item_data, style)
 
 	local annotation_content = {}
 
-	for section_idx, section_name in ipairs(style.general.section_order) do
+	for section_idx, section_name in ipairs(style.settings.section_order) do
 		local section_items = item_data[section_name]
 		local section_style = style[section_name]
 
@@ -43,7 +43,7 @@ local function _build_annotation_content(item_data, style)
 		end
 
 		local should_insert_section_gap = style[section_name].insert_gap_between.enabled
-			and style.general.section_order[section_idx + 1]
+			and style.settings.section_order[section_idx + 1]
 		if should_insert_section_gap then
 			table.insert(annotation_content, style[section_name].insert_gap_between.text)
 		end
@@ -119,5 +119,5 @@ return function(style, data, annotation_structure)
 	local annotation_content = vim.tbl_isempty(data) and {} or _build_annotation_content(data, style)
 	Debug_logger.log("Annotation content:", annotation_content)
 
-	return _format_annotation_content(annotation_structure, annotation_content, style.general.insert_at, style.title)
+	return _format_annotation_content(annotation_structure, annotation_content, style.settings.insert_at, style.title)
 end

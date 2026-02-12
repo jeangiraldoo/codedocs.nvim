@@ -24,7 +24,7 @@ local COMMON_OPTS = {
 	},
 }
 
-local GENERAL_OPTS = {
+local SETTINGS_OPTS = {
 	layout = COMMON_OPTS.layout,
 	direction = {
 		expected_type = "boolean", -- True for above, false for below the function
@@ -67,7 +67,7 @@ local SECTION_WITH_ITEMS_OPTS = {
 SECTION_WITH_ITEMS_OPTS = vim.tbl_extend("force", SECTION_WITH_ITEMS_OPTS, COMMON_OPTS)
 
 local STYLE_OPTS = {
-	general = GENERAL_OPTS,
+	settings = SETTINGS_OPTS,
 	title = COMMON_OPTS,
 }
 

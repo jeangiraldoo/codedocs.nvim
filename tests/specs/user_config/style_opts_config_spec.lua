@@ -9,7 +9,7 @@ local Spec = require("codedocs.specs")
 
 local BASE_MOCKED_OPTS = {
 	COMMON_SECTIONS = {
-		general = {
+		settings = {
 			layout = {
 				"Hours on the clock",
 				"Fingers on the keyboard wait", --No better way to test the layout than with my very first Haiku

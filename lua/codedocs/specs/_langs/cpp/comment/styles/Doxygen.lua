@@ -1,5 +1,5 @@
 return {
-	general = {
+	settings = {
 		layout = {},
 		insert_at = 1,
 		direction = true,
