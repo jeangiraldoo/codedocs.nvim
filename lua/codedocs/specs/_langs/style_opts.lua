@@ -68,11 +68,13 @@ SECTION_WITH_ITEMS_OPTS = vim.tbl_extend("force", SECTION_WITH_ITEMS_OPTS, COMMO
 
 local STYLE_OPTS = {
 	settings = SETTINGS_OPTS,
-	title = COMMON_OPTS,
+	sections = {
+		title = COMMON_OPTS,
+	},
 }
 
 for _, section_name in ipairs(ITEM_SECTIONS) do
-	STYLE_OPTS[section_name] = SECTION_WITH_ITEMS_OPTS
+	STYLE_OPTS.sections[section_name] = SECTION_WITH_ITEMS_OPTS
 end
 
 return STYLE_OPTS

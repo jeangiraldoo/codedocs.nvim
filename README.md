@@ -294,22 +294,24 @@ require("codedocs").setup({
                             enabled = true
                         },
                     },
-                    parameters = {
-                        insert_gap_between = {
-                            enabled = true
-                        },
-                        items = {
+                    sections = {
+                        parameters = {
                             insert_gap_between = {
                                 enabled = true
                             },
+                            items = {
+                                insert_gap_between = {
+                                    enabled = true
+                                },
+                            },
                         },
-                    },
-                    returns = {
-                        items = {
-                            insert_gap_between = {
-                                enabled = true
-                            }
-                        },
+                        returns = {
+                            items = {
+                                insert_gap_between = {
+                                    enabled = true
+                                }
+                            },
+                        }
                     }
                 }
             },

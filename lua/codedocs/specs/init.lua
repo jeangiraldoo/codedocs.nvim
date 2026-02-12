@@ -133,11 +133,29 @@ function Spec.update_style(user_opts)
 		end
 
 		for user_style_name, user_style_structs in pairs(user_styles) do
-			for user_struct_name, user_struct_sections in pairs(user_style_structs) do
+			for user_struct_name, user_struct_categories in pairs(user_style_structs) do
 				local struct_style = Spec.get_struct_style(lang_name, user_struct_name, user_style_name)
 				if struct_style then
-					for section_name, section_opts in pairs(user_struct_sections) do
-						local struct_section = struct_style[section_name]
+					if user_struct_categories.settings then
+						local user_section_opts_are_valid, msg = _validate_section_opts(
+							EXPECTED_OPTS_PER_SECTION.settings,
+							"settings",
+							user_struct_categories.settings
+						)
+
+						if not user_section_opts_are_valid and msg then
+							vim.notify(msg, vim.log.levels.ERROR)
+							return
+						end
+
+						struct_style.settings =
+							vim.tbl_deep_extend("force", struct_style.settings, user_struct_categories.settings)
+					end
+				end
+
+				if user_struct_categories.sections then
+					for section_name, section_opts in pairs(user_struct_categories.sections) do
+						local struct_section = struct_style.sections[section_name]
 						if struct_section == nil then
 							vim.notify(
 								string.format(
@@ -151,16 +169,19 @@ function Spec.update_style(user_opts)
 							return
 						end
 
-						local user_section_opts_are_valid, msg =
-							_validate_section_opts(EXPECTED_OPTS_PER_SECTION[section_name], section_name, section_opts)
+						local user_section_opts_are_valid, msg = _validate_section_opts(
+							EXPECTED_OPTS_PER_SECTION.sections[section_name],
+							section_name,
+							section_opts
+						)
 
 						if not user_section_opts_are_valid and msg then
 							vim.notify(msg, vim.log.levels.ERROR)
 							return
 						end
 
-						struct_style[section_name] =
-							vim.tbl_deep_extend("force", struct_style[section_name], section_opts)
+						struct_style.sections[section_name] =
+							vim.tbl_deep_extend("force", struct_style.sections[section_name], section_opts)
 					end
 				end
 			end
@@ -191,8 +212,8 @@ end)()
 function Spec.is_lang_supported(lang) return vim.list_contains(Spec.get_supported_langs(), lang) end
 
 function Spec._validate_style_opts(style)
-	for section_name, section_opts in pairs(style) do
-		local expected_opts = EXPECTED_OPTS_PER_SECTION[section_name]
+	for section_name, section_opts in pairs(style.sections) do
+		local expected_opts = EXPECTED_OPTS_PER_SECTION.sections[section_name]
 		if not expected_opts then error(string.format("'%s' section_name is not supported", section_name), 0) end
 
 		local are_opts_correct, error_msg = _validate_section_opts(expected_opts, section_name, section_opts)

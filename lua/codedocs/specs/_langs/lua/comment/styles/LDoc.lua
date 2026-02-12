@@ -4,9 +4,11 @@ return {
 		direction = true,
 		insert_at = 1,
 	},
-	title = {
-		layout = {
-			"-- ${%snippet_tabstop_idx:description}",
+	sections = {
+		title = {
+			layout = {
+				"-- ${%snippet_tabstop_idx:description}",
+			},
 		},
 	},
 }

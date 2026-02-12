@@ -23,7 +23,7 @@ local function _build_annotation_content(item_data, style)
 
 	for section_idx, section_name in ipairs(style.settings.section_order) do
 		local section_items = item_data[section_name]
-		local section_style = style[section_name]
+		local section_style = style.sections[section_name]
 
 		if #section_items == 0 then goto skip_section end ---A section with no items effectively has no content
 
@@ -42,10 +42,10 @@ local function _build_annotation_content(item_data, style)
 			end
 		end
 
-		local should_insert_section_gap = style[section_name].insert_gap_between.enabled
+		local should_insert_section_gap = style.sections[section_name].insert_gap_between.enabled
 			and style.settings.section_order[section_idx + 1]
 		if should_insert_section_gap then
-			table.insert(annotation_content, style[section_name].insert_gap_between.text)
+			table.insert(annotation_content, style.sections[section_name].insert_gap_between.text)
 		end
 
 		::skip_section::
@@ -119,5 +119,10 @@ return function(style, data, annotation_structure)
 	local annotation_content = vim.tbl_isempty(data) and {} or _build_annotation_content(data, style)
 	Debug_logger.log("Annotation content:", annotation_content)
 
-	return _format_annotation_content(annotation_structure, annotation_content, style.settings.insert_at, style.title)
+	return _format_annotation_content(
+		annotation_structure,
+		annotation_content,
+		style.settings.insert_at,
+		style.sections.title
+	)
 end
