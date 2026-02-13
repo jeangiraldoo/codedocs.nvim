@@ -195,6 +195,49 @@ but a table where each key is an option.
 
 Options are grouped in the form of settings and sections:
 
+#### Layout option
+
+The `layout` option is special in the sense that it can be used in sections,
+section items, and in the annotation settings; all three cases share the
+same core definition:
+
+| Option Name | Expected Value Type | Behavior                                                                                       |
+| ----------- | ------------------- | ---------------------------------------------------------------------------------------------- |
+| layout      | `table`             | Defines the base lines that compose an annotation section, item, or the base annotation layout |
+
+Additionally, since a layout is just a list of strings, the following string
+placeholders are predefined:
+
+> [!NOTE]
+> Placeholders are referenced by prepending `%` to the placeholder name
+
+| Placeholder name      | Behavior                                                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| snippet_tabstop_index | Inserts a tabstop index for defining snippet tabstops (e.g., `$%snippet_tabstop_index` or `${%snippet_tabstop_index:default label}`). |
+
+##### Main layout
+
+The main annotation layout is defined under the `settings` field. It's meant for
+defining the base layout of an annotation; all sections are placed within this
+layout according to the `insert_at` setting.
+
+##### Section layout
+
+The section layout defines the way a section looks like, not accounting for its
+items as their style is handled by the [item layout](#item-layout)
+
+##### Item layout
+
+An item layout defines the way an item is styled for a given section. It is
+defined under the `items` field.
+
+The following placeholders are available:
+
+| Placeholder name | Behavior                     |
+| ---------------- | ---------------------------- |
+| item_name        | Inserts the name of the item |
+| item_type        | Inserts the type of the item |
+
 #### Settings options
 
 > [!NOTE]
@@ -216,6 +259,21 @@ Options are grouped in the form of settings and sections:
 | `include_instance_attrs`                  | boolean             | Include instance attributes in the annotation                          |
 | `include_only_constructor_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
 
+#### Options common to sections and items
+
+The following options are available to both sections and section items:
+
+| Option Name        | Expected Value Type | Behavior                                                            |
+| ------------------ | ------------------- | ------------------------------------------------------------------- |
+| insert_gap_between | `table`             | Sets up a gap in between the current section/item and the one below |
+
+The `insert_gap_between` option has the following suboptions:
+
+| Suboption Name | Expected Value Type | Behavior                                                   |
+| -------------- | ------------------- | ---------------------------------------------------------- |
+| enabled        | `boolean`           | Whether a gap is inserted in between two sections or items |
+| text           | `string`            | String used as the gap                                     |
+
 #### Sections
 
 > [!NOTE]
@@ -229,20 +287,6 @@ The following sections are available:
 | `func`    | `title`, `parameters`, `returns` |
 | `class`   | `title`, `attrs`                 |
 | `comment` | `title`                          |
-
-##### Options common to all sections
-
-| Option Name        | Expected Value Type | Behavior                                                           |
-| ------------------ | ------------------- | ------------------------------------------------------------------ |
-| layout             | `table`             | Defines the base lines that compose an annotation section          |
-| insert_gap_between | `table`             | Sets up a gap in between the current section and the section below |
-
-The `insert_gap_between` option has the following suboptions:
-
-| Suboption Name | Expected Value Type | Behavior                    |
-| -------------- | ------------------- | --------------------------- |
-| enabled        | `boolean`           | Whether the gap is inserted |
-| text           | `string`            | String used as the gap      |
 
 ##### Title section
 
@@ -262,15 +306,12 @@ The following is a mapping of structures to their respective items:
 | ----------- | ------------------- | ------------------------------------------ |
 | `items`     | table               | Controls how individual items are rendered |
 
-The `items` option has the following suboptions:
+On top the options common to all sections and items, the `items` option has the
+following suboptions:
 
-| Suboption                    | Expected Type | Description                                      |
-| ---------------------------- | ------------- | ------------------------------------------------ |
-| `insert_gap_between`         | `table`       | Controls spacing between consecutive items       |
-| `insert_gap_between.enabled` | `boolean`     | Whether to insert a gap between items            |
-| `insert_gap_between.text`    | `string`      | String inserted between items                    |
-| `indent`                     | `boolean`     | Whether item lines are indented                  |
-| `template`                   | `table`       | List of lines describing how an item is rendered |
+| Suboption | Expected Type | Description                     |
+| --------- | ------------- | ------------------------------- |
+| `indent`  | `boolean`     | Whether item lines are indented |
 
 #### Customization example
 
