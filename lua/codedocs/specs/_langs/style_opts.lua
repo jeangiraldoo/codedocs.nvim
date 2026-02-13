@@ -26,8 +26,8 @@ local COMMON_OPTS = {
 
 local SETTINGS_OPTS = {
 	layout = COMMON_OPTS.layout,
-	direction = {
-		expected_type = "boolean", -- True for above, false for below the function
+	relative_position = {
+		expected_type = "string", -- True for above, false for below the function
 	},
 	insert_at = {
 		expected_type = "number", -- Position at which lines are inserted

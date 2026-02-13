@@ -4,7 +4,7 @@ return {
 			"#######################################",
 			"#######################################",
 		},
-		direction = true,
+		relative_position = "above",
 		insert_at = 2,
 		section_order = {
 			"globals",

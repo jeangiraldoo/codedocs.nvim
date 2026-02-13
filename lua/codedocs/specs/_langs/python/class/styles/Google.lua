@@ -5,7 +5,7 @@ return {
 			'"""',
 		},
 		insert_at = 2,
-		direction = false,
+		relative_position = "below",
 		section_order = {
 			"attrs",
 		},

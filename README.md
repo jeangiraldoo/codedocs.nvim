@@ -201,12 +201,12 @@ Options are grouped in the form of settings and sections:
 > All structures have a `settings` field as it is used for configuring
 > fundamental aspects of an annotation style
 
-| Option Name       | Expected Value Type | Behavior                                                                          |
-| ----------------- | ------------------- | --------------------------------------------------------------------------------- |
-| `direction`       | boolean             | Determines where the annotation is inserted. `true` for above, `false` for below. |
-| `insert_at`       | boolean             | Position in the `layout` option to insert the annotation content into             |
-| `section_order`   | table               | Specifies the order in which sections are added to the annotation.                |
-| `item_extraction` | table               | Controls how items for a specific section are parsed                              |
+| Option Name         | Expected Value Type | Behavior                                                                                              |
+| ------------------- | ------------------- | ----------------------------------------------------------------------------------------------------- |
+| `relative_position` | string              | Determines where the annotation is inserted. Options are "above", "below" and "empty_target_or_above" |
+| `insert_at`         | boolean             | Position in the `layout` option to insert the annotation content into                                 |
+| `section_order`     | table               | Specifies the order in which sections are added to the annotation.                                    |
+| `item_extraction`   | table               | Controls how items for a specific section are parsed                                                  |
 
 ##### Item extraction suboptions for class attributes
 
