@@ -34,15 +34,15 @@ return {
 				text = "",
 			},
 			items = {
+				layout = {
+					":var %item_name: ${%snippet_tabstop_idx:description}",
+					":vartype %item_name: ${%snippet_tabstop_idx:%item_type}",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = "",
 				},
 				indent = false,
-				template = {
-					":var %item_name: ${%snippet_tabstop_idx:description}",
-					":vartype %item_name: ${%snippet_tabstop_idx:%item_type}",
-				},
 			},
 		},
 	},

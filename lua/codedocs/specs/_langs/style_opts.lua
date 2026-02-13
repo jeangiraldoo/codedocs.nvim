@@ -55,11 +55,11 @@ local SECTION_WITH_ITEMS_OPTS = {
 					},
 				},
 			},
+			layout = {
+				expected_type = "table", -- List of lines representing an item
+			},
 			indent = {
 				expected_type = "boolean", -- Whether or not to indent items
-			},
-			template = {
-				expected_type = "table", -- List of lines representing an item
 			},
 		},
 	},

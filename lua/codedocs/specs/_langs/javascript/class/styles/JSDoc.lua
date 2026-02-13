@@ -34,14 +34,14 @@ return {
 				text = " *",
 			},
 			items = {
+				layout = {
+					" * @property {%item_type} %item_name ${%snippet_tabstop_idx:description}",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = " *",
 				},
 				indent = false,
-				template = {
-					" * @property {%item_type} %item_name ${%snippet_tabstop_idx:description}",
-				},
 			},
 		},
 	},

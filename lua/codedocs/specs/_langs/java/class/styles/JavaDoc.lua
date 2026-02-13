@@ -36,14 +36,14 @@ return {
 				text = " *",
 			},
 			items = {
+				layout = {
+					"// %item_name",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = " *",
 				},
 				indent = false,
-				template = {
-					"// %item_name",
-				},
 			},
 		},
 	},

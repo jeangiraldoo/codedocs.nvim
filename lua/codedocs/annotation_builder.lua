@@ -31,7 +31,7 @@ local function _build_annotation_content(item_data, style)
 		vim.list_extend(annotation_content, section_content)
 		for item_idx, item in ipairs(section_items) do
 			local indent = section_style.items.indent and "\t" or ""
-			for _, line in ipairs(section_style.items.template) do
+			for _, line in ipairs(section_style.items.layout) do
 				table.insert(annotation_content, indent .. _handle_string(line, item.name, item.type))
 
 				local should_insert_item_gap = section_style.items.insert_gap_between.enabled

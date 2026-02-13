@@ -28,14 +28,14 @@ return {
 				text = " *",
 			},
 			items = {
+				layout = {
+					" * @param {${%snippet_tabstop_idx:type}} %item_name ${%snippet_tabstop_idx:description}",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = " *",
 				},
 				indent = false,
-				template = {
-					" * @param {${%snippet_tabstop_idx:type}} %item_name ${%snippet_tabstop_idx:description}",
-				},
 			},
 		},
 		returns = {
@@ -45,14 +45,14 @@ return {
 				text = " *",
 			},
 			items = {
+				layout = {
+					" * @returns {${%snippet_tabstop_idx:type}} ${%snippet_tabstop_idx:description}",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = " *",
 				},
 				indent = false,
-				template = {
-					" * @returns {${%snippet_tabstop_idx:type}} ${%snippet_tabstop_idx:description}",
-				},
 			},
 		},
 	},

@@ -28,15 +28,15 @@ return {
 				text = "",
 			},
 			items = {
+				layout = {
+					":param %item_name: ${%snippet_tabstop_idx:description}",
+					":type %item_name: ${%snippet_tabstop_idx:%item_type}",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = "",
 				},
 				indent = false,
-				template = {
-					":param %item_name: ${%snippet_tabstop_idx:description}",
-					":type %item_name: ${%snippet_tabstop_idx:%item_type}",
-				},
 			},
 		},
 		returns = {
@@ -46,15 +46,15 @@ return {
 				text = "",
 			},
 			items = {
+				layout = {
+					":return: ${%snippet_tabstop_idx:description}",
+					":rtype: ${%snippet_tabstop_idx:%item_type}",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = "",
 				},
 				indent = false,
-				template = {
-					":return: ${%snippet_tabstop_idx:description}",
-					":rtype: ${%snippet_tabstop_idx:%item_type}",
-				},
 			},
 		},
 	},

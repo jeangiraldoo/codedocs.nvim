@@ -31,15 +31,15 @@ return {
 				text = "",
 			},
 			items = {
+				layout = {
+					"%item_name: ${%snippet_tabstop_idx:%item_type}",
+					"	${%snippet_tabstop_idx:description}",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = "",
 				},
 				indent = false,
-				template = {
-					"%item_name: ${%snippet_tabstop_idx:%item_type}",
-					"	${%snippet_tabstop_idx:description}",
-				},
 			},
 		},
 		returns = {
@@ -52,15 +52,15 @@ return {
 				text = "",
 			},
 			items = {
+				layout = {
+					"${%snippet_tabstop_idx:%item_type}",
+					"	${%snippet_tabstop_idx:description}",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = "",
 				},
 				indent = false,
-				template = {
-					"${%snippet_tabstop_idx:%item_type}",
-					"	${%snippet_tabstop_idx:description}",
-				},
 			},
 		},
 	},
