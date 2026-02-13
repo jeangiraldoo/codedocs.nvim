@@ -4,7 +4,7 @@ return {
 			'"""',
 			'"""',
 		},
-		direction = false,
+		relative_position = "below",
 		insert_at = 2,
 		section_order = {
 			"parameters",

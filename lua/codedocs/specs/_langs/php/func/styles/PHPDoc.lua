@@ -5,7 +5,7 @@ return {
 			" */",
 		},
 		insert_at = 2,
-		direction = true,
+		relative_position = "above",
 		section_order = {
 			"parameters",
 			"returns",

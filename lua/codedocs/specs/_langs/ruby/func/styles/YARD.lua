@@ -1,7 +1,7 @@
 return {
 	settings = {
 		layout = {},
-		direction = true,
+		relative_position = "above",
 		insert_at = 1,
 		section_order = {
 			"parameters",

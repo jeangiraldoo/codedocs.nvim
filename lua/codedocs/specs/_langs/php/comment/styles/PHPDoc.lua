@@ -2,7 +2,7 @@ return {
 	settings = {
 		layout = {},
 		insert_at = 1,
-		direction = true,
+		relative_position = "empty_target_or_above",
 	},
 	sections = {
 		title = {
