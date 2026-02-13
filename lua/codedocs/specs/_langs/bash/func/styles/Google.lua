@@ -32,14 +32,14 @@ return {
 				text = "",
 			},
 			items = {
+				layout = {
+					"#   %item_name",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = "",
 				},
 				indent = false,
-				template = {
-					"#   %item_name",
-				},
 			},
 		},
 		parameters = {
@@ -51,14 +51,14 @@ return {
 				text = "",
 			},
 			items = {
+				layout = {
+					"#   ${%snippet_tabstop_idx:description}",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = "",
 				},
 				indent = false,
-				template = {
-					"#   ${%snippet_tabstop_idx:description}",
-				},
 			},
 		},
 		returns = {
@@ -70,14 +70,14 @@ return {
 				text = "",
 			},
 			items = {
+				layout = {
+					"%item_type:",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = "",
 				},
 				indent = true,
-				template = {
-					"%item_type:",
-				},
 			},
 		},
 	},

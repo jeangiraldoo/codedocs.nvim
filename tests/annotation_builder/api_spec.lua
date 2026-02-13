@@ -88,7 +88,7 @@ local COMMON_DATA = {
 							text = " * ",
 						},
 						indent = false,
-						template = {
+						layout = {
 							" * @item %item_name",
 						},
 					},
@@ -105,7 +105,7 @@ local COMMON_DATA = {
 							text = " * ",
 						},
 						indent = false,
-						template = {
+						layout = {
 							" * @secondary_item %item_name",
 						},
 					},
@@ -146,14 +146,14 @@ local SETTINGS_CASES = {
 				},
 				primary_section = {
 					items = {
-						template = {
+						layout = {
 							"--* @item %item_name",
 						},
 					},
 				},
 				secondary_section = {
 					items = {
-						template = {
+						layout = {
 							"--* @secondary_item %item_name",
 						},
 					},
@@ -295,7 +295,7 @@ local ITEM_CASES = {
 			sections = {
 				primary_section = {
 					items = {
-						template = {
+						layout = {
 							" * @the_type [%item_type] @the_name {%item_name}",
 						},
 					},
@@ -322,7 +322,7 @@ local ITEM_CASES = {
 			sections = {
 				primary_section = {
 					items = {
-						template = {
+						layout = {
 							" * @the_type [%item_type] @the_name {%item_name} ${%snippet_tabstop_idx:description}",
 						},
 					},

@@ -37,14 +37,15 @@ return {
 				text = "",
 			},
 			items = {
+				layout = {
+					"%item_name : ${%snippet_tabstop_idx:%item_type}",
+					"	${%snippet_tabstop_idx:description}",
+				},
 				insert_gap_between = {
 					enabled = false,
 					text = "",
 				},
 				indent = false,
-				template = {
-					{ "%item_name :", "%item_type" },
-				},
 			},
 		},
 	},

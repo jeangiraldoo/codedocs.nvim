@@ -34,12 +34,12 @@ return {
 				text = " *",
 			},
 			items = {
+				layout = {},
 				insert_gap_between = {
 					enabled = false,
 					text = " *",
 				},
 				indent = false,
-				template = {},
 			},
 		},
 	},

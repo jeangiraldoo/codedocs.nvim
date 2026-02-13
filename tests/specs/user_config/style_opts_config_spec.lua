@@ -40,8 +40,8 @@ local BASE_MOCKED_OPTS = {
 			insert_gap_between = {
 				enabled = true,
 			},
-			template = {
-				"some template %item_name",
+			layout = {
+				"some layout %item_name",
 			},
 			indent = true,
 		},
