@@ -31,7 +31,7 @@ function M.insert_docs()
 	if struct_name == "comment" then
 		items_data, pos = {}, vim.api.nvim_win_get_cursor(0)[1] - 1
 	else
-		items_data, pos = Spec.get_struct_items(lang, struct_name, node)
+		items_data, pos = Spec.get_struct_items(lang, struct_name, node), node:range()
 	end
 
 	Debug_logger.log("Item data: ", items_data)
