@@ -1,7 +1,7 @@
-local Spec = {}
+local LangSpecs = {}
 
 local CACHED_TREES = {}
-local EXPECTED_OPTS_PER_SECTION = require("codedocs.specs._langs.style_opts")
+local EXPECTED_OPTS_PER_SECTION = require("codedocs.lang_specs._langs.style_opts")
 
 local function _validate_section_opts(expected_opts, section_name, opts)
 	for actual_section_opt_name, actual_section_opt_value in pairs(opts) do
@@ -46,7 +46,7 @@ local function _validate_section_opts(expected_opts, section_name, opts)
 end
 
 local function _get_lang_data(lang)
-	local success, data = pcall(require, "codedocs.specs._langs." .. lang)
+	local success, data = pcall(require, "codedocs.lang_specs._langs." .. lang)
 	if not success then return nil end
 
 	return data
@@ -58,8 +58,8 @@ end
 ---hence it is only necessary to check what styles the `comment` structure supports
 ---@param lang_name string Language to get the supported styles from
 ---@return string[] style_names List of supported styles
-function Spec.get_supported_styles(lang_name)
-	if not Spec.is_lang_supported(lang_name) then return {} end
+function LangSpecs.get_supported_styles(lang_name)
+	if not LangSpecs.is_lang_supported(lang_name) then return {} end
 
 	local base_path = vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ":p:h")
 
@@ -74,16 +74,15 @@ end
 ---@param lang_name string
 ---@param style_name string
 ---@return boolean
-function Spec.is_style_supported(lang_name, style_name)
-	local supported_styles = Spec.get_supported_styles(lang_name)
+function LangSpecs.is_style_supported(lang_name, style_name)
+	local supported_styles = LangSpecs.get_supported_styles(lang_name)
 	return vim.list_contains(supported_styles, style_name)
 end
 
 ---Builds a list with the names of the structures a language supports
----@param lang_name string Language to get the supported struct names from
 ---@return string[] supported_struct_names
-function Spec.get_supported_structs(lang_name)
-	local struct_identifiers = Spec.get_struct_identifiers(lang_name)
+function LangSpecs:get_supported_structs()
+	local struct_identifiers = self:get_struct_identifiers()
 
 	local values = vim.tbl_values(struct_identifiers)
 	table.sort(values)
@@ -93,7 +92,7 @@ function Spec.get_supported_structs(lang_name)
 	return supported_struct_names
 end
 
-function Spec.set_default_lang_style(new_styles)
+function LangSpecs.set_default_lang_style(new_styles)
 	for lang_name, new_default_style in pairs(new_styles) do
 		if type(new_default_style) ~= "string" then
 			vim.notify(
@@ -103,12 +102,12 @@ function Spec.set_default_lang_style(new_styles)
 			return
 		end
 
-		if not Spec.is_lang_supported(lang_name) then
+		if not LangSpecs.is_lang_supported(lang_name) then
 			vim.notify("There is no language called " .. lang_name .. " available in codedocs", vim.log.levels.ERROR)
 			return
 		end
 
-		if not Spec.is_style_supported(lang_name, new_default_style) then
+		if not LangSpecs.is_style_supported(lang_name, new_default_style) then
 			vim.notify(
 				"No style called " .. new_default_style .. " is supported by " .. lang_name,
 				vim.log.levels.ERROR
@@ -121,20 +120,16 @@ function Spec.set_default_lang_style(new_styles)
 	end
 end
 
-function Spec.get_default_style(lang_name)
-	local lang_data = _get_lang_data(lang_name)
-	return lang_data.default_style
-end
-
-function Spec.update_style(user_opts)
+function LangSpecs.update_style(user_opts)
 	for lang_name, user_styles in pairs(user_opts) do
-		if not Spec.is_lang_supported(lang_name) then
+		if not LangSpecs.is_lang_supported(lang_name) then
 			error("There is no language called " .. lang_name .. " available in codedocs")
 		end
 
+		local lang_spec = LangSpecs.new(lang_name)
 		for user_style_name, user_style_structs in pairs(user_styles) do
 			for user_struct_name, user_struct_categories in pairs(user_style_structs) do
-				local struct_style = Spec.get_struct_style(lang_name, user_struct_name, user_style_name)
+				local struct_style = lang_spec:get_struct_style(user_struct_name, user_style_name)
 				if struct_style then
 					if user_struct_categories.settings then
 						local user_section_opts_are_valid, msg = _validate_section_opts(
@@ -189,11 +184,11 @@ function Spec.update_style(user_opts)
 	end
 end
 
-function Spec.set_settings(settings)
+function LangSpecs.set_settings(settings)
 	if settings.debug == true then require("codedocs.utils.debug_logger").enable() end
 end
 
-Spec.get_supported_langs = (function()
+LangSpecs.get_supported_langs = (function()
 	local source = debug.getinfo(1, "S").source
 	local path = source:sub(2)
 
@@ -209,9 +204,9 @@ Spec.get_supported_langs = (function()
 	return function() return SUPPORTED_LANGS end
 end)()
 
-function Spec.is_lang_supported(lang) return vim.list_contains(Spec.get_supported_langs(), lang) end
+function LangSpecs.is_lang_supported(lang) return vim.list_contains(LangSpecs.get_supported_langs(), lang) end
 
-function Spec._validate_style_opts(style)
+function LangSpecs._validate_style_opts(style)
 	for section_name, section_opts in pairs(style.sections) do
 		local expected_opts = EXPECTED_OPTS_PER_SECTION.sections[section_name]
 		if not expected_opts then error(string.format("'%s' section_name is not supported", section_name), 0) end
@@ -222,42 +217,47 @@ function Spec._validate_style_opts(style)
 	return true
 end
 
-function Spec.get_struct_style(lang, struct_name, style_name)
-	if Spec.is_lang_supported(lang) then
-		local style = require(string.format("codedocs.specs._langs.%s.%s.styles.%s", lang, struct_name, style_name))
-		local is_style_correct, error_msg = Spec._validate_style_opts(style)
-		if not is_style_correct then error(error_msg) end
-
-		return style
-	end
+function LangSpecs.get_buffer_lang_name()
+	local buffer_filetype = vim.bo.filetype
+	return require("codedocs.lang_specs._langs.aliases")[buffer_filetype] or buffer_filetype
 end
 
-function Spec.get_lang_identifier_pos(lang) return _get_lang_data(lang).identifier_pos end
+function LangSpecs.new(lang)
+	local lang_data = _get_lang_data(lang)
+	local lang_data_copy = lang_data
+	lang_data_copy.lang_name = lang
+	local new_lang_spec = setmetatable(lang_data_copy, { __index = LangSpecs })
+	return new_lang_spec
+end
 
-function Spec:_get_struct_main_style(lang, struct_name)
-	local default_style = _get_lang_data(lang).default_style
+function LangSpecs:get_struct_identifiers() return self.struct_identifiers end
 
-	local main_style_path = self.get_struct_style(lang, struct_name, default_style)
+function LangSpecs:_get_struct_main_style(struct_name)
+	local default_style = self.default_style
+
+	local main_style_path = self:get_struct_style(struct_name, default_style)
 	return main_style_path
 end
 
-function Spec.get_struct_identifiers(lang)
-	local lang_data = _get_lang_data(lang)
-	return lang_data.struct_identifiers
+function LangSpecs:get_struct_items(struct_name, node, style_name)
+	local struct_style = self:get_struct_style(struct_name, style_name or self:get_default_style())
+	local struct_tree = self:get_struct_tree(struct_name)
+	local items_data = self:process_tree(struct_style, struct_tree, node)
+	return items_data
 end
 
-function Spec.get_struct_tree(lang, struct_name)
+function LangSpecs:get_struct_tree(struct_name)
 	local function _build_node(node)
 		local new_node = vim.tbl_extend("force", {}, node)
 		if new_node.children then new_node.children = vim.tbl_map(_build_node, node.children) end
 
-		local extend_new_node = require("codedocs.specs.node_types." .. new_node.type)
+		local extend_new_node = require("codedocs.lang_specs.node_types." .. new_node.type)
 		return extend_new_node(new_node)
 	end
 
-	CACHED_TREES[lang] = CACHED_TREES[lang] or {}
-	if not CACHED_TREES[lang][struct_name] then
-		local struct_path = "codedocs.specs._langs." .. lang .. "." .. struct_name
+	CACHED_TREES[self.lang_name] = CACHED_TREES[self.lang_name] or {}
+	if not CACHED_TREES[self.lang_name][struct_name] then
+		local struct_path = "codedocs.lang_specs._langs." .. self.lang_name .. "." .. struct_name
 		local lang_path = struct_path .. ".tree"
 		local struct_trees_list = require(lang_path)
 
@@ -265,13 +265,13 @@ function Spec.get_struct_tree(lang, struct_name)
 		for struct_section_name, trees in pairs(struct_trees_list) do
 			final_tree[struct_section_name] = vim.tbl_map(_build_node, trees)
 		end
-		CACHED_TREES[lang][struct_name] = final_tree
+		CACHED_TREES[self.lang_name][struct_name] = final_tree
 	end
 
-	return CACHED_TREES[lang][struct_name]
+	return CACHED_TREES[self.lang_name][struct_name]
 end
 
-function Spec.process_tree(lang_name, struct_style, struct_tree, node)
+function LangSpecs:process_tree(struct_style, struct_tree, node)
 	local function remove_duplicate_items_by_name(items)
 		local seen = {}
 		local deduplicated_list = {}
@@ -303,7 +303,9 @@ function Spec.process_tree(lang_name, struct_style, struct_tree, node)
 
 		local raw_items = vim.iter(section_tree)
 			:map(
-				function(tree_node) return tree_node:process(node, lang_name, struct_style.settings.item_extraction) end
+				function(tree_node)
+					return tree_node:process(node, self.lang_name, struct_style.settings.item_extraction)
+				end
 			)
 			:find(
 				function(section_items_list) return section_items_list and (not vim.tbl_isempty(section_items_list)) end
@@ -317,16 +319,20 @@ function Spec.process_tree(lang_name, struct_style, struct_tree, node)
 	return items_list
 end
 
-function Spec.get_buffer_lang_name()
-	local buffer_filetype = vim.bo.filetype
-	return require("codedocs.specs._langs.aliases")[buffer_filetype] or buffer_filetype
+function LangSpecs:get_struct_style(struct_name, style_name)
+	if LangSpecs.is_lang_supported(self.lang_name) then
+		local style = require(
+			string.format("codedocs.lang_specs._langs.%s.%s.styles.%s", self.lang_name, struct_name, style_name)
+		)
+		local is_style_correct, error_msg = LangSpecs._validate_style_opts(style)
+		if not is_style_correct then error(error_msg) end
+
+		return style
+	end
 end
 
-function Spec.get_struct_items(lang, struct_name, node)
-	local struct_tree = Spec.get_struct_tree(lang, struct_name)
-	local struct_style = Spec:_get_struct_main_style(lang, struct_name)
-	local items_data = Spec.process_tree(lang, struct_style, struct_tree, node)
-	return items_data
-end
+function LangSpecs:get_default_style() return self.default_style end
 
-return Spec
+function LangSpecs:get_lang_identifier_pos() return self.identifier_pos end
+
+return LangSpecs

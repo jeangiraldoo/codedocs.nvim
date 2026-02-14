@@ -56,7 +56,7 @@ end
 
 return function(base_node)
 	function base_node:process(ts_node, filetype)
-		local identifier_pos = require("codedocs.specs").get_lang_identifier_pos(filetype)
+		local identifier_pos = require("codedocs.lang_specs.init").new(filetype):get_lang_identifier_pos()
 		local query = self.query
 
 		if not query then return {} end
