@@ -23,40 +23,25 @@ function M.insert_docs()
 
 	local struct_name, node = require("codedocs.struct_detector")(Spec.get_struct_identifiers(lang))
 	local struct_style = Spec:_get_struct_main_style(lang, struct_name)
-	local layout = struct_style.settings.layout
-
-	local target_positions = {
-		title_offset = struct_style.settings.insert_at,
-	}
 
 	Debug_logger.log("Structure name: " .. struct_name)
 	Debug_logger.log("Style: ", struct_style)
+
+	local items_data, pos
 	if struct_name == "comment" then
-		target_positions.target = vim.api.nvim_win_get_cursor(0)[1] - 1
-		local docs = docs_builder(struct_style, {}, layout)
-
-		require("codedocs.buf_writer")(
-			docs,
-			target_positions,
-			struct_style.settings.relative_position,
-			-- Languages where annotations appear below the structure definition require an extra indentation level
-			struct_style.settings.relative_position == "below"
-		)
-		return
+		items_data, pos = {}, vim.api.nvim_win_get_cursor(0)[1] - 1
+	else
+		items_data, pos = Spec.get_struct_items(lang, struct_name, node)
 	end
-
-	local items_data, pos = Spec.get_struct_items(lang, struct_name, node)
 
 	Debug_logger.log("Item data: ", items_data)
 
-	local docs = docs_builder(struct_style, items_data, layout)
+	local docs = docs_builder(struct_style, items_data, struct_style.settings.layout)
 	Debug_logger.log("Annotation:", docs)
-
-	target_positions.target = pos
 
 	require("codedocs.buf_writer")(
 		docs,
-		target_positions,
+		{ title_offset = struct_style.settings.insert_at, target = pos },
 		struct_style.settings.relative_position,
 		-- Languages where annotations appear below the structure definition require an extra indentation level
 		struct_style.settings.relative_position
