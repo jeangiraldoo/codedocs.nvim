@@ -1,9 +1,9 @@
-local Spec = require("codedocs.specs")
+local LangSpecs = require("codedocs.lang_specs.init")
 
 local project_root = vim.fn.expand("<sfile>:p:h")
 package.path = package.path .. ";" .. project_root .. "/tests/specs/item_extraction/test_cases/?.lua"
 
-local LANGS_TO_TEST = Spec.get_supported_langs()
+local LANGS_TO_TEST = LangSpecs.get_supported_langs()
 
 local function mock_buffer(structure, cursor_pos)
 	vim.api.nvim_buf_set_lines(0, 0, -1, false, structure)
@@ -11,10 +11,9 @@ local function mock_buffer(structure, cursor_pos)
 end
 
 local function test_case(lang, expected_items)
-	local struct_name, node = require("codedocs.struct_detector")(Spec.get_struct_identifiers(lang))
-	local struct_tree = Spec.get_struct_tree(lang, struct_name)
-	local struct_style = Spec.get_struct_style(lang, struct_name, Spec.get_default_style(lang))
-	local data, _ = Spec.process_tree(lang, struct_style, struct_tree, node)
+	local lang_spec = LangSpecs.new(lang)
+	local struct_name, node = require("codedocs.struct_detector")(lang_spec:get_struct_identifiers())
+	local data, _ = lang_spec:get_struct_items(struct_name, node)
 
 	assert.are.same(expected_items, data)
 end
