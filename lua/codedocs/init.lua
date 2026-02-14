@@ -45,8 +45,8 @@ function M.insert_docs()
 		return
 	end
 
-	local struct_tree = Spec.get_struct_tree(lang, struct_name)
-	local items_data, pos = Spec.process_tree(lang, struct_style, struct_tree, node)
+	local items_data, pos = Spec.get_struct_items(lang, struct_name, node)
+
 	Debug_logger.log("Item data: ", items_data)
 
 	local docs = docs_builder(struct_style, items_data, layout)

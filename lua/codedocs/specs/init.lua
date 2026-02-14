@@ -324,4 +324,11 @@ function Spec.get_buffer_lang_name()
 	return require("codedocs.specs._langs.aliases")[buffer_filetype] or buffer_filetype
 end
 
+function Spec.get_struct_items(lang, struct_name, node)
+	local struct_tree = Spec.get_struct_tree(lang, struct_name)
+	local struct_style = Spec:_get_struct_main_style(lang, struct_name)
+	local items_data, pos = Spec.process_tree(lang, struct_style, struct_tree, node)
+	return items_data, pos
+end
+
 return Spec
