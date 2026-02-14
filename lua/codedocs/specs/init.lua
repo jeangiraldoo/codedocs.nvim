@@ -297,8 +297,6 @@ function Spec.process_tree(lang_name, struct_style, struct_tree, node)
 		end, items)
 	end
 
-	local pos = node:range()
-
 	local items_list = {}
 	for _, section_name in pairs(struct_style.settings.section_order) do
 		local section_tree = struct_tree[section_name]
@@ -316,7 +314,7 @@ function Spec.process_tree(lang_name, struct_style, struct_tree, node)
 		items_list[section_name] = normalize_item_fields(raw_items)
 	end
 
-	return items_list, pos
+	return items_list
 end
 
 function Spec.get_buffer_lang_name()
@@ -327,8 +325,8 @@ end
 function Spec.get_struct_items(lang, struct_name, node)
 	local struct_tree = Spec.get_struct_tree(lang, struct_name)
 	local struct_style = Spec:_get_struct_main_style(lang, struct_name)
-	local items_data, pos = Spec.process_tree(lang, struct_style, struct_tree, node)
-	return items_data, pos
+	local items_data = Spec.process_tree(lang, struct_style, struct_tree, node)
+	return items_data
 end
 
 return Spec
