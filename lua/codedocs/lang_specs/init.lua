@@ -225,7 +225,6 @@ end
 function LangSpecs.new(lang)
 	local lang_data = _get_lang_data(lang)
 	local lang_data_copy = lang_data
-	lang_data_copy.lang_name = lang
 	local new_lang_spec = setmetatable(lang_data_copy, { __index = LangSpecs })
 	return new_lang_spec
 end

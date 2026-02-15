@@ -1,4 +1,5 @@
 return {
+	lang_name = "typescript",
 	default_style = "TSDoc",
 	identifier_pos = true,
 	struct_identifiers = {

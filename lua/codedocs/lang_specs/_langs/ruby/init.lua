@@ -1,4 +1,5 @@
 return {
+	lang_name = "ruby",
 	default_style = "YARD",
 	identifier_pos = true,
 	struct_identifiers = {
