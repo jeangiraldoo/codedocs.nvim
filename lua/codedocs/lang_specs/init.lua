@@ -1,6 +1,5 @@
 local LangSpecs = {}
 
-local CACHED_TREES = {}
 local EXPECTED_OPTS_PER_SECTION = require("codedocs.lang_specs._langs.style_opts")
 
 local function _validate_section_opts(expected_opts, section_name, opts)
@@ -43,13 +42,6 @@ local function _validate_section_opts(expected_opts, section_name, opts)
 	end
 
 	return true
-end
-
-local function _get_lang_data(lang)
-	local success, data = pcall(require, "codedocs.lang_specs._langs." .. lang)
-	if not success then return nil end
-
-	return data
 end
 
 ---Builds a list of the styles supported by a specific language
@@ -206,26 +198,18 @@ end)()
 
 function LangSpecs.is_lang_supported(lang) return vim.list_contains(LangSpecs.get_supported_langs(), lang) end
 
-function LangSpecs._validate_style_opts(style)
-	for section_name, section_opts in pairs(style.sections) do
-		local expected_opts = EXPECTED_OPTS_PER_SECTION.sections[section_name]
-		if not expected_opts then error(string.format("'%s' section_name is not supported", section_name), 0) end
-
-		local are_opts_correct, error_msg = _validate_section_opts(expected_opts, section_name, section_opts)
-		if not are_opts_correct then return false, error_msg end
-	end
-	return true
-end
-
 function LangSpecs.get_buffer_lang_name()
 	local buffer_filetype = vim.bo.filetype
 	return require("codedocs.lang_specs._langs.aliases")[buffer_filetype] or buffer_filetype
 end
 
 function LangSpecs.new(lang)
-	local lang_data = _get_lang_data(lang)
-	local lang_data_copy = lang_data
-	local new_lang_spec = setmetatable(lang_data_copy, { __index = LangSpecs })
+	if not LangSpecs.is_lang_supported(lang) then error(lang .. " is not a supported language") end
+
+	local spec_data = require("codedocs.lang_specs._langs." .. lang)
+	spec_data.structs = {}
+	local new_lang_spec = setmetatable(spec_data, { __index = LangSpecs })
+
 	return new_lang_spec
 end
 
@@ -257,8 +241,28 @@ function LangSpecs:get_struct_items(struct_name, node, style_name)
 		end, items)
 	end
 
+	local function _build_node(internal_node)
+		local new_node = vim.tbl_extend("force", {}, internal_node)
+		if new_node.children then new_node.children = vim.tbl_map(_build_node, internal_node.children) end
+
+		local extend_new_node = require("codedocs.lang_specs.node_types." .. new_node.type)
+		return extend_new_node(new_node)
+	end
+
+	if not self.structs[struct_name] then self.structs[struct_name] = {} end
+	if not self.structs[struct_name].tree then
+		local struct_trees_list =
+			require("codedocs.lang_specs._langs." .. self.lang_name .. "." .. struct_name .. ".tree")
+
+		local final_tree = {}
+		for struct_section_name, trees in pairs(struct_trees_list) do
+			final_tree[struct_section_name] = vim.tbl_map(_build_node, trees)
+		end
+		self.structs[struct_name].tree = final_tree
+	end
+
 	local struct_style = self:get_struct_style(struct_name, style_name or self:get_default_style())
-	local struct_tree = self:get_struct_tree(struct_name)
+	local struct_tree = self.structs[struct_name].tree
 
 	local items_list = {}
 	for _, section_name in pairs(struct_style.settings.section_order) do
@@ -282,37 +286,23 @@ function LangSpecs:get_struct_items(struct_name, node, style_name)
 	return items_list
 end
 
-function LangSpecs:get_struct_tree(struct_name)
-	local function _build_node(node)
-		local new_node = vim.tbl_extend("force", {}, node)
-		if new_node.children then new_node.children = vim.tbl_map(_build_node, node.children) end
-
-		local extend_new_node = require("codedocs.lang_specs.node_types." .. new_node.type)
-		return extend_new_node(new_node)
-	end
-
-	CACHED_TREES[self.lang_name] = CACHED_TREES[self.lang_name] or {}
-	if not CACHED_TREES[self.lang_name][struct_name] then
-		local struct_path = "codedocs.lang_specs._langs." .. self.lang_name .. "." .. struct_name
-		local lang_path = struct_path .. ".tree"
-		local struct_trees_list = require(lang_path)
-
-		local final_tree = {}
-		for struct_section_name, trees in pairs(struct_trees_list) do
-			final_tree[struct_section_name] = vim.tbl_map(_build_node, trees)
-		end
-		CACHED_TREES[self.lang_name][struct_name] = final_tree
-	end
-
-	return CACHED_TREES[self.lang_name][struct_name]
-end
-
 function LangSpecs:get_struct_style(struct_name, style_name)
+	local function _validate_style_opts(style)
+		for section_name, section_opts in pairs(style.sections) do
+			local expected_opts = EXPECTED_OPTS_PER_SECTION.sections[section_name]
+			if not expected_opts then error(string.format("'%s' section_name is not supported", section_name), 0) end
+
+			local are_opts_correct, error_msg = _validate_section_opts(expected_opts, section_name, section_opts)
+			if not are_opts_correct then return false, error_msg end
+		end
+		return true
+	end
+
 	if LangSpecs.is_lang_supported(self.lang_name) then
 		local style = require(
 			string.format("codedocs.lang_specs._langs.%s.%s.styles.%s", self.lang_name, struct_name, style_name)
 		)
-		local is_style_correct, error_msg = LangSpecs._validate_style_opts(style)
+		local is_style_correct, error_msg = _validate_style_opts(style)
 		if not is_style_correct then error(error_msg) end
 
 		return style
