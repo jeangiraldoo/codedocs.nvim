@@ -107,6 +107,7 @@ function LangSpecs.set_default_lang_style(new_styles)
 			return
 		end
 
+		local lang_spec = LangSpecs.new(lang_name)
 		if not LangSpecs.is_style_supported(lang_name, new_default_style) then
 			vim.notify(
 				"No style called " .. new_default_style .. " is supported by " .. lang_name,
@@ -115,8 +116,7 @@ function LangSpecs.set_default_lang_style(new_styles)
 			return
 		end
 
-		local lang_data = _get_lang_data(lang_name)
-		lang_data.default_style = new_default_style
+		lang_spec:set_default_style(new_default_style)
 	end
 end
 
@@ -322,5 +322,14 @@ end
 function LangSpecs:get_default_style() return self.default_style end
 
 function LangSpecs:get_lang_identifier_pos() return self.identifier_pos end
+
+function LangSpecs:set_default_style(style_name)
+	if not LangSpecs.is_style_supported(self.lang_name, style_name) then
+		vim.notify("No style called " .. style_name .. " is supported by " .. self.lang_name, vim.log.levels.ERROR)
+		return
+	end
+
+	self.default_style = style_name
+end
 
 return LangSpecs
