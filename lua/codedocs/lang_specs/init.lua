@@ -232,46 +232,7 @@ end
 
 function LangSpecs:get_struct_identifiers() return self.struct_identifiers end
 
-function LangSpecs:_get_struct_main_style(struct_name)
-	local default_style = self.default_style
-
-	local main_style_path = self:get_struct_style(struct_name, default_style)
-	return main_style_path
-end
-
 function LangSpecs:get_struct_items(struct_name, node, style_name)
-	local struct_style = self:get_struct_style(struct_name, style_name or self:get_default_style())
-	local struct_tree = self:get_struct_tree(struct_name)
-	local items_data = self:process_tree(struct_style, struct_tree, node)
-	return items_data
-end
-
-function LangSpecs:get_struct_tree(struct_name)
-	local function _build_node(node)
-		local new_node = vim.tbl_extend("force", {}, node)
-		if new_node.children then new_node.children = vim.tbl_map(_build_node, node.children) end
-
-		local extend_new_node = require("codedocs.lang_specs.node_types." .. new_node.type)
-		return extend_new_node(new_node)
-	end
-
-	CACHED_TREES[self.lang_name] = CACHED_TREES[self.lang_name] or {}
-	if not CACHED_TREES[self.lang_name][struct_name] then
-		local struct_path = "codedocs.lang_specs._langs." .. self.lang_name .. "." .. struct_name
-		local lang_path = struct_path .. ".tree"
-		local struct_trees_list = require(lang_path)
-
-		local final_tree = {}
-		for struct_section_name, trees in pairs(struct_trees_list) do
-			final_tree[struct_section_name] = vim.tbl_map(_build_node, trees)
-		end
-		CACHED_TREES[self.lang_name][struct_name] = final_tree
-	end
-
-	return CACHED_TREES[self.lang_name][struct_name]
-end
-
-function LangSpecs:process_tree(struct_style, struct_tree, node)
 	local function remove_duplicate_items_by_name(items)
 		local seen = {}
 		local deduplicated_list = {}
@@ -297,6 +258,9 @@ function LangSpecs:process_tree(struct_style, struct_tree, node)
 		end, items)
 	end
 
+	local struct_style = self:get_struct_style(struct_name, style_name or self:get_default_style())
+	local struct_tree = self:get_struct_tree(struct_name)
+
 	local items_list = {}
 	for _, section_name in pairs(struct_style.settings.section_order) do
 		local section_tree = struct_tree[section_name]
@@ -317,6 +281,31 @@ function LangSpecs:process_tree(struct_style, struct_tree, node)
 	end
 
 	return items_list
+end
+
+function LangSpecs:get_struct_tree(struct_name)
+	local function _build_node(node)
+		local new_node = vim.tbl_extend("force", {}, node)
+		if new_node.children then new_node.children = vim.tbl_map(_build_node, node.children) end
+
+		local extend_new_node = require("codedocs.lang_specs.node_types." .. new_node.type)
+		return extend_new_node(new_node)
+	end
+
+	CACHED_TREES[self.lang_name] = CACHED_TREES[self.lang_name] or {}
+	if not CACHED_TREES[self.lang_name][struct_name] then
+		local struct_path = "codedocs.lang_specs._langs." .. self.lang_name .. "." .. struct_name
+		local lang_path = struct_path .. ".tree"
+		local struct_trees_list = require(lang_path)
+
+		local final_tree = {}
+		for struct_section_name, trees in pairs(struct_trees_list) do
+			final_tree[struct_section_name] = vim.tbl_map(_build_node, trees)
+		end
+		CACHED_TREES[self.lang_name][struct_name] = final_tree
+	end
+
+	return CACHED_TREES[self.lang_name][struct_name]
 end
 
 function LangSpecs:get_struct_style(struct_name, style_name)
