@@ -1,4 +1,5 @@
 return {
+	lang_name = "javascript",
 	default_style = "JSDoc",
 	identifier_pos = true,
 	struct_identifiers = {

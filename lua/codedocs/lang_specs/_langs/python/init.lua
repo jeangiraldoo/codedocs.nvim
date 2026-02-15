@@ -1,4 +1,5 @@
 return {
+	lang_name = "python",
 	default_style = "reST",
 	identifier_pos = true,
 	struct_identifiers = {

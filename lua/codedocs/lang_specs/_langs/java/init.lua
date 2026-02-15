@@ -1,4 +1,5 @@
 return {
+	lang_name = "java",
 	default_style = "JavaDoc",
 	identifier_pos = false,
 	struct_identifiers = {
