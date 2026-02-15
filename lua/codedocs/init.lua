@@ -23,7 +23,7 @@ function M.insert_docs()
 
 	local lang_spec = LangSpecs.new(lang)
 	local struct_name, node = require("codedocs.struct_detector")(lang_spec:get_struct_identifiers())
-	local struct_style = lang_spec:_get_struct_main_style(struct_name)
+	local struct_style = lang_spec:get_struct_style(struct_name, lang_spec:get_default_style())
 
 	Debug_logger.log("Structure name: " .. struct_name)
 	Debug_logger.log("Style: ", struct_style)
