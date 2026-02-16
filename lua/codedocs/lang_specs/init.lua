@@ -249,20 +249,15 @@ function LangSpecs:get_struct_items(struct_name, node, style_name)
 		return extend_new_node(new_node)
 	end
 
-	if not self.structs[struct_name] then self.structs[struct_name] = {} end
-	if not self.structs[struct_name].tree then
-		local struct_trees_list =
-			require("codedocs.lang_specs._langs." .. self.lang_name .. "." .. struct_name .. ".tree")
-
-		local final_tree = {}
-		for struct_section_name, trees in pairs(struct_trees_list) do
-			final_tree[struct_section_name] = vim.tbl_map(_build_node, trees)
-		end
-		self.structs[struct_name].tree = final_tree
-	end
+	local struct_tree = vim.iter(
+		require("codedocs.lang_specs._langs." .. self.lang_name .. "." .. struct_name .. ".tree")
+	)
+		:fold({}, function(acc, struct_section_name, trees)
+			acc[struct_section_name] = vim.tbl_map(_build_node, trees)
+			return acc
+		end)
 
 	local struct_style = self:get_struct_style(struct_name, style_name or self:get_default_style())
-	local struct_tree = self.structs[struct_name].tree
 
 	local items_list = {}
 	for _, section_name in pairs(struct_style.settings.section_order) do
