@@ -4,8 +4,12 @@ local LangSpecs = require("codedocs.lang_specs.init")
 
 local M = {}
 
+local function _apply_plugin_settings(settings)
+	if settings.debug == true then require("codedocs.utils.debug_logger").enable() end
+end
+
 function M.setup(config)
-	if config.settings then LangSpecs.set_settings(config.settings) end
+	if config.settings then _apply_plugin_settings(config.settings) end
 
 	if config and config.default_styles then LangSpecs.set_default_lang_style(config.default_styles) end
 

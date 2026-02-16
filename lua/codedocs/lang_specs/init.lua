@@ -176,10 +176,6 @@ function LangSpecs.update_style(user_opts)
 	end
 end
 
-function LangSpecs.set_settings(settings)
-	if settings.debug == true then require("codedocs.utils.debug_logger").enable() end
-end
-
 LangSpecs.get_supported_langs = (function()
 	local source = debug.getinfo(1, "S").source
 	local path = source:sub(2)
