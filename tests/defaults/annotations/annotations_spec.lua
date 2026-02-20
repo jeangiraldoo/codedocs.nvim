@@ -11,23 +11,6 @@ local function mock_buffer(structure, cursor_pos)
 	vim.bo.bufhidden = "wipe"
 end
 
-local function test_case(lang, style_name, expected_annotation)
-	local lang_spec = LangSpecs.new(lang)
-	local struct_name, node = require("codedocs.struct_detector")(lang_spec:get_struct_identifiers())
-	local struct_style = lang_spec:get_struct_style(struct_name, style_name)
-
-	local items_data
-	if struct_name == "comment" then
-		items_data = {}
-	else
-		items_data = lang_spec:get_struct_items(struct_name, node, style_name)
-	end
-
-	local annotation = require("codedocs.annotation_builder")(struct_style, items_data, struct_style.settings.layout)
-
-	assert.are.same(expected_annotation, annotation)
-end
-
 describe("Default style annotations", function()
 	for _, lang in ipairs(LangSpecs.get_supported_langs()) do
 		local buf = vim.api.nvim_create_buf(false, true)
@@ -40,7 +23,13 @@ describe("Default style annotations", function()
 					for _, style_name in ipairs(LangSpecs.get_supported_styles(lang)) do
 						it("(" .. style_name .. ") - Case #" .. idx, function()
 							mock_buffer(struct_case.structure, struct_case.cursor_pos)
-							test_case(lang, style_name, struct_case.expected_annotation[style_name])
+							assert.are.same(
+								struct_case.expected_annotation[style_name],
+								require("codedocs").orchestrate_annotation_build({
+									name = lang,
+									style_name = style_name,
+								})
+							)
 						end)
 					end
 				end
