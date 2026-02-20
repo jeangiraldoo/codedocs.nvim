@@ -10,14 +10,6 @@ local function mock_buffer(structure, cursor_pos)
 	vim.api.nvim_win_set_cursor(0, { cursor_pos, 0 })
 end
 
-local function test_case(lang, expected_items)
-	local lang_spec = LangSpecs.new(lang)
-	local struct_name, node = require("codedocs.struct_detector")(lang_spec:get_struct_identifiers())
-	local data, _ = lang_spec:get_struct_items(struct_name, node)
-
-	assert.are.same(expected_items, data)
-end
-
 describe("Annotation building using default options", function()
 	for _, lang in ipairs(LANGS_TO_TEST) do
 		vim.api.nvim_command("enew")
@@ -27,7 +19,8 @@ describe("Annotation building using default options", function()
 			for idx, case in ipairs(cases) do
 				it(lang .. " - Case #" .. idx, function()
 					mock_buffer(case.structure, case.cursor_pos)
-					test_case(lang, case.expected_items)
+
+					assert.are.same(case.expected_items, require("codedocs").extract_item_data(lang))
 				end)
 			end
 		end
