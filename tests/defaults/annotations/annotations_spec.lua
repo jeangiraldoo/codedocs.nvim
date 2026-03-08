@@ -9,6 +9,7 @@ local function mock_buffer(structure, cursor_pos)
 	vim.bo.swapfile = false
 	vim.bo.buftype = "nofile"
 	vim.bo.bufhidden = "wipe"
+	vim.bo.expandtab = false
 end
 
 describe("Default style annotations", function()

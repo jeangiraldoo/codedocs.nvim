@@ -214,6 +214,7 @@ placeholders are predefined:
 | Placeholder name      | Behavior                                                                                                                              |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | snippet_tabstop_index | Inserts a tabstop index for defining snippet tabstops (e.g., `$%snippet_tabstop_index` or `${%snippet_tabstop_index:default label}`). |
+| >                     | Inserts an indentation string (either a tab character or a number of spaces based on your Neovim settings)                            |
 
 ##### Main layout
 
@@ -250,6 +251,7 @@ The following placeholders are available:
 | `insert_at`         | boolean             | Position in the `layout` option to insert the annotation content into                                 |
 | `section_order`     | table               | Specifies the order in which sections are added to the annotation.                                    |
 | `item_extraction`   | table               | Controls how items for a specific section are parsed                                                  |
+| `indented`          | boolean             | Whether or not to indent the entire annotation one level                                              |
 
 ##### Item extraction suboptions for class attributes
 
@@ -306,12 +308,7 @@ The following is a mapping of structures to their respective items:
 | ----------- | ------------------- | ------------------------------------------ |
 | `items`     | table               | Controls how individual items are rendered |
 
-On top the options common to all sections and items, the `items` option has the
-following suboptions:
-
-| Suboption | Expected Type | Description                     |
-| --------- | ------------- | ------------------------------- |
-| `indent`  | `boolean`     | Whether item lines are indented |
+Options common to all sections and items can be placed inside the `items` option.
 
 #### Customization example
 

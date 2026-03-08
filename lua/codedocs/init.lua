@@ -41,7 +41,11 @@ function Codedocs.orchestrate_annotation_build(lang_data)
 
 	Debug_logger.log("Structure name: " .. struct_name)
 	Debug_logger.log("Style: ", struct_style)
-	return docs_builder(struct_style, items_data, struct_style.settings.layout), pos, struct_style
+	local struct_data = {
+		should_indent = struct_style.settings.indented,
+		line_num = pos + 1,
+	}
+	return docs_builder(struct_style, items_data, struct_style.settings.layout, struct_data), pos, struct_style
 end
 
 function Codedocs.insert_docs()
@@ -61,10 +65,7 @@ function Codedocs.insert_docs()
 	require("codedocs.buf_writer")(
 		docs,
 		{ title_offset = struct_style.settings.insert_at, target = pos },
-		struct_style.settings.relative_position,
-		-- Languages where annotations appear below the structure definition require an extra indentation level
 		struct_style.settings.relative_position
-			== "below" --TODO: there should be an option to indent or not the annotation
 	)
 end
 

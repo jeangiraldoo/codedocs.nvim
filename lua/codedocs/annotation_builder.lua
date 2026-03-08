@@ -1,5 +1,35 @@
 local Debug_logger = require("codedocs.utils.debug_logger")
 
+local function compute_line_indent(line_row)
+	assert(type(line_row) == "number", "'line_row' must be a number, got " .. type(line_row))
+	assert(line_row >= 0, "'line_row' must be 0 or higher, got " .. line_row)
+
+	local cols = vim.fn.indent(line_row)
+	if cols == -1 then return "" end
+
+	if vim.bo.expandtab then return string.rep(" ", cols) end
+
+	local tabstop = vim.bo.tabstop
+	local tabs = math.floor(cols / tabstop)
+	local spaces = cols % tabstop
+
+	return string.rep("\t", tabs) .. string.rep(" ", spaces)
+end
+
+local function get_indent_string()
+	if not vim.bo.expandtab then return "\t" end
+
+	local shiftwidth = vim.bo.shiftwidth
+	if shiftwidth == 0 then shiftwidth = vim.bo.tabstop end
+	return string.rep(" ", shiftwidth)
+end
+
+local function apply_indent(line)
+	local indent = get_indent_string()
+	local result = line:gsub("%%>", indent)
+	return result
+end
+
 local function _handle_string(string, item_name, item_type)
 	assert(type(string) == "string", "'string' must be a string, got " .. type(string))
 	assert(type(item_name) == "string", "'item_name' must be a string, got " .. type(item_name))
@@ -30,9 +60,8 @@ local function _build_annotation_content(item_data, style)
 		local section_content = vim.deepcopy(section_style.layout)
 		vim.list_extend(annotation_content, section_content)
 		for item_idx, item in ipairs(section_items) do
-			local indent = section_style.items.indent and "\t" or ""
 			for _, line in ipairs(section_style.items.layout) do
-				table.insert(annotation_content, indent .. _handle_string(line, item.name, item.type))
+				table.insert(annotation_content, apply_indent(_handle_string(line, item.name, item.type)))
 
 				local should_insert_item_gap = section_style.items.insert_gap_between.enabled
 					and section_items[item_idx + 1]
@@ -59,7 +88,7 @@ end
 ---@param insert_at number Position to insert annotation lines into
 ---@param title_opts table Title section opts
 ---@return string[] annotation Final formatted annotation as a flat list of lines
-local function _format_annotation_content(annotation_layout, content, insert_at, title_opts)
+local function _format_annotation_content(annotation_layout, content, insert_at, title_opts, struct_data)
 	assert(type(annotation_layout) == "table", "'annotation_layout' must be a table, got " .. type(annotation_layout))
 	assert(type(content) == "table", "'content' must be a table, got " .. type(content))
 	assert(type(title_opts) == "table", "'title_opts' must be a table, got " .. type(title_opts))
@@ -75,6 +104,11 @@ local function _format_annotation_content(annotation_layout, content, insert_at,
 	local annotation = {}
 
 	local function handle_line(line)
+		if line == "" then return table.insert(annotation, apply_indent(line)) end
+		if struct_data then
+			line = compute_line_indent(struct_data.line_num) .. line
+			if struct_data and struct_data.should_indent then line = get_indent_string() .. line end
+		end
 		if line:match(snippet_tabstop.pattern) then
 			line = line:gsub(snippet_tabstop.pattern, function()
 				local snippet_tabstop_idx_label = tostring(snippet_tabstop.idx_counter)
@@ -84,7 +118,8 @@ local function _format_annotation_content(annotation_layout, content, insert_at,
 				return snippet_tabstop_idx_label
 			end)
 		end
-		table.insert(annotation, line)
+
+		table.insert(annotation, apply_indent(line))
 	end
 
 	for i = 1, (insert_at - 1) do
@@ -115,7 +150,7 @@ local function _format_annotation_content(annotation_layout, content, insert_at,
 	return annotation
 end
 
-return function(style, data, annotation_structure)
+return function(style, data, annotation_structure, struct_data)
 	local annotation_content = vim.tbl_isempty(data) and {} or _build_annotation_content(data, style)
 	Debug_logger.log("Annotation content:", annotation_content)
 
@@ -123,6 +158,7 @@ return function(style, data, annotation_structure)
 		annotation_structure,
 		annotation_content,
 		style.settings.insert_at,
-		style.sections.title
+		style.sections.title,
+		struct_data
 	)
 end
