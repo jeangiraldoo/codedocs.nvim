@@ -10,6 +10,7 @@ return {
 			"parameters",
 			"returns",
 		},
+		indented = true,
 	},
 	sections = {
 		title = {
@@ -31,13 +32,12 @@ return {
 			},
 			items = {
 				layout = {
-					"%item_name (${%snippet_tabstop_idx:%item_type}): ${%snippet_tabstop_idx:description}",
+					"%>%item_name (${%snippet_tabstop_idx:%item_type}): ${%snippet_tabstop_idx:description}",
 				},
 				insert_gap_between = {
 					enabled = false,
 					text = "",
 				},
-				indent = true,
 			},
 		},
 		returns = {
@@ -50,13 +50,12 @@ return {
 			},
 			items = {
 				layout = {
-					"${%snippet_tabstop_idx:%item_type}: ${%snippet_tabstop_idx:description}",
+					"%>${%snippet_tabstop_idx:%item_type}: ${%snippet_tabstop_idx:description}",
 				},
 				insert_gap_between = {
 					enabled = false,
 					text = "",
 				},
-				indent = true,
 			},
 		},
 	},

@@ -3,6 +3,7 @@ return {
 		layout = {},
 		relative_position = "empty_target_or_above",
 		insert_at = 1,
+		indent = false,
 	},
 	sections = {
 		title = {

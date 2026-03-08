@@ -12,6 +12,7 @@ return {
 			"returns",
 		},
 		item_extraction = {},
+		indented = false,
 	},
 	sections = {
 		title = {
@@ -39,7 +40,6 @@ return {
 					enabled = false,
 					text = "",
 				},
-				indent = false,
 			},
 		},
 		parameters = {
@@ -58,7 +58,6 @@ return {
 					enabled = false,
 					text = "",
 				},
-				indent = false,
 			},
 		},
 		returns = {
@@ -77,7 +76,6 @@ return {
 					enabled = false,
 					text = "",
 				},
-				indent = true,
 			},
 		},
 	},

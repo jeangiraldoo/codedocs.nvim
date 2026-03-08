@@ -16,6 +16,7 @@ return {
 				include_only_constructor_instance_attrs = nil, -- Java attrs can only be declared in the class body
 			},
 		},
+		indented = false,
 	},
 	sections = {
 		title = {
@@ -43,7 +44,6 @@ return {
 					enabled = false,
 					text = " *",
 				},
-				indent = false,
 			},
 		},
 	},

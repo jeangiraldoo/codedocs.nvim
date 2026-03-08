@@ -16,6 +16,7 @@ return {
 				include_only_constructor_instance_attrs = true,
 			},
 		},
+		indented = true,
 	},
 	sections = {
 		title = {
@@ -42,7 +43,6 @@ return {
 					enabled = false,
 					text = "",
 				},
-				indent = false,
 			},
 		},
 	},

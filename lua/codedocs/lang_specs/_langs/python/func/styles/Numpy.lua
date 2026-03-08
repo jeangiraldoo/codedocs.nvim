@@ -10,6 +10,7 @@ return {
 			"parameters",
 			"returns",
 		},
+		indented = true,
 	},
 	sections = {
 		title = {
@@ -39,7 +40,6 @@ return {
 					enabled = false,
 					text = "",
 				},
-				indent = false,
 			},
 		},
 		returns = {
@@ -60,7 +60,6 @@ return {
 					enabled = false,
 					text = "",
 				},
-				indent = false,
 			},
 		},
 	},

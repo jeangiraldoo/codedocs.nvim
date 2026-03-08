@@ -16,6 +16,7 @@ return {
 				include_only_constructor_instance_attrs = false,
 			},
 		},
+		indent = false,
 	},
 	sections = {
 		title = {
@@ -39,7 +40,6 @@ return {
 					enabled = false,
 					text = " *",
 				},
-				indent = false,
 			},
 		},
 	},
