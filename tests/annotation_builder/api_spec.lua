@@ -1,4 +1,4 @@
-local annotation_builder = require("codedocs.annotation_builder")
+local annotation_builder = require "codedocs.annotation_builder"
 
 local COMMON_DATA = {
 	ITEMS = {
@@ -55,7 +55,7 @@ local COMMON_DATA = {
 			" */",
 		},
 		opts = {
-			general = {
+			settings = {
 				layout = {
 					"/**",
 					" */",
@@ -66,48 +66,48 @@ local COMMON_DATA = {
 					"secondary_section",
 				},
 			},
-			title = {
-				layout = {
-					" * ",
+			sections = {
+				title = {
+					layout = {
+						" * ",
+					},
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
 				},
-				gap = {
-					enabled = true,
-					text = " *",
+				primary_section = {
+					layout = {},
+					insert_gap_between = {
+						enabled = false,
+						text = " *",
+					},
+					items = {
+						insert_gap_between = {
+							enabled = false,
+							text = " * ",
+						},
+						indent = false,
+						layout = {
+							" * @item %item_name",
+						},
+					},
 				},
-			},
-			primary_section = {
-				layout = {},
-				gap = {
-					enabled = false,
-					text = " *",
-				},
-				items = {
+				secondary_section = {
+					layout = {},
 					insert_gap_between = {
 						enabled = false,
 						text = " * ",
 					},
-					indent = false,
-					include_type = false,
-					template = {
-						{ " * @item", "%item_name", "%item_type" },
-					},
-				},
-			},
-			secondary_section = {
-				layout = {},
-				gap = {
-					enabled = false,
-					text = " * ",
-				},
-				items = {
-					insert_gap_between = {
-						enabled = false,
-						text = " * ",
-					},
-					include_type = false,
-					indent = false,
-					template = {
-						{ " * @secondary_item", "%item_name" },
+					items = {
+						insert_gap_between = {
+							enabled = false,
+							text = " * ",
+						},
+						indent = false,
+						layout = {
+							" * @secondary_item %item_name",
+						},
 					},
 				},
 			},
@@ -115,7 +115,7 @@ local COMMON_DATA = {
 	},
 }
 
-local GENERAL_SECTION_CASES = {
+local SETTINGS_CASES = {
 	{
 		expected_annotation = {
 			"---",
@@ -124,36 +124,38 @@ local GENERAL_SECTION_CASES = {
 			"--* @item a",
 			"--* @item b",
 			"--* @item c",
-			"--* @item",
+			"--* @item ",
 			"--* @secondary_item d",
 			"--* @secondary_item e",
 			"--* @secondary_item f",
-			"--* @secondary_item",
+			"--* @secondary_item ",
 			" ]-",
 		},
 		opts_to_change = {
-			general = {
+			settings = {
 				layout = {
 					"---",
 					" ]-",
 				},
 			},
-			title = {
-				layout = {
-					"--* ",
-				},
-			},
-			primary_section = {
-				items = {
-					template = {
-						{ "--* @item", "%item_name", "%item_type" },
+			sections = {
+				title = {
+					layout = {
+						"--* ",
 					},
 				},
-			},
-			secondary_section = {
-				items = {
-					template = {
-						{ "--* @secondary_item", "%item_name" },
+				primary_section = {
+					items = {
+						layout = {
+							"--* @item %item_name",
+						},
+					},
+				},
+				secondary_section = {
+					items = {
+						layout = {
+							"--* @secondary_item %item_name",
+						},
 					},
 				},
 			},
@@ -167,25 +169,27 @@ local GENERAL_SECTION_CASES = {
 			" * @item a",
 			" * @item b",
 			" * @item c",
-			" * @item",
+			" * @item ",
 			"--*",
 			" * @secondary_item d",
 			" * @secondary_item e",
 			" * @secondary_item f",
-			" * @secondary_item",
+			" * @secondary_item ",
 			" */",
 		},
 		opts_to_change = {
-			primary_section = {
-				gap = {
-					enabled = true,
-					text = "--*",
+			sections = {
+				primary_section = {
+					insert_gap_between = {
+						enabled = true,
+						text = "--*",
+					},
 				},
-			},
-			secondary_section = {
-				gap = {
-					enabled = true,
-					text = "--*",
+				secondary_section = {
+					insert_gap_between = {
+						enabled = true,
+						text = "--*",
+					},
 				},
 			},
 		},
@@ -198,28 +202,30 @@ local GENERAL_SECTION_CASES = {
 			" * @secondary_item d",
 			" * @secondary_item e",
 			" * @secondary_item f",
-			" * @secondary_item",
+			" * @secondary_item ",
 			" * This is the primary section",
 			" * ***************************",
 			" * ", ---BUG: section_gap_text option needed
 			" * @item a",
 			" * @item b",
 			" * @item c",
-			" * @item",
+			" * @item ",
 			" */",
 		},
 		opts_to_change = {
-			general = {
+			settings = {
 				section_order = {
 					"secondary_section",
 					"primary_section",
 				},
 			},
-			primary_section = {
-				layout = {
-					" * This is the primary section",
-					" * ***************************",
-					" * ",
+			sections = {
+				primary_section = {
+					layout = {
+						" * This is the primary section",
+						" * ***************************",
+						" * ",
+					},
 				},
 			},
 		},
@@ -235,28 +241,30 @@ local GENERAL_SECTION_CASES = {
 			" * ",
 			" * @item c",
 			" * ",
-			" * @item",
+			" * @item ",
 			" * @secondary_item d",
 			" * ",
 			" * @secondary_item e",
 			" * ",
 			" * @secondary_item f",
 			" * ",
-			" * @secondary_item",
+			" * @secondary_item ",
 			" */",
 		},
 		opts_to_change = {
-			primary_section = {
-				items = {
-					insert_gap_between = {
-						enabled = true,
+			sections = {
+				primary_section = {
+					items = {
+						insert_gap_between = {
+							enabled = true,
+						},
 					},
 				},
-			},
-			secondary_section = {
-				items = {
-					insert_gap_between = {
-						enabled = true,
+				secondary_section = {
+					items = {
+						insert_gap_between = {
+							enabled = true,
+						},
 					},
 				},
 			},
@@ -280,15 +288,16 @@ local ITEM_CASES = {
 			" * @secondary_item d",
 			" * @secondary_item e",
 			" * @secondary_item f",
-			" * @secondary_item",
+			" * @secondary_item ",
 			" */",
 		},
 		opts_to_change = {
-			primary_section = {
-				items = {
-					include_type = true,
-					template = {
-						{ " * @the_type", "[%item_type]", "@the_name", "{%item_name}" },
+			sections = {
+				primary_section = {
+					items = {
+						layout = {
+							" * @the_type [%item_type] @the_name {%item_name}",
+						},
 					},
 				},
 			},
@@ -306,19 +315,15 @@ local ITEM_CASES = {
 			" * @secondary_item d",
 			" * @secondary_item e",
 			" * @secondary_item f",
-			" * @secondary_item",
+			" * @secondary_item ",
 			" */",
 		},
 		opts_to_change = {
-			primary_section = {
-				items = {
-					include_type = true,
-					template = {
-						{
-							" * @the_type",
-							"[%item_type]",
-							"@the_name",
-							"{%item_name} ${%snippet_tabstop_idx:description}",
+			sections = {
+				primary_section = {
+					items = {
+						layout = {
+							" * @the_type [%item_type] @the_name {%item_name} ${%snippet_tabstop_idx:description}",
 						},
 					},
 				},
@@ -329,7 +334,7 @@ local ITEM_CASES = {
 }
 
 local CASES = {
-	general = GENERAL_SECTION_CASES,
+	settings = SETTINGS_CASES,
 	item = ITEM_CASES,
 }
 
@@ -337,7 +342,7 @@ local function test_case(name, case)
 	it(name, function()
 		local copy = vim.deepcopy(COMMON_DATA.BASE_STYLE.opts)
 		local new_style = vim.tbl_deep_extend("force", copy, case.opts_to_change)
-		local annotation = annotation_builder(new_style, COMMON_DATA.ITEMS, new_style.general.layout)
+		local annotation = annotation_builder(new_style, COMMON_DATA.ITEMS, new_style.settings.layout)
 
 		assert.are.same(case.expected_annotation, annotation)
 	end)

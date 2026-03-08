@@ -1,65 +1,72 @@
-local Debug_logger = require("codedocs.utils.debug_logger")
-local docs_builder = require("codedocs.annotation_builder")
-local Spec = require("codedocs.specs")
+local Debug_logger = require "codedocs.utils.debug_logger"
+local docs_builder = require "codedocs.annotation_builder"
+local LangSpecs = require "codedocs.lang_specs.init"
 
-local M = {}
+local Codedocs = {}
 
-function M.setup(config)
-	if config.settings then Spec.set_settings(config.settings) end
-
-	if config and config.default_styles then Spec.set_default_lang_style(config.default_styles) end
-
-	if config and config.styles then Spec.update_style(config.styles) end
+local function _apply_plugin_settings(settings)
+	if settings.debug == true then require("codedocs.utils.debug_logger").enable() end
 end
 
-function M.insert_docs()
-	Debug_logger.log("Plugin triggered")
-	local lang = Spec.get_buffer_lang_name()
+function Codedocs.setup(config)
+	if config.settings then _apply_plugin_settings(config.settings) end
+
+	if config and config.default_styles then LangSpecs.set_default_lang_style(config.default_styles) end
+
+	if config and config.styles then LangSpecs.update_style(config.styles) end
+end
+
+function Codedocs.extract_item_data(lang_name)
+	local lang_spec = LangSpecs.new(lang_name)
+	local struct_name, node = require "codedocs.struct_detector"(lang_spec:get_struct_identifiers())
+
+	Debug_logger.log("Structure name: " .. struct_name)
+
+	local items_data, pos
+	if struct_name == "comment" then
+		items_data, pos = {}, vim.api.nvim_win_get_cursor(0)[1] - 1
+	else
+		items_data, pos = lang_spec:get_struct_items(struct_name, node), node:range()
+	end
+
+	Debug_logger.log("Item data: ", items_data)
+	return items_data, struct_name, pos
+end
+
+function Codedocs.orchestrate_annotation_build(lang_data)
+	local lang_spec = LangSpecs.new(lang_data.name)
+
+	local items_data, struct_name, pos = Codedocs.extract_item_data(lang_data.name)
+	local struct_style = lang_spec:get_struct_style(struct_name, lang_data.style_name or lang_spec:get_default_style())
+
+	Debug_logger.log("Structure name: " .. struct_name)
+	Debug_logger.log("Style: ", struct_style)
+	local struct_data = {
+		should_indent = struct_style.settings.indented,
+		line_num = pos + 1,
+	}
+	return docs_builder(struct_style, items_data, struct_style.settings.layout, struct_data), pos, struct_style
+end
+
+function Codedocs.insert_docs()
+	Debug_logger.log "Plugin triggered"
+
+	local lang = LangSpecs.get_buffer_lang_name()
 	Debug_logger.log("Language: " .. lang)
+
 	if not vim.treesitter.get_parser(0, lang, { error = false }) then
 		vim.notify("Tree-sitter parser for " .. lang .. " is not installed", vim.log.levels.ERROR)
 		return
 	end
 
-	local struct_name, node = require("codedocs.struct_detector")(Spec.get_struct_identifiers(lang))
-	local struct_style = Spec:_get_struct_main_style(lang, struct_name)
-	local layout = struct_style.general.layout
-
-	local target_positions = {
-		title_offset = struct_style.general.insert_at,
-	}
-
-	Debug_logger.log("Structure name: " .. struct_name)
-	Debug_logger.log("Style: ", struct_style)
-	if struct_name == "comment" then
-		target_positions.annotation_row = vim.api.nvim_win_get_cursor(0)[1] - 1
-		local docs = docs_builder(struct_style, {}, layout)
-
-		require("codedocs.buf_writer")(
-			docs,
-			-- layout,
-			target_positions,
-			-- Languages where annotations appear below the structure definition require an extra indentation level
-			not struct_style.general.direction
-		)
-		return
-	end
-
-	local struct_tree = Spec.get_struct_tree(lang, struct_name)
-	local items_data, pos = Spec.process_tree(lang, struct_style, struct_tree, node)
-	Debug_logger.log("Item data: ", items_data)
-
-	local docs = docs_builder(struct_style, items_data, layout)
+	local docs, pos, struct_style = Codedocs.orchestrate_annotation_build { name = lang }
 	Debug_logger.log("Annotation:", docs)
 
-	target_positions.annotation_row = struct_style.general.direction and pos or pos + 1
-
-	require("codedocs.buf_writer")(
+	require "codedocs.buf_writer"(
 		docs,
-		target_positions,
-		-- Languages where annotations appear below the structure definition require an extra indentation level
-		not struct_style.general.direction --TODO: there should be an option to indent or not the annotation
+		{ title_offset = struct_style.settings.insert_at, target = pos },
+		struct_style.settings.relative_position
 	)
 end
 
-return M
+return Codedocs

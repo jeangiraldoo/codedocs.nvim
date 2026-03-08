@@ -38,14 +38,14 @@ formats, or just use codedocs as it is! :)
 - [Motivation](#motivation)
 - [License](#license)
 
-### <a id="features"></a>🚀 Features
+## <a id="features"></a>🚀 Features
 
 - Works out-of-the-box.
 - Detects and documents code structures with a simple keybind.
 - Supports multiple [languages and styles](#supported-languages).
 - Easily customize existing formats or add new ones.
 
-### <a id="requirements"></a>📋 Requirements
+## <a id="requirements"></a>📋 Requirements
 
 Codedocs relies on Treesitter for its core functionality. Neovim includes
 built-in Treesitter parsers for the following languages—meaning no extra setup
@@ -58,11 +58,11 @@ For any other language, you'll need to install the corresponding Treesitter
 parser. The simplest way to do this is with
 **[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)**.
 
-### <a id="installation"></a>📦 Installation
+## <a id="installation"></a>📦 Installation
 
 Use the snippet for your plugin manager:
 
-#### [vim.pack](https://neovim.io/doc/user/pack.html#vim.pack)
+### [vim.pack](https://neovim.io/doc/user/pack.html#vim.pack)
 
 ```lua
 vim.pack.add({
@@ -70,7 +70,7 @@ vim.pack.add({
 })
 ```
 
-#### [lazy.nvim](http://www.lazyvim.org/)
+### [lazy.nvim](http://www.lazyvim.org/)
 
 ```lua
 {
@@ -78,7 +78,7 @@ vim.pack.add({
 }
 ```
 
-#### [packer.nvim](https://github.com/wbthomason/packer.nvim)
+### [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
 use {
@@ -86,13 +86,13 @@ use {
 }
 ```
 
-#### [vim-plug](https://github.com/junegunn/vim-plug)
+### [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
 Plug 'jeangiraldoo/codedocs.nvim'
 ```
 
-#### [mini.deps](https://github.com/echasnovski/mini.deps)
+### [mini.deps](https://github.com/echasnovski/mini.deps)
 
 ```lua
 require("mini.deps").add({
@@ -100,14 +100,14 @@ require("mini.deps").add({
 })
 ```
 
-#### [minpac](https://github.com/k-takata/minpac)
+### [minpac](https://github.com/k-takata/minpac)
 
 ```vim
 packadd minpac
 call minpac#add('jeangiraldoo/codedocs.nvim')
 ```
 
-#### [paq-nvim](https://github.com/savq/paq-nvim)
+### [paq-nvim](https://github.com/savq/paq-nvim)
 
 ```lua
 require("paq") {
@@ -115,13 +115,13 @@ require("paq") {
 }
 ```
 
-### <a id="configuration"></a>⚙️ Configuration
+## <a id="configuration"></a>⚙️ Configuration
 
 > [!WARNING]
 > Language, struct and style names must be spelled exactly as shown in the
 > [supported languages section](#supported-languages).
 
-#### Change a language's default annotation style
+### Change a language's default annotation style
 
 Default styles are defined using the `default_styles` key:
 
@@ -144,7 +144,7 @@ require("codedocs").setup {
 }
 ```
 
-#### Customize an annotation style
+### Customize an annotation style
 
 You can customize almost (for now!) every aspect of an annotation
 style. Whether you want to make a simple change, like modifying the characters
@@ -191,43 +191,104 @@ In this case, we:
 - Customized the titles for both the parameters and return sections.
 
 To customize an annotation style, you have to keep in mind that it is nothing
-but a table where each key is an option, spread across many sections:
+but a table where each key is an option.
 
-| Structure | Sections                                    |
-| --------- | ------------------------------------------- |
-| `func`    | `general`, `title`, `params`, `return_type` |
-| `class`   | `general`, `title`, `attrs`                 |
-| `comment` | `general`, `title`                          |
+Options are grouped in the form of settings and sections:
 
-##### Options common to all sections
+#### Layout option
 
-| Option Name | Expected Value Type | Behavior                                                           |
-| ----------- | ------------------- | ------------------------------------------------------------------ |
-| layout      | `table`             | Defines the base lines that compose an annotation section          |
-| gap         | `table`             | Sets up a gap in between the current section and the section below |
+The `layout` option is special in the sense that it can be used in sections,
+section items, and in the annotation settings; all three cases share the
+same core definition:
 
-###### `gap` suboptions
+| Option Name | Expected Value Type | Behavior                                                                                       |
+| ----------- | ------------------- | ---------------------------------------------------------------------------------------------- |
+| layout      | `table`             | Defines the base lines that compose an annotation section, item, or the base annotation layout |
 
-| Suboption Name | Expected Value Type | Behavior                    |
-| -------------- | ------------------- | --------------------------- |
-| enabled        | `boolean`           | Whether the gap is inserted |
-| text           | `string`            | String used as the gap      |
+Additionally, since a layout is just a list of strings, the following string
+placeholders are predefined:
 
-##### General section
+> [!NOTE]
+> Placeholders are referenced by prepending `%` to the placeholder name
 
-As you can see, all structures have a `general` section, as it is used for configuring
-all other sections in a given structure by defining options that are available
-to all structures.
+| Placeholder name      | Behavior                                                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| snippet_tabstop_index | Inserts a tabstop index for defining snippet tabstops (e.g., `$%snippet_tabstop_index` or `${%snippet_tabstop_index:default label}`). |
+| >                     | Inserts an indentation string (either a tab character or a number of spaces based on your Neovim settings)                            |
 
-All other sections are focused on configuring how the items they contain are displayed.
+##### Main layout
 
-The `general` section supports the following options:
+The main annotation layout is defined under the `settings` field. It's meant for
+defining the base layout of an annotation; all sections are placed within this
+layout according to the `insert_at` setting.
 
-| Option Name     | Expected Value Type | Behavior                                                                          |
-| --------------- | ------------------- | --------------------------------------------------------------------------------- |
-| `direction`     | boolean             | Determines where the annotation is inserted. `true` for above, `false` for below. |
-| `insert_at`     | boolean             | Position in the `layout` option to insert the annotation content into             |
-| `section_order` | table               | Specifies the order in which sections are added to the annotation.                |
+##### Section layout
+
+The section layout defines the way a section looks like, not accounting for its
+items as their style is handled by the [item layout](#item-layout)
+
+##### Item layout
+
+An item layout defines the way an item is styled for a given section. It is
+defined under the `items` field.
+
+The following placeholders are available:
+
+| Placeholder name | Behavior                     |
+| ---------------- | ---------------------------- |
+| item_name        | Inserts the name of the item |
+| item_type        | Inserts the type of the item |
+
+#### Settings options
+
+> [!NOTE]
+> All structures have a `settings` field as it is used for configuring
+> fundamental aspects of an annotation style
+
+| Option Name         | Expected Value Type | Behavior                                                                                              |
+| ------------------- | ------------------- | ----------------------------------------------------------------------------------------------------- |
+| `relative_position` | string              | Determines where the annotation is inserted. Options are "above", "below" and "empty_target_or_above" |
+| `insert_at`         | boolean             | Position in the `layout` option to insert the annotation content into                                 |
+| `section_order`     | table               | Specifies the order in which sections are added to the annotation.                                    |
+| `item_extraction`   | table               | Controls how items for a specific section are parsed                                                  |
+| `indented`          | boolean             | Whether or not to indent the entire annotation one level                                              |
+
+##### Item extraction suboptions for class attributes
+
+| Option Name                               | Expected Value Type | Behavior                                                               |
+| ----------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
+| `include_class_attrs`                     | boolean             | Include class-level attributes in the annotation                       |
+| `include_instance_attrs`                  | boolean             | Include instance attributes in the annotation                          |
+| `include_only_constructor_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
+
+#### Options common to sections and items
+
+The following options are available to both sections and section items:
+
+| Option Name        | Expected Value Type | Behavior                                                            |
+| ------------------ | ------------------- | ------------------------------------------------------------------- |
+| insert_gap_between | `table`             | Sets up a gap in between the current section/item and the one below |
+
+The `insert_gap_between` option has the following suboptions:
+
+| Suboption Name | Expected Value Type | Behavior                                                   |
+| -------------- | ------------------- | ---------------------------------------------------------- |
+| enabled        | `boolean`           | Whether a gap is inserted in between two sections or items |
+| text           | `string`            | String used as the gap                                     |
+
+#### Sections
+
+> [!NOTE]
+> Section options are only concerned with styling. For fundamental aspects of an
+> annotation check the [Settings options](#settings-options)
+
+The following sections are available:
+
+| Structure | Sections                         |
+| --------- | -------------------------------- |
+| `func`    | `title`, `parameters`, `returns` |
+| `class`   | `title`, `attrs`                 |
+| `comment` | `title`                          |
 
 ##### Title section
 
@@ -240,43 +301,23 @@ An `item` is a part of a structure, having a `name` that identifies it, and a
 
 The following is a mapping of structures to their respective items:
 
-- Function: Parameters (`params` section), return type (`return_type` section).
+- Function: Parameters (`parameters` section), return type (`returns` section).
 - Class: Attributes (`attrs` section).
 
 | Option Name | Expected Value Type | Behavior                                   |
 | ----------- | ------------------- | ------------------------------------------ |
 | `items`     | table               | Controls how individual items are rendered |
 
-###### `items` suboptions
+Options common to all sections and items can be placed inside the `items` option.
 
-| Suboption                    | Expected Type | Description                                      |
-| ---------------------------- | ------------- | ------------------------------------------------ |
-| `insert_gap_between`         | `table`       | Controls spacing between consecutive items       |
-| `insert_gap_between.enabled` | `boolean`     | Whether to insert a gap between items            |
-| `insert_gap_between.text`    | `string`      | String inserted between items                    |
-| `include_type`               | `boolean`     | Whether to include the item’s type               |
-| `indent`                     | `boolean`     | Whether item lines are indented                  |
-| `template`                   | `table`       | List of lines describing how an item is rendered |
-
-##### Attrs section extension for classes
-
-The following `attrs` options are exclusive to classes, as they only apply to
-class attributes:
-
-| Option Name                               | Expected Value Type | Behavior                                                               |
-| ----------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
-| `include_class_attrs`                     | boolean             | Include class-level attributes in the annotation                       |
-| `include_instance_attrs`                  | boolean             | Include instance attributes in the annotation                          |
-| `include_only_constructor_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
-
-##### Customization example
+#### Customization example
 
 Say we want to make the following changes to Python's Google annotation style
 for functions:
 
 - Add a gap in between all items.
-- Add a gap in between sections (functions have a `params` and `return_type` section)
-- Include the parameter types.
+- Add a gap in between sections (functions have a `parameters` and `returns`
+  section)
 
 This is what such customization would look like:
 
@@ -286,28 +327,29 @@ require("codedocs").setup({
         python = { -- language name
             Google = { -- name of the style to customize
                 func = { -- structure name
-                    general = {
-                        gap = {
+                    settings = {
+                        insert_gap_between = {
                             enabled = true
                         },
                     },
-                    params = {
-                        gap = {
-                            enabled = true
-                        },
-                        items = {
+                    sections = {
+                        parameters = {
                             insert_gap_between = {
                                 enabled = true
                             },
-                            include_type = true
+                            items = {
+                                insert_gap_between = {
+                                    enabled = true
+                                },
+                            },
                         },
-                    },
-                    return_type = {
-                        items = {
-                            insert_gap_between = {
-                                enabled = true
-                            }
-                        },
+                        returns = {
+                            items = {
+                                insert_gap_between = {
+                                    enabled = true
+                                }
+                            },
+                        }
                     }
                 }
             },
@@ -316,7 +358,7 @@ require("codedocs").setup({
 })
 ```
 
-### <a id="usage"></a>💻 Usage
+## <a id="usage"></a>💻 Usage
 
 When an annotation insertion is triggered, the plugin generates one for the
 structure under the cursor. If no supported structure is detected, it inserts an
@@ -324,7 +366,7 @@ inline comment instead.
 
 An annotation insertion can be triggered in the following ways:
 
-#### Command
+### Command
 
 The simplest way to use the plugin is with the following command:
 
@@ -332,7 +374,7 @@ The simplest way to use the plugin is with the following command:
 :Codedocs
 ```
 
-#### Keymap
+### Keymap
 
 For a more convenient experience, you can bind the annotation insertion to a
 keymap. For example:
@@ -344,7 +386,7 @@ vim.keymap.set(
 )
 ```
 
-### <a id="supported-languages"></a>🌐 Supported languages
+## <a id="supported-languages"></a>🌐 Supported languages
 
 > [!TIP]
 > Want to see how annotations look by default? Take a look at the [Annotation Examples](./ANNOTATION_EXAMPLES.md)
@@ -369,18 +411,18 @@ vim.keymap.set(
 | Rust       | \*RustDoc                   | `comment`, `function`          |
 | TypeScript | \*TSDoc                     | `comment`, `function`, `class` |
 
-### <a id="roadmap"></a>🗺️ Roadmap
+## <a id="roadmap"></a>🗺️ Roadmap
 
 You can see what's being worked on and which features are planned by checking
 the
 [GitHub Milestones](https://github.com/jeangiraldoo/codedocs.nvim/milestones).
 
-### <a id="contributing"></a>🤝 Contributing
+## <a id="contributing"></a>🤝 Contributing
 
 Thank you for your interest in contributing to **Codedocs**! Feel free to read
 the [Contribution guide](./CONTRIBUTING.md) to get started.
 
-### <a id="motivation"></a>💡 Motivation
+## <a id="motivation"></a>💡 Motivation
 
 I started working on Codedocs because I wanted to enhance my experience with
 Neovim, which I started using daily for my side projects and university
@@ -397,7 +439,7 @@ documentation strings, allowing for easy customization, and providing a simple
 yet powerful solution for both personal and community use. Plus, it is a fun
 project to work on!
 
-### <a id="license"></a>📜 License
+## <a id="license"></a>📜 License
 
 Codedocs is licensed under the MIT License. This means you are free to download,
 install, modify, share, and use the plugin for both personal and commercial

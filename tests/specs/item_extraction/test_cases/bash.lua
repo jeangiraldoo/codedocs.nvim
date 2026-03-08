@@ -8,8 +8,8 @@ return {
 			cursor_pos = 1,
 			expected_items = {
 				globals = {},
-				params = {},
-				return_type = {},
+				parameters = {},
+				returns = {},
 			},
 		},
 		{
@@ -22,7 +22,7 @@ return {
 			cursor_pos = 1,
 			expected_items = {
 				globals = {},
-				params = {
+				parameters = {
 					{
 						name = "1",
 						type = "",
@@ -32,7 +32,7 @@ return {
 						type = "",
 					},
 				},
-				return_type = {},
+				returns = {},
 			},
 		},
 		{
@@ -58,8 +58,8 @@ return {
 						type = "",
 					},
 				},
-				params = {},
-				return_type = {},
+				parameters = {},
+				returns = {},
 			},
 		},
 		{
@@ -86,7 +86,7 @@ return {
 						type = "",
 					},
 				},
-				params = {
+				parameters = {
 					{
 						name = "1",
 						type = "",
@@ -96,7 +96,7 @@ return {
 						type = "",
 					},
 				},
-				return_type = {},
+				returns = {},
 			},
 		},
 	},

@@ -5,24 +5,26 @@
 ---immediately tell. Additionally, the process of manually checking that customization works requires that I edit
 ---my own Neovim config, which is not ideal as I usually forget to revert back to what it used to look like
 
-local Spec = require("codedocs.specs")
+local LangSpecs = require "codedocs.lang_specs.init"
 
 local BASE_MOCKED_OPTS = {
 	COMMON_SECTIONS = {
-		general = {
+		settings = {
 			layout = {
 				"Hours on the clock",
 				"Fingers on the keyboard wait", --No better way to test the layout than with my very first Haiku
 				"green message appears",
 				"hand touches grass",
 			},
-			direction = false,
+			relative_position = "above",
 			insert_at = 3,
 		},
-		title = {
-			layout = {
-				"--------",
-				"",
+		sections = {
+			title = {
+				layout = {
+					"--------",
+					"",
+				},
 			},
 		},
 	},
@@ -31,29 +33,32 @@ local BASE_MOCKED_OPTS = {
 		---They share the same code path as the options common to all item-related sections,
 		---so validating the common ones is sufficient to guarantee correct behavior at this
 		---level
-		gap = {
+		insert_gap_between = {
 			enabled = true,
 		},
 		items = {
 			insert_gap_between = {
 				enabled = true,
 			},
-			template = {
-				"some template %item_name",
+			layout = {
+				"some layout %item_name",
 			},
 			indent = true,
-			include_type = true,
 		},
 	},
 }
 
 local MOCKED_USER_STRUCT_OPTS = vim.iter({
 	class = {
-		attrs = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+		sections = {
+			attrs = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+		},
 	},
 	func = {
-		params = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
-		return_type = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+		sections = {
+			parameters = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+			returns = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+		},
 	},
 	comment = {},
 }):fold({}, function(acc, struct_name, struct_sections)
@@ -62,26 +67,27 @@ local MOCKED_USER_STRUCT_OPTS = vim.iter({
 end)
 
 describe("Customizing style options", function()
-	for _, lang_name in ipairs(Spec.get_supported_langs()) do
-		for _, struct_name in ipairs(Spec.get_supported_structs(lang_name)) do
+	for _, lang_name in ipairs(LangSpecs.get_supported_langs()) do
+		local lang_spec = LangSpecs.new(lang_name)
+		for _, struct_name in ipairs(lang_spec:get_supported_structs()) do
 			describe("[" .. lang_name .. "/" .. struct_name .. "]:", function()
-				for _, style_name in ipairs(Spec.get_supported_styles(lang_name)) do
+				for _, style_name in ipairs(LangSpecs.get_supported_styles(lang_name)) do
 					it(style_name .. " style", function()
-						local original_style = vim.deepcopy(Spec.get_struct_style(lang_name, struct_name, style_name))
+						local original_style = vim.deepcopy(lang_spec:get_struct_style(struct_name, style_name))
 						local original_mocked_user_opts = MOCKED_USER_STRUCT_OPTS[struct_name]
 
-						Spec.update_style({
+						LangSpecs.update_style {
 							[lang_name] = {
 								[style_name] = {
 									[struct_name] = original_mocked_user_opts,
 								},
 							},
-						})
+						}
 
 						local expected_final_style =
 							vim.tbl_deep_extend("keep", vim.deepcopy(original_mocked_user_opts), original_style)
 
-						assert.are.same(expected_final_style, Spec.get_struct_style(lang_name, struct_name, style_name))
+						assert.are.same(expected_final_style, lang_spec:get_struct_style(struct_name, style_name))
 					end)
 				end
 			end)
