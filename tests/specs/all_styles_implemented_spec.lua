@@ -1,6 +1,6 @@
 --- Verifies that, for each language, every structure implements all of its supported styles
 
-local LangSpecs = require("codedocs.lang_specs.init")
+local LangSpecs = require "codedocs.lang_specs.init"
 
 describe("All styles are implemented for each structure: ", function()
 	for _, lang_name in ipairs(LangSpecs.get_supported_langs()) do

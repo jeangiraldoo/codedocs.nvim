@@ -1,6 +1,6 @@
-local LangSpecs = require("codedocs.lang_specs.init")
+local LangSpecs = require "codedocs.lang_specs.init"
 
-local project_root = vim.fn.expand("<sfile>:p:h")
+local project_root = vim.fn.expand "<sfile>:p:h"
 package.path = package.path .. ";" .. project_root .. "/tests/defaults/annotations/test_cases/?.lua"
 
 local function mock_buffer(structure, cursor_pos)
@@ -26,10 +26,10 @@ describe("Default style annotations", function()
 							mock_buffer(struct_case.structure, struct_case.cursor_pos)
 							assert.are.same(
 								struct_case.expected_annotation[style_name],
-								require("codedocs").orchestrate_annotation_build({
+								require("codedocs").orchestrate_annotation_build {
 									name = lang,
 									style_name = style_name,
-								})
+								}
 							)
 						end)
 					end

@@ -43,7 +43,7 @@ local function _handle_capture(builder, capture_name, node_text, name_first)
 		if name_first then
 			if builder.current == nil then
 				-- Edge case: handles items with only a type (e.g. function return type) by emitting a nameless item
-				builder:start_name("")
+				builder:start_name ""
 			end
 			builder:set_type(node_text)
 			builder:emit()

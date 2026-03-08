@@ -5,7 +5,7 @@
 ---immediately tell. Additionally, the process of manually checking that customization works requires that I edit
 ---my own Neovim config, which is not ideal as I usually forget to revert back to what it used to look like
 
-local LangSpecs = require("codedocs.lang_specs.init")
+local LangSpecs = require "codedocs.lang_specs.init"
 
 local BASE_MOCKED_OPTS = {
 	COMMON_SECTIONS = {
@@ -76,13 +76,13 @@ describe("Customizing style options", function()
 						local original_style = vim.deepcopy(lang_spec:get_struct_style(struct_name, style_name))
 						local original_mocked_user_opts = MOCKED_USER_STRUCT_OPTS[struct_name]
 
-						LangSpecs.update_style({
+						LangSpecs.update_style {
 							[lang_name] = {
 								[style_name] = {
 									[struct_name] = original_mocked_user_opts,
 								},
 							},
-						})
+						}
 
 						local expected_final_style =
 							vim.tbl_deep_extend("keep", vim.deepcopy(original_mocked_user_opts), original_style)

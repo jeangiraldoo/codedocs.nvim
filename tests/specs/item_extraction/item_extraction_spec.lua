@@ -1,6 +1,6 @@
-local LangSpecs = require("codedocs.lang_specs.init")
+local LangSpecs = require "codedocs.lang_specs.init"
 
-local project_root = vim.fn.expand("<sfile>:p:h")
+local project_root = vim.fn.expand "<sfile>:p:h"
 package.path = package.path .. ";" .. project_root .. "/tests/specs/item_extraction/test_cases/?.lua"
 
 local LANGS_TO_TEST = LangSpecs.get_supported_langs()
@@ -12,7 +12,7 @@ end
 
 describe("Annotation building using default options", function()
 	for _, lang in ipairs(LANGS_TO_TEST) do
-		vim.api.nvim_command("enew")
+		vim.api.nvim_command "enew"
 		vim.bo.filetype = lang
 
 		for _, cases in pairs(require(lang)) do

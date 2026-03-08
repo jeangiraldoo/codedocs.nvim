@@ -1,6 +1,6 @@
-local Debug_logger = require("codedocs.utils.debug_logger")
-local docs_builder = require("codedocs.annotation_builder")
-local LangSpecs = require("codedocs.lang_specs.init")
+local Debug_logger = require "codedocs.utils.debug_logger"
+local docs_builder = require "codedocs.annotation_builder"
+local LangSpecs = require "codedocs.lang_specs.init"
 
 local Codedocs = {}
 
@@ -18,7 +18,7 @@ end
 
 function Codedocs.extract_item_data(lang_name)
 	local lang_spec = LangSpecs.new(lang_name)
-	local struct_name, node = require("codedocs.struct_detector")(lang_spec:get_struct_identifiers())
+	local struct_name, node = require "codedocs.struct_detector"(lang_spec:get_struct_identifiers())
 
 	Debug_logger.log("Structure name: " .. struct_name)
 
@@ -49,7 +49,7 @@ function Codedocs.orchestrate_annotation_build(lang_data)
 end
 
 function Codedocs.insert_docs()
-	Debug_logger.log("Plugin triggered")
+	Debug_logger.log "Plugin triggered"
 
 	local lang = LangSpecs.get_buffer_lang_name()
 	Debug_logger.log("Language: " .. lang)
@@ -59,10 +59,10 @@ function Codedocs.insert_docs()
 		return
 	end
 
-	local docs, pos, struct_style = Codedocs.orchestrate_annotation_build({ name = lang })
+	local docs, pos, struct_style = Codedocs.orchestrate_annotation_build { name = lang }
 	Debug_logger.log("Annotation:", docs)
 
-	require("codedocs.buf_writer")(
+	require "codedocs.buf_writer"(
 		docs,
 		{ title_offset = struct_style.settings.insert_at, target = pos },
 		struct_style.settings.relative_position
