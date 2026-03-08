@@ -1,6 +1,6 @@
 local LangSpecs = {}
 
-local EXPECTED_OPTS_PER_SECTION = require("codedocs.lang_specs._langs.style_opts")
+local EXPECTED_OPTS_PER_SECTION = require "codedocs.lang_specs._langs.style_opts"
 
 local function _validate_section_opts(expected_opts, section_name, opts)
 	for actual_section_opt_name, actual_section_opt_value in pairs(opts) do

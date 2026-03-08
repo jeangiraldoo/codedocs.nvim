@@ -1,4 +1,4 @@
-local annotation_builder = require("codedocs.annotation_builder")
+local annotation_builder = require "codedocs.annotation_builder"
 
 local COMMON_DATA = {
 	ITEMS = {

@@ -1,4 +1,4 @@
-local Debug_logger = require("codedocs.utils.debug_logger")
+local Debug_logger = require "codedocs.utils.debug_logger"
 
 local function compute_line_indent(line_row)
 	assert(type(line_row) == "number", "'line_row' must be a number, got " .. type(line_row))
