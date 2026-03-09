@@ -5,6 +5,7 @@ return {
 	struct_identifiers = {
 		method_definition = "func",
 		function_declaration = "func",
+		arrow_function = "func",
 		class_declaration = "class",
 	},
 }

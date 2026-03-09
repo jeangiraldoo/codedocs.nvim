@@ -14,6 +14,11 @@ return {
 							(identifier) @item_name
 						)
 					)
+					(arrow_function
+						parameters: (formal_parameters
+							(identifier) @item_name
+						)
+					)
 				]
 			]],
 		},
