@@ -1,19 +1,3 @@
-local GET_CLASS_FIELDS = {
-	type = "simple",
-	query = [[
-		(class_body
-			(field_declaration
-				(modifiers) @name
-				(#match? @name "static")
-				(type_identifier) @item_type
-				(variable_declarator
-					(identifier) @item_name
-				)
-			)
-		)
-	]],
-}
-
 local INCLUDE_INSTANCE_ATTRS = {
 	type = "boolean",
 	condition = {
@@ -51,7 +35,20 @@ return {
 				{
 					type = "accumulator",
 					children = {
-						GET_CLASS_FIELDS,
+						{
+							type = "simple",
+							query = [[
+								(class_body
+									(field_declaration
+										(modifiers) @name (#match? @name "static")
+										(type_identifier) @item_type
+										(variable_declarator
+											(identifier) @item_name
+										)
+									)
+								)
+							]],
+						},
 						INCLUDE_INSTANCE_ATTRS,
 					},
 				},

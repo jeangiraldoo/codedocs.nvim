@@ -1,37 +1,3 @@
-local GET_METHODS = {
-	type = "simple",
-	query = [[
-		(class_body
-			(method_definition
-				(statement_block) @target
-			)
-		)
-	]],
-}
-
-local GET_ATTRS_IN_METHODS = {
-	type = "simple",
-	query = [[
-		(assignment_expression
-			(member_expression
-				(property_identifier) @item_name
-			)
-		)
-	]],
-}
-
-local GET_CLASS_ATTRS = {
-	type = "simple",
-	query = [[
-		(class_body
-			(public_field_definition
-				"static"
-				(property_identifier) @item_name
-			)
-		)
-	]],
-}
-
 local GET_BODY_INSTANCE_ATTRS = {
 	type = "chain",
 	children = {
@@ -61,12 +27,37 @@ local METHOD_ATTR_FINDER = {
 
 local GET_ALL_METHOD_ATTRS = {
 	type = "chain",
-	children = { GET_METHODS, METHOD_ATTR_FINDER, GET_ATTRS_IN_METHODS },
+	children = {
+		{
+			type = "simple",
+			query = [[
+				(class_body
+					(method_definition
+						(statement_block) @target
+					)
+				)
+			]],
+		},
+		METHOD_ATTR_FINDER,
+		{
+			type = "simple",
+			query = [[
+				(assignment_expression
+					(member_expression
+						(property_identifier) @item_name
+					)
+				)
+			]],
+		},
+	},
 }
 
 local GET_ALL_INSTANCE_ATTRS = {
 	type = "accumulator",
-	children = { GET_BODY_INSTANCE_ATTRS, GET_ALL_METHOD_ATTRS },
+	children = {
+		GET_BODY_INSTANCE_ATTRS,
+		GET_ALL_METHOD_ATTRS,
+	},
 }
 
 local GET_ONLY_CONSTRUCTOR_ATTRS = {
@@ -84,7 +75,16 @@ local GET_ONLY_CONSTRUCTOR_ATTRS = {
 			]],
 		},
 		METHOD_ATTR_FINDER,
-		GET_ATTRS_IN_METHODS,
+		{
+			type = "simple",
+			query = [[
+				(assignment_expression
+					(member_expression
+						(property_identifier) @item_name
+					)
+				)
+			]],
+		},
 	},
 }
 
@@ -121,7 +121,17 @@ return {
 				{
 					type = "accumulator",
 					children = {
-						GET_CLASS_ATTRS,
+						{
+							type = "simple",
+							query = [[
+								(class_body
+									(public_field_definition
+										"static"
+										(property_identifier) @item_name
+									)
+								)
+							]],
+						},
 						INCLUDE_INSTANCE_ATTRS_OR_NOT,
 					},
 				},

@@ -73,14 +73,14 @@ return {
 				{
 					type = "simple",
 					query = [[
-					(command
-						argument: (string
-							(simple_expansion
-								(variable_name) @item_name
+							(command
+								argument: (string
+									(simple_expansion
+										(variable_name) @item_name
+									)
+								)
 							)
-						)
-					)
-			]],
+					]],
 				},
 			},
 		},

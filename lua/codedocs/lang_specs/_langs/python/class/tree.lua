@@ -1,56 +1,7 @@
-local GET_METHOD_ATTRS = {
-	type = "simple",
-	query = [[
-		(attribute
-			(identifier) @item_name
-			(#not-eq? @item_name "self")
-		)
-	]],
-}
-
 local FIND_METHOD_ATTRS = {
 	type = "finder",
 	collect_found_nodes = true,
 	target_node_type = "attribute",
-}
-
-local GET_ALL_ATTRS = {
-	type = "chain",
-	children = {
-		{
-			type = "simple",
-			query = [[
-				class_definition
-					body: (block
-						(function_definition) @target
-					)
-				)
-			]],
-		},
-		FIND_METHOD_ATTRS,
-		GET_METHOD_ATTRS,
-	},
-}
-
-local GET_ONLY_CONSTRUCTOR_ATTRS = {
-	type = "chain",
-	children = {
-		{
-			type = "simple",
-			query = [[
-				(class_definition
-					body: (block
-						(function_definition
-							name: (identifier) @name
-							(#eq? @name "__init__")
-						) @target
-					)
-				)
-			]],
-		},
-		FIND_METHOD_ATTRS,
-		GET_METHOD_ATTRS,
-	},
 }
 
 local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
@@ -67,8 +18,56 @@ local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 				opt_key = "include_only_constructor_instance_attrs",
 			},
 			children = {
-				GET_ONLY_CONSTRUCTOR_ATTRS,
-				GET_ALL_ATTRS,
+				{
+					type = "chain",
+					children = {
+						{
+							type = "simple",
+							query = [[
+								(class_definition
+									body: (block
+										(function_definition
+											name: (identifier) @name (#eq? @name "__init__")
+										) @target
+									)
+								)
+							]],
+						},
+						FIND_METHOD_ATTRS,
+						{
+							type = "simple",
+							query = [[
+								(attribute
+									(identifier) @item_name (#not-eq? @item_name "self")
+								)
+							]],
+						},
+					},
+				},
+				{
+					type = "chain",
+					children = {
+						{
+							type = "simple",
+							query = [[
+								class_definition
+									body: (block
+										(function_definition) @target
+									)
+								)
+							]],
+						},
+						FIND_METHOD_ATTRS,
+						{
+							type = "simple",
+							query = [[
+								(attribute
+									(identifier) @item_name (#not-eq? @item_name "self")
+								)
+							]],
+						},
+					},
+				},
 			},
 		},
 	},

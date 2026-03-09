@@ -8,23 +8,23 @@ return {
 						(parameter_list
 							(parameter_declaration
 								[
-									(primitive_type) @item_type
+									(primitive_type)
 									(qualified_identifier
-										(type_identifier) @item_type
+										(type_identifier)
 									)
 									(struct_specifier
-										(type_identifier) @item_type
+										(type_identifier)
 									)
-								]
+								] @item_type
 								[
-									(identifier) @item_name
+									(identifier)
 									(pointer_declarator
-										(identifier) @item_name
+										(identifier)
 									)
 									(reference_declarator
-										(identifier) @item_name
+										(identifier)
 									)
-								]
+								] @item_name
 							)
 						)
 					)
