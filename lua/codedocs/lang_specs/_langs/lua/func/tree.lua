@@ -3,11 +3,18 @@ return {
 		{
 			type = "simple",
 			query = [[
-				(function_declaration
-					(parameters
-						(identifier) @item_name
+				[
+					(function_declaration
+						parameters: (parameters
+							name: (identifier) @item_name
+						)
 					)
-				)
+					(function_definition
+						parameters: (parameters
+							name: (identifier) @item_name
+						)
+					)
+				]
 			]],
 		},
 	},

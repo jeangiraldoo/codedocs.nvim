@@ -4,5 +4,6 @@ return {
 	identifier_pos = true,
 	struct_identifiers = {
 		function_declaration = "func",
+		function_definition = "func",
 	},
 }
