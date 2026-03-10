@@ -1,9 +1,3 @@
-local FIND_METHOD_ATTRS = {
-	type = "finder",
-	collect_found_nodes = true,
-	target_node_type = "attribute",
-}
-
 local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 	type = "boolean",
 	condition = {
@@ -24,16 +18,12 @@ local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 						{
 							type = "simple",
 							query = [[
-								(class_definition
-									body: (block
-										(function_definition
-											name: (identifier) @name (#eq? @name "__init__")
-										) @target
-									)
-								)
+								(function_definition
+									name: (identifier) @func_name
+									(#eq? @func_name "__init__")
+								) @target
 							]],
 						},
-						FIND_METHOD_ATTRS,
 						{
 							type = "simple",
 							query = [[
@@ -45,28 +35,17 @@ local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 					},
 				},
 				{
-					type = "chain",
-					children = {
-						{
-							type = "simple",
-							query = [[
-								class_definition
-									body: (block
-										(function_definition) @target
-									)
-								)
-							]],
-						},
-						FIND_METHOD_ATTRS,
-						{
-							type = "simple",
-							query = [[
-								(attribute
-									(identifier) @item_name (#not-eq? @item_name "self")
-								)
-							]],
-						},
-					},
+					type = "simple",
+					query = [[
+						(assignment
+							left: (attribute
+								object: (identifier) @obj
+								attribute: (identifier) @item_name
+							)
+							(#eq? @obj "self")
+							(#has-ancestor? @item_name function_definition)
+						)
+					]],
 				},
 			},
 		},

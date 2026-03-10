@@ -13,9 +13,13 @@ return {
 	},
 	returns = {
 		{
-			type = "finder",
-			collect_found_nodes = false,
-			target_node_type = "return",
+			type = "simple",
+			query = [[
+				(return
+					(_) @item_type
+					(#set! parse_as_blank "true")
+				)
+			]],
 		},
 	},
 }

@@ -62,13 +62,18 @@ return function(base_node)
 		if not query then return {} end
 
 		local query_obj = vim.treesitter.query.parse(filetype, query)
-		local node_captures = query_obj:iter_captures(ts_node, 0)
+		local node_matches = query_obj:iter_matches(ts_node, 0)
 		local query_capture_tags = query_obj.captures
 
 		if vim.tbl_contains(query_capture_tags, "target") then
 			local target_nodes = {}
-			for id, capture_node in node_captures do
-				if query_capture_tags[id] == "target" then table.insert(target_nodes, capture_node) end
+			for _, match, _ in node_matches do
+				for id, capture_node in pairs(match) do
+					local nodes = type(capture_node) == "table" and capture_node or { capture_node }
+					for _, node in ipairs(nodes) do
+						if query_capture_tags[id] == "target" then table.insert(target_nodes, node) end
+					end
+				end
 			end
 			return target_nodes
 		end
@@ -76,11 +81,18 @@ return function(base_node)
 		local builder = _new_item_builder()
 		local name_first = identifier_pos
 
-		for id, capture_node in node_captures do
-			local capture_name = query_capture_tags[id]
-			local node_text = vim.treesitter.get_node_text(capture_node, 0)
+		for _, match, metadata in node_matches do
+			for id, capture_node in pairs(match) do
+				local nodes = type(capture_node) == "table" and capture_node or { capture_node }
 
-			_handle_capture(builder, capture_name, node_text, name_first)
+				for _, node in ipairs(nodes) do
+					local capture_name = query_capture_tags[id]
+
+					local node_text = metadata.parse_as_blank ~= "true" and vim.treesitter.get_node_text(node, 0) or ""
+
+					_handle_capture(builder, capture_name, node_text, name_first)
+				end
+			end
 		end
 
 		builder:emit()

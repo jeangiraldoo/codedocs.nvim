@@ -1,93 +1,3 @@
-local GET_BODY_INSTANCE_ATTRS = {
-	type = "chain",
-	children = {
-		{
-			type = "simple",
-			query = [[(class_body) @target]],
-		},
-		{
-			type = "simple",
-			query = [[(public_field_definition) @target]],
-		},
-		{
-			type = "simple",
-			query = [[
-				(property_identifier) @item_name
-				(#not-match? @item_name "static")
-			]],
-		},
-	},
-}
-
-local METHOD_ATTR_FINDER = {
-	type = "finder",
-	collect_found_nodes = true,
-	target_node_type = "assignment_expression",
-}
-
-local GET_ALL_METHOD_ATTRS = {
-	type = "chain",
-	children = {
-		{
-			type = "simple",
-			query = [[
-				(class_body
-					(method_definition
-						(statement_block) @target
-					)
-				)
-			]],
-		},
-		METHOD_ATTR_FINDER,
-		{
-			type = "simple",
-			query = [[
-				(assignment_expression
-					(member_expression
-						(property_identifier) @item_name
-					)
-				)
-			]],
-		},
-	},
-}
-
-local GET_ALL_INSTANCE_ATTRS = {
-	type = "accumulator",
-	children = {
-		GET_BODY_INSTANCE_ATTRS,
-		GET_ALL_METHOD_ATTRS,
-	},
-}
-
-local GET_ONLY_CONSTRUCTOR_ATTRS = {
-	type = "chain",
-	children = {
-		{
-			type = "simple",
-			query = [[
-				(class_body
-					(method_definition
-						(property_identifier) @name
-						(#eq? @name "constructor")
-					) @target
-				)
-			]],
-		},
-		METHOD_ATTR_FINDER,
-		{
-			type = "simple",
-			query = [[
-				(assignment_expression
-					(member_expression
-						(property_identifier) @item_name
-					)
-				)
-			]],
-		},
-	},
-}
-
 local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 	type = "boolean",
 	condition = {
@@ -102,8 +12,57 @@ local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 				opt_key = "include_only_constructor_instance_attrs",
 			},
 			children = {
-				GET_ONLY_CONSTRUCTOR_ATTRS,
-				GET_ALL_INSTANCE_ATTRS,
+				{
+					type = "chain",
+					children = {
+						{
+							type = "simple",
+							query = [[
+								(class_body
+									(method_definition
+										(property_identifier) @name
+										(#eq? @name "constructor")
+									) @target
+								)
+							]],
+						},
+						{
+							type = "simple",
+							query = [[
+								(assignment_expression
+									(member_expression
+										(property_identifier) @item_name
+									)
+								)
+							]],
+						},
+					},
+				},
+				{
+					type = "accumulator",
+					children = {
+						{
+							type = "simple",
+							query = [[
+								(public_field_definition
+									(property_identifier) @item_name
+									(#not-match? @item_name "static")
+								)
+							]],
+						},
+						{
+							type = "simple",
+							query = [[
+								(assignment_expression
+									(member_expression
+										object: (this)
+										property: (property_identifier) @item_name (#has-ancestor? @item_name method_definition)
+									)
+								)
+							]],
+						},
+					},
+				},
 			},
 		},
 	},

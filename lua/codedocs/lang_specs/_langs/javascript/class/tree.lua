@@ -1,60 +1,26 @@
-local GET_ATTRS_IN_METHODS = {
-	type = "simple",
-	query = [[
-		(assignment_expression
-			(member_expression
-				(property_identifier) @item_name
-			)
-		)
-	]],
-}
-
-local METHOD_ATTR_FINDER = {
-	type = "finder",
-	collect_found_nodes = true,
-	target_node_type = "assignment_expression",
-}
-
-local GET_ALL_METHOD_ATTRS = {
-	type = "chain",
+local GET_ALL_INSTANCE_ATTRS = {
+	type = "accumulator",
 	children = {
 		{
 			type = "simple",
 			query = [[
 				(class_body
-					(method_definition
-						(statement_block) @target
+					(field_definition
+						property: (property_identifier) @item_name
+					) @field (#not-match? @field "static")
+				)
+			]],
+		},
+		{
+			type = "simple",
+			query = [[
+				(assignment_expression
+					(member_expression
+						(property_identifier) @item_name
 					)
 				)
 			]],
 		},
-		METHOD_ATTR_FINDER,
-		GET_ATTRS_IN_METHODS,
-	},
-}
-
-local GET_ALL_INSTANCE_ATTRS = {
-	type = "accumulator",
-	children = {
-		{
-			type = "chain",
-			children = {
-				{
-					type = "simple",
-					query = [[(class_body) @target]],
-				},
-				{
-					type = "simple",
-					query = [[
-						(field_definition
-							(property_identifier) @item_name
-							(#not-match? @field "static")
-						) @field
-					]],
-				},
-			},
-		},
-		GET_ALL_METHOD_ATTRS,
 	},
 }
 
@@ -86,8 +52,16 @@ local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 								)
 							]],
 						},
-						METHOD_ATTR_FINDER,
-						GET_ATTRS_IN_METHODS,
+						{
+							type = "simple",
+							query = [[
+								(assignment_expression
+									(member_expression
+										(property_identifier) @item_name
+									)
+								)
+							]],
+						},
 					},
 				},
 				GET_ALL_INSTANCE_ATTRS,
