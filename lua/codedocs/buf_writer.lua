@@ -15,31 +15,18 @@ return function(annotation_lines, positions, relative_position)
 	)
 	assert(positions.title_offset >= 0, "'title_offset' must be 0 or higher, got " .. positions.title_offset)
 
-	local final_target_pos
-	if relative_position == "above" then
-		final_target_pos = positions.target
-	elseif relative_position == "below" then
-		final_target_pos = positions.target + 1
-	else
-		final_target_pos = positions.target
-	end
+	local final_target_pos = relative_position == "below" and positions.target + 1 or positions.target
 
-	if relative_position == "empty_target_or_above" and vim.api.nvim_get_current_line() ~= "" then
-		vim.api.nvim_buf_set_lines(
-			0,
-			final_target_pos > 0 and final_target_pos or 0,
-			final_target_pos > 0 and final_target_pos or 0,
-			false,
-			{ "" }
-		)
-	elseif relative_position == "above" or relative_position == "below" then
-		vim.api.nvim_buf_set_lines(
-			0,
-			final_target_pos > 0 and final_target_pos or 0,
-			final_target_pos > 0 and final_target_pos or 0,
-			false,
-			{ "" }
-		)
+	local should_insert_extra_line = (
+		relative_position == "empty_target_or_above" and vim.api.nvim_get_current_line() ~= ""
+	)
+		or relative_position == "above"
+		or relative_position == "below"
+
+	if should_insert_extra_line then
+		local position = final_target_pos > 0 and final_target_pos or 0
+
+		vim.api.nvim_buf_set_lines(0, position, position, false, { "" })
 	end
 
 	vim.api.nvim_win_set_cursor(0, { final_target_pos + 1, 0 })
