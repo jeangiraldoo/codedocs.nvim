@@ -1,45 +1,78 @@
-local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
-	type = "boolean",
-	condition = {
-		section = "attrs",
-		opt_key = "include_instance_attrs",
-	},
-	children = {
+return {
+	attrs = {
 		{
-			type = "boolean",
-			condition = {
-				section = "attrs",
-				opt_key = "include_only_constructor_instance_attrs",
-			},
+			type = "accumulator",
 			children = {
 				{
-					type = "chain",
+					type = "accumulator",
+					condition = function(struct_style)
+						local data = struct_style["attrs"]
+
+						return data["include_class_attrs"]
+					end,
 					children = {
 						{
-							type = "simple",
-							query = [[
-								(class_body
-									(method_definition
-										(property_identifier) @name
-										(#eq? @name "constructor")
-									) @target
-								)
-							]],
-						},
-						{
-							type = "simple",
-							query = [[
-								(assignment_expression
-									(member_expression
-										(property_identifier) @item_name
-									)
-								)
-							]],
+							type = "accumulator",
+							children = {
+								{
+									type = "simple",
+									query = [[
+										(class_body
+											(public_field_definition
+												"static"
+												(property_identifier) @item_name
+											)
+										)
+									]],
+								},
+							},
 						},
 					},
 				},
 				{
 					type = "accumulator",
+					condition = function(struct_style)
+						local data = struct_style["attrs"]
+
+						return (data["include_instance_attrs"] and data["include_only_constructor_instance_attrs"])
+					end,
+					children = {
+						{
+							type = "chain",
+
+							children = {
+								{
+									type = "simple",
+									query = [[
+										(class_body
+											(method_definition
+												(property_identifier) @name
+												(#eq? @name "constructor")
+											) @target
+										)
+									]],
+								},
+								{
+									type = "simple",
+									query = [[
+										(assignment_expression
+											(member_expression
+												(property_identifier) @item_name
+											)
+										)
+									]],
+								},
+							},
+						},
+					},
+				},
+				{
+					type = "accumulator",
+					condition = function(struct_style)
+						local data = struct_style["attrs"]
+
+						return (data["include_instance_attrs"] and not data["include_only_constructor_instance_attrs"])
+					end,
 					children = {
 						{
 							type = "simple",
@@ -63,38 +96,6 @@ local INCLUDE_INSTANCE_ATTRS_OR_NOT = {
 						},
 					},
 				},
-			},
-		},
-	},
-}
-
-return {
-	attrs = {
-		{
-			type = "boolean",
-			condition = {
-				section = "attrs",
-				opt_key = "include_class_attrs",
-			},
-			children = {
-				{
-					type = "accumulator",
-					children = {
-						{
-							type = "simple",
-							query = [[
-								(class_body
-									(public_field_definition
-										"static"
-										(property_identifier) @item_name
-									)
-								)
-							]],
-						},
-						INCLUDE_INSTANCE_ATTRS_OR_NOT,
-					},
-				},
-				INCLUDE_INSTANCE_ATTRS_OR_NOT,
 			},
 		},
 	},
