@@ -237,21 +237,12 @@ function LangSpecs:get_struct_items(struct_name, node, style_name)
 		end, items)
 	end
 
-	local function _build_node(internal_node)
-		local new_node = vim.tbl_extend("force", {}, internal_node)
-		if new_node.children then new_node.children = vim.tbl_map(_build_node, internal_node.children) end
-
-		local extend_new_node = require("codedocs.lang_specs.node_types." .. new_node.type)
-		return extend_new_node(new_node)
-	end
-
-	local struct_tree = vim.iter(
-		require("codedocs.lang_specs._langs." .. self.lang_name .. "." .. struct_name .. ".tree")
-	)
-		:fold({}, function(acc, struct_section_name, trees)
-			acc[struct_section_name] = vim.tbl_map(_build_node, trees)
-			return acc
-		end)
+	local Node = require "codedocs.lang_specs.nodes._base"
+	local tree = require("codedocs.lang_specs._langs." .. self.lang_name .. "." .. struct_name .. ".tree")
+	local struct_tree = vim.iter(tree):fold({}, function(acc, struct_section_name, trees)
+		acc[struct_section_name] = vim.tbl_map(function(t) return Node:_build_node(t) end, trees)
+		return acc
+	end)
 
 	local struct_style = self:get_struct_style(struct_name, style_name or self:get_default_style())
 
