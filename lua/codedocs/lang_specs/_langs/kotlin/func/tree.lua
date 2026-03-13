@@ -7,11 +7,7 @@ return {
 					(function_value_parameters
 						(parameter
 							(simple_identifier) @item_name
-							(user_type) @item_type
-						)
-					)
-				)
-			]],
+							(user_type) @item_type))) ]],
 		},
 	},
 	returns = {
@@ -19,9 +15,7 @@ return {
 			type = "simple",
 			query = [[
 				(function_declaration
-					(user_type) @item_type (#not-eq? @item_type "Unit")
-				)
-			]],
+					(user_type) @item_type (#not-eq? @item_type "Unit")) ]],
 		},
 	},
 }

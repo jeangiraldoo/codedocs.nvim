@@ -6,16 +6,11 @@ return {
 				[
 					(function_declaration
 						parameters: (parameters
-							name: (identifier) @item_name
-						)
-					)
+							name: (identifier) @item_name))
 					(function_definition
 						parameters: (parameters
-							name: (identifier) @item_name
-						)
-					)
-				]
-			]],
+							name: (identifier) @item_name))
+				] ]],
 		},
 	},
 	returns = {
@@ -24,9 +19,7 @@ return {
 			query = [[
 				(return_statement
 					(expression_list) @item_type
-					(#set! parse_as_blank "true")
-				) @return_statement (#has-ancestor? @return_statement function_declaration)
-			]],
+					(#set! parse_as_blank "true")) @return_statement (#has-ancestor? @return_statement function_declaration) ]],
 		},
 	},
 }

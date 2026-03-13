@@ -20,10 +20,7 @@ return {
 										(class_body
 											(public_field_definition
 												"static"
-												(property_identifier) @item_name
-											)
-										)
-									]],
+												(property_identifier) @item_name)) ]],
 								},
 							},
 						},
@@ -47,20 +44,14 @@ return {
 										(class_body
 											(method_definition
 												(property_identifier) @name
-												(#eq? @name "constructor")
-											) @target
-										)
-									]],
+												(#eq? @name "constructor")) @target) ]],
 								},
 								{
 									type = "simple",
 									query = [[
 										(assignment_expression
 											(member_expression
-												(property_identifier) @item_name
-											)
-										)
-									]],
+												(property_identifier) @item_name)) ]],
 								},
 							},
 						},
@@ -79,9 +70,7 @@ return {
 							query = [[
 								(public_field_definition
 									(property_identifier) @item_name
-									(#not-match? @item_name "static")
-								)
-							]],
+									(#not-match? @item_name "static")) ]],
 						},
 						{
 							type = "simple",
@@ -89,10 +78,7 @@ return {
 								(assignment_expression
 									(member_expression
 										object: (this)
-										property: (property_identifier) @item_name (#has-ancestor? @item_name method_definition)
-									)
-								)
-							]],
+										property: (property_identifier) @item_name (#has-ancestor? @item_name method_definition))) ]],
 						},
 					},
 				},

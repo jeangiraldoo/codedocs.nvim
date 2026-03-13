@@ -10,19 +10,13 @@ return {
 								[
 									(primitive_type)
 									(struct_specifier
-										(type_identifier)
-									)
+										(type_identifier))
 								] @item_type
 								[
 									(identifier)
 									(pointer_declarator
-										(identifier)
-									)
-								] @item_name
-							)
-						)
-					)
-				)
+										(identifier))
+								] @item_name))))
 			]],
 		},
 	},
@@ -31,8 +25,7 @@ return {
 			type = "simple",
 			query = [[
 				(function_definition
-					(primitive_type) @item_type (#not-eq? @item_type "void")
-				)
+					(primitive_type) @item_type (#not-eq? @item_type "void"))
 			]],
 		},
 	},

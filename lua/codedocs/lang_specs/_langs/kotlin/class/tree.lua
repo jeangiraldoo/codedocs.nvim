@@ -19,12 +19,7 @@ return {
 										(property_declaration
 											(variable_declaration
 												(simple_identifier) @item_name
-												(user_type) @item_type
-											)
-										)
-									)
-								)
-							]],
+												(user_type) @item_type)))) ]],
 						},
 					},
 				},
@@ -44,11 +39,7 @@ return {
 										(class_parameter
 											(binding_pattern_kind)
 											(simple_identifier) @item_name
-											(user_type) @item_type
-										)
-									)
-								)
-							]],
+											(user_type) @item_type))) ]],
 						},
 					},
 				},
@@ -69,20 +60,13 @@ return {
 											(property_declaration
 												(variable_declaration
 													(simple_identifier) @item_name
-													(user_type) @item_type
-												)
-											)
-										)
+													(user_type) @item_type)))
 										(primary_constructor
 											(class_parameter
 												(binding_pattern_kind)
 												(simple_identifier) @item_name
-												(user_type) @item_type
-											)
-										)
-									]
-								)
-							]],
+												(user_type) @item_type))
+									]) ]],
 						},
 					},
 				},

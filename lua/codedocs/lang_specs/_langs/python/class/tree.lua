@@ -18,12 +18,7 @@ return {
 									body: (block
 										(expression_statement
 											(assignment
-												left: (_) @item_name
-											)
-										)
-									)
-								)
-							]],
+												left: (_) @item_name)))) ]],
 						},
 					},
 				},
@@ -43,17 +38,13 @@ return {
 									query = [[
 										(function_definition
 											name: (identifier) @func_name
-											(#eq? @func_name "__init__")
-										) @target
-									]],
+											(#eq? @func_name "__init__")) @target ]],
 								},
 								{
 									type = "simple",
 									query = [[
 										(attribute
-											(identifier) @item_name (#not-eq? @item_name "self")
-										)
-									]],
+											(identifier) @item_name (#not-eq? @item_name "self")) ]],
 								},
 							},
 						},
@@ -76,9 +67,7 @@ return {
 										attribute: (identifier) @item_name
 									)
 									(#eq? @obj "self")
-									(#has-ancestor? @item_name function_definition)
-								)
-							]],
+									(#has-ancestor? @item_name function_definition)) ]],
 						},
 					},
 				},

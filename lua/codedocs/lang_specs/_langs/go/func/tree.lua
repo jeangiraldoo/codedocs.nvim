@@ -30,11 +30,7 @@ return {
 						(parameter_list
 							(parameter_declaration
 								(identifier) @item_name
-								(type_identifier) @item_type
-							)
-						)
-					)
-					]],
+								(type_identifier) @item_type)))]],
 				},
 			},
 		},
@@ -44,9 +40,7 @@ return {
 			type = "simple",
 			query = [[
 				(function_declaration
-					(type_identifier) @item_type
-				)
-			]],
+					(type_identifier) @item_type)]],
 		},
 	},
 }

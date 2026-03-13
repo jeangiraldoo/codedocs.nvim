@@ -7,11 +7,7 @@ return {
 					(formal_parameters
 						(formal_parameter
 							(_) @item_type
-							(identifier) @item_name
-						)
-					)
-				)
-			]],
+							(identifier) @item_name))) ]],
 		},
 	},
 	returns = {
@@ -19,9 +15,7 @@ return {
 			type = "simple",
 			query = [[
 				(method_declaration
-					(integral_type) @item_type (#not-eq? @item_type "void")
-				)
-			]],
+					(integral_type) @item_type (#not-eq? @item_type "void")) ]],
 		},
 	},
 }

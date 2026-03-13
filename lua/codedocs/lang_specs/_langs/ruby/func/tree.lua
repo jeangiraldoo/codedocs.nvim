@@ -5,10 +5,7 @@ return {
 			query = [[
 				(method
 					(method_parameters
-						(identifier) @item_name
-					)
-				)
-			]],
+						(identifier) @item_name)) ]],
 		},
 	},
 	returns = {
@@ -17,9 +14,7 @@ return {
 			query = [[
 				(return
 					(_) @item_type
-					(#set! parse_as_blank "true")
-				)
-			]],
+					(#set! parse_as_blank "true")) ]],
 		},
 	},
 }

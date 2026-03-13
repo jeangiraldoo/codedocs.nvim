@@ -10,11 +10,7 @@ return {
 							[
 								(type_identifier)
 								(primitive_type)
-							] @item_type
-						)
-					)
-				)
-			]],
+							] @item_type))) ]],
 		},
 	},
 	returns = {
@@ -25,9 +21,7 @@ return {
 					[
 						(primitive_type)
 						(type_identifier)
-					] @item_type (#not-eq? @item_type "()")
-				)
-			]],
+					] @item_type (#not-eq? @item_type "()")) ]],
 		},
 	},
 }

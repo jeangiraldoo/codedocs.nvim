@@ -10,8 +10,7 @@ return {
 						lang_name,
 						[[
 							((variable_assignment
-								(variable_name) @target
-							) @variable_assignment
+								(variable_name) @target) @variable_assignment
 							(#not-has-parent? @variable_assignment declaration_command))
 						]]
 					)
@@ -50,8 +49,7 @@ return {
 					type = "simple",
 					query = [[
 						((expansion
-							(variable_name) @item_name
-						))
+							(variable_name) @item_name))
 					]],
 				},
 			},
@@ -64,10 +62,7 @@ return {
 				(command
 					argument: (string
 						(simple_expansion
-							(variable_name) @item_name
-						)
-					)
-				)
+							(variable_name) @item_name)))
 			]],
 		},
 	},

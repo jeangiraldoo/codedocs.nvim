@@ -16,11 +16,8 @@ return {
 					)
 					(arrow_function
 						parameters: (formal_parameters
-							(identifier) @item_name
-						)
-					)
-				]
-			]],
+							(identifier) @item_name))
+				] ]],
 		},
 	},
 	returns = {
@@ -28,9 +25,7 @@ return {
 			type = "simple",
 			query = [[
 				(return_statement
-					(_) @item_type (#set! parse_as_blank "true")
-				)
-			]],
+					(_) @item_type (#set! parse_as_blank "true")) ]],
 		},
 	},
 }
