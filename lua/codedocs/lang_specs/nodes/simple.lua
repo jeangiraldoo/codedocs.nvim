@@ -67,7 +67,11 @@ function Simple:new(data)
 	return obj
 end
 
-function Simple:process(ts_node, filetype)
+function Simple:process(ts_node, filetype, struct_style)
+	if self.condition then
+		if self.condition(struct_style) == false then return {} end
+	end
+
 	local identifier_pos = require("codedocs.lang_specs.init").new(filetype):get_lang_identifier_pos()
 	local query = self.query
 

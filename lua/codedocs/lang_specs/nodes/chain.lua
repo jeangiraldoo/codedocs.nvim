@@ -10,6 +10,10 @@ function Chain:new(data)
 end
 
 function Chain:process(original_ts_node, lang_name, struct_style)
+	if self.condition then
+		if self.condition(struct_style) == false then return {} end
+	end
+
 	local result_nodes = { original_ts_node }
 	for _, child in ipairs(self.children) do
 		result_nodes = vim.iter(result_nodes)

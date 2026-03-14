@@ -4,34 +4,35 @@ return {
 			type = "accumulator",
 			children = {
 				{
-					type = "accumulator",
+					type = "simple",
 					condition = function(struct_style)
 						local data = struct_style["attrs"]
 
 						return data["include_class_attrs"]
 					end,
-					children = {
-						{
-							type = "simple",
-							query = [[
-								(class_definition
-									body: (block
-										(expression_statement
-											(assignment
-												left: (_) @item_name)))) ]],
-						},
-					},
+					query = [[
+						(class_definition
+							body: (block
+								(expression_statement
+									(assignment
+										left: (_) @item_name))))
+					]],
 				},
 				{
 					type = "accumulator",
 					condition = function(struct_style)
 						local data = struct_style["attrs"]
 
-						return (data["include_instance_attrs"] and data["include_only_constructor_instance_attrs"])
+						return data["include_instance_attrs"]
 					end,
 					children = {
 						{
 							type = "chain",
+							condition = function(struct_style)
+								local data = struct_style["attrs"]
+
+								return data["include_only_constructor_instance_attrs"]
+							end,
 							children = {
 								{
 									type = "simple",
@@ -48,18 +49,13 @@ return {
 								},
 							},
 						},
-					},
-				},
-				{
-					type = "accumulator",
-					condition = function(struct_style)
-						local data = struct_style["attrs"]
-
-						return (data["include_instance_attrs"] and not data["include_only_constructor_instance_attrs"])
-					end,
-					children = {
 						{
 							type = "simple",
+							condition = function(struct_style)
+								local data = struct_style["attrs"]
+
+								return not data["include_only_constructor_instance_attrs"]
+							end,
 							query = [[
 								(assignment
 									left: (attribute
