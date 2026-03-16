@@ -2,8 +2,18 @@ return {
 	parameters = {
 		{
 			type = "function",
-			callback = function(node, children, lang_name, struct_style)
-				local raw_items = children[1]:process(node, lang_name, struct_style)
+			callback = function(node, lang_name, struct_style)
+				local raw_items = require("codedocs.lang_specs.nodes.simple")
+					:new({
+						type = "simple",
+						query = [[
+							(function_declaration
+								(parameter_list
+									(parameter_declaration
+										(identifier) @item_name
+										(type_identifier) @item_type)))]],
+					})
+					:process(node, lang_name, struct_style)
 
 				local final_items = {}
 				local standby = {}
@@ -22,17 +32,6 @@ return {
 
 				return final_items
 			end,
-			children = {
-				{
-					type = "simple",
-					query = [[
-					(function_declaration
-						(parameter_list
-							(parameter_declaration
-								(identifier) @item_name
-								(type_identifier) @item_type)))]],
-				},
-			},
 		},
 	},
 	returns = {

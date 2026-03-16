@@ -2,7 +2,7 @@ return {
 	globals = {
 		{
 			type = "function",
-			callback = function(node, children, lang_name, struct_style)
+			callback = function(node, lang_name, struct_style)
 				local root_node = node:tree():root()
 
 				local global_variables = (function()
@@ -25,7 +25,15 @@ return {
 						:map(function(_, match)
 							local match_node = match[1][1]
 
-							local variable_reference = children[1]:process(match_node, lang_name, struct_style)[1]
+							local variable_reference = require("codedocs.lang_specs.nodes.simple")
+								:new({
+									type = "simple",
+									query = [[
+										((expansion
+											(variable_name) @item_name))
+									]],
+								})
+								:process(match_node, lang_name, struct_style)[1]
 							return variable_reference
 						end)
 						:totable()
@@ -44,15 +52,6 @@ return {
 				end
 				return globals_referenced
 			end,
-			children = {
-				{
-					type = "simple",
-					query = [[
-						((expansion
-							(variable_name) @item_name))
-					]],
-				},
-			},
 		},
 	},
 	parameters = {
