@@ -53,12 +53,7 @@ end
 function LangSpecs.get_supported_styles(lang_name)
 	if not LangSpecs.is_lang_supported(lang_name) then return {} end
 
-	local base_path = vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ":p:h")
-
-	local relative_path = "/_langs/" .. lang_name .. "/comment/styles"
-	local files = vim.fn.readdir(vim.fs.joinpath(base_path, relative_path))
-
-	local style_names = vim.tbl_map(function(filename) return vim.fn.fnamemodify(filename, ":r") end, files)
+	local style_names = vim.tbl_keys(require("codedocs.lang_specs._langs." .. lang_name .. ".styles.comment"))
 	return style_names
 end
 
@@ -211,6 +206,41 @@ end
 
 function LangSpecs:get_struct_identifiers() return self.struct_identifiers end
 
+local function normalize_item_fields(items)
+	return vim.tbl_map(function(item)
+		if not item.name then
+			item.name = ""
+		elseif not item.type then
+			item.type = ""
+		end
+		return item
+	end, items)
+end
+
+local function _new_item_builder()
+	return {
+		current = nil,
+		items = {},
+
+		start_name = function(self, name) self.current = { name = name } end,
+		start_type = function(self, type) self.current = { type = type } end,
+
+		set_name = function(self, name)
+			if self.current then self.current.name = name end
+		end,
+		set_type = function(self, type_)
+			if self.current then self.current.type = type_ end
+		end,
+
+		emit = function(self)
+			if self.current then
+				table.insert(self.items, self.current)
+				self.current = nil
+			end
+		end,
+	}
+end
+
 function LangSpecs:get_struct_items(struct_name, node, style_name)
 	local function remove_duplicate_items_by_name(items)
 		local seen = {}
@@ -226,43 +256,104 @@ function LangSpecs:get_struct_items(struct_name, node, style_name)
 		return deduplicated_list
 	end
 
-	local function normalize_item_fields(items)
-		return vim.tbl_map(function(item)
-			if not item.name then
-				item.name = ""
-			elseif not item.type then
-				item.type = ""
+	local function _handle_capture(builder, capture_name, node_text, name_first)
+		if capture_name == "item_name" then
+			if name_first then
+				builder:emit()
+				builder:start_name(node_text)
+			else
+				if builder.current == nil then
+					-- Edge case: handles items where the type is optional, but when it is present it goes before the name
+					builder:start_name(node_text)
+				else
+					builder:set_name(node_text)
+				end
+				builder:emit()
 			end
-			return item
-		end, items)
+			return
+		end
+
+		if capture_name == "item_type" then
+			if name_first then
+				if builder.current == nil then
+					-- Edge case: handles items with only a type (e.g. function return type) by emitting a nameless item
+					builder:start_name ""
+				end
+				builder:set_type(node_text)
+				builder:emit()
+			else
+				builder:emit()
+				builder:start_type(node_text)
+			end
+		end
 	end
 
-	local Node = require "codedocs.lang_specs.nodes._base"
-	local tree = require("codedocs.lang_specs._langs." .. self.lang_name .. "." .. struct_name .. ".tree")
-	local struct_tree = vim.iter(tree):fold({}, function(acc, struct_section_name, trees)
-		acc[struct_section_name] = vim.tbl_map(function(t) return Node:_build_node(t) end, trees)
-		return acc
-	end)
+	local function generic_query_parser(ts_node, filetype, query)
+		local identifier_pos = require("codedocs.lang_specs.init").new(filetype):get_lang_identifier_pos()
+
+		if not query then return {} end
+
+		local query_obj = vim.treesitter.query.parse(filetype, query)
+		local node_matches = query_obj:iter_matches(ts_node, 0)
+		local query_capture_tags = query_obj.captures
+
+		if vim.tbl_contains(query_capture_tags, "target") then
+			local target_nodes = {}
+			for _, match, _ in node_matches do
+				for id, capture_node in pairs(match) do
+					local nodes = type(capture_node) == "table" and capture_node or { capture_node }
+					for _, ts_capture_node in ipairs(nodes) do
+						if query_capture_tags[id] == "target" then table.insert(target_nodes, ts_capture_node) end
+					end
+				end
+			end
+			return target_nodes
+		end
+
+		local builder = _new_item_builder()
+		local name_first = identifier_pos
+
+		for _, match, metadata in node_matches do
+			for id, capture_node in pairs(match) do
+				local nodes = type(capture_node) == "table" and capture_node or { capture_node }
+
+				for _, match_capture_node in ipairs(nodes) do
+					local capture_name = query_capture_tags[id]
+
+					local node_text = metadata.parse_as_blank ~= "true"
+							and vim.treesitter.get_node_text(match_capture_node, 0)
+						or ""
+
+					_handle_capture(builder, capture_name, node_text, name_first)
+				end
+			end
+		end
+
+		builder:emit()
+		return builder.items
+	end
 
 	local struct_style = self:get_struct_style(struct_name, style_name or self:get_default_style())
 
 	local items_list = {}
 	for _, section_name in pairs(struct_style.settings.section_order) do
-		local section_tree = struct_tree[section_name]
+		if section_name ~= "return_type" then
+			local item_extractor = self.extractors[struct_name][section_name]
 
-		local raw_items = vim.iter(section_tree)
-			:map(
-				function(tree_node)
-					return tree_node:process(node, self.lang_name, struct_style.settings.item_extraction)
-				end
-			)
-			:find(
-				function(section_items_list) return section_items_list and (not vim.tbl_isempty(section_items_list)) end
-			) or {}
+			local raw_items = item_extractor {
+				node = node,
+				style = struct_style,
+				lang_name = self.lang_name,
+				generic_query_parser = generic_query_parser,
+				lang_query_parser =
+					---@param query TSQuery
+					function(query) return generic_query_parser(node, self.lang_name, query) end,
+			} or {}
 
-		if #raw_items > 1 then raw_items = remove_duplicate_items_by_name(raw_items) end
+			if #raw_items > 1 then raw_items = remove_duplicate_items_by_name(raw_items) end
 
-		items_list[section_name] = normalize_item_fields(raw_items)
+			items_list[section_name] = normalize_item_fields(raw_items)
+		end
 	end
 
 	return items_list
@@ -281,9 +372,8 @@ function LangSpecs:get_struct_style(struct_name, style_name)
 	end
 
 	if LangSpecs.is_lang_supported(self.lang_name) then
-		local style = require(
-			string.format("codedocs.lang_specs._langs.%s.%s.styles.%s", self.lang_name, struct_name, style_name)
-		)
+		local style =
+			require(string.format("codedocs.lang_specs._langs.%s.styles.%s", self.lang_name, struct_name))[style_name]
 		local is_style_correct, error_msg = _validate_style_opts(style)
 		if not is_style_correct then error(error_msg) end
 
