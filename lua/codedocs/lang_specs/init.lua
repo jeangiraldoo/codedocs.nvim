@@ -1,6 +1,6 @@
 local LangSpecs = {}
 
-local EXPECTED_OPTS_PER_SECTION = require "codedocs.lang_specs._langs.style_opts"
+local EXPECTED_OPTS_PER_SECTION = require "codedocs.lang_specs.style_opts"
 
 local function _validate_section_opts(expected_opts, section_name, opts)
 	for actual_section_opt_name, actual_section_opt_value in pairs(opts) do
@@ -53,7 +53,7 @@ end
 function LangSpecs.get_supported_styles(lang_name)
 	if not LangSpecs.is_lang_supported(lang_name) then return {} end
 
-	local style_names = vim.tbl_keys(require("codedocs.lang_specs._langs." .. lang_name .. ".styles.comment"))
+	local style_names = vim.tbl_keys(require("codedocs.lang_specs." .. lang_name .. ".styles.comment"))
 	return style_names
 end
 
@@ -175,8 +175,7 @@ LangSpecs.get_supported_langs = (function()
 	local source = debug.getinfo(1, "S").source
 	local path = source:sub(2)
 
-	local base_dir = vim.fs.dirname(path)
-	local target_dir = vim.fs.joinpath(base_dir, "_langs")
+	local target_dir = vim.fs.dirname(path)
 
 	local SUPPORTED_LANGS = {}
 
@@ -191,13 +190,13 @@ function LangSpecs.is_lang_supported(lang) return vim.list_contains(LangSpecs.ge
 
 function LangSpecs.get_buffer_lang_name()
 	local buffer_filetype = vim.bo.filetype
-	return require("codedocs.lang_specs._langs.aliases")[buffer_filetype] or buffer_filetype
+	return require("codedocs.lang_specs.aliases")[buffer_filetype] or buffer_filetype
 end
 
 function LangSpecs.new(lang)
 	if not LangSpecs.is_lang_supported(lang) then error(lang .. " is not a supported language") end
 
-	local spec_data = require("codedocs.lang_specs._langs." .. lang)
+	local spec_data = require("codedocs.lang_specs." .. lang)
 	spec_data.structs = {}
 	local new_lang_spec = setmetatable(spec_data, { __index = LangSpecs })
 
@@ -373,7 +372,7 @@ function LangSpecs:get_struct_style(struct_name, style_name)
 
 	if LangSpecs.is_lang_supported(self.lang_name) then
 		local style =
-			require(string.format("codedocs.lang_specs._langs.%s.styles.%s", self.lang_name, struct_name))[style_name]
+			require(string.format("codedocs.lang_specs.%s.styles.%s", self.lang_name, struct_name))[style_name]
 		local is_style_correct, error_msg = _validate_style_opts(style)
 		if not is_style_correct then error(error_msg) end
 
