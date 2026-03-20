@@ -287,7 +287,7 @@ The following sections are available:
 | Structure | Sections                         |
 | --------- | -------------------------------- |
 | `func`    | `title`, `parameters`, `returns` |
-| `class`   | `title`, `attrs`                 |
+| `class`   | `title`, `attributes`            |
 | `comment` | `title`                          |
 
 ##### Title section
@@ -302,7 +302,7 @@ An `item` is a part of a structure, having a `name` that identifies it, and a
 The following is a mapping of structures to their respective items:
 
 - Function: Parameters (`parameters` section), return type (`returns` section).
-- Class: Attributes (`attrs` section).
+- Class: Attributes (`attributes` section).
 
 | Option Name | Expected Value Type | Behavior                                   |
 | ----------- | ------------------- | ------------------------------------------ |

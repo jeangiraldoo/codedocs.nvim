@@ -1,7 +1,7 @@
 local Class_extractors = {}
 
-function Class_extractors.attrs(struct_data)
-	local settings = struct_data.style.settings.item_extraction.attrs
+function Class_extractors.attributes(struct_data)
+	local settings = struct_data.style.settings.item_extraction.attributes
 	local results = {}
 
 	if settings.include_class_attrs then

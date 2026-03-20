@@ -8,10 +8,10 @@ return {
 			insert_at = 2,
 			relative_position = "below",
 			section_order = {
-				"attrs",
+				"attributes",
 			},
 			item_extraction = {
-				attrs = {
+				attributes = {
 					include_class_attrs = true,
 					include_instance_attrs = true,
 					include_only_constructor_instance_attrs = true,
@@ -29,7 +29,7 @@ return {
 					text = "",
 				},
 			},
-			attrs = {
+			attributes = {
 				layout = {
 					"Attributes:",
 				},
@@ -58,10 +58,10 @@ return {
 			relative_position = "below",
 			insert_at = 2,
 			section_order = {
-				"attrs",
+				"attributes",
 			},
 			item_extraction = {
-				attrs = {
+				attributes = {
 					include_class_attrs = true,
 					include_instance_attrs = true,
 					include_only_constructor_instance_attrs = true,
@@ -79,7 +79,7 @@ return {
 					text = "",
 				},
 			},
-			attrs = {
+			attributes = {
 				layout = {
 					"Attributes:",
 					"___________",
@@ -110,10 +110,10 @@ return {
 			relative_position = "below",
 			insert_at = 2,
 			section_order = {
-				"attrs",
+				"attributes",
 			},
 			item_extraction = {
-				attrs = {
+				attributes = {
 					include_class_attrs = true,
 					include_instance_attrs = true,
 					include_only_constructor_instance_attrs = true,
@@ -131,7 +131,7 @@ return {
 					text = "",
 				},
 			},
-			attrs = {
+			attributes = {
 				layout = {},
 				insert_gap_between = {
 					enabled = false,

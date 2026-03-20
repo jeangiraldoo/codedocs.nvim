@@ -51,7 +51,7 @@ local BASE_MOCKED_OPTS = {
 local MOCKED_USER_STRUCT_OPTS = vim.iter({
 	class = {
 		sections = {
-			attrs = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
+			attributes = BASE_MOCKED_OPTS.ITEMS_SECTIONS,
 		},
 	},
 	func = {

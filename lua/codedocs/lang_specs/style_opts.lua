@@ -1,7 +1,7 @@
 --- Here are all the available opts for all languages
 
 local ITEM_SECTIONS = {
-	"attrs",
+	"attributes",
 	"parameters",
 	"returns",
 	"globals",

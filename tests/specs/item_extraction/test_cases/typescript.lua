@@ -108,7 +108,7 @@ return {
 			},
 			cursor_pos = 1,
 			expected_items = {
-				attrs = {},
+				attributes = {},
 			},
 		},
 	},
