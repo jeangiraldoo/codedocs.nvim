@@ -255,10 +255,10 @@ The following placeholders are available:
 
 ##### Item extraction suboptions for class attributes
 
-| Option Name           | Expected Value Type                   | Behavior                                                                                         |
-| --------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `include_class_attrs` | boolean                               | Include class-level attributes in the annotation                                                 |
-| `include_instance`    | string ("none", "constructor", "all") | Determines inclusion of instance attributes: none, only those defined in the constructor, or all |
+| Option Name | Expected Value Type                   | Behavior                                                                                         |
+| ----------- | ------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `static`    | boolean                               | Include class-level attributes in the annotation                                                 |
+| `instance`  | string ("none", "constructor", "all") | Determines inclusion of instance attributes: none, only those defined in the constructor, or all |
 
 #### Options common to sections and items
 

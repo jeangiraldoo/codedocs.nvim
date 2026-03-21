@@ -12,8 +12,8 @@ return {
 			},
 			item_extraction = {
 				attributes = {
-					include_class_attrs = false,
-					include_instance = "none", -- Java attrs can only be declared in the class body
+					static = false,
+					instance = "none", -- Java attrs can only be declared in the class body
 				},
 			},
 			indented = false,

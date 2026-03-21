@@ -12,8 +12,8 @@ return {
 			},
 			item_extraction = {
 				attributes = {
-					include_class_attrs = false,
-					include_instance = "none",
+					static = false,
+					instance = "none",
 				},
 			},
 			indented = false,

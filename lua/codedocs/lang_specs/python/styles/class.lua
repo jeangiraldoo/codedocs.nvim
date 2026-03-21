@@ -12,8 +12,8 @@ return {
 			},
 			item_extraction = {
 				attributes = {
-					include_class_attrs = true,
-					include_instance = "constructor",
+					static = true,
+					instance = "constructor",
 				},
 			},
 			indented = true,
@@ -61,8 +61,8 @@ return {
 			},
 			item_extraction = {
 				attributes = {
-					include_class_attrs = true,
-					include_instance = "constructor",
+					static = true,
+					instance = "constructor",
 				},
 			},
 			indented = true,
@@ -112,8 +112,8 @@ return {
 			},
 			item_extraction = {
 				attributes = {
-					include_class_attrs = true,
-					include_instance = "constructor",
+					static = true,
+					instance = "constructor",
 				},
 			},
 			indented = true,

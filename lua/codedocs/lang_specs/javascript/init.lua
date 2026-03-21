@@ -4,7 +4,7 @@ function Class_extractors.attributes(struct_data)
 	local settings = struct_data.style.settings.item_extraction.attributes
 	local results = {}
 
-	if settings.include_class_attrs then
+	if settings.static then
 		local class_attrs = struct_data.lang_query_parser [[
 			(class_body
 				(field_definition
@@ -15,7 +15,7 @@ function Class_extractors.attributes(struct_data)
 		vim.list_extend(results, class_attrs)
 	end
 
-	if settings.include_instance == "constructor" then
+	if settings.instance == "constructor" then
 		local constructor_node = struct_data.lang_query_parser([[
 				(class_body
 					(method_definition
@@ -39,7 +39,7 @@ function Class_extractors.attributes(struct_data)
 		return results
 	end
 
-	if settings.include_instance == "all" then
+	if settings.instance == "all" then
 		local class_body_instance_attrs = struct_data.lang_query_parser [[
 			(class_body
 				(field_definition
