@@ -15,7 +15,7 @@ function Class_extractors.attributes(struct_data)
 		vim.list_extend(results, class_attrs)
 	end
 
-	if settings.include_instance_attrs then
+	if settings.include_instance == "all" then
 		local instance_attrs = struct_data.lang_query_parser [[
 			(class_body
 				(field_declaration

@@ -13,8 +13,7 @@ return {
 			item_extraction = {
 				attributes = {
 					include_class_attrs = false,
-					include_instance_attrs = false,
-					include_only_constructor_instance_attrs = nil, -- Java attrs can only be declared in the class body
+					include_instance = "none", -- Java attrs can only be declared in the class body
 				},
 			},
 			indented = false,

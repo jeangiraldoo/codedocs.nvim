@@ -15,32 +15,32 @@ function Class_extractors.attributes(struct_data)
 		vim.list_extend(results, class_attrs)
 	end
 
-	if settings.include_instance_attrs then
-		if settings.include_only_constructor_instance_attrs then
-			local constructor_node = struct_data.lang_query_parser([[
+	if settings.include_instance == "constructor" then
+		local constructor_node = struct_data.lang_query_parser([[
 				(class_body
 					(method_definition
 						(property_identifier) @name
 						(#eq? @name "constructor")) @target)
 			]])[1]
 
-			if constructor_node then
-				local constructor_instance_attrs = struct_data.generic_query_parser(
-					constructor_node,
-					struct_data.lang_name,
-					[[
+		if constructor_node then
+			local constructor_instance_attrs = struct_data.generic_query_parser(
+				constructor_node,
+				struct_data.lang_name,
+				[[
 						(assignment_expression
 							(member_expression
 								object: (this)
 								property: (property_identifier) @item_name))
 					]]
-				)
+			)
 
-				vim.list_extend(results, constructor_instance_attrs)
-				return results
-			end
+			vim.list_extend(results, constructor_instance_attrs)
+			return results
 		end
+	end
 
+	if settings.include_instance == "all" then
 		local body_instance_attrs = struct_data.lang_query_parser [[
 			(public_field_definition
 				(property_identifier) @item_name

@@ -13,8 +13,7 @@ return {
 			item_extraction = {
 				attributes = {
 					include_class_attrs = true,
-					include_instance_attrs = false,
-					include_only_constructor_instance_attrs = false,
+					include_instance = "none",
 				},
 			},
 			indent = false,
