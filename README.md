@@ -255,11 +255,10 @@ The following placeholders are available:
 
 ##### Item extraction suboptions for class attributes
 
-| Option Name                               | Expected Value Type | Behavior                                                               |
-| ----------------------------------------- | ------------------- | ---------------------------------------------------------------------- |
-| `include_class_attrs`                     | boolean             | Include class-level attributes in the annotation                       |
-| `include_instance_attrs`                  | boolean             | Include instance attributes in the annotation                          |
-| `include_only_constructor_instance_attrs` | boolean             | Only include instance attributes from the constructor, or annotate all |
+| Option Name | Expected Value Type                   | Behavior                                                                                         |
+| ----------- | ------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `static`    | boolean                               | Include class-level attributes in the annotation                                                 |
+| `instance`  | string ("none", "constructor", "all") | Determines inclusion of instance attributes: none, only those defined in the constructor, or all |
 
 #### Options common to sections and items
 
@@ -287,7 +286,7 @@ The following sections are available:
 | Structure | Sections                         |
 | --------- | -------------------------------- |
 | `func`    | `title`, `parameters`, `returns` |
-| `class`   | `title`, `attrs`                 |
+| `class`   | `title`, `attributes`            |
 | `comment` | `title`                          |
 
 ##### Title section
@@ -302,7 +301,7 @@ An `item` is a part of a structure, having a `name` that identifies it, and a
 The following is a mapping of structures to their respective items:
 
 - Function: Parameters (`parameters` section), return type (`returns` section).
-- Class: Attributes (`attrs` section).
+- Class: Attributes (`attributes` section).
 
 | Option Name | Expected Value Type | Behavior                                   |
 | ----------- | ------------------- | ------------------------------------------ |

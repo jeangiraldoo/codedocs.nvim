@@ -1,10 +1,10 @@
 local Class_extractors = {}
 
-function Class_extractors.attrs(struct_data)
-	local settings = struct_data.style.settings.item_extraction.attrs
+function Class_extractors.attributes(struct_data)
+	local settings = struct_data.style.settings.item_extraction.attributes
 	local results = {}
 
-	if settings.include_class_attrs then
+	if settings.static then
 		local class_attrs = struct_data.lang_query_parser [[
 			(companion_object
 				(class_body
@@ -17,9 +17,8 @@ function Class_extractors.attrs(struct_data)
 		vim.list_extend(results, class_attrs)
 	end
 
-	if settings.include_instance_attrs then
-		if settings.include_only_constructor_instance_attrs then
-			local constructor_instance_attrs = struct_data.lang_query_parser [[
+	if settings.instance == "constructor" then
+		local constructor_instance_attrs = struct_data.lang_query_parser [[
 				(class_declaration
 					(primary_constructor
 						(class_parameter
@@ -28,10 +27,11 @@ function Class_extractors.attrs(struct_data)
 							(user_type) @item_type)))
 			]]
 
-			vim.list_extend(results, constructor_instance_attrs)
-			return results
-		end
+		vim.list_extend(results, constructor_instance_attrs)
+		return results
+	end
 
+	if settings.instance == "all" then
 		local all_instance_attrs = struct_data.lang_query_parser [[
 			(class_declaration
 				[

@@ -1,10 +1,10 @@
 local Class_extractors = {}
 
-function Class_extractors.attrs(struct_data)
-	local settings = struct_data.style.settings.item_extraction.attrs
+function Class_extractors.attributes(struct_data)
+	local settings = struct_data.style.settings.item_extraction.attributes
 	local results = {}
 
-	if settings.include_class_attrs then
+	if settings.static then
 		local class_attrs = struct_data.lang_query_parser [[
 			(class_body
 				(field_definition
@@ -15,31 +15,31 @@ function Class_extractors.attrs(struct_data)
 		vim.list_extend(results, class_attrs)
 	end
 
-	if settings.include_instance_attrs then
-		if settings.include_only_constructor_instance_attrs then
-			local constructor_node = struct_data.lang_query_parser([[
+	if settings.instance == "constructor" then
+		local constructor_node = struct_data.lang_query_parser([[
 				(class_body
 					(method_definition
 						(property_identifier) @name
 						(#eq? @name "constructor")) @target)
 			]])[1]
 
-			if constructor_node then
-				local constructor_instance_attrs = struct_data.generic_query_parser(
-					constructor_node,
-					struct_data.lang_name,
-					[[
+		if constructor_node then
+			local constructor_instance_attrs = struct_data.generic_query_parser(
+				constructor_node,
+				struct_data.lang_name,
+				[[
 						(assignment_expression
 							(member_expression
 								(property_identifier) @item_name))
 					]]
-				)
+			)
 
-				vim.list_extend(results, constructor_instance_attrs)
-			end
-			return results
+			vim.list_extend(results, constructor_instance_attrs)
 		end
+		return results
+	end
 
+	if settings.instance == "all" then
 		local class_body_instance_attrs = struct_data.lang_query_parser [[
 			(class_body
 				(field_definition

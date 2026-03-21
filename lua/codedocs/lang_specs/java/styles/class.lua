@@ -8,13 +8,12 @@ return {
 			relative_position = "above",
 			insert_at = 2,
 			section_order = {
-				"attrs",
+				"attributes",
 			},
 			item_extraction = {
-				attrs = {
-					include_class_attrs = false,
-					include_instance_attrs = false,
-					include_only_constructor_instance_attrs = nil, -- Java attrs can only be declared in the class body
+				attributes = {
+					static = false,
+					instance = "none", -- Java attrs can only be declared in the class body
 				},
 			},
 			indented = false,
@@ -29,7 +28,7 @@ return {
 					text = " *",
 				},
 			},
-			attrs = {
+			attributes = {
 				layout = {
 					" * Attributes:",
 				},

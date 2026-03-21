@@ -8,13 +8,12 @@ return {
 			relative_position = "above",
 			insert_at = 2,
 			section_order = {
-				"attrs",
+				"attributes",
 			},
 			item_extraction = {
-				attrs = {
-					include_class_attrs = true,
-					include_instance_attrs = false,
-					include_only_constructor_instance_attrs = false,
+				attributes = {
+					static = true,
+					instance = "none",
 				},
 			},
 			indent = false,
@@ -29,7 +28,7 @@ return {
 					text = " *",
 				},
 			},
-			attrs = {
+			attributes = {
 				layout = {},
 				insert_gap_between = {
 					enabled = false,
