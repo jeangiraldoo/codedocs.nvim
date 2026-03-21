@@ -1,4 +1,4 @@
-*codedocs.txt*            For NVIM v0.10+           Last change: 2026 March 08
+*codedocs.txt*            For NVIM v0.10+           Last change: 2026 March 21
 
 ==============================================================================
 Table of Contents                                 *codedocs-table-of-contents*
@@ -300,19 +300,17 @@ SETTINGS OPTIONS
 
 ITEM EXTRACTION SUBOPTIONS FOR CLASS ATTRIBUTES
 
-  -------------------------------------------------------------------------------------------
-  Option Name                               Expected   Behavior
-                                            Value Type 
-  ----------------------------------------- ---------- --------------------------------------
-  include_class_attrs                       boolean    Include class-level attributes in the
-                                                       annotation
+  -----------------------------------------------------------------------------
+  Option     Expected Value     Behavior
+  Name       Type               
+  ---------- ------------------ -----------------------------------------------
+  static     boolean            Include class-level attributes in the
+                                annotation
 
-  include_instance_attrs                    boolean    Include instance attributes in the
-                                                       annotation
-
-  include_only_constructor_instance_attrs   boolean    Only include instance attributes from
-                                                       the constructor, or annotate all
-  -------------------------------------------------------------------------------------------
+  instance   string (“none”,    Determines inclusion of instance attributes:
+             “constructor”,     none, only those defined in the constructor, or
+             “all”)             all
+  -----------------------------------------------------------------------------
 
 OPTIONS COMMON TO SECTIONS AND ITEMS
 
@@ -348,7 +346,7 @@ The following sections are available:
   Structure   Sections
   ----------- ----------------------------
   func        title, parameters, returns
-  class       title, attrs
+  class       title, attributes
   comment     title
 
 TITLE SECTION
@@ -364,7 +362,7 @@ An `item` is a part of a structure, having a `name` that identifies it, and a
 The following is a mapping of structures to their respective items:
 
 - Function: Parameters (`parameters` section), return type (`returns` section).
-- Class: Attributes (`attrs` section).
+- Class: Attributes (`attributes` section).
 
   -----------------------------------------------------------------------
   Option     Expected Value     Behavior
