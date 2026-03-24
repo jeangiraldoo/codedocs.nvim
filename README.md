@@ -38,14 +38,14 @@ formats, or just use codedocs as it is! :)
 - [Motivation](#motivation)
 - [License](#license)
 
-## <a id="features"></a>🚀 Features
+## Features
 
 - Works out-of-the-box.
 - Detects and documents code structures with a simple keybind.
 - Supports multiple [languages and styles](#supported-languages).
 - Easily customize existing formats or add new ones.
 
-## <a id="requirements"></a>📋 Requirements
+## Requirements
 
 Codedocs relies on Treesitter for its core functionality. Neovim includes
 built-in Treesitter parsers for the following languages—meaning no extra setup
@@ -58,7 +58,7 @@ For any other language, you'll need to install the corresponding Treesitter
 parser. The simplest way to do this is with
 **[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)**.
 
-## <a id="installation"></a>📦 Installation
+## Installation
 
 Use the snippet for your plugin manager:
 
@@ -115,7 +115,7 @@ require("paq") {
 }
 ```
 
-## <a id="configuration"></a>⚙️ Configuration
+## Configuration
 
 > [!WARNING]
 > Language, struct and style names must be spelled exactly as shown in the
@@ -357,7 +357,7 @@ require("codedocs").setup({
 })
 ```
 
-## <a id="usage"></a>💻 Usage
+## Usage
 
 When an annotation insertion is triggered, the plugin generates one for the
 structure under the cursor. If no supported structure is detected, it inserts an
@@ -385,7 +385,7 @@ vim.keymap.set(
 )
 ```
 
-## <a id="supported-languages"></a>🌐 Supported languages
+## Supported languages
 
 > [!TIP]
 > Want to see how annotations look by default? Take a look at the [Annotation Examples](./ANNOTATION_EXAMPLES.md)
@@ -410,18 +410,18 @@ vim.keymap.set(
 | Rust       | \*RustDoc                   | `comment`, `function`          |
 | TypeScript | \*TSDoc                     | `comment`, `function`, `class` |
 
-## <a id="roadmap"></a>🗺️ Roadmap
+## Roadmap
 
 You can see what's being worked on and which features are planned by checking
 the
 [GitHub Milestones](https://github.com/jeangiraldoo/codedocs.nvim/milestones).
 
-## <a id="contributing"></a>🤝 Contributing
+## Contributing
 
 Thank you for your interest in contributing to **Codedocs**! Feel free to read
 the [Contribution guide](./CONTRIBUTING.md) to get started.
 
-## <a id="motivation"></a>💡 Motivation
+## Motivation
 
 I started working on Codedocs because I wanted to enhance my experience with
 Neovim, which I started using daily for my side projects and university
@@ -438,7 +438,7 @@ documentation strings, allowing for easy customization, and providing a simple
 yet powerful solution for both personal and community use. Plus, it is a fun
 project to work on!
 
-## <a id="license"></a>📜 License
+## License
 
 Codedocs is licensed under the MIT License. This means you are free to download,
 install, modify, share, and use the plugin for both personal and commercial
