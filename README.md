@@ -18,7 +18,7 @@
 
 Codedocs.nvim automatically recognizes various language structures such as
 functions, classes, variables, and more, and inserts appropriate documentation
-strings based on the [programming language](#supported-languages) you are using.
+strings based on the [programming language](#language-support) you are using.
 
 You can easily modify the structure of the documentation strings to suit your
 specific needs, add support for new languages by defining their documentation
@@ -31,7 +31,7 @@ formats, or just use codedocs as it is! :)
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
-- [Supported languages](#supported-languages)
+- [Language support](#language-support)
 - [Roadmap](#roadmap)
 - [Technical documentation](./lua/codedocs/README.md)
 - [Contributing](#contributing)
@@ -42,7 +42,7 @@ formats, or just use codedocs as it is! :)
 
 - Works out-of-the-box.
 - Detects and documents code structures with a simple keybind.
-- Supports multiple [languages and styles](#supported-languages).
+- Supports multiple [languages and styles](#language-support).
 - Easily customize existing formats or add new ones.
 
 ## Requirements
@@ -119,7 +119,7 @@ require("paq") {
 
 > [!WARNING]
 > Language, struct and style names must be spelled exactly as shown in the
-> [supported languages section](#supported-languages).
+> [supported languages section](#language-support).
 
 ### Change a language's default annotation style
 
@@ -385,7 +385,7 @@ vim.keymap.set(
 )
 ```
 
-## Supported languages
+## Language support
 
 > [!TIP]
 > Want to see how annotations look by default? Take a look at the [Annotation Examples](./ANNOTATION_EXAMPLES.md)
@@ -394,21 +394,21 @@ vim.keymap.set(
 > [!NOTE]
 > \* indicates the default style for that language
 
-| Languages  | Annotation styles           | Supported automatic annotation |
-| ---------- | --------------------------- | ------------------------------ |
-| Bash       | \*Google                    | `comment`, `function`          |
-| C          | \*Doxygen                   | `comment`, `function`          |
-| C++        | \*Doxygen                   | `comment`, `function`          |
-| Go         | \*Godoc                     | `comment`, `function`          |
-| JavaScript | \*JSDoc                     | `comment`, `function`, `class` |
-| Java       | \*JavaDoc                   | `comment`, `function`, `class` |
-| Kotlin     | \*KDoc                      | `comment`, `function`, `class` |
-| Lua        | \*EmmyLua, LDoc             | `comment`, `function`          |
-| Python     | Google, NumPy/SciPy, \*reST | `comment`, `function`, `class` |
-| PHP        | \*PHPDoc                    | `comment`, `function`          |
-| Ruby       | \*YARD                      | `comment`, `function`          |
-| Rust       | \*RustDoc                   | `comment`, `function`          |
-| TypeScript | \*TSDoc                     | `comment`, `function`, `class` |
+| Language   | Styles                | Structures                     |
+| ---------- | --------------------- | ------------------------------ |
+| Bash       | \*Google              | `comment`, `function`          |
+| C          | \*Doxygen             | `comment`, `function`          |
+| C++        | \*Doxygen             | `comment`, `function`          |
+| Go         | \*Godoc               | `comment`, `function`          |
+| JavaScript | \*JSDoc               | `comment`, `function`, `class` |
+| Java       | \*JavaDoc             | `comment`, `function`, `class` |
+| Kotlin     | \*KDoc                | `comment`, `function`, `class` |
+| Lua        | \*EmmyLua, LDoc       | `comment`, `function`          |
+| Python     | Google, NumPy, \*reST | `comment`, `function`, `class` |
+| PHP        | \*PHPDoc              | `comment`, `function`          |
+| Ruby       | \*YARD                | `comment`, `function`          |
+| Rust       | \*RustDoc             | `comment`, `function`          |
+| TypeScript | \*TSDoc               | `comment`, `function`, `class` |
 
 ## Roadmap
 
