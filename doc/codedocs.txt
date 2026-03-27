@@ -1,4 +1,4 @@
-*codedocs.txt*            For NVIM v0.10+           Last change: 2026 March 21
+*codedocs.txt*            For NVIM v0.10+           Last change: 2026 March 27
 
 ==============================================================================
 Table of Contents                                 *codedocs-table-of-contents*
@@ -10,7 +10,8 @@ Table of Contents                                 *codedocs-table-of-contents*
   - Installation                         |codedocs-codedocs.nvim-installation|
   - Configuration                       |codedocs-codedocs.nvim-configuration|
   - Usage                                       |codedocs-codedocs.nvim-usage|
-  - Supported languages           |codedocs-codedocs.nvim-supported-languages|
+  - Language support                 |codedocs-codedocs.nvim-language-support|
+  - Annotation examples           |codedocs-codedocs.nvim-annotation-examples|
   - Roadmap                                   |codedocs-codedocs.nvim-roadmap|
   - Contributing                         |codedocs-codedocs.nvim-contributing|
   - Motivation                             |codedocs-codedocs.nvim-motivation|
@@ -41,7 +42,8 @@ TABLE OF CONTENTS                   *codedocs-codedocs.nvim-table-of-contents*
 - |codedocs-installation|
 - |codedocs-configuration|
 - |codedocs-usage|
-- |codedocs-supported-languages|
+- |codedocs-language-support|
+- |codedocs-annotation-examples|
 - |codedocs-roadmap|
 - Technical documentation <./lua/codedocs/README.md>
 - |codedocs-contributing|
@@ -211,169 +213,127 @@ In this case, we:
 - Added a third kaomoji to wrap the left side of the return type.
 - Customized the titles for both the parameters and return sections.
 
-To customize an annotation style, you have to keep in mind that it is nothing
-but a table where each key is an option.
-
-Options are grouped in the form of settings and sections:
+To customize an annotation style, keep in mind that it is simply a regular Lua
+table with two top-level keys: `sections` and `settings`.
 
 
 LAYOUT OPTION
 
-The `layout` option is special in the sense that it can be used in sections,
-section items, and in the annotation settings; all three cases share the same
-core definition:
+The `layout` option accepts a `table` type and defines the base lines that
+compose an annotation section, item, or the base annotation layout. It can be
+used both in the `settings` and `sections` tables.
 
-  -------------------------------------------------------------------------
-  Option   Expected   Behavior
-  Name     Value Type 
-  -------- ---------- -----------------------------------------------------
-  layout   table      Defines the base lines that compose an annotation
-                      section, item, or the base annotation layout
-
-  -------------------------------------------------------------------------
 Additionally, since a layout is just a list of strings, the following string
 placeholders are predefined:
 
-
-  [!NOTE] Placeholders are referenced by prepending `%` to the placeholder name
-  -------------------------------------------------------------------------------------
-  Placeholder name        Behavior
-  ----------------------- -------------------------------------------------------------
-  snippet_tabstop_index   Inserts a tabstop index for defining snippet tabstops (e.g.,
-                          $%snippet_tabstop_index or
-                          ${%snippet_tabstop_index:default label}).
-
-  >                       Inserts an indentation string (either a tab character or a
-                          number of spaces based on your Neovim settings)
-  -------------------------------------------------------------------------------------
-
-MAIN LAYOUT
-
-The main annotation layout is defined under the `settings` field. It’s meant
-for defining the base layout of an annotation; all sections are placed within
-this layout according to the `insert_at` setting.
+- `%snippet_tabstop_index`: Inserts a tabstop index for defining snippet tabstops
+    (e.g., `$%snippet_tabstop_index` or `${%snippet_tabstop_index:default label}`).
+- `%>`: Either a tab character or a number of spaces, based on your Neovim settings
 
 
-SECTION LAYOUT
+SETTINGS
 
-The section layout defines the way a section looks like, not accounting for its
-items as their style is handled by the |codedocs-item-layout|
+All structures have a `settings` field as it is used for configuring
+fundamental aspects of an annotation style
 
+  --------------------------------------------------------------------------------
+  Option Name         Expected Value Type           Behavior
+  ------------------- ----------------------------- ------------------------------
+  relative_position   "above" | "below" |           Where to insert the annotation
+                      "empty_target_or_above"       
 
-ITEM LAYOUT
+  insert_at           boolean                       Position in layout to insert
+                                                    the annotation content
 
-An item layout defines the way an item is styled for a given section. It is
-defined under the `items` field.
+  section_order       table                         Order in which sections are
+                                                    added
 
-The following placeholders are available:
+  item_extraction     table                         How items are parsed for a
+                                                    given section
 
-  Placeholder name   Behavior
-  ------------------ ------------------------------
-  item_name          Inserts the name of the item
-  item_type          Inserts the type of the item
+  indented            boolean                       Whether to indent the entire
+                                                    annotation one level
+  --------------------------------------------------------------------------------
+The `item_extraction` option has the following suboptions for class attributes
+under the `attributes` key:
 
-SETTINGS OPTIONS
+  --------------------------------------------------------------------------
+  Name       Expected Value Type           Behavior
+  ---------- ----------------------------- ---------------------------------
+  static     boolean                       Include static attributes in the
+                                           annotation
 
-
-  [!NOTE] All structures have a `settings` field as it is used for configuring
-  fundamental aspects of an annotation style
-  ----------------------------------------------------------------------------------
-  Option Name         Expected   Behavior
-                      Value Type 
-  ------------------- ---------- ---------------------------------------------------
-  relative_position   string     Determines where the annotation is inserted.
-                                 Options are “above”, “below” and
-                                 “empty_target_or_above”
-
-  insert_at           boolean    Position in the layout option to insert the
-                                 annotation content into
-
-  section_order       table      Specifies the order in which sections are added to
-                                 the annotation.
-
-  item_extraction     table      Controls how items for a specific section are
-                                 parsed
-
-  indented            boolean    Whether or not to indent the entire annotation one
-                                 level
-  ----------------------------------------------------------------------------------
-
-ITEM EXTRACTION SUBOPTIONS FOR CLASS ATTRIBUTES
-
-  -----------------------------------------------------------------------------
-  Option     Expected Value     Behavior
-  Name       Type               
-  ---------- ------------------ -----------------------------------------------
-  static     boolean            Include class-level attributes in the
-                                annotation
-
-  instance   string (“none”,    Determines inclusion of instance attributes:
-             “constructor”,     none, only those defined in the constructor, or
-             “all”)             all
-  -----------------------------------------------------------------------------
-
-OPTIONS COMMON TO SECTIONS AND ITEMS
-
-The following options are available to both sections and section items:
-
-  -------------------------------------------------------------------------------
-  Option Name          Expected     Behavior
-                       Value Type   
-  -------------------- ------------ ---------------------------------------------
-  insert_gap_between   table        Sets up a gap in between the current
-                                    section/item and the one below
-
-  -------------------------------------------------------------------------------
-The `insert_gap_between` option has the following suboptions:
-
-  ------------------------------------------------------------------------
-  Suboption   Expected Value Behavior
-  Name        Type           
-  ----------- -------------- ---------------------------------------------
-  enabled     boolean        Whether a gap is inserted in between two
-                             sections or items
-
-  text        string         String used as the gap
-  ------------------------------------------------------------------------
+  instance   "none" | "constructor" |      Which instance attributes to
+             "all"                         include
+  --------------------------------------------------------------------------
 
 SECTIONS
 
-
-  [!NOTE] Section options are only concerned with styling. For fundamental
-  aspects of an annotation check the |codedocs-settings-options|
-The following sections are available:
+Sections are configured under the `sections` key. The following sections are
+available:
 
   Structure   Sections
   ----------- ----------------------------
   func        title, parameters, returns
   class       title, attributes
   comment     title
+All sections except `title` are **item-based**. Item-based sections are focused
+on styling and laying out their items. An item represents a named component of
+a structure, defined by a `name` and a `type`.
 
-TITLE SECTION
+For example, the following function:
 
-Only options common to all sections.
+>python
+    def foo(a: int, b: string) -> int:
+        ...
+<
+
+has the following items:
+
+>lua
+    {
+        parameters = { -- List of parameter items
+            {
+                name = "a",
+                type = "int"
+            },
+            {
+                name = "b",
+                type = "string"
+            },
+        },
+        returns = {
+            {
+                name = "",
+                type = "int"
+            }
+        }
+    }
+<
 
 
-ITEM-BASED SECTIONS
+OPTIONS
 
-An `item` is a part of a structure, having a `name` that identifies it, and a
-`data type`.
+All sections support the `layout` and `insert_gap_between` options.
 
-The following is a mapping of structures to their respective items:
+The `insert_gap_between` sets up a gap in between the current section/item and
+the one below. The following suboptions are available:
 
-- Function: Parameters (`parameters` section), return type (`returns` section).
-- Class: Attributes (`attributes` section).
+  ----------------------------------------------------------------------------
+  Name      Expected Value   Behavior
+            Type             
+  --------- ---------------- -------------------------------------------------
+  enabled   boolean          Whether a gap is inserted in between two sections
+                             or items
 
-  -----------------------------------------------------------------------
-  Option     Expected Value     Behavior
-  Name       Type               
-  ---------- ------------------ -----------------------------------------
-  items      table              Controls how individual items are
-                                rendered
-
-  -----------------------------------------------------------------------
-Options common to all sections and items can be placed inside the `items`
-option.
+  text      string           String used as the gap
+  ----------------------------------------------------------------------------
+Additionally, Item-based sections have a `items` option where both the `layout`
+and `insert_gap_between` options can be used again to control the appearance of
+each individual item rather than the section as a whole. When used under the
+`items` key the `layout` option’s placeholders are expanded with the
+`%item_name` and `%item_type` placeholders, which will be replaced by a given
+item’s name and type respectively.
 
 
 CUSTOMIZATION EXAMPLE
@@ -393,11 +353,6 @@ This is what such customization would look like:
             python = { -- language name
                 Google = { -- name of the style to customize
                     func = { -- structure name
-                        settings = {
-                            insert_gap_between = {
-                                enabled = true
-                            },
-                        },
                         sections = {
                             parameters = {
                                 insert_gap_between = {
@@ -456,42 +411,31 @@ keymap. For example:
 <
 
 
-SUPPORTED LANGUAGES               *codedocs-codedocs.nvim-supported-languages*
+LANGUAGE SUPPORT                     *codedocs-codedocs.nvim-language-support*
 
-
-  [!TIP] Want to see how annotations look by default? Take a look at the
-  Annotation Examples <./ANNOTATION_EXAMPLES.md>
 
   [!NOTE] indicates the default style for that language
-  -------------------------------------------------------------------------
-  Languages    Annotation styles            Supported automatic annotation
-  ------------ ---------------------------- -------------------------------
-  Bash         Google                       comment, function
+  Language     Styles                Structures
+  ------------ --------------------- --------------------------
+  Bash         Google                comment, function
+  C            Doxygen               comment, function
+  C++          Doxygen               comment, function
+  Go           Godoc                 comment, function
+  JavaScript   JSDoc                 comment, function, class
+  Java         JavaDoc               comment, function, class
+  Kotlin       KDoc                  comment, function, class
+  Lua          EmmyLua, LDoc         comment, function
+  Python       Google, NumPy, reST   comment, function, class
+  PHP          PHPDoc                comment, function
+  Ruby         YARD                  comment, function
+  Rust         RustDoc               comment, function
+  TypeScript   TSDoc                 comment, function, class
 
-  C            Doxygen                      comment, function
+ANNOTATION EXAMPLES               *codedocs-codedocs.nvim-annotation-examples*
 
-  C++          Doxygen                      comment, function
+Want to see what annotations look like across all languages and styles? Check
+out Annotation Examples <./ANNOTATION_EXAMPLES.md>.
 
-  Go           Godoc                        comment, function
-
-  JavaScript   JSDoc                        comment, function, class
-
-  Java         JavaDoc                      comment, function, class
-
-  Kotlin       KDoc                         comment, function, class
-
-  Lua          EmmyLua, LDoc                comment, function
-
-  Python       Google, NumPy/SciPy, reST    comment, function, class
-
-  PHP          PHPDoc                       comment, function
-
-  Ruby         YARD                         comment, function
-
-  Rust         RustDoc                      comment, function
-
-  TypeScript   TSDoc                        comment, function, class
-  -------------------------------------------------------------------------
 
 ROADMAP                                       *codedocs-codedocs.nvim-roadmap*
 
