@@ -32,6 +32,7 @@ formats, or just use codedocs as it is! :)
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Language support](#language-support)
+- [Annotation examples](#annotation-examples)
 - [Roadmap](#roadmap)
 - [Technical documentation](./lua/codedocs/README.md)
 - [Contributing](#contributing)
@@ -363,9 +364,6 @@ vim.keymap.set(
 
 ## Language support
 
-> [!TIP]
-> Want to see how annotations look by default? Take a look at the [Annotation Examples](./ANNOTATION_EXAMPLES.md)
-
 <!-- prettier-ignore -->
 > [!NOTE]
 > \* indicates the default style for that language
@@ -385,6 +383,11 @@ vim.keymap.set(
 | Ruby       | \*YARD                | `comment`, `function`          |
 | Rust       | \*RustDoc             | `comment`, `function`          |
 | TypeScript | \*TSDoc               | `comment`, `function`, `class` |
+
+## Annotation examples
+
+Want to see what annotations look like across all languages and styles? Check out
+[Annotation Examples](./ANNOTATION_EXAMPLES.md).
 
 ## Roadmap
 
