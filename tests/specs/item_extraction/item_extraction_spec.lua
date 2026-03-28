@@ -5,7 +5,7 @@ local LangSpecs = require "codedocs.lang_specs.init"
 
 local LANGS_TO_TEST = LangSpecs.get_supported_langs()
 
-describe("Annotation building using default options", function()
+describe("Basic item extraction", function()
 	for _, lang in ipairs(LANGS_TO_TEST) do
 		for _, cases in pairs(require("tests.specs.item_extraction.test_cases." .. lang)) do
 			for idx, case in ipairs(cases) do

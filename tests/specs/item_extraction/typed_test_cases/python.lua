@@ -1,0 +1,80 @@
+local TYPES_TO_TEST = {
+	"int",
+	"float",
+	"complex",
+	"bool",
+	"str",
+	"bytes",
+	"Any",
+	"object",
+}
+
+local COLLECTIONS_WITH_GENERICS = {}
+
+return {
+	func = {
+		returns = {
+			template = {
+				"def foo() -> %data_type:",
+				"	...",
+			},
+			cursor_pos = {
+				row = 2,
+				col = 1,
+			},
+			expected_item_name = "",
+			types_to_test = (function()
+				local returns_only_types = {}
+
+				local types_copy = vim.deepcopy(TYPES_TO_TEST)
+				vim.list_extend(types_copy, returns_only_types)
+				return types_copy
+			end)(),
+			collections_with_generics = COLLECTIONS_WITH_GENERICS,
+		},
+		parameters = {
+			template = {
+				"def foo(a: %data_type):",
+				"	...",
+			},
+			cursor_pos = {
+				row = 2,
+				col = 1,
+			},
+			expected_item_name = "a",
+			types_to_test = (function()
+				local parametre_only_types = {
+					"None",
+				}
+
+				local types_copy = vim.deepcopy(TYPES_TO_TEST)
+				vim.list_extend(types_copy, parametre_only_types)
+				return types_copy
+			end)(),
+			collections_with_generics = (function()
+				local collections_only_types = {
+					"int | %data_type",
+					"Union[int, %data_type]",
+					"Optional[%data_type]",
+					"list[%data_type]",
+					"set[%data_type]",
+					"frozenset[%data_type]",
+					"dict[int, %data_type]",
+					"tuple[int, %data_type]",
+					"Iterator[%data_type]",
+					"Generator[str, int, %data_type]",
+					"Callable[[int, %data_type], bool]",
+					"Literal[int, %data_type]",
+					"Sequence[%data_type]",
+					"MutableSequence[%data_type]",
+					"Mapping[int, %data_type]",
+					"MutableMapping[int, %data_type]",
+				}
+
+				local types_copy = vim.deepcopy(COLLECTIONS_WITH_GENERICS)
+				vim.list_extend(types_copy, collections_only_types)
+				return types_copy
+			end)(),
+		},
+	},
+}
