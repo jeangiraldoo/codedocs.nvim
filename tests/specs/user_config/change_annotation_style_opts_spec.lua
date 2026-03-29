@@ -71,7 +71,7 @@ describe("Customizing style options", function()
 		local lang_spec = LangSpecs.new(lang_name)
 		for _, struct_name in ipairs(lang_spec:get_supported_structs()) do
 			describe("[" .. lang_name .. "/" .. struct_name .. "]:", function()
-				for _, style_name in ipairs(LangSpecs.get_supported_styles(lang_name)) do
+				for _, style_name in ipairs(lang_spec:get_supported_styles()) do
 					it(style_name .. " style", function()
 						local original_style = vim.deepcopy(lang_spec:get_struct_style(struct_name, style_name))
 						local original_mocked_user_opts = MOCKED_USER_STRUCT_OPTS[struct_name]

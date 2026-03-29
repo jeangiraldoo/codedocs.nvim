@@ -90,6 +90,11 @@ return {
 	lang_name = "python",
 	default_style = "reST",
 	identifier_pos = true,
+	supported_styles = {
+		"Google",
+		"Numpy",
+		"reST",
+	},
 	struct_identifiers = {
 		function_definition = "func",
 		class_definition = "class",

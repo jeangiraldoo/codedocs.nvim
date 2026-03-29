@@ -92,6 +92,9 @@ return {
 	lang_name = "javascript",
 	default_style = "JSDoc",
 	identifier_pos = true,
+	supported_styles = {
+		"JSDoc",
+	},
 	struct_identifiers = {
 		method_definition = "func",
 		function_declaration = "func",

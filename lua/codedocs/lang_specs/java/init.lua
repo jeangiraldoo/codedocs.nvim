@@ -54,6 +54,9 @@ return {
 	lang_name = "java",
 	default_style = "JavaDoc",
 	identifier_pos = false,
+	supported_styles = {
+		"JavaDoc",
+	},
 	struct_identifiers = {
 		method_declaration = "func",
 		class_declaration = "class",

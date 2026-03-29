@@ -6,7 +6,7 @@ describe("All styles are implemented for each structure: ", function()
 	for _, lang_name in ipairs(LangSpecs.get_supported_langs()) do
 		local lang_spec = LangSpecs.new(lang_name)
 
-		local supported_styles = LangSpecs.get_supported_styles(lang_name)
+		local supported_styles = lang_spec:get_supported_styles()
 		local supported_structs = lang_spec:get_supported_structs()
 
 		for _, struct_name in ipairs(supported_structs) do

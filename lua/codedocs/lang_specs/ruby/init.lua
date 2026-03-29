@@ -20,6 +20,9 @@ return {
 	lang_name = "ruby",
 	default_style = "YARD",
 	identifier_pos = true,
+	supported_styles = {
+		"YARD",
+	},
 	struct_identifiers = {
 		method = "func",
 	},

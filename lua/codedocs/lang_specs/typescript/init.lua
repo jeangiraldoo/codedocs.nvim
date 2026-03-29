@@ -112,6 +112,9 @@ return {
 	lang_name = "typescript",
 	default_style = "TSDoc",
 	identifier_pos = true,
+	supported_styles = {
+		"TSDoc",
+	},
 	struct_identifiers = {
 		method_definition = "func",
 		function_declaration = "func",

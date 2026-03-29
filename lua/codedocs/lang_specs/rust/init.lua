@@ -27,6 +27,9 @@ return {
 	lang_name = "rust",
 	default_style = "RustDoc",
 	identifier_pos = true,
+	supported_styles = {
+		"RustDoc",
+	},
 	struct_identifiers = {
 		function_item = "func",
 	},

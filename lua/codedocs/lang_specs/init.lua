@@ -44,25 +44,16 @@ local function _validate_section_opts(expected_opts, section_name, opts)
 	return true
 end
 
----Builds a list of the styles supported by a specific language
----
----It is assumed that all language structures support the same styles,
----hence it is only necessary to check what styles the `comment` structure supports
----@param lang_name string Language to get the supported styles from
----@return string[] style_names List of supported styles
-function LangSpecs.get_supported_styles(lang_name)
-	if not LangSpecs.is_lang_supported(lang_name) then return {} end
-
-	local style_names = vim.tbl_keys(require("codedocs.lang_specs." .. lang_name .. ".styles.comment"))
-	return style_names
-end
+---@return string[] supported_styles List of style names
+function LangSpecs:get_supported_styles() return self.supported_styles end
 
 ---Checks wether or not a style is supported by a specific language
 ---@param lang_name string
 ---@param style_name string
 ---@return boolean
 function LangSpecs.is_style_supported(lang_name, style_name)
-	local supported_styles = LangSpecs.get_supported_styles(lang_name)
+	local lang_spec = LangSpecs.new(lang_name)
+	local supported_styles = lang_spec:get_supported_styles()
 	return vim.list_contains(supported_styles, style_name)
 end
 

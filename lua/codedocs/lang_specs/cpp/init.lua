@@ -34,6 +34,9 @@ return {
 	lang_name = "cpp",
 	default_style = "Doxygen",
 	identifier_pos = false,
+	supported_styles = {
+		"Doxygen",
+	},
 	struct_identifiers = {
 		function_definition = "func",
 	},
