@@ -67,34 +67,6 @@ function LangSpecs:get_supported_structs()
 	return supported_struct_names
 end
 
-function LangSpecs.set_default_lang_style(new_styles)
-	for lang_name, new_default_style in pairs(new_styles) do
-		if type(new_default_style) ~= "string" then
-			vim.notify(
-				"The value assigned as the default docstring style for " .. lang_name .. " must be a string",
-				vim.log.levels.ERROR
-			)
-			return
-		end
-
-		if not LangSpecs.is_lang_supported(lang_name) then
-			vim.notify("There is no language called " .. lang_name .. " available in codedocs", vim.log.levels.ERROR)
-			return
-		end
-
-		local lang_spec = LangSpecs.new(lang_name)
-		if not lang_spec:is_style_supported(new_default_style) then
-			vim.notify(
-				"No style called " .. new_default_style .. " is supported by " .. lang_name,
-				vim.log.levels.ERROR
-			)
-			return
-		end
-
-		lang_spec:set_default_style(new_default_style)
-	end
-end
-
 function LangSpecs.update_style(user_opts)
 	for lang_name, user_styles in pairs(user_opts) do
 		if not LangSpecs.is_lang_supported(lang_name) then
@@ -372,7 +344,16 @@ function LangSpecs:get_default_style() return self.default_style end
 
 function LangSpecs:get_lang_identifier_pos() return self.identifier_pos end
 
+---@param style_name string
 function LangSpecs:set_default_style(style_name)
+	assert(
+		type(style_name) == "string",
+		("The value assigned as the default style for %s must be a string, got %s"):format(
+			self.lang_name,
+			type(style_name)
+		)
+	)
+
 	if not self:is_style_supported(style_name) then
 		vim.notify("No style called " .. style_name .. " is supported by " .. self.lang_name, vim.log.levels.ERROR)
 		return

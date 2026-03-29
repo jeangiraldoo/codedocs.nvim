@@ -53,7 +53,20 @@ end
 function Codedocs.setup(config)
 	if config.settings then _apply_plugin_settings(config.settings) end
 
-	if config and config.default_styles then LangSpecs.set_default_lang_style(config.default_styles) end
+	if config and config.default_styles then
+		for lang_name, new_default_style in pairs(config.default_styles) do
+			if not LangSpecs.is_lang_supported(lang_name) then
+				vim.notify(
+					"There is no language called " .. lang_name .. " available in codedocs",
+					vim.log.levels.ERROR
+				)
+				return
+			end
+
+			local lang_spec = LangSpecs.new(lang_name)
+			lang_spec:set_default_style(new_default_style)
+		end
+	end
 
 	if config and config.styles then LangSpecs.update_style(config.styles) end
 end
