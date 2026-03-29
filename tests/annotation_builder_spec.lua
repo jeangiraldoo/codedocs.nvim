@@ -1,113 +1,121 @@
+---This test specification is focused on ensuring that the `annotation builder` component works properly.
+---The checks consist of:
+---		- Mocking language-agnostic items
+---		- Defining base options, and the way the annotation looks like when using said options
+---		- Override the base options and check that the new annotation has the expected differences from the base one
+---
+---Regarding the `items` option, since all item-based sections use the same `items` suboptions,
+---and those options only affect their own section, it’s enough to test them in one section
+
 local annotation_builder = require "codedocs.annotation_builder"
 
-local COMMON_DATA = {
-	ITEMS = {
-		primary_section = {
-			{
-				name = "a",
-				type = "int",
-			},
-			{
-				name = "b",
-				type = "",
-			},
-			{
-				name = "c",
-				type = "int",
-			},
-			{
-				name = "",
-				type = "string",
-			},
+local MOCKED_ITEMS = {
+	primary_section = {
+		{
+			name = "a",
+			type = "int",
 		},
-		secondary_section = {
-			{
-				name = "d",
-				type = "int",
-			},
-			{
-				name = "e",
-				type = "int",
-			},
-			{
-				name = "f",
-				type = "int",
-			},
-			{
-				name = "",
-				type = "string",
-			},
+		{
+			name = "b",
+			type = "",
+		},
+		{
+			name = "c",
+			type = "int",
+		},
+		{
+			name = "",
+			type = "string",
 		},
 	},
-	BASE_STYLE = {
-		expected_annotation = {
-			"/**",
-			" * ",
-			" *",
-			" * @item a",
-			" * @item b",
-			" * @item c",
-			" * @item",
-			" * @secondary_item d",
-			" * @secondary_item e",
-			" * @secondary_item f",
-			" * @secondary_item",
-			" */",
+	secondary_section = {
+		{
+			name = "d",
+			type = "int",
 		},
-		opts = {
-			settings = {
+		{
+			name = "e",
+			type = "int",
+		},
+		{
+			name = "f",
+			type = "int",
+		},
+		{
+			name = "",
+			type = "string",
+		},
+	},
+}
+
+local BASE_ANNOTATION = {
+	expected_lines = {
+		"/**",
+		" * ",
+		" *",
+		" * @item a",
+		" * @item b",
+		" * @item c",
+		" * @item",
+		" * @secondary_item d",
+		" * @secondary_item e",
+		" * @secondary_item f",
+		" * @secondary_item",
+		" */",
+	},
+	opts = {
+		settings = {
+			layout = {
+				"/**",
+				" */",
+			},
+			insert_at = 2,
+			section_order = {
+				"primary_section",
+				"secondary_section",
+			},
+		},
+		sections = {
+			title = {
 				layout = {
-					"/**",
-					" */",
+					" * ",
 				},
-				insert_at = 2,
-				section_order = {
-					"primary_section",
-					"secondary_section",
+				insert_gap_between = {
+					enabled = true,
+					text = " *",
 				},
 			},
-			sections = {
-				title = {
-					layout = {
-						" * ",
-					},
-					insert_gap_between = {
-						enabled = true,
-						text = " *",
-					},
+			primary_section = {
+				layout = {},
+				insert_gap_between = {
+					enabled = false,
+					text = " *",
 				},
-				primary_section = {
-					layout = {},
-					insert_gap_between = {
-						enabled = false,
-						text = " *",
-					},
-					items = {
-						insert_gap_between = {
-							enabled = false,
-							text = " * ",
-						},
-						indent = false,
-						layout = {
-							" * @item %item_name",
-						},
-					},
-				},
-				secondary_section = {
-					layout = {},
+				items = {
 					insert_gap_between = {
 						enabled = false,
 						text = " * ",
 					},
-					items = {
-						insert_gap_between = {
-							enabled = false,
-							text = " * ",
-						},
-						indent = false,
-						layout = {
-							" * @secondary_item %item_name",
-						},
+					indent = false,
+					layout = {
+						" * @item %item_name",
+					},
+				},
+			},
+			secondary_section = {
+				layout = {},
+				insert_gap_between = {
+					enabled = false,
+					text = " * ",
+				},
+				items = {
+					insert_gap_between = {
+						enabled = false,
+						text = " * ",
+					},
+					indent = false,
+					layout = {
+						" * @secondary_item %item_name",
 					},
 				},
 			},
@@ -115,9 +123,9 @@ local COMMON_DATA = {
 	},
 }
 
-local SETTINGS_CASES = {
+local CASES = {
 	{
-		expected_annotation = {
+		expected_lines = {
 			"---",
 			"--* ",
 			" *",
@@ -162,7 +170,7 @@ local SETTINGS_CASES = {
 		},
 	},
 	{
-		expected_annotation = {
+		expected_lines = {
 			"/**",
 			" * ",
 			" *",
@@ -195,7 +203,7 @@ local SETTINGS_CASES = {
 		},
 	},
 	{
-		expected_annotation = {
+		expected_lines = {
 			"/**",
 			" * ",
 			" *",
@@ -205,7 +213,7 @@ local SETTINGS_CASES = {
 			" * @secondary_item ",
 			" * This is the primary section",
 			" * ***************************",
-			" * ", ---BUG: section_gap_text option needed
+			" * ",
 			" * @item a",
 			" * @item b",
 			" * @item c",
@@ -231,7 +239,7 @@ local SETTINGS_CASES = {
 		},
 	},
 	{
-		expected_annotation = {
+		expected_lines = {
 			"/**",
 			" * ",
 			" *",
@@ -270,14 +278,8 @@ local SETTINGS_CASES = {
 			},
 		},
 	},
-}
-
----Since all sections use the same item options,
----and those options only affect their own section,
----it’s enough to test them in one section
-local ITEM_CASES = {
 	{
-		expected_annotation = {
+		expected_lines = {
 			"/**",
 			" * ",
 			" *",
@@ -304,7 +306,7 @@ local ITEM_CASES = {
 		},
 	},
 	{
-		expected_annotation = {
+		expected_lines = {
 			"/**",
 			" * ",
 			" *",
@@ -330,30 +332,16 @@ local ITEM_CASES = {
 			},
 		},
 	},
-	---BUG: is_type_below_name_first doesnt have a properly defined behaviour
 }
 
-local CASES = {
-	settings = SETTINGS_CASES,
-	item = ITEM_CASES,
-}
+describe("Annotation builder - ", function()
+	for i, case in ipairs(CASES) do
+		it("Case #" .. i, function()
+			local base_opts_copy = vim.deepcopy(BASE_ANNOTATION.opts)
+			local new_style = vim.tbl_deep_extend("force", base_opts_copy, case.opts_to_change)
+			local annotation = annotation_builder(new_style, MOCKED_ITEMS, new_style.settings.layout)
 
-local function test_case(name, case)
-	it(name, function()
-		local copy = vim.deepcopy(COMMON_DATA.BASE_STYLE.opts)
-		local new_style = vim.tbl_deep_extend("force", copy, case.opts_to_change)
-		local annotation = annotation_builder(new_style, COMMON_DATA.ITEMS, new_style.settings.layout)
-
-		assert.are.same(case.expected_annotation, annotation)
-	end)
-end
-
-describe("Test annotation builder - ", function()
-	for section_name, section_cases in pairs(CASES) do
-		describe(section_name .. " options - ", function()
-			for i, case in ipairs(section_cases) do
-				test_case("Case #" .. i, case)
-			end
+			assert.are.same(case.expected_lines, annotation)
 		end)
 	end
 end)

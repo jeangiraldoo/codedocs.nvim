@@ -1,29 +1,21 @@
+package.path = package.path .. ";" .. vim.fn.expand "<sfile>:p:h" .. "/tests"
+
+local test_utils = require "tests.utils"
 local LangSpecs = require "codedocs.lang_specs.init"
-
-local project_root = vim.fn.expand "<sfile>:p:h"
-package.path = package.path .. ";" .. project_root .. "/tests/defaults/annotations/test_cases/?.lua"
-
-local function mock_buffer(structure, cursor_pos, cursor_col)
-	vim.api.nvim_buf_set_lines(0, 0, -1, false, structure)
-	vim.api.nvim_win_set_cursor(0, { cursor_pos, cursor_col })
-	vim.bo.swapfile = false
-	vim.bo.buftype = "nofile"
-	vim.bo.bufhidden = "wipe"
-	vim.bo.expandtab = false
-end
 
 describe("Default style annotations", function()
 	for _, lang in ipairs(LangSpecs.get_supported_langs()) do
-		local buf = vim.api.nvim_create_buf(false, true)
-		vim.api.nvim_set_current_buf(buf)
-		vim.bo.filetype = lang
-
-		for struct_name, struct_cases in pairs(require(lang)) do
+		for struct_name, struct_cases in pairs(require("tests.defaults.annotations.test_cases." .. lang)) do
 			describe(lang .. " - " .. struct_name, function()
 				for idx, struct_case in ipairs(struct_cases) do
 					for _, style_name in ipairs(LangSpecs.get_supported_styles(lang)) do
 						it("(" .. style_name .. ") - Case #" .. idx, function()
-							mock_buffer(struct_case.structure, struct_case.cursor_pos, struct_case.cursor_col or 1)
+							test_utils.mock_buffer(
+								lang,
+								struct_case.structure,
+								{ row = struct_case.cursor_pos, col = struct_case.cursor_col or 1 }
+							)
+
 							assert.are.same(
 								struct_case.expected_annotation[style_name],
 								require("codedocs").orchestrate_annotation_build {
