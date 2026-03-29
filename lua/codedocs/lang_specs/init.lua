@@ -47,13 +47,10 @@ end
 ---@return string[] supported_styles List of style names
 function LangSpecs:get_supported_styles() return self.supported_styles end
 
----Checks wether or not a style is supported by a specific language
----@param lang_name string
 ---@param style_name string
 ---@return boolean
-function LangSpecs.is_style_supported(lang_name, style_name)
-	local lang_spec = LangSpecs.new(lang_name)
-	local supported_styles = lang_spec:get_supported_styles()
+function LangSpecs:is_style_supported(style_name)
+	local supported_styles = self:get_supported_styles()
 	return vim.list_contains(supported_styles, style_name)
 end
 
@@ -86,7 +83,7 @@ function LangSpecs.set_default_lang_style(new_styles)
 		end
 
 		local lang_spec = LangSpecs.new(lang_name)
-		if not LangSpecs.is_style_supported(lang_name, new_default_style) then
+		if not lang_spec:is_style_supported(new_default_style) then
 			vim.notify(
 				"No style called " .. new_default_style .. " is supported by " .. lang_name,
 				vim.log.levels.ERROR
@@ -376,7 +373,7 @@ function LangSpecs:get_default_style() return self.default_style end
 function LangSpecs:get_lang_identifier_pos() return self.identifier_pos end
 
 function LangSpecs:set_default_style(style_name)
-	if not LangSpecs.is_style_supported(self.lang_name, style_name) then
+	if not self:is_style_supported(style_name) then
 		vim.notify("No style called " .. style_name .. " is supported by " .. self.lang_name, vim.log.levels.ERROR)
 		return
 	end
