@@ -34,8 +34,10 @@ return {
 		"PHPDoc",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.php.styles.func",
-		comment = require "codedocs.lang_specs.php.styles.comment",
+		definitions = {
+			func = require "codedocs.lang_specs.php.styles.func",
+			comment = require "codedocs.lang_specs.php.styles.comment",
+		},
 	},
 	extraction = {
 		struct_identifiers = {

@@ -34,8 +34,10 @@ return {
 		"LDoc",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.lua.styles.func",
-		comment = require "codedocs.lang_specs.lua.styles.comment",
+		definitions = {
+			func = require "codedocs.lang_specs.lua.styles.func",
+			comment = require "codedocs.lang_specs.lua.styles.comment",
+		},
 	},
 	extraction = {
 		struct_identifiers = {

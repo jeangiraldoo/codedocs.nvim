@@ -96,9 +96,11 @@ return {
 		"JSDoc",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.javascript.styles.func",
-		class = require "codedocs.lang_specs.javascript.styles.class",
-		comment = require "codedocs.lang_specs.javascript.styles.comment",
+		definitions = {
+			func = require "codedocs.lang_specs.javascript.styles.func",
+			class = require "codedocs.lang_specs.javascript.styles.class",
+			comment = require "codedocs.lang_specs.javascript.styles.comment",
+		},
 	},
 	extraction = {
 		struct_identifiers = {

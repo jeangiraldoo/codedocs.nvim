@@ -42,8 +42,10 @@ return {
 		"Godoc",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.go.styles.func",
-		comment = require "codedocs.lang_specs.go.styles.comment",
+		definitions = {
+			func = require "codedocs.lang_specs.go.styles.func",
+			comment = require "codedocs.lang_specs.go.styles.comment",
+		},
 	},
 	extraction = {
 		struct_identifiers = {

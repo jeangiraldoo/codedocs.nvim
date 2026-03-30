@@ -31,8 +31,10 @@ return {
 		"RustDoc",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.rust.styles.func",
-		comment = require "codedocs.lang_specs.rust.styles.comment",
+		definitions = {
+			func = require "codedocs.lang_specs.rust.styles.func",
+			comment = require "codedocs.lang_specs.rust.styles.comment",
+		},
 	},
 	extraction = {
 		struct_identifiers = {

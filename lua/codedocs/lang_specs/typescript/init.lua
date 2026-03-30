@@ -116,9 +116,11 @@ return {
 		"TSDoc",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.typescript.styles.func",
-		comment = require "codedocs.lang_specs.typescript.styles.comment",
-		class = require "codedocs.lang_specs.typescript.styles.class",
+		definitions = {
+			func = require "codedocs.lang_specs.typescript.styles.func",
+			comment = require "codedocs.lang_specs.typescript.styles.comment",
+			class = require "codedocs.lang_specs.typescript.styles.class",
+		},
 	},
 	extraction = {
 		struct_identifiers = {

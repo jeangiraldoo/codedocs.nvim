@@ -64,8 +64,10 @@ return {
 		"Google",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.bash.styles.func",
-		comment = require "codedocs.lang_specs.bash.styles.comment",
+		definitions = {
+			func = require "codedocs.lang_specs.bash.styles.func",
+			comment = require "codedocs.lang_specs.bash.styles.comment",
+		},
 	},
 	extraction = {
 		struct_identifiers = {

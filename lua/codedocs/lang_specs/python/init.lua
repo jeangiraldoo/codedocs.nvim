@@ -96,9 +96,11 @@ return {
 		"reST",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.python.styles.func",
-		comment = require "codedocs.lang_specs.python.styles.comment",
-		class = require "codedocs.lang_specs.python.styles.class",
+		definitions = {
+			func = require "codedocs.lang_specs.python.styles.func",
+			comment = require "codedocs.lang_specs.python.styles.comment",
+			class = require "codedocs.lang_specs.python.styles.class",
+		},
 	},
 	extraction = {
 		struct_identifiers = {

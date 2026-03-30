@@ -24,8 +24,10 @@ return {
 		"YARD",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.ruby.styles.func",
-		comment = require "codedocs.lang_specs.ruby.styles.comment",
+		definitions = {
+			func = require "codedocs.lang_specs.ruby.styles.func",
+			comment = require "codedocs.lang_specs.ruby.styles.comment",
+		},
 	},
 	extraction = {
 		struct_identifiers = {

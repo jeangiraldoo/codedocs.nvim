@@ -58,9 +58,11 @@ return {
 		"JavaDoc",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.java.styles.func",
-		class = require "codedocs.lang_specs.java.styles.class",
-		comment = require "codedocs.lang_specs.java.styles.comment",
+		definitions = {
+			func = require "codedocs.lang_specs.java.styles.func",
+			class = require "codedocs.lang_specs.java.styles.class",
+			comment = require "codedocs.lang_specs.java.styles.comment",
+		},
 	},
 	extraction = {
 		struct_identifiers = {

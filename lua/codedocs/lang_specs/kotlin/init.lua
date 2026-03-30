@@ -81,9 +81,11 @@ return {
 		"KDoc",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.kotlin.styles.func",
-		class = require "codedocs.lang_specs.kotlin.styles.class",
-		comment = require "codedocs.lang_specs.kotlin.styles.comment",
+		definitions = {
+			func = require "codedocs.lang_specs.kotlin.styles.func",
+			class = require "codedocs.lang_specs.kotlin.styles.class",
+			comment = require "codedocs.lang_specs.kotlin.styles.comment",
+		},
 	},
 	extraction = {
 		struct_identifiers = {

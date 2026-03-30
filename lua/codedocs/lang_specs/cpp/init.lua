@@ -38,8 +38,10 @@ return {
 		"Doxygen",
 	},
 	styles = {
-		func = require "codedocs.lang_specs.cpp.styles.func",
-		comment = require "codedocs.lang_specs.cpp.styles.comment",
+		definitions = {
+			func = require "codedocs.lang_specs.cpp.styles.func",
+			comment = require "codedocs.lang_specs.cpp.styles.comment",
+		},
 	},
 	extraction = {
 		struct_identifiers = {
