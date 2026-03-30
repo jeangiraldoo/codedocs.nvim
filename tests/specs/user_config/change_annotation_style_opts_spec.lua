@@ -76,10 +76,14 @@ describe("Customizing style options", function()
 						local original_style = vim.deepcopy(lang_spec:get_struct_style(struct_name, style_name))
 						local original_mocked_user_opts = MOCKED_USER_STRUCT_OPTS[struct_name]
 
-						LangSpecs.update_style {
-							[lang_name] = {
-								[style_name] = {
-									[struct_name] = original_mocked_user_opts,
+						require("codedocs").setup {
+							languages = {
+								[lang_name] = {
+									styles = {
+										[struct_name] = {
+											[style_name] = original_mocked_user_opts,
+										},
+									},
 								},
 							},
 						}

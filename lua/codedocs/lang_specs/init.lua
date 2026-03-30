@@ -2,50 +2,6 @@ local defaults = require "codedocs.config"
 
 local LangSpecs = {}
 
-local EXPECTED_OPTS_PER_SECTION = require "codedocs.lang_specs.style_opts"
-
-local function _validate_section_opts(expected_opts, section_name, opts)
-	for actual_section_opt_name, actual_section_opt_value in pairs(opts) do
-		if expected_opts[actual_section_opt_name] == nil then
-			return false, string.format("Invalid opt in '%s' section: %s", section_name, actual_section_opt_name)
-		end
-		local expected_opt_schema = expected_opts[actual_section_opt_name]
-
-		if expected_opt_schema.expected_type ~= type(actual_section_opt_value) then
-			vim.notify(
-				string.format(
-					"Invalid value for %s option in %s section: %s",
-					actual_section_opt_name,
-					section_name,
-					type(actual_section_opt_value)
-				),
-				vim.log.levels.ERROR
-			)
-			return false
-		end
-
-		if expected_opt_schema.expected_type == "table" then
-			if expected_opt_schema.sub_opts then
-				local success, error_msg =
-					_validate_section_opts(expected_opt_schema.sub_opts, section_name, actual_section_opt_value)
-				if not success then return false, error_msg end
-			elseif
-				actual_section_opt_name ~= "template"
-				and not (vim.iter(actual_section_opt_value):all(function(v) return type(v) == "string" end))
-			then
-				return false,
-					string.format(
-						"'%s' option in the '%s' must contain only strings",
-						actual_section_opt_name,
-						section_name
-					)
-			end
-		end
-	end
-
-	return true
-end
-
 ---@return string[] supported_styles List of style names
 function LangSpecs:get_supported_styles() return self.supported_styles end
 
@@ -67,70 +23,6 @@ function LangSpecs:get_supported_structs()
 	table.insert(supported_struct_names, "comment")
 
 	return supported_struct_names
-end
-
-function LangSpecs.update_style(user_opts)
-	for lang_name, user_styles in pairs(user_opts) do
-		if not LangSpecs.is_lang_supported(lang_name) then
-			error("There is no language called " .. lang_name .. " available in codedocs")
-		end
-
-		local lang_spec = LangSpecs.new(lang_name)
-		for user_style_name, user_style_structs in pairs(user_styles) do
-			for user_struct_name, user_struct_categories in pairs(user_style_structs) do
-				local struct_style = lang_spec:get_struct_style(user_struct_name, user_style_name)
-				if struct_style then
-					if user_struct_categories.settings then
-						local user_section_opts_are_valid, msg = _validate_section_opts(
-							EXPECTED_OPTS_PER_SECTION.settings,
-							"settings",
-							user_struct_categories.settings
-						)
-
-						if not user_section_opts_are_valid and msg then
-							vim.notify(msg, vim.log.levels.ERROR)
-							return
-						end
-
-						struct_style.settings =
-							vim.tbl_deep_extend("force", struct_style.settings, user_struct_categories.settings)
-					end
-				end
-
-				if user_struct_categories.sections then
-					for section_name, section_opts in pairs(user_struct_categories.sections) do
-						local struct_section = struct_style.sections[section_name]
-						if struct_section == nil then
-							vim.notify(
-								string.format(
-									"No section called %s in the %s structure in %s",
-									section_name,
-									user_struct_name,
-									lang_name
-								),
-								vim.log.levels.ERROR
-							)
-							return
-						end
-
-						local user_section_opts_are_valid, msg = _validate_section_opts(
-							EXPECTED_OPTS_PER_SECTION.sections[section_name],
-							section_name,
-							section_opts
-						)
-
-						if not user_section_opts_are_valid and msg then
-							vim.notify(msg, vim.log.levels.ERROR)
-							return
-						end
-
-						struct_style.sections[section_name] =
-							vim.tbl_deep_extend("force", struct_style.sections[section_name], section_opts)
-					end
-				end
-			end
-		end
-	end
 end
 
 LangSpecs.get_supported_langs = (function()
