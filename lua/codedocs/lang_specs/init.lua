@@ -329,22 +329,4 @@ function LangSpecs:get_default_style() return defaults.languages[self.lang_name]
 
 function LangSpecs:get_lang_identifier_pos() return self.identifier_pos end
 
----@param style_name string
-function LangSpecs:set_default_style(style_name)
-	assert(
-		type(style_name) == "string",
-		("The value assigned as the default style for %s must be a string, got %s"):format(
-			self.lang_name,
-			type(style_name)
-		)
-	)
-
-	if not self:is_style_supported(style_name) then
-		vim.notify("No style called " .. style_name .. " is supported by " .. self.lang_name, vim.log.levels.ERROR)
-		return
-	end
-
-	self.default_style = style_name
-end
-
 return LangSpecs
