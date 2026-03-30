@@ -152,7 +152,7 @@ function LangSpecs.is_lang_supported(lang) return vim.list_contains(LangSpecs.ge
 
 function LangSpecs.get_buffer_lang_name()
 	local buffer_filetype = vim.bo.filetype
-	return require("codedocs.lang_specs.aliases")[buffer_filetype] or buffer_filetype
+	return defaults.aliases[buffer_filetype] or buffer_filetype
 end
 
 function LangSpecs.new(lang)

@@ -16,4 +16,7 @@ return {
 		lua = require "codedocs.lang_specs.lua",
 		rust = require "codedocs.lang_specs.rust",
 	},
+	aliases = {
+		sh = "bash",
+	},
 }
