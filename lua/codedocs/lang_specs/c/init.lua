@@ -37,10 +37,12 @@ return {
 		func = require "codedocs.lang_specs.c.styles.func",
 		comment = require "codedocs.lang_specs.c.styles.comment",
 	},
-	struct_identifiers = {
-		function_definition = "func",
-	},
-	extractors = {
-		func = Func_extractors,
+	extraction = {
+		struct_identifiers = {
+			function_definition = "func",
+		},
+		extractors = {
+			func = Func_extractors,
+		},
 	},
 }

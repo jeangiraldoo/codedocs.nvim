@@ -37,11 +37,13 @@ return {
 		func = require "codedocs.lang_specs.lua.styles.func",
 		comment = require "codedocs.lang_specs.lua.styles.comment",
 	},
-	struct_identifiers = {
-		function_declaration = "func",
-		function_definition = "func",
-	},
-	extractors = {
-		func = Func_extractors,
+	extraction = {
+		struct_identifiers = {
+			function_declaration = "func",
+			function_definition = "func",
+		},
+		extractors = {
+			func = Func_extractors,
+		},
 	},
 }

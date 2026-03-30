@@ -85,12 +85,14 @@ return {
 		class = require "codedocs.lang_specs.kotlin.styles.class",
 		comment = require "codedocs.lang_specs.kotlin.styles.comment",
 	},
-	struct_identifiers = {
-		function_declaration = "func",
-		class_declaration = "class",
-	},
-	extractors = {
-		class = Class_extractors,
-		func = Func_extractors,
+	extraction = {
+		struct_identifiers = {
+			function_declaration = "func",
+			class_declaration = "class",
+		},
+		extractors = {
+			class = Class_extractors,
+			func = Func_extractors,
+		},
 	},
 }

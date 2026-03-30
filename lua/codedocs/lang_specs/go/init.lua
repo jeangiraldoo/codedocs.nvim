@@ -45,10 +45,12 @@ return {
 		func = require "codedocs.lang_specs.go.styles.func",
 		comment = require "codedocs.lang_specs.go.styles.comment",
 	},
-	struct_identifiers = {
-		function_declaration = "func",
-	},
-	extractors = {
-		func = Func_extractors,
+	extraction = {
+		struct_identifiers = {
+			function_declaration = "func",
+		},
+		extractors = {
+			func = Func_extractors,
+		},
 	},
 }

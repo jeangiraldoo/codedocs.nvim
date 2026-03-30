@@ -67,10 +67,12 @@ return {
 		func = require "codedocs.lang_specs.bash.styles.func",
 		comment = require "codedocs.lang_specs.bash.styles.comment",
 	},
-	struct_identifiers = {
-		function_definition = "func",
-	},
-	extractors = {
-		func = Func_extractors,
+	extraction = {
+		struct_identifiers = {
+			function_definition = "func",
+		},
+		extractors = {
+			func = Func_extractors,
+		},
 	},
 }

@@ -120,13 +120,15 @@ return {
 		comment = require "codedocs.lang_specs.typescript.styles.comment",
 		class = require "codedocs.lang_specs.typescript.styles.class",
 	},
-	struct_identifiers = {
-		method_definition = "func",
-		function_declaration = "func",
-		class_declaration = "class",
-	},
-	extractors = {
-		class = Class_extractors,
-		func = Func_extractors,
+	extraction = {
+		struct_identifiers = {
+			method_definition = "func",
+			function_declaration = "func",
+			class_declaration = "class",
+		},
+		extractors = {
+			class = Class_extractors,
+			func = Func_extractors,
+		},
 	},
 }

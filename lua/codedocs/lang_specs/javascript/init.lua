@@ -100,14 +100,16 @@ return {
 		class = require "codedocs.lang_specs.javascript.styles.class",
 		comment = require "codedocs.lang_specs.javascript.styles.comment",
 	},
-	struct_identifiers = {
-		method_definition = "func",
-		function_declaration = "func",
-		arrow_function = "func",
-		class_declaration = "class",
-	},
-	extractors = {
-		class = Class_extractors,
-		func = Func_extractors,
+	extraction = {
+		struct_identifiers = {
+			method_definition = "func",
+			function_declaration = "func",
+			arrow_function = "func",
+			class_declaration = "class",
+		},
+		extractors = {
+			class = Class_extractors,
+			func = Func_extractors,
+		},
 	},
 }

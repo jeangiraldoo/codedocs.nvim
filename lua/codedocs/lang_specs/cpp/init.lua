@@ -41,10 +41,12 @@ return {
 		func = require "codedocs.lang_specs.cpp.styles.func",
 		comment = require "codedocs.lang_specs.cpp.styles.comment",
 	},
-	struct_identifiers = {
-		function_definition = "func",
-	},
-	extractors = {
-		func = Func_extractors,
+	extraction = {
+		struct_identifiers = {
+			function_definition = "func",
+		},
+		extractors = {
+			func = Func_extractors,
+		},
 	},
 }

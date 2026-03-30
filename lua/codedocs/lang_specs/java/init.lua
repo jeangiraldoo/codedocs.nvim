@@ -62,12 +62,14 @@ return {
 		class = require "codedocs.lang_specs.java.styles.class",
 		comment = require "codedocs.lang_specs.java.styles.comment",
 	},
-	struct_identifiers = {
-		method_declaration = "func",
-		class_declaration = "class",
-	},
-	extractors = {
-		class = Class_extractors,
-		func = Func_extractors,
+	extraction = {
+		struct_identifiers = {
+			method_declaration = "func",
+			class_declaration = "class",
+		},
+		extractors = {
+			class = Class_extractors,
+			func = Func_extractors,
+		},
 	},
 }

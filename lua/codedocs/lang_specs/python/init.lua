@@ -100,12 +100,14 @@ return {
 		comment = require "codedocs.lang_specs.python.styles.comment",
 		class = require "codedocs.lang_specs.python.styles.class",
 	},
-	struct_identifiers = {
-		function_definition = "func",
-		class_definition = "class",
-	},
-	extractors = {
-		class = Class_extractors,
-		func = Func_extractors,
+	extraction = {
+		struct_identifiers = {
+			function_definition = "func",
+			class_definition = "class",
+		},
+		extractors = {
+			class = Class_extractors,
+			func = Func_extractors,
+		},
 	},
 }

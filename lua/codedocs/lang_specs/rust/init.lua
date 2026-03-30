@@ -34,10 +34,12 @@ return {
 		func = require "codedocs.lang_specs.rust.styles.func",
 		comment = require "codedocs.lang_specs.rust.styles.comment",
 	},
-	struct_identifiers = {
-		function_item = "func",
-	},
-	extractors = {
-		func = Func_extractors,
+	extraction = {
+		struct_identifiers = {
+			function_item = "func",
+		},
+		extractors = {
+			func = Func_extractors,
+		},
 	},
 }

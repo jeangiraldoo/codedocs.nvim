@@ -57,7 +57,7 @@ function LangSpecs.new(lang)
 	return new_lang_spec
 end
 
-function LangSpecs:get_struct_identifiers() return self.struct_identifiers end
+function LangSpecs:get_struct_identifiers() return self.extraction.struct_identifiers end
 
 local function normalize_item_fields(items)
 	return vim.tbl_map(function(item)
@@ -191,7 +191,7 @@ function LangSpecs:get_struct_items(struct_name, node, style_name)
 	local items_list = {}
 	for _, section_name in pairs(struct_style.settings.section_order) do
 		if section_name ~= "return_type" then
-			local item_extractor = self.extractors[struct_name][section_name]
+			local item_extractor = self.extraction.extractors[struct_name][section_name]
 
 			local raw_items = item_extractor {
 				node = node,
