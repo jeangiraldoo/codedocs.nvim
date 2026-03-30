@@ -57,6 +57,11 @@ return {
 	supported_styles = {
 		"JavaDoc",
 	},
+	styles = {
+		func = require "codedocs.lang_specs.java.styles.func",
+		class = require "codedocs.lang_specs.java.styles.class",
+		comment = require "codedocs.lang_specs.java.styles.comment",
+	},
 	struct_identifiers = {
 		method_declaration = "func",
 		class_declaration = "class",

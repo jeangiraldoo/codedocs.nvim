@@ -29,6 +29,10 @@ return {
 		"EmmyLua",
 		"LDoc",
 	},
+	styles = {
+		func = require "codedocs.lang_specs.lua.styles.func",
+		comment = require "codedocs.lang_specs.lua.styles.comment",
+	},
 	struct_identifiers = {
 		function_declaration = "func",
 		function_definition = "func",

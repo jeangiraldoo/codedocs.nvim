@@ -33,6 +33,10 @@ return {
 	supported_styles = {
 		"PHPDoc",
 	},
+	styles = {
+		func = require "codedocs.lang_specs.php.styles.func",
+		comment = require "codedocs.lang_specs.php.styles.comment",
+	},
 	struct_identifiers = {
 		function_definition = "func",
 		method_declaration = "func",

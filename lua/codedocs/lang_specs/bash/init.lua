@@ -63,6 +63,10 @@ return {
 	supported_styles = {
 		"Google",
 	},
+	styles = {
+		func = require "codedocs.lang_specs.bash.styles.func",
+		comment = require "codedocs.lang_specs.bash.styles.comment",
+	},
 	struct_identifiers = {
 		function_definition = "func",
 	},

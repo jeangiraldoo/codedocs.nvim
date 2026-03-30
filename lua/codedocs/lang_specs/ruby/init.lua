@@ -23,6 +23,10 @@ return {
 	supported_styles = {
 		"YARD",
 	},
+	styles = {
+		func = require "codedocs.lang_specs.ruby.styles.func",
+		comment = require "codedocs.lang_specs.ruby.styles.comment",
+	},
 	struct_identifiers = {
 		method = "func",
 	},

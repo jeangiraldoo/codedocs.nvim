@@ -95,6 +95,11 @@ return {
 	supported_styles = {
 		"JSDoc",
 	},
+	styles = {
+		func = require "codedocs.lang_specs.javascript.styles.func",
+		class = require "codedocs.lang_specs.javascript.styles.class",
+		comment = require "codedocs.lang_specs.javascript.styles.comment",
+	},
 	struct_identifiers = {
 		method_definition = "func",
 		function_declaration = "func",

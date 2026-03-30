@@ -115,6 +115,11 @@ return {
 	supported_styles = {
 		"TSDoc",
 	},
+	styles = {
+		func = require "codedocs.lang_specs.typescript.styles.func",
+		comment = require "codedocs.lang_specs.typescript.styles.comment",
+		class = require "codedocs.lang_specs.typescript.styles.class",
+	},
 	struct_identifiers = {
 		method_definition = "func",
 		function_declaration = "func",

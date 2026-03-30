@@ -30,6 +30,10 @@ return {
 	supported_styles = {
 		"RustDoc",
 	},
+	styles = {
+		func = require "codedocs.lang_specs.rust.styles.func",
+		comment = require "codedocs.lang_specs.rust.styles.comment",
+	},
 	struct_identifiers = {
 		function_item = "func",
 	},

@@ -80,6 +80,11 @@ return {
 	supported_styles = {
 		"KDoc",
 	},
+	styles = {
+		func = require "codedocs.lang_specs.kotlin.styles.func",
+		class = require "codedocs.lang_specs.kotlin.styles.class",
+		comment = require "codedocs.lang_specs.kotlin.styles.comment",
+	},
 	struct_identifiers = {
 		function_declaration = "func",
 		class_declaration = "class",

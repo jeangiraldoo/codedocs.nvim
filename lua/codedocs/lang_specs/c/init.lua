@@ -33,6 +33,10 @@ return {
 	supported_styles = {
 		"Doxygen",
 	},
+	styles = {
+		func = require "codedocs.lang_specs.c.styles.func",
+		comment = require "codedocs.lang_specs.c.styles.comment",
+	},
 	struct_identifiers = {
 		function_definition = "func",
 	},
