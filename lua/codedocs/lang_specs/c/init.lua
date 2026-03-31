@@ -28,12 +28,12 @@ end
 
 return {
 	lang_name = "c",
-	default_style = "Doxygen",
 	identifier_pos = false,
 	supported_styles = {
 		"Doxygen",
 	},
 	styles = {
+		default = "Doxygen",
 		definitions = {
 			func = require "codedocs.lang_specs.c.styles.func",
 			comment = require "codedocs.lang_specs.c.styles.comment",

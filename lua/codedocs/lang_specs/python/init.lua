@@ -88,7 +88,6 @@ end
 
 return {
 	lang_name = "python",
-	default_style = "reST",
 	identifier_pos = true,
 	supported_styles = {
 		"Google",
@@ -96,6 +95,7 @@ return {
 		"reST",
 	},
 	styles = {
+		default = "reST",
 		definitions = {
 			func = require "codedocs.lang_specs.python.styles.func",
 			comment = require "codedocs.lang_specs.python.styles.comment",

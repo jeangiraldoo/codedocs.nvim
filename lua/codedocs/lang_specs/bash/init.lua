@@ -58,12 +58,12 @@ function Func_extractors.returns() return {} end
 
 return {
 	lang_name = "bash",
-	default_style = "Google",
 	identifier_pos = true,
 	supported_styles = {
 		"Google",
 	},
 	styles = {
+		default = "Google",
 		definitions = {
 			func = require "codedocs.lang_specs.bash.styles.func",
 			comment = require "codedocs.lang_specs.bash.styles.comment",

@@ -18,12 +18,12 @@ end
 
 return {
 	lang_name = "ruby",
-	default_style = "YARD",
 	identifier_pos = true,
 	supported_styles = {
 		"YARD",
 	},
 	styles = {
+		default = "YARD",
 		definitions = {
 			func = require "codedocs.lang_specs.ruby.styles.func",
 			comment = require "codedocs.lang_specs.ruby.styles.comment",

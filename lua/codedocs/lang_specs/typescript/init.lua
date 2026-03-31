@@ -110,12 +110,12 @@ end
 
 return {
 	lang_name = "typescript",
-	default_style = "TSDoc",
 	identifier_pos = true,
 	supported_styles = {
 		"TSDoc",
 	},
 	styles = {
+		default = "TSDoc",
 		definitions = {
 			func = require "codedocs.lang_specs.typescript.styles.func",
 			comment = require "codedocs.lang_specs.typescript.styles.comment",

@@ -217,7 +217,7 @@ function LangSpecs:get_struct_style(struct_name, style_name)
 	return style
 end
 
-function LangSpecs:get_default_style() return defaults.languages[self.lang_name].default_style end
+function LangSpecs:get_default_style() return defaults.languages[self.lang_name].styles.default end
 
 function LangSpecs:get_lang_identifier_pos() return self.identifier_pos end
 

@@ -75,12 +75,12 @@ end
 
 return {
 	lang_name = "kotlin",
-	default_style = "KDoc",
 	identifier_pos = true,
 	supported_styles = {
 		"KDoc",
 	},
 	styles = {
+		default = "KDoc",
 		definitions = {
 			func = require "codedocs.lang_specs.kotlin.styles.func",
 			class = require "codedocs.lang_specs.kotlin.styles.class",

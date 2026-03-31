@@ -32,12 +32,12 @@ end
 
 return {
 	lang_name = "cpp",
-	default_style = "Doxygen",
 	identifier_pos = false,
 	supported_styles = {
 		"Doxygen",
 	},
 	styles = {
+		default = "Doxygen",
 		definitions = {
 			func = require "codedocs.lang_specs.cpp.styles.func",
 			comment = require "codedocs.lang_specs.cpp.styles.comment",

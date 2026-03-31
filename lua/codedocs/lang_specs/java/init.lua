@@ -52,12 +52,12 @@ end
 
 return {
 	lang_name = "java",
-	default_style = "JavaDoc",
 	identifier_pos = false,
 	supported_styles = {
 		"JavaDoc",
 	},
 	styles = {
+		default = "JavaDoc",
 		definitions = {
 			func = require "codedocs.lang_specs.java.styles.func",
 			class = require "codedocs.lang_specs.java.styles.class",

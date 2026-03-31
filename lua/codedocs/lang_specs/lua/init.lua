@@ -27,13 +27,13 @@ end
 ---@type CodedocsLuaSpec
 return {
 	lang_name = "lua",
-	default_style = "EmmyLua",
 	identifier_pos = true,
 	supported_styles = {
 		"EmmyLua",
 		"LDoc",
 	},
 	styles = {
+		default = "EmmyLua",
 		definitions = {
 			func = require "codedocs.lang_specs.lua.styles.func",
 			comment = require "codedocs.lang_specs.lua.styles.comment",

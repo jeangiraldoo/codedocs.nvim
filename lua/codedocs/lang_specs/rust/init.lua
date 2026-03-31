@@ -25,12 +25,12 @@ end
 
 return {
 	lang_name = "rust",
-	default_style = "RustDoc",
 	identifier_pos = true,
 	supported_styles = {
 		"RustDoc",
 	},
 	styles = {
+		default = "RustDoc",
 		definitions = {
 			func = require "codedocs.lang_specs.rust.styles.func",
 			comment = require "codedocs.lang_specs.rust.styles.comment",

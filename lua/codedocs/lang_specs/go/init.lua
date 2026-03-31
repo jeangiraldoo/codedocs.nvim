@@ -36,12 +36,12 @@ end
 
 return {
 	lang_name = "go",
-	default_style = "Godoc",
 	identifier_pos = true,
 	supported_styles = {
 		"Godoc",
 	},
 	styles = {
+		default = "Godoc",
 		definitions = {
 			func = require "codedocs.lang_specs.go.styles.func",
 			comment = require "codedocs.lang_specs.go.styles.comment",

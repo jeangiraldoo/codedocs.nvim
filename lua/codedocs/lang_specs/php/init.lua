@@ -28,12 +28,12 @@ end
 
 return {
 	lang_name = "php",
-	default_style = "PHPDoc",
 	identifier_pos = false,
 	supported_styles = {
 		"PHPDoc",
 	},
 	styles = {
+		default = "PHPDoc",
 		definitions = {
 			func = require "codedocs.lang_specs.php.styles.func",
 			comment = require "codedocs.lang_specs.php.styles.comment",

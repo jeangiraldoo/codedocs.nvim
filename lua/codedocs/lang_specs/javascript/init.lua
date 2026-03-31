@@ -90,12 +90,12 @@ end
 
 return {
 	lang_name = "javascript",
-	default_style = "JSDoc",
 	identifier_pos = true,
 	supported_styles = {
 		"JSDoc",
 	},
 	styles = {
+		default = "JSDoc",
 		definitions = {
 			func = require "codedocs.lang_specs.javascript.styles.func",
 			class = require "codedocs.lang_specs.javascript.styles.class",
