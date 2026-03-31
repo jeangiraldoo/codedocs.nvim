@@ -35,7 +35,7 @@ return {
 	styles = {
 		default = "PHPDoc",
 		definitions = {
-			PHPDoc = require "codedocs.lang_specs.php.PHPDoc",
+			PHPDoc = require "codedocs.config.languages.php.PHPDoc",
 		},
 	},
 	extraction = {

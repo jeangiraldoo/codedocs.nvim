@@ -39,7 +39,7 @@ return {
 	styles = {
 		default = "Doxygen",
 		definitions = {
-			Doxygen = require "codedocs.lang_specs.cpp.Doxygen",
+			Doxygen = require "codedocs.config.languages.cpp.Doxygen",
 		},
 	},
 	extraction = {

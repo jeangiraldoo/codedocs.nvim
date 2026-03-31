@@ -2,42 +2,35 @@ local Func_extractors = {}
 
 function Func_extractors.parameters(struct_data)
 	return struct_data.lang_query_parser [[
-		(function_item
-			(parameters
-				(parameter
-					(identifier) @item_name
-					[
-						(type_identifier)
-						(primitive_type)
-					] @item_type)))
+		(method
+			(method_parameters
+				(identifier) @item_name))
 	]]
 end
 
 function Func_extractors.returns(struct_data)
 	return struct_data.lang_query_parser [[
-		(function_item
-			[
-				(primitive_type)
-				(type_identifier)
-			] @item_type (#not-eq? @item_type "()"))
+		(return
+			(_) @item_type
+			(#set! parse_as_blank "true"))
 	]]
 end
 
 return {
-	lang_name = "rust",
+	lang_name = "ruby",
 	identifier_pos = true,
 	supported_styles = {
-		"RustDoc",
+		"YARD",
 	},
 	styles = {
-		default = "RustDoc",
+		default = "YARD",
 		definitions = {
-			RustDoc = require "codedocs.lang_specs.rust.RustDoc",
+			YARD = require "codedocs.config.languages.ruby.YARD",
 		},
 	},
 	extraction = {
 		struct_identifiers = {
-			function_item = "func",
+			method = "func",
 		},
 		extractors = {
 			func = Func_extractors,

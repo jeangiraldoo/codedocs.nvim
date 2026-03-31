@@ -82,7 +82,7 @@ return {
 	styles = {
 		default = "KDoc",
 		definitions = {
-			KDoc = require "codedocs.lang_specs.kotlin.KDoc",
+			KDoc = require "codedocs.config.languages.kotlin.KDoc",
 		},
 	},
 	extraction = {

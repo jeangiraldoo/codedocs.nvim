@@ -43,7 +43,7 @@ return {
 	styles = {
 		default = "Godoc",
 		definitions = {
-			Godoc = require "codedocs.lang_specs.go.Godoc",
+			Godoc = require "codedocs.config.languages.go.Godoc",
 		},
 	},
 	extraction = {

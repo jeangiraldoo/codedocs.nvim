@@ -25,27 +25,14 @@ function LangSpecs:get_supported_structs()
 	return supported_struct_names
 end
 
-LangSpecs.get_supported_langs = (function()
-	local source = debug.getinfo(1, "S").source
-	local path = source:sub(2)
-
-	local target_dir = vim.fs.dirname(path)
-
-	local SUPPORTED_LANGS = {}
-
-	for item_name, item_type in vim.fs.dir(target_dir) do
-		if item_type == "directory" then table.insert(SUPPORTED_LANGS, item_name) end
-	end
-
-	return function() return SUPPORTED_LANGS end
-end)()
+function LangSpecs.get_supported_langs() return vim.tbl_keys(defaults.languages) end
 
 function LangSpecs.is_lang_supported(lang) return vim.list_contains(LangSpecs.get_supported_langs(), lang) end
 
 function LangSpecs.new(lang)
 	if not LangSpecs.is_lang_supported(lang) then error(lang .. " is not a supported language") end
 
-	local spec_data = require("codedocs.lang_specs." .. lang)
+	local spec_data = defaults.languages[lang]
 	spec_data.structs = {}
 	local new_lang_spec = setmetatable(spec_data, { __index = LangSpecs })
 

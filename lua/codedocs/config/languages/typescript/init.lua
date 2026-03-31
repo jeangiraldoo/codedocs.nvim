@@ -7,7 +7,7 @@ function Class_extractors.attributes(struct_data)
 	if settings.static then
 		local class_attrs = struct_data.lang_query_parser [[
 			(class_body
-				(field_definition
+				(public_field_definition
 					"static"
 					(property_identifier) @item_name))
 		]]
@@ -30,29 +30,31 @@ function Class_extractors.attributes(struct_data)
 				[[
 						(assignment_expression
 							(member_expression
-								(property_identifier) @item_name))
+								object: (this)
+								property: (property_identifier) @item_name))
 					]]
 			)
 
 			vim.list_extend(results, constructor_instance_attrs)
+			return results
 		end
-		return results
 	end
 
 	if settings.instance == "all" then
-		local class_body_instance_attrs = struct_data.lang_query_parser [[
-			(class_body
-				(field_definition
-					property: (property_identifier) @item_name) @field (#not-match? @field "static"))
+		local body_instance_attrs = struct_data.lang_query_parser [[
+			(public_field_definition
+				(property_identifier) @item_name
+				(#not-match? @item_name "static"))
 		]]
 
 		local function_defined_instance_attrs = struct_data.lang_query_parser [[
 			(assignment_expression
 				(member_expression
-					(property_identifier) @item_name))
+					object: (this)
+					property: (property_identifier) @item_name (#has-ancestor? @item_name method_definition)))
 		]]
 
-		vim.list_extend(results, class_body_instance_attrs)
+		vim.list_extend(results, body_instance_attrs)
 		vim.list_extend(results, function_defined_instance_attrs)
 	end
 
@@ -66,22 +68,40 @@ function Func_extractors.parameters(struct_data)
 		[
 			(method_definition
 				(formal_parameters
-					(identifier) @item_name
-				)
-			)
+					(required_parameter
+						(identifier) @item_name
+						(type_annotation
+							(predefined_type) @item_type))))
 			(function_declaration
 				(formal_parameters
-					(identifier) @item_name
-				)
-			)
-			(arrow_function
-				parameters: (formal_parameters
-					(identifier) @item_name))
+					(required_parameter
+						(identifier) @item_name
+						(type_annotation
+							(predefined_type) @item_type))))
 		]
 	]]
 end
 
 function Func_extractors.returns(struct_data)
+	local items = struct_data.lang_query_parser [[
+		[
+			(method_definition
+				(type_annotation
+					[
+						(predefined_type)
+						(array_type)
+					] @item_type (#not-eq? @item_type "void")))
+			(function_declaration
+				(type_annotation
+					[
+						(predefined_type)
+						(array_type)
+					] @item_type (#not-eq? @item_type "void")))
+		]
+	]]
+
+	if #items > 0 then return items end
+
 	return struct_data.lang_query_parser [[
 		(return_statement
 			(_) @item_type (#set! parse_as_blank "true"))
@@ -89,22 +109,21 @@ function Func_extractors.returns(struct_data)
 end
 
 return {
-	lang_name = "javascript",
+	lang_name = "typescript",
 	identifier_pos = true,
 	supported_styles = {
-		"JSDoc",
+		"TSDoc",
 	},
 	styles = {
-		default = "JSDoc",
+		default = "TSDoc",
 		definitions = {
-			JSDoc = require "codedocs.lang_specs.javascript.JSDoc",
+			TSDoc = require "codedocs.config.languages.typescript.TSDoc",
 		},
 	},
 	extraction = {
 		struct_identifiers = {
 			method_definition = "func",
 			function_declaration = "func",
-			arrow_function = "func",
 			class_declaration = "class",
 		},
 		extractors = {

@@ -65,7 +65,7 @@ return {
 	styles = {
 		default = "Google",
 		definitions = {
-			Google = require "codedocs.lang_specs.bash.Google",
+			Google = require "codedocs.config.languages.bash.Google",
 		},
 	},
 	extraction = {
