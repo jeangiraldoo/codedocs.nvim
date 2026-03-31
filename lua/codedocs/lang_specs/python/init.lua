@@ -97,9 +97,9 @@ return {
 	styles = {
 		default = "reST",
 		definitions = {
-			func = require "codedocs.lang_specs.python.func",
-			comment = require "codedocs.lang_specs.python.comment",
-			class = require "codedocs.lang_specs.python.class",
+			Google = require "codedocs.lang_specs.python.Google",
+			Numpy = require "codedocs.lang_specs.python.Numpy",
+			reST = require "codedocs.lang_specs.python.reST",
 		},
 	},
 	extraction = {

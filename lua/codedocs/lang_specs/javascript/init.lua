@@ -97,9 +97,7 @@ return {
 	styles = {
 		default = "JSDoc",
 		definitions = {
-			func = require "codedocs.lang_specs.javascript.func",
-			class = require "codedocs.lang_specs.javascript.class",
-			comment = require "codedocs.lang_specs.javascript.comment",
+			JSDoc = require "codedocs.lang_specs.javascript.JSDoc",
 		},
 	},
 	extraction = {

@@ -43,8 +43,7 @@ return {
 	styles = {
 		default = "Godoc",
 		definitions = {
-			func = require "codedocs.lang_specs.go.func",
-			comment = require "codedocs.lang_specs.go.comment",
+			Godoc = require "codedocs.lang_specs.go.Godoc",
 		},
 	},
 	extraction = {

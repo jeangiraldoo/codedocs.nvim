@@ -1,5 +1,20 @@
 return {
-	JSDoc = {
+	comment = {
+		settings = {
+			layout = {},
+			insert_at = 1,
+			relative_position = "empty_target_or_above",
+			indented = false,
+		},
+		sections = {
+			title = {
+				layout = {
+					"// ${%snippet_tabstop_idx:description}",
+				},
+			},
+		},
+	},
+	func = {
 		settings = {
 			layout = {
 				"/**",
@@ -16,7 +31,7 @@ return {
 		sections = {
 			title = {
 				layout = {
-					" * ${%snippet_tabstop_idx:description}",
+					" * ${%snippet_tabstop_idx:title}",
 				},
 				insert_gap_between = {
 					enabled = true,
@@ -31,7 +46,7 @@ return {
 				},
 				items = {
 					layout = {
-						" * @param {${%snippet_tabstop_idx:type}} %item_name ${%snippet_tabstop_idx:description}",
+						" * @param %item_name ${%snippet_tabstop_idx:description}",
 					},
 					insert_gap_between = {
 						enabled = false,
@@ -47,7 +62,7 @@ return {
 				},
 				items = {
 					layout = {
-						" * @returns {${%snippet_tabstop_idx:type}} ${%snippet_tabstop_idx:description}",
+						" * @return ${%snippet_tabstop_idx:description}",
 					},
 					insert_gap_between = {
 						enabled = false,

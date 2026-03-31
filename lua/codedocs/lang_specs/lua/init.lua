@@ -35,8 +35,8 @@ return {
 	styles = {
 		default = "EmmyLua",
 		definitions = {
-			func = require "codedocs.lang_specs.lua.func",
-			comment = require "codedocs.lang_specs.lua.comment",
+			EmmyLua = require "codedocs.lang_specs.lua.EmmyLua",
+			LDoc = require "codedocs.lang_specs.lua.LDoc",
 		},
 	},
 	extraction = {

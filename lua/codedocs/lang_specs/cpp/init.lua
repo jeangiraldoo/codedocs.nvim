@@ -39,8 +39,7 @@ return {
 	styles = {
 		default = "Doxygen",
 		definitions = {
-			func = require "codedocs.lang_specs.cpp.func",
-			comment = require "codedocs.lang_specs.cpp.comment",
+			Doxygen = require "codedocs.lang_specs.cpp.Doxygen",
 		},
 	},
 	extraction = {

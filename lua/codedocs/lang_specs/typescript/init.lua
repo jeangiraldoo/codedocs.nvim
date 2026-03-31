@@ -117,9 +117,7 @@ return {
 	styles = {
 		default = "TSDoc",
 		definitions = {
-			func = require "codedocs.lang_specs.typescript.func",
-			comment = require "codedocs.lang_specs.typescript.comment",
-			class = require "codedocs.lang_specs.typescript.class",
+			TSDoc = require "codedocs.lang_specs.typescript.TSDoc",
 		},
 	},
 	extraction = {

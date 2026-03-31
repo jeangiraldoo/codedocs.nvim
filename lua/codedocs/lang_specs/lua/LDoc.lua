@@ -1,5 +1,20 @@
 return {
-	YARD = {
+	comment = {
+		settings = {
+			layout = {},
+			relative_position = "empty_target_or_above",
+			insert_at = 1,
+			indented = false,
+		},
+		sections = {
+			title = {
+				layout = {
+					"-- ${%snippet_tabstop_idx:description}",
+				},
+			},
+		},
+	},
+	func = {
 		settings = {
 			layout = {},
 			relative_position = "above",
@@ -13,26 +28,26 @@ return {
 		sections = {
 			title = {
 				layout = {
-					"# ${%snippet_tabstop_idx:title}",
+					"--- ${%snippet_tabstop_idx:title}",
 				},
 				insert_gap_between = {
-					enabled = true,
-					text = "#",
+					enabled = false,
+					text = "--",
 				},
 			},
 			parameters = {
 				layout = {},
 				insert_gap_between = {
 					enabled = false,
-					text = "#",
+					text = "--",
 				},
 				items = {
 					layout = {
-						"# @param %item_name [${%snippet_tabstop_idx:type}] ${%snippet_tabstop_idx:description}",
+						"-- @param %item_name ${%snippet_tabstop_idx:type} ${%snippet_tabstop_idx:description}",
 					},
 					insert_gap_between = {
 						enabled = false,
-						text = "#",
+						text = "--",
 					},
 				},
 			},
@@ -40,15 +55,15 @@ return {
 				layout = {},
 				insert_gap_between = {
 					enabled = false,
-					text = "#",
+					text = "--",
 				},
 				items = {
 					layout = {
-						"# @return [${%snippet_tabstop_idx:type}] ${%snippet_tabstop_idx:description}",
+						"-- @return ${%snippet_tabstop_idx:type} ${%snippet_tabstop_idx:description}",
 					},
 					insert_gap_between = {
 						enabled = false,
-						text = "#",
+						text = "--",
 					},
 				},
 			},

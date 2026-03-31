@@ -213,7 +213,7 @@ function LangSpecs:get_struct_items(struct_name, node, style_name)
 end
 
 function LangSpecs:get_struct_style(struct_name, style_name)
-	local style = defaults.languages[self.lang_name].styles.definitions[struct_name][style_name]
+	local style = defaults.languages[self.lang_name].styles.definitions[style_name][struct_name]
 	return style
 end
 

@@ -1,17 +1,32 @@
 return {
-	JavaDoc = {
+	comment = {
+		settings = {
+			layout = {},
+			insert_at = 1,
+			relative_position = "empty_target_or_above",
+			indent = false,
+		},
+		sections = {
+			title = {
+				layout = {
+					"// ${%snippet_tabstop_idx:description}",
+				},
+			},
+		},
+	},
+	func = {
 		settings = {
 			layout = {
 				"/**",
 				" */",
 			},
-			relative_position = "above",
 			insert_at = 2,
+			relative_position = "above",
 			section_order = {
 				"parameters",
 				"returns",
 			},
-			indented = false,
+			indent = false,
 		},
 		sections = {
 			title = {
@@ -31,7 +46,7 @@ return {
 				},
 				items = {
 					layout = {
-						" * @param %item_name ${%snippet_tabstop_idx:description}",
+						" * @param ${%snippet_tabstop_idx:%item_type} \\$%item_name ${%snippet_tabstop_idx:description}",
 					},
 					insert_gap_between = {
 						enabled = false,
@@ -47,7 +62,7 @@ return {
 				},
 				items = {
 					layout = {
-						" * @return ${%snippet_tabstop_idx:description}",
+						" * @return ${%snippet_tabstop_idx:%item_type} ${%snippet_tabstop_idx:description}",
 					},
 					insert_gap_between = {
 						enabled = false,

@@ -1,5 +1,20 @@
 return {
-	TSDoc = {
+	comment = {
+		settings = {
+			layout = {},
+			relative_position = "empty_target_or_above",
+			insert_at = 1,
+			indented = false,
+		},
+		sections = {
+			title = {
+				layout = {
+					"// ${%snippet_tabstop_idx:description}",
+				},
+			},
+		},
+	},
+	func = {
 		settings = {
 			layout = {
 				"/**",
@@ -11,7 +26,7 @@ return {
 				"parameters",
 				"returns",
 			},
-			indent = false,
+			indented = false,
 		},
 		sections = {
 			title = {
@@ -31,7 +46,7 @@ return {
 				},
 				items = {
 					layout = {
-						" * @param %item_name - ${%snippet_tabstop_idx:description}",
+						" * @param %item_name ${%snippet_tabstop_idx:description}",
 					},
 					insert_gap_between = {
 						enabled = false,
@@ -47,7 +62,7 @@ return {
 				},
 				items = {
 					layout = {
-						" * @returns ${%snippet_tabstop_idx:description}",
+						" * @return ${%snippet_tabstop_idx:description}",
 					},
 					insert_gap_between = {
 						enabled = false,

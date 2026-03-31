@@ -1,5 +1,20 @@
 return {
-	Google = {
+	comment = {
+		settings = {
+			layout = {},
+			relative_position = "empty_target_or_above",
+			insert_at = 1,
+			indented = false,
+		},
+		sections = {
+			title = {
+				layout = {
+					"# ${%snippet_tabstop_idx:description}",
+				},
+			},
+		},
+	},
+	class = {
 		settings = {
 			layout = {
 				'"""',
@@ -8,8 +23,13 @@ return {
 			relative_position = "below",
 			insert_at = 2,
 			section_order = {
-				"parameters",
-				"returns",
+				"attributes",
+			},
+			item_extraction = {
+				attributes = {
+					static = true,
+					instance = "constructor",
+				},
 			},
 			indented = true,
 		},
@@ -23,27 +43,10 @@ return {
 					text = "",
 				},
 			},
-			parameters = {
+			attributes = {
 				layout = {
-					"Args:",
-				},
-				insert_gap_between = {
-					enabled = true,
-					text = "",
-				},
-				items = {
-					layout = {
-						"%>%item_name (${%snippet_tabstop_idx:%item_type}): ${%snippet_tabstop_idx:description}",
-					},
-					insert_gap_between = {
-						enabled = false,
-						text = "",
-					},
-				},
-			},
-			returns = {
-				layout = {
-					"Returns:",
+					"Attributes:",
+					"___________",
 				},
 				insert_gap_between = {
 					enabled = false,
@@ -51,7 +54,8 @@ return {
 				},
 				items = {
 					layout = {
-						"%>${%snippet_tabstop_idx:%item_type}: ${%snippet_tabstop_idx:description}",
+						"%item_name : ${%snippet_tabstop_idx:%item_type}",
+						"	${%snippet_tabstop_idx:description}",
 					},
 					insert_gap_between = {
 						enabled = false,
@@ -61,7 +65,7 @@ return {
 			},
 		},
 	},
-	Numpy = {
+	func = {
 		settings = {
 			layout = {
 				'"""',
@@ -118,66 +122,6 @@ return {
 					layout = {
 						"${%snippet_tabstop_idx:%item_type}",
 						"	${%snippet_tabstop_idx:description}",
-					},
-					insert_gap_between = {
-						enabled = false,
-						text = "",
-					},
-				},
-			},
-		},
-	},
-	reST = {
-		settings = {
-			layout = {
-				'"""',
-				'"""',
-			},
-			relative_position = "below",
-			insert_at = 2,
-			section_order = {
-				"parameters",
-				"returns",
-			},
-			indented = true,
-		},
-		sections = {
-			title = {
-				layout = {
-					"${%snippet_tabstop_idx:title}",
-				},
-				insert_gap_between = {
-					enabled = true,
-					text = "",
-				},
-			},
-			parameters = {
-				layout = {},
-				insert_gap_between = {
-					enabled = false,
-					text = "",
-				},
-				items = {
-					layout = {
-						":param %item_name: ${%snippet_tabstop_idx:description}",
-						":type %item_name: ${%snippet_tabstop_idx:%item_type}",
-					},
-					insert_gap_between = {
-						enabled = false,
-						text = "",
-					},
-				},
-			},
-			returns = {
-				layout = {},
-				insert_gap_between = {
-					enabled = false,
-					text = "",
-				},
-				items = {
-					layout = {
-						":return: ${%snippet_tabstop_idx:description}",
-						":rtype: ${%snippet_tabstop_idx:%item_type}",
 					},
 					insert_gap_between = {
 						enabled = false,

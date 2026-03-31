@@ -65,8 +65,7 @@ return {
 	styles = {
 		default = "Google",
 		definitions = {
-			func = require "codedocs.lang_specs.bash.func",
-			comment = require "codedocs.lang_specs.bash.comment",
+			Google = require "codedocs.lang_specs.bash.Google",
 		},
 	},
 	extraction = {

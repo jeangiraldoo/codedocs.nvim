@@ -59,9 +59,7 @@ return {
 	styles = {
 		default = "JavaDoc",
 		definitions = {
-			func = require "codedocs.lang_specs.java.func",
-			class = require "codedocs.lang_specs.java.class",
-			comment = require "codedocs.lang_specs.java.comment",
+			JavaDoc = require "codedocs.lang_specs.java.JavaDoc",
 		},
 	},
 	extraction = {
