@@ -42,11 +42,6 @@ end)()
 
 function LangSpecs.is_lang_supported(lang) return vim.list_contains(LangSpecs.get_supported_langs(), lang) end
 
-function LangSpecs.get_buffer_lang_name()
-	local buffer_filetype = vim.bo.filetype
-	return defaults.aliases[buffer_filetype] or buffer_filetype
-end
-
 function LangSpecs.new(lang)
 	if not LangSpecs.is_lang_supported(lang) then error(lang .. " is not a supported language") end
 

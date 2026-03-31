@@ -147,15 +147,15 @@ end
 function Codedocs.insert_docs()
 	Debug_logger.log "Plugin triggered"
 
-	local lang = LangSpecs.get_buffer_lang_name()
-	Debug_logger.log("Language: " .. lang)
+	local lang_name = require("codedocs.config").aliases[vim.bo.filetype] or vim.bo.filetype
+	Debug_logger.log("Language: " .. lang_name)
 
-	if not vim.treesitter.get_parser(0, lang, { error = false }) then
-		vim.notify("Tree-sitter parser for " .. lang .. " is not installed", vim.log.levels.ERROR)
+	if not vim.treesitter.get_parser(0, lang_name, { error = false }) then
+		vim.notify("Tree-sitter parser for " .. lang_name .. " is not installed", vim.log.levels.ERROR)
 		return
 	end
 
-	local annotation_lines, row, relative_position = Codedocs.orchestrate_annotation_build { name = lang }
+	local annotation_lines, row, relative_position = Codedocs.orchestrate_annotation_build { name = lang_name }
 	Debug_logger.log("Annotation:", annotation_lines)
 
 	_write_to_buffer(annotation_lines, row, relative_position)
