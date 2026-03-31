@@ -25,8 +25,8 @@ return {
 	styles = {
 		default = "YARD",
 		definitions = {
-			func = require "codedocs.lang_specs.ruby.styles.func",
-			comment = require "codedocs.lang_specs.ruby.styles.comment",
+			func = require "codedocs.lang_specs.ruby.func",
+			comment = require "codedocs.lang_specs.ruby.comment",
 		},
 	},
 	extraction = {

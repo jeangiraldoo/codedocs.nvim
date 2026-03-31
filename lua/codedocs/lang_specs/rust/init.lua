@@ -32,8 +32,8 @@ return {
 	styles = {
 		default = "RustDoc",
 		definitions = {
-			func = require "codedocs.lang_specs.rust.styles.func",
-			comment = require "codedocs.lang_specs.rust.styles.comment",
+			func = require "codedocs.lang_specs.rust.func",
+			comment = require "codedocs.lang_specs.rust.comment",
 		},
 	},
 	extraction = {

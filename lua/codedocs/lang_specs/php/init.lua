@@ -35,8 +35,8 @@ return {
 	styles = {
 		default = "PHPDoc",
 		definitions = {
-			func = require "codedocs.lang_specs.php.styles.func",
-			comment = require "codedocs.lang_specs.php.styles.comment",
+			func = require "codedocs.lang_specs.php.func",
+			comment = require "codedocs.lang_specs.php.comment",
 		},
 	},
 	extraction = {

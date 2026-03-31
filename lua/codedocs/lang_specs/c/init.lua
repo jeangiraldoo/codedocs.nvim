@@ -35,8 +35,8 @@ return {
 	styles = {
 		default = "Doxygen",
 		definitions = {
-			func = require "codedocs.lang_specs.c.styles.func",
-			comment = require "codedocs.lang_specs.c.styles.comment",
+			func = require "codedocs.lang_specs.c.func",
+			comment = require "codedocs.lang_specs.c.comment",
 		},
 	},
 	extraction = {
