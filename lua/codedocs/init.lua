@@ -5,6 +5,10 @@ local LangSpecs = require "codedocs.lang_specs.init"
 local Codedocs = {}
 function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
 
+function Codedocs.get_struct_identifiers(lang_name)
+	return require("codedocs.config").languages[lang_name].extraction.struct_identifiers
+end
+
 --- Inserts an annotation relative to a structure and moves the cursor to the annotation title
 ---@param annotation_lines string[]
 ---@param row number 0-based annotation-related positions
@@ -114,7 +118,7 @@ function Codedocs.extract_item_data(lang_name)
 	vim.treesitter.get_parser(0):parse()
 	local node_at_cursor = vim.treesitter.get_node()
 
-	local struct_data = _get_supported_struct_node_data(node_at_cursor, lang_spec:get_struct_identifiers())
+	local struct_data = _get_supported_struct_node_data(node_at_cursor, Codedocs.get_struct_identifiers(lang_name))
 		or { name = "comment" }
 
 	if struct_data.name == "comment" then return {}, struct_data.name, vim.api.nvim_win_get_cursor(0)[1] - 1 end

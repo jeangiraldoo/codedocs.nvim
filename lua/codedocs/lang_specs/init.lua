@@ -26,8 +26,6 @@ function LangSpecs.new(lang)
 	return new_lang_spec
 end
 
-function LangSpecs:get_struct_identifiers() return self.extraction.struct_identifiers end
-
 local function normalize_item_fields(items)
 	return vim.tbl_map(function(item)
 		if not item.name then
