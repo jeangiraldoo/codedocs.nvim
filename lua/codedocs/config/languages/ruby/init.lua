@@ -31,6 +31,7 @@ return {
 				"method",
 			},
 			extractors = Func_extractors,
+			opts = {},
 		},
 	},
 }

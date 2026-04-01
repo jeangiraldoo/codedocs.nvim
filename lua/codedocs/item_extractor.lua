@@ -112,14 +112,15 @@ local function generic_query_parser(ts_node, filetype, query)
 	return builder.items
 end
 
-return function(lang_name, struct_style, node, struct_extractor)
+return function(lang_name, struct_section_names, node, struct_extractor, extractor_opts)
 	local items_list = {}
-	for _, section_name in pairs(struct_style.settings.section_order) do
+	for _, section_name in pairs(struct_section_names) do
 		local item_extractor = struct_extractor[section_name]
 
 		local raw_items = item_extractor {
 			node = node,
-			style = struct_style,
+			opts = extractor_opts,
+			-- style = struct_style,
 			lang_name = lang_name,
 			generic_query_parser = generic_query_parser,
 			lang_query_parser =

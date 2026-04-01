@@ -42,6 +42,7 @@ return {
 				"method_declaration",
 			},
 			extractors = Func_extractors,
+			opts = {},
 		},
 	},
 }

@@ -41,6 +41,7 @@ return {
 				"function_definition",
 			},
 			extractors = Func_extractors,
+			opts = {},
 		},
 	},
 }

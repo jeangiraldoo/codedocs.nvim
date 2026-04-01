@@ -135,9 +135,16 @@ function Codedocs.extract_item_data(lang_name)
 
 	if struct_data.name == "comment" then return {}, struct_data.name, vim.api.nvim_win_get_cursor(0)[1] - 1 end
 
-	local struct_style = lang_spec:get_struct_style(struct_data.name, lang_spec:get_default_style())
-	local item_extractor = require("codedocs.config").languages[lang_name].structures[struct_data.name].extractors
-	local items_data = require "codedocs.item_extractor"(lang_name, struct_style, struct_data.node, item_extractor)
+	local lang_config = require("codedocs.config").languages[lang_name]
+
+	local item_extractor = lang_config.structures[struct_data.name].extractors
+	local items_data = require "codedocs.item_extractor"(
+		lang_name,
+		lang_spec:get_struct_style(struct_data.name, lang_spec:get_default_style()).settings.section_order,
+		struct_data.node,
+		item_extractor,
+		lang_config.structures[struct_data.name].opts
+	)
 
 	Debug_logger.log("Item data: ", items_data)
 	return items_data, struct_data.name, struct_data.pos

@@ -1,9 +1,9 @@
 local Class_extractors = {}
 
 function Class_extractors.attributes(struct_data)
-	local settings = struct_data.style.settings.item_extraction.attributes
+	-- local settings = struct_data.style.settings.item_extraction.attributes
 	local results = {}
-	if settings.static then
+	if struct_data.opts.attributes.static then
 		local class_attrs = struct_data.lang_query_parser [[
 			(class_body
 				(field_declaration
@@ -15,7 +15,7 @@ function Class_extractors.attributes(struct_data)
 		vim.list_extend(results, class_attrs)
 	end
 
-	if settings.instance == "all" then
+	if struct_data.opts.attributes.instance == "all" then
 		local instance_attrs = struct_data.lang_query_parser [[
 			(class_body
 				(field_declaration
@@ -65,12 +65,19 @@ return {
 				"method_declaration",
 			},
 			extractors = Func_extractors,
+			opts = {},
 		},
 		class = {
 			node_identifiers = {
 				"class_declaration",
 			},
 			extractors = Class_extractors,
+			opts = {
+				attributes = {
+					static = false,
+					instance = "none", -- Java attrs can only be declared in the class body
+				},
+			},
 		},
 	},
 }

@@ -38,6 +38,7 @@ return {
 				"function_item",
 			},
 			extractors = Func_extractors,
+			opts = {},
 		},
 	},
 }

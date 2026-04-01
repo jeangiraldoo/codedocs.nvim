@@ -25,12 +25,6 @@ return {
 			section_order = {
 				"attributes",
 			},
-			item_extraction = {
-				attributes = {
-					static = true,
-					instance = "none",
-				},
-			},
 			indent = false,
 		},
 		sections = {
