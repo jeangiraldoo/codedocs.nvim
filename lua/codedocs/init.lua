@@ -123,10 +123,12 @@ function Codedocs.extract_item_data(lang_name)
 
 	if struct_data.name == "comment" then return {}, struct_data.name, vim.api.nvim_win_get_cursor(0)[1] - 1 end
 
-	local items_data, pos = lang_spec:get_struct_items(struct_data.name, struct_data.node), struct_data.pos
+	local struct_style = lang_spec:get_struct_style(struct_data.name, lang_spec:get_default_style())
+	local item_extractor = require("codedocs.config").languages[lang_name].extraction.extractors[struct_data.name]
+	local items_data = require "codedocs.item_extractor"(lang_name, struct_style, struct_data.node, item_extractor)
 
 	Debug_logger.log("Item data: ", items_data)
-	return items_data, struct_data.name, pos
+	return items_data, struct_data.name, struct_data.pos
 end
 
 function Codedocs.orchestrate_annotation_build(lang_data)
