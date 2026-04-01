@@ -97,14 +97,18 @@ return {
 			reST = require "codedocs.config.languages.python.reST",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			function_definition = "func",
-			class_definition = "class",
+	structures = {
+		func = {
+			node_identifiers = {
+				"function_definition",
+			},
+			extractors = Func_extractors,
 		},
-		extractors = {
-			class = Class_extractors,
-			func = Func_extractors,
+		class = {
+			node_identifiers = {
+				"class_definition",
+			},
+			extractors = Class_extractors,
 		},
 	},
 }

@@ -6,7 +6,19 @@ local Codedocs = {}
 function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
 
 function Codedocs.get_struct_identifiers(lang_name)
-	return require("codedocs.config").languages[lang_name].extraction.struct_identifiers
+	local structures_data = require("codedocs.config").languages[lang_name].structures
+
+	if structures_data._identifiers then return structures_data._identifiers end
+
+	local struct_identifiers = {}
+	for struct_name, structure_data in pairs(structures_data) do
+		for _, node_identifier in ipairs(structure_data.node_identifiers) do
+			struct_identifiers[node_identifier] = struct_name
+		end
+	end
+
+	structures_data._identifiers = struct_identifiers
+	return struct_identifiers
 end
 
 --- Inserts an annotation relative to a structure and moves the cursor to the annotation title
@@ -124,7 +136,7 @@ function Codedocs.extract_item_data(lang_name)
 	if struct_data.name == "comment" then return {}, struct_data.name, vim.api.nvim_win_get_cursor(0)[1] - 1 end
 
 	local struct_style = lang_spec:get_struct_style(struct_data.name, lang_spec:get_default_style())
-	local item_extractor = require("codedocs.config").languages[lang_name].extraction.extractors[struct_data.name]
+	local item_extractor = require("codedocs.config").languages[lang_name].structures[struct_data.name].extractors
 	local items_data = require "codedocs.item_extractor"(lang_name, struct_style, struct_data.node, item_extractor)
 
 	Debug_logger.log("Item data: ", items_data)

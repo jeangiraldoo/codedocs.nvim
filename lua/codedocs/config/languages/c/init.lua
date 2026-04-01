@@ -35,12 +35,12 @@ return {
 			Doxygen = require "codedocs.config.languages.c.Doxygen",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			function_definition = "func",
-		},
-		extractors = {
-			func = Func_extractors,
+	structures = {
+		func = {
+			node_identifiers = {
+				"function_definition",
+			},
+			extractors = Func_extractors,
 		},
 	},
 }

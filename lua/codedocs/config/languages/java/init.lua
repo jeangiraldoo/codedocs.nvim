@@ -59,14 +59,18 @@ return {
 			JavaDoc = require "codedocs.config.languages.java.JavaDoc",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			method_declaration = "func",
-			class_declaration = "class",
+	structures = {
+		func = {
+			node_identifiers = {
+				"method_declaration",
+			},
+			extractors = Func_extractors,
 		},
-		extractors = {
-			class = Class_extractors,
-			func = Func_extractors,
+		class = {
+			node_identifiers = {
+				"class_declaration",
+			},
+			extractors = Class_extractors,
 		},
 	},
 }

@@ -117,15 +117,19 @@ return {
 			TSDoc = require "codedocs.config.languages.typescript.TSDoc",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			method_definition = "func",
-			function_declaration = "func",
-			class_declaration = "class",
+	structures = {
+		func = {
+			node_identifiers = {
+				"method_definition",
+				"function_declaration",
+			},
+			extractors = Func_extractors,
 		},
-		extractors = {
-			class = Class_extractors,
-			func = Func_extractors,
+		class = {
+			node_identifiers = {
+				"class_declaration",
+			},
+			extractors = Class_extractors,
 		},
 	},
 }

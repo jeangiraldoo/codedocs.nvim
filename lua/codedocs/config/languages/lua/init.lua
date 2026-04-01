@@ -35,13 +35,13 @@ return {
 			LDoc = require "codedocs.config.languages.lua.LDoc",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			function_declaration = "func",
-			function_definition = "func",
-		},
-		extractors = {
-			func = Func_extractors,
+	structures = {
+		func = {
+			node_identifiers = {
+				"function_definition",
+				"function_declaration",
+			},
+			extractors = Func_extractors,
 		},
 	},
 }

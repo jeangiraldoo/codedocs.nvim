@@ -32,12 +32,12 @@ return {
 			RustDoc = require "codedocs.config.languages.rust.RustDoc",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			function_item = "func",
-		},
-		extractors = {
-			func = Func_extractors,
+	structures = {
+		func = {
+			node_identifiers = {
+				"function_item",
+			},
+			extractors = Func_extractors,
 		},
 	},
 }

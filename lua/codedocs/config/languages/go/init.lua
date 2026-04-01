@@ -43,12 +43,12 @@ return {
 			Godoc = require "codedocs.config.languages.go.Godoc",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			function_declaration = "func",
-		},
-		extractors = {
-			func = Func_extractors,
+	structures = {
+		func = {
+			node_identifiers = {
+				"function_declaration",
+			},
+			extractors = Func_extractors,
 		},
 	},
 }

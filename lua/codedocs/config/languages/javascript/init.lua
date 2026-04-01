@@ -97,16 +97,20 @@ return {
 			JSDoc = require "codedocs.config.languages.javascript.JSDoc",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			method_definition = "func",
-			function_declaration = "func",
-			arrow_function = "func",
-			class_declaration = "class",
+	structures = {
+		func = {
+			node_identifiers = {
+				"method_definition",
+				"function_declaration",
+				"arrow_function",
+			},
+			extractors = Func_extractors,
 		},
-		extractors = {
-			class = Class_extractors,
-			func = Func_extractors,
+		class = {
+			node_identifiers = {
+				"class_declaration",
+			},
+			extractors = Class_extractors,
 		},
 	},
 }

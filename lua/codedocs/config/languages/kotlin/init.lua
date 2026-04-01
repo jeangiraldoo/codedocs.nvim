@@ -82,14 +82,18 @@ return {
 			KDoc = require "codedocs.config.languages.kotlin.KDoc",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			function_declaration = "func",
-			class_declaration = "class",
+	structures = {
+		func = {
+			node_identifiers = {
+				"function_declaration",
+			},
+			extractors = Func_extractors,
 		},
-		extractors = {
-			class = Class_extractors,
-			func = Func_extractors,
+		class = {
+			node_identifiers = {
+				"class_declaration",
+			},
+			extractors = Class_extractors,
 		},
 	},
 }

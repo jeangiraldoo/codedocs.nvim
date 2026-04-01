@@ -25,12 +25,12 @@ return {
 			YARD = require "codedocs.config.languages.ruby.YARD",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			method = "func",
-		},
-		extractors = {
-			func = Func_extractors,
+	structures = {
+		func = {
+			node_identifiers = {
+				"method",
+			},
+			extractors = Func_extractors,
 		},
 	},
 }

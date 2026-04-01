@@ -65,12 +65,12 @@ return {
 			Google = require "codedocs.config.languages.bash.Google",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			function_definition = "func",
-		},
-		extractors = {
-			func = Func_extractors,
+	structures = {
+		func = {
+			node_identifiers = {
+				"function_definition",
+			},
+			extractors = Func_extractors,
 		},
 	},
 }

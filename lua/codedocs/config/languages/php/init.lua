@@ -35,13 +35,13 @@ return {
 			PHPDoc = require "codedocs.config.languages.php.PHPDoc",
 		},
 	},
-	extraction = {
-		struct_identifiers = {
-			function_definition = "func",
-			method_declaration = "func",
-		},
-		extractors = {
-			func = Func_extractors,
+	structures = {
+		func = {
+			node_identifiers = {
+				"function_definition",
+				"method_declaration",
+			},
+			extractors = Func_extractors,
 		},
 	},
 }
