@@ -68,7 +68,7 @@ local MOCKED_USER_STRUCT_OPTS = vim.iter({
 end)
 
 describe("Customizing style options", function()
-	for _, lang_name in ipairs(LangSpecs.get_supported_langs()) do
+	for _, lang_name in ipairs(require("codedocs").get_supported_langs()) do
 		local lang_spec = LangSpecs.new(lang_name)
 		for _, struct_name in ipairs(utils.get_supported_structs(lang_name)) do
 			describe("[" .. lang_name .. "/" .. struct_name .. "]:", function()

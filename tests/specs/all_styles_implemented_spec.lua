@@ -4,7 +4,7 @@ local LangSpecs = require "codedocs.lang_specs.init"
 local utils = require "tests.utils"
 
 describe("All styles are implemented for each structure: ", function()
-	for _, lang_name in ipairs(LangSpecs.get_supported_langs()) do
+	for _, lang_name in ipairs(require("codedocs").get_supported_langs()) do
 		local lang_spec = LangSpecs.new(lang_name)
 
 		local supported_styles = lang_spec:get_supported_styles()

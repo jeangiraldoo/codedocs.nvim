@@ -14,12 +14,10 @@ function LangSpecs:is_style_supported(style_name)
 	return vim.list_contains(supported_styles, style_name)
 end
 
-function LangSpecs.get_supported_langs() return vim.tbl_keys(defaults.languages) end
-
-function LangSpecs.is_lang_supported(lang) return vim.list_contains(LangSpecs.get_supported_langs(), lang) end
-
 function LangSpecs.new(lang)
-	if not LangSpecs.is_lang_supported(lang) then error(lang .. " is not a supported language") end
+	if not vim.list_contains(require("codedocs").get_supported_langs(), lang) then
+		error(lang .. " is not a supported language")
+	end
 
 	local spec_data = defaults.languages[lang]
 	spec_data.structs = {}

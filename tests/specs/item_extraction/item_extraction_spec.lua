@@ -1,9 +1,8 @@
 package.path = package.path .. ";" .. vim.fn.expand "<sfile>:p:h" .. "/tests"
 
 local test_utils = require "tests.utils"
-local LangSpecs = require "codedocs.lang_specs.init"
 
-local LANGS_TO_TEST = LangSpecs.get_supported_langs()
+local LANGS_TO_TEST = require("codedocs").get_supported_langs()
 
 describe("Basic item extraction", function()
 	for _, lang in ipairs(LANGS_TO_TEST) do

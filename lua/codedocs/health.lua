@@ -27,8 +27,7 @@ end
 local function _show_annotable_languages()
 	vim.health.start "Annotable languages (Treesitter parser detected)"
 
-	local Specs = require "codedocs.lang_specs.init"
-	local PLUGIN_SUPPORTED_LANGS = Specs.get_supported_langs()
+	local PLUGIN_SUPPORTED_LANGS = require("codedocs").get_supported_langs()
 
 	for _, lang_name in ipairs(PLUGIN_SUPPORTED_LANGS) do
 		local result, _ = pcall(vim.treesitter.get_parser, 0, lang_name)

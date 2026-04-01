@@ -3,6 +3,7 @@ local docs_builder = require "codedocs.annotation_builder"
 local LangSpecs = require "codedocs.lang_specs.init"
 
 local Codedocs = {}
+function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
 
 --- Inserts an annotation relative to a structure and moves the cursor to the annotation title
 ---@param annotation_lines string[]

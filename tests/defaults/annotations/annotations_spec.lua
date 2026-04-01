@@ -4,7 +4,7 @@ local test_utils = require "tests.utils"
 local LangSpecs = require "codedocs.lang_specs.init"
 
 describe("Default style annotations", function()
-	for _, lang in ipairs(LangSpecs.get_supported_langs()) do
+	for _, lang in ipairs(require("codedocs").get_supported_langs()) do
 		local lang_spec = LangSpecs.new(lang)
 		for struct_name, struct_cases in pairs(require("tests.defaults.annotations.test_cases." .. lang)) do
 			describe(lang .. " - " .. struct_name, function()
