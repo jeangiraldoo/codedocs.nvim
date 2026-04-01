@@ -14,19 +14,6 @@ function LangSpecs:is_style_supported(style_name)
 	return vim.list_contains(supported_styles, style_name)
 end
 
----Builds a list with the names of the structures a language supports
----@return string[] supported_struct_names
-function LangSpecs:get_supported_structs()
-	local struct_identifiers = self:get_struct_identifiers()
-
-	local values = vim.tbl_values(struct_identifiers)
-	table.sort(values)
-	local supported_struct_names = vim.fn.uniq(values)
-	table.insert(supported_struct_names, "comment")
-
-	return supported_struct_names
-end
-
 function LangSpecs.get_supported_langs() return vim.tbl_keys(defaults.languages) end
 
 function LangSpecs.is_lang_supported(lang) return vim.list_contains(LangSpecs.get_supported_langs(), lang) end

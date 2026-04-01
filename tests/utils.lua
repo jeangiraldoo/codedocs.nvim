@@ -23,4 +23,17 @@ function Utils.mock_buffer(filetype, buffer_lines, cursor_pos)
 	vim.bo.expandtab = false
 end
 
+---Builds a list with the names of the structures a language supports
+---@return string[] supported_struct_names
+function Utils.get_supported_structs(lang_name)
+	local struct_identifiers = require("codedocs.lang_specs").new(lang_name):get_struct_identifiers()
+
+	local values = vim.tbl_values(struct_identifiers)
+	table.sort(values)
+	local supported_struct_names = vim.fn.uniq(values)
+	table.insert(supported_struct_names, "comment")
+
+	return supported_struct_names
+end
+
 return Utils
