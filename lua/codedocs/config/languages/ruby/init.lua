@@ -19,9 +19,6 @@ end
 return {
 	lang_name = "ruby",
 	identifier_pos = true,
-	supported_styles = {
-		"YARD",
-	},
 	styles = {
 		default = "YARD",
 		definitions = {

@@ -89,11 +89,6 @@ end
 return {
 	lang_name = "python",
 	identifier_pos = true,
-	supported_styles = {
-		"Google",
-		"Numpy",
-		"reST",
-	},
 	styles = {
 		default = "reST",
 		definitions = {

@@ -3,7 +3,9 @@ local defaults = require "codedocs.config"
 local LangSpecs = {}
 
 ---@return string[] supported_styles List of style names
-function LangSpecs:get_supported_styles() return self.supported_styles end
+function LangSpecs:get_supported_styles()
+	return vim.tbl_keys(defaults.languages[self.lang_name].styles.definitions)
+end
 
 ---@param style_name string
 ---@return boolean

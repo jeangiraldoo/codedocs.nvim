@@ -28,10 +28,6 @@ end
 return {
 	lang_name = "lua",
 	identifier_pos = true,
-	supported_styles = {
-		"EmmyLua",
-		"LDoc",
-	},
 	styles = {
 		default = "EmmyLua",
 		definitions = {

@@ -76,9 +76,6 @@ end
 return {
 	lang_name = "kotlin",
 	identifier_pos = true,
-	supported_styles = {
-		"KDoc",
-	},
 	styles = {
 		default = "KDoc",
 		definitions = {

@@ -37,9 +37,6 @@ end
 return {
 	lang_name = "go",
 	identifier_pos = true,
-	supported_styles = {
-		"Godoc",
-	},
 	styles = {
 		default = "Godoc",
 		definitions = {

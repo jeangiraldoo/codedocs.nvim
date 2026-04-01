@@ -53,9 +53,6 @@ end
 return {
 	lang_name = "java",
 	identifier_pos = false,
-	supported_styles = {
-		"JavaDoc",
-	},
 	styles = {
 		default = "JavaDoc",
 		definitions = {

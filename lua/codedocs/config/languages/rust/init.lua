@@ -26,9 +26,6 @@ end
 return {
 	lang_name = "rust",
 	identifier_pos = true,
-	supported_styles = {
-		"RustDoc",
-	},
 	styles = {
 		default = "RustDoc",
 		definitions = {

@@ -111,9 +111,6 @@ end
 return {
 	lang_name = "typescript",
 	identifier_pos = true,
-	supported_styles = {
-		"TSDoc",
-	},
 	styles = {
 		default = "TSDoc",
 		definitions = {

@@ -29,9 +29,6 @@ end
 return {
 	lang_name = "php",
 	identifier_pos = false,
-	supported_styles = {
-		"PHPDoc",
-	},
 	styles = {
 		default = "PHPDoc",
 		definitions = {

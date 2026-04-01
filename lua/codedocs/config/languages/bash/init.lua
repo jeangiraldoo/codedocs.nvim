@@ -59,9 +59,6 @@ function Func_extractors.returns() return {} end
 return {
 	lang_name = "bash",
 	identifier_pos = true,
-	supported_styles = {
-		"Google",
-	},
 	styles = {
 		default = "Google",
 		definitions = {

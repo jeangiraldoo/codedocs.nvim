@@ -91,9 +91,6 @@ end
 return {
 	lang_name = "javascript",
 	identifier_pos = true,
-	supported_styles = {
-		"JSDoc",
-	},
 	styles = {
 		default = "JSDoc",
 		definitions = {

@@ -29,9 +29,6 @@ end
 return {
 	lang_name = "c",
 	identifier_pos = false,
-	supported_styles = {
-		"Doxygen",
-	},
 	styles = {
 		default = "Doxygen",
 		definitions = {
