@@ -162,7 +162,7 @@ function Codedocs.orchestrate_annotation_build(lang_data)
 		line_num = row + 1,
 	}
 
-	local annotation_lines = docs_builder(struct_style, items_data, struct_style.settings.layout, struct_data)
+	local annotation_lines = docs_builder(struct_style, items_data, struct_data)
 
 	return annotation_lines, row, struct_style.settings.relative_position
 end

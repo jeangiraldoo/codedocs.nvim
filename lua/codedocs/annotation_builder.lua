@@ -82,7 +82,9 @@ local function _should_insert_gap_between_sections(section_idx, style, section_s
 	if current_section_is_last then return false end
 
 	local next_section_is_item_based = type(style.sections[section_idx + 1].items) == "table"
-	if not next_section_is_item_based then return section_style.insert_gap_between.enabled end
+	if not next_section_is_item_based then
+		return section_style.insert_gap_between.enabled and not style.sections[section_idx + 1].ignore_prev_gap
+	end
 
 	local next_section_has_items = #item_data[style.sections[section_idx + 1].name] > 0
 
@@ -92,7 +94,7 @@ local function _should_insert_gap_between_sections(section_idx, style, section_s
 		return false
 	end
 
-	return section_style.insert_gap_between.enabled
+	return section_style.insert_gap_between.enabled and not style.sections[section_idx + 1].ignore_prev_gap
 end
 
 local function _add_section_content(content, item_data, section_style)
@@ -141,30 +143,16 @@ end
 -- @param item_data table Mapping of section names to item lists
 -- @param style table Style configuration for all sections and settings options
 -- @return table Table mapping section names to their formatted content lines
-return function(style, item_data, annotation_structure, struct_data)
+return function(style, item_data, struct_data)
 	assert(type(item_data) == "table", "'item_data' must be a table, got " .. type(item_data))
 	assert(type(style) == "table", "'style' must be a table, got " .. type(style))
 
 	local annotation = Annotation.new()
 
-	for i = 1, (style.settings.insert_at - 1) do
-		-- Add all lines from the original layout that appear before the position where the content is to be inserted.
-		--
-		-- This is done to avoid inserting lines one by one at the insertion position,
-		-- since that would shift all following layout lines every time and be inefficient
-		-- handle_line(annotation_structure[i])
-		annotation:insert(annotation_structure[i], struct_data)
-	end
-
 	local content = _build_content(item_data, style) or {}
 	Debug_logger.log("Annotation content", content)
 
 	annotation:extend(content, struct_data)
-
-	for i = style.settings.insert_at, #annotation_structure do
-		-- Add all lines from the original layout that appear after the position where the content is to be inserted
-		annotation:insert(annotation_structure[i], struct_data)
-	end
 
 	return annotation:get_lines()
 end

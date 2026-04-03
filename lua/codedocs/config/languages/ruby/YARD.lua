@@ -1,9 +1,7 @@
 return {
 	comment = {
 		settings = {
-			layout = {},
 			relative_position = "empty_target_or_above",
-			insert_at = 1,
 			indent = false,
 		},
 		sections = {
@@ -17,9 +15,7 @@ return {
 	},
 	func = {
 		settings = {
-			layout = {},
 			relative_position = "above",
-			insert_at = 1,
 			indent = false,
 		},
 		sections = {

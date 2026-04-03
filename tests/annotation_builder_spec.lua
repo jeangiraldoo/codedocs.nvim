@@ -64,21 +64,12 @@ local BASE_ANNOTATION = {
 		" */",
 	},
 	opts = {
-		settings = {
-			layout = {
-				"/**",
-				" */",
-			},
-			insert_at = 2,
-			section_order = {
-				"primary_section",
-				"secondary_section",
-			},
-		},
+		settings = {},
 		sections = {
 			{
 				name = "title",
 				layout = {
+					"/**",
 					" * ",
 				},
 				insert_gap_between = {
@@ -122,6 +113,17 @@ local BASE_ANNOTATION = {
 					},
 				},
 			},
+			{
+				name = "footer",
+				layout = {
+					" */",
+				},
+				ignore_prev_gap = true,
+				insert_gap_between = {
+					enabled = true,
+					text = " *",
+				},
+			},
 		},
 	},
 }
@@ -143,16 +145,12 @@ local CASES = {
 			" ]-",
 		},
 		opts_to_change = {
-			settings = {
-				layout = {
-					"---",
-					" ]-",
-				},
-			},
+			settings = {},
 			sections = {
 				{
-					name = "title",
+					name = "header",
 					layout = {
+						"---",
 						"--* ",
 					},
 					insert_gap_between = {
@@ -214,6 +212,17 @@ local CASES = {
 						},
 					},
 				},
+				{
+					name = "footer",
+					layout = {
+						" ]-",
+					},
+					ignore_prev_gap = true,
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
+				},
 			},
 		},
 	},
@@ -236,8 +245,9 @@ local CASES = {
 		opts_to_change = {
 			sections = {
 				{
-					name = "title",
+					name = "header",
 					layout = {
+						"/**",
 						" * ",
 					},
 					insert_gap_between = {
@@ -290,6 +300,17 @@ local CASES = {
 						},
 					},
 				},
+				{
+					name = "footer",
+					layout = {
+						" */",
+					},
+					ignore_prev_gap = true,
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
+				},
 			},
 		},
 	},
@@ -312,16 +333,12 @@ local CASES = {
 			" */",
 		},
 		opts_to_change = {
-			settings = {
-				section_order = {
-					"secondary_section",
-					"primary_section",
-				},
-			},
+			settings = {},
 			sections = {
 				{
-					name = "title",
+					name = "header",
 					layout = {
+						"/**",
 						" * ",
 					},
 					insert_gap_between = {
@@ -378,6 +395,17 @@ local CASES = {
 						},
 					},
 				},
+				{
+					name = "footer",
+					layout = {
+						" */",
+					},
+					ignore_prev_gap = true,
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
+				},
 			},
 		},
 	},
@@ -405,8 +433,9 @@ local CASES = {
 		opts_to_change = {
 			sections = {
 				{
-					name = "title",
+					name = "header",
 					layout = {
+						"/**",
 						" * ",
 					},
 					insert_gap_between = {
@@ -459,6 +488,17 @@ local CASES = {
 						},
 					},
 				},
+				{
+					name = "footer",
+					layout = {
+						" */",
+					},
+					ignore_prev_gap = true,
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
+				},
 			},
 		},
 	},
@@ -480,8 +520,9 @@ local CASES = {
 		opts_to_change = {
 			sections = {
 				{
-					name = "title",
+					name = "header",
 					layout = {
+						"/**",
 						" * ",
 					},
 					insert_gap_between = {
@@ -525,6 +566,17 @@ local CASES = {
 						},
 					},
 				},
+				{
+					name = "footer",
+					layout = {
+						" */",
+					},
+					ignore_prev_gap = true,
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
+				},
 			},
 		},
 	},
@@ -546,8 +598,9 @@ local CASES = {
 		opts_to_change = {
 			sections = {
 				{
-					name = "title",
+					name = "header",
 					layout = {
+						"/**",
 						" * ",
 					},
 					insert_gap_between = {
@@ -591,6 +644,17 @@ local CASES = {
 						},
 					},
 				},
+				{
+					name = "footer",
+					layout = {
+						" */",
+					},
+					ignore_prev_gap = true,
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
+				},
 			},
 		},
 	},
@@ -601,6 +665,7 @@ describe("Annotation builder - ", function()
 		it("Case #" .. i, function()
 			local base_opts_copy = vim.deepcopy(BASE_ANNOTATION.opts)
 			local new_style = vim.tbl_deep_extend("force", base_opts_copy, case.opts_to_change)
+			print(vim.inspect(new_style))
 			local annotation = annotation_builder(new_style, MOCKED_ITEMS, new_style.settings.layout)
 
 			assert.are.same(case.expected_lines, annotation)

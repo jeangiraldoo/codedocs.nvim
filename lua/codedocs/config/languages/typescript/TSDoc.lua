@@ -1,9 +1,7 @@
 return {
 	comment = {
 		settings = {
-			layout = {},
 			relative_position = "empty_target_or_above",
-			insert_at = 1,
 			indent = false,
 		},
 		sections = {
@@ -17,18 +15,14 @@ return {
 	},
 	class = {
 		settings = {
-			layout = {
-				"/**",
-				" */",
-			},
 			relative_position = "above",
-			insert_at = 2,
 			indent = false,
 		},
 		sections = {
 			{
-				name = "title",
+				name = "header",
 				layout = {
+					"/**",
 					" * ${%snippet_tabstop_idx:title}",
 				},
 				insert_gap_between = {
@@ -51,22 +45,29 @@ return {
 					},
 				},
 			},
+			{
+				name = "footer",
+				layout = {
+					" */",
+				},
+				ignore_prev_gap = true,
+				insert_gap_between = {
+					enabled = false,
+					text = " *",
+				},
+			},
 		},
 	},
 	func = {
 		settings = {
-			layout = {
-				"/**",
-				" */",
-			},
 			relative_position = "above",
-			insert_at = 2,
 			indent = false,
 		},
 		sections = {
 			{
-				name = "title",
+				name = "header",
 				layout = {
+					"/**",
 					" * ${%snippet_tabstop_idx:title}",
 				},
 				insert_gap_between = {
@@ -106,6 +107,17 @@ return {
 						enabled = false,
 						text = " *",
 					},
+				},
+			},
+			{
+				name = "footer",
+				layout = {
+					" */",
+				},
+				ignore_prev_gap = true,
+				insert_gap_between = {
+					enabled = false,
+					text = " *",
 				},
 			},
 		},
