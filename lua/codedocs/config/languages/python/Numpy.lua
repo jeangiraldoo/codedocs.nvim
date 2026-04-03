@@ -7,7 +7,8 @@ return {
 			indented = false,
 		},
 		sections = {
-			title = {
+			{
+				name = "title",
 				layout = {
 					"# ${%snippet_tabstop_idx:description}",
 				},
@@ -22,13 +23,11 @@ return {
 			},
 			relative_position = "below",
 			insert_at = 2,
-			section_order = {
-				"attributes",
-			},
 			indented = true,
 		},
 		sections = {
-			title = {
+			{
+				name = "title",
 				layout = {
 					"${%snippet_tabstop_idx:title}",
 				},
@@ -37,7 +36,8 @@ return {
 					text = "",
 				},
 			},
-			attributes = {
+			{
+				name = "attributes",
 				layout = {
 					"Attributes:",
 					"___________",
@@ -67,14 +67,11 @@ return {
 			},
 			relative_position = "below",
 			insert_at = 2,
-			section_order = {
-				"parameters",
-				"returns",
-			},
 			indented = true,
 		},
 		sections = {
-			title = {
+			{
+				name = "title",
 				layout = {
 					"${%snippet_tabstop_idx:title}",
 				},
@@ -83,7 +80,8 @@ return {
 					text = "",
 				},
 			},
-			parameters = {
+			{
+				name = "parameters",
 				layout = {
 					"Parameters",
 					"----------",
@@ -103,7 +101,8 @@ return {
 					},
 				},
 			},
-			returns = {
+			{
+				name = "returns",
 				layout = {
 					"Returns",
 					"-------",

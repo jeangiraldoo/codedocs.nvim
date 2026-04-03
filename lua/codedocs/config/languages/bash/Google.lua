@@ -4,11 +4,11 @@ return {
 			layout = {},
 			relative_position = "empty_target_or_above",
 			insert_at = 1,
-			section_order = {},
 			indented = false,
 		},
 		sections = {
-			title = {
+			{
+				name = "title",
 				layout = {
 					"# ${%snippet_tabstop_idx:description}",
 				},
@@ -27,16 +27,12 @@ return {
 			},
 			relative_position = "above",
 			insert_at = 2,
-			section_order = {
-				"globals",
-				"parameters",
-				"returns",
-			},
 			item_extraction = {},
 			indented = false,
 		},
 		sections = {
-			title = {
+			{
+				name = "title",
 				layout = {
 					"# ${%snippet_tabstop_idx:title}",
 				},
@@ -45,7 +41,8 @@ return {
 					text = "",
 				},
 			},
-			globals = {
+			{
+				name = "globals",
 				layout = {
 					"# Globals:",
 				},
@@ -63,7 +60,8 @@ return {
 					},
 				},
 			},
-			parameters = {
+			{
+				name = "parameters",
 				layout = {
 					"# Arguments:",
 				},
@@ -81,7 +79,8 @@ return {
 					},
 				},
 			},
-			returns = {
+			{
+				name = "returns",
 				layout = {
 					"Returns:",
 				},

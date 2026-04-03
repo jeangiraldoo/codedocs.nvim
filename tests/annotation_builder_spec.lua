@@ -76,7 +76,8 @@ local BASE_ANNOTATION = {
 			},
 		},
 		sections = {
-			title = {
+			{
+				name = "title",
 				layout = {
 					" * ",
 				},
@@ -85,7 +86,8 @@ local BASE_ANNOTATION = {
 					text = " *",
 				},
 			},
-			primary_section = {
+			{
+				name = "primary_section",
 				layout = {},
 				insert_gap_between = {
 					enabled = false,
@@ -102,7 +104,8 @@ local BASE_ANNOTATION = {
 					},
 				},
 			},
-			secondary_section = {
+			{
+				name = "secondary_section",
 				layout = {},
 				insert_gap_between = {
 					enabled = false,
@@ -147,22 +150,67 @@ local CASES = {
 				},
 			},
 			sections = {
-				title = {
+				{
+					name = "title",
 					layout = {
 						"--* ",
 					},
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
 				},
-				primary_section = {
+				{
+					name = "primary_section",
+					layout = {},
+					insert_gap_between = {
+						enabled = false,
+						text = " *",
+					},
 					items = {
 						layout = {
 							"--* @item %item_name",
 						},
+						insert_gap_between = {
+							enabled = false,
+							text = " *",
+						},
+						items = {
+							insert_gap_between = {
+								enabled = false,
+								text = " * ",
+							},
+							indent = false,
+							layout = {
+								" * @item %item_name",
+							},
+						},
 					},
 				},
-				secondary_section = {
+				{
+					name = "secondary_section",
+					layout = {},
+					insert_gap_between = {
+						enabled = false,
+						text = " * ",
+					},
 					items = {
 						layout = {
 							"--* @secondary_item %item_name",
+						},
+						insert_gap_between = {
+							enabled = false,
+							text = " * ",
+						},
+						items = {
+							insert_gap_between = {
+								enabled = false,
+								text = " * ",
+							},
+							indent = false,
+							layout = {
+								" * @secondary_item %item_name",
+							},
 						},
 					},
 				},
@@ -187,16 +235,59 @@ local CASES = {
 		},
 		opts_to_change = {
 			sections = {
-				primary_section = {
+				{
+					name = "title",
+					layout = {
+						" * ",
+					},
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
+				},
+				{
+					name = "primary_section",
+					layout = {},
 					insert_gap_between = {
 						enabled = true,
 						text = "--*",
 					},
+					items = {
+						layout = {
+							" * @item %item_name",
+						},
+						insert_gap_between = {
+							enabled = false,
+							text = " *",
+						},
+						items = {
+							insert_gap_between = {
+								enabled = false,
+								text = " * ",
+							},
+							indent = false,
+							layout = {
+								" * @item %item_name",
+							},
+						},
+					},
 				},
-				secondary_section = {
+				{
+					name = "secondary_section",
+					layout = {},
 					insert_gap_between = {
 						enabled = true,
-						text = "--*",
+						text = "--* ",
+					},
+					items = {
+						insert_gap_between = {
+							enabled = false,
+							text = " * ",
+						},
+						indent = false,
+						layout = {
+							" * @secondary_item %item_name",
+						},
 					},
 				},
 			},
@@ -228,11 +319,63 @@ local CASES = {
 				},
 			},
 			sections = {
-				primary_section = {
+				{
+					name = "title",
+					layout = {
+						" * ",
+					},
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
+				},
+				{
+					name = "secondary_section",
+					layout = {},
+					insert_gap_between = {
+						enabled = false,
+						text = " * ",
+					},
+					items = {
+						insert_gap_between = {
+							enabled = false,
+							text = " * ",
+						},
+						indent = false,
+						layout = {
+							" * @secondary_item %item_name",
+						},
+					},
+				},
+				{
+					name = "primary_section",
+					insert_gap_between = {
+						enabled = false,
+						text = " *",
+					},
 					layout = {
 						" * This is the primary section",
 						" * ***************************",
 						" * ",
+					},
+					items = {
+						layout = {
+							" * @item %item_name",
+						},
+						insert_gap_between = {
+							enabled = false,
+							text = " *",
+						},
+						items = {
+							insert_gap_between = {
+								enabled = false,
+								text = " * ",
+							},
+							indent = false,
+							layout = {
+								" * @item %item_name",
+							},
+						},
 					},
 				},
 			},
@@ -261,17 +404,58 @@ local CASES = {
 		},
 		opts_to_change = {
 			sections = {
-				primary_section = {
+				{
+					name = "title",
+					layout = {
+						" * ",
+					},
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
+				},
+				{
+					name = "primary_section",
+					layout = {},
+					insert_gap_between = {
+						enabled = false,
+						text = " *",
+					},
 					items = {
+						layout = {
+							" * @item %item_name",
+						},
 						insert_gap_between = {
 							enabled = true,
+							text = " * ",
+						},
+						items = {
+							insert_gap_between = {
+								enabled = false,
+								text = " * ",
+							},
+							indent = false,
+							layout = {
+								" * @item %item_name",
+							},
 						},
 					},
 				},
-				secondary_section = {
+				{
+					name = "secondary_section",
+					layout = {},
+					insert_gap_between = {
+						enabled = false,
+						text = " * ",
+					},
 					items = {
 						insert_gap_between = {
 							enabled = true,
+							text = " * ",
+						},
+						indent = false,
+						layout = {
+							" * @secondary_item %item_name",
 						},
 					},
 				},
@@ -295,10 +479,49 @@ local CASES = {
 		},
 		opts_to_change = {
 			sections = {
-				primary_section = {
+				{
+					name = "title",
+					layout = {
+						" * ",
+					},
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
+				},
+				{
+					name = "primary_section",
+					layout = {},
+					insert_gap_between = {
+						enabled = false,
+						text = " *",
+					},
 					items = {
+						insert_gap_between = {
+							enabled = false,
+							text = " * ",
+						},
+						indent = false,
 						layout = {
 							" * @the_type [%item_type] @the_name {%item_name}",
+						},
+					},
+				},
+				{
+					name = "secondary_section",
+					layout = {},
+					insert_gap_between = {
+						enabled = false,
+						text = " * ",
+					},
+					items = {
+						insert_gap_between = {
+							enabled = false,
+							text = " * ",
+						},
+						indent = false,
+						layout = {
+							" * @secondary_item %item_name",
 						},
 					},
 				},
@@ -322,10 +545,49 @@ local CASES = {
 		},
 		opts_to_change = {
 			sections = {
-				primary_section = {
+				{
+					name = "title",
+					layout = {
+						" * ",
+					},
+					insert_gap_between = {
+						enabled = true,
+						text = " *",
+					},
+				},
+				{
+					name = "primary_section",
+					layout = {},
+					insert_gap_between = {
+						enabled = false,
+						text = " *",
+					},
 					items = {
+						insert_gap_between = {
+							enabled = false,
+							text = " * ",
+						},
+						indent = false,
 						layout = {
 							" * @the_type [%item_type] @the_name {%item_name} ${%snippet_tabstop_idx:description}",
+						},
+					},
+				},
+				{
+					name = "secondary_section",
+					layout = {},
+					insert_gap_between = {
+						enabled = false,
+						text = " * ",
+					},
+					items = {
+						insert_gap_between = {
+							enabled = false,
+							text = " * ",
+						},
+						indent = false,
+						layout = {
+							" * @secondary_item %item_name",
 						},
 					},
 				},
