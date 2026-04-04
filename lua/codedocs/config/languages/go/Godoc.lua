@@ -1,3 +1,5 @@
+local lang_utils = require "codedocs.config.languages.utils"
+
 return {
 	comment = {
 		settings = {
@@ -5,7 +7,7 @@ return {
 			indented = false,
 		},
 		sections = {
-			{
+			lang_utils.new_section {
 				name = "title",
 				layout = {
 					"// ${%snippet_tabstop_idx:description}",
@@ -19,46 +21,23 @@ return {
 			indented = false,
 		},
 		sections = {
-			{
+			lang_utils.new_section {
 				name = "title",
 				layout = {
 					"// ${%snippet_tabstop_idx:title}",
 				},
 				insert_gap_between = {
-					enabled = false,
 					text = "//",
 				},
 			},
-			{
-				name = "parameters",
-				layout = {},
-				insert_gap_between = {
-					enabled = false,
-					text = "//",
-				},
-				items = {
-					layout = {},
-					insert_gap_between = {
-						enabled = false,
-						text = "//",
-					},
-				},
-			},
-			{
-				name = "returns",
-				layout = {},
-				insert_gap_between = {
-					enabled = false,
-					text = "//",
-				},
-				items = {
-					layout = {},
-					insert_gap_between = {
-						enabled = false,
-						text = "//",
-					},
-				},
-			},
+			lang_utils.new_section(
+				{ name = "parameters", insert_gap_between = { text = "//" } },
+				{ insert_gap_between = { text = "//" } }
+			),
+			lang_utils.new_section(
+				{ name = "returns", insert_gap_between = { text = "//" } },
+				{ insert_gap_between = { text = "//" } }
+			),
 		},
 	},
 }

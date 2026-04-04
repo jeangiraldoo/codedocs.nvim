@@ -1,3 +1,5 @@
+local lang_utils = require "codedocs.config.languages.utils"
+
 return {
 	comment = {
 		settings = {
@@ -5,7 +7,7 @@ return {
 			indented = false,
 		},
 		sections = {
-			{
+			lang_utils.new_section {
 				name = "title",
 				layout = {
 					"# ${%snippet_tabstop_idx:description}",
@@ -19,7 +21,7 @@ return {
 			indented = true,
 		},
 		sections = {
-			{
+			lang_utils.new_section {
 				name = "header",
 				layout = {
 					'"""',
@@ -27,40 +29,20 @@ return {
 				},
 				insert_gap_between = {
 					enabled = true,
-					text = "",
 				},
 			},
-			{
-				name = "attributes",
+			lang_utils.new_section({ name = "attributes", layout = { "Attributes:", "___________" } }, {
 				layout = {
-					"Attributes:",
-					"___________",
+					"%item_name : ${%snippet_tabstop_idx:%item_type}",
+					"	${%snippet_tabstop_idx:description}",
 				},
-				insert_gap_between = {
-					enabled = false,
-					text = "",
-				},
-				items = {
-					layout = {
-						"%item_name : ${%snippet_tabstop_idx:%item_type}",
-						"	${%snippet_tabstop_idx:description}",
-					},
-					insert_gap_between = {
-						enabled = false,
-						text = "",
-					},
-				},
-			},
-			{
+			}),
+			lang_utils.new_section {
 				name = "footer",
 				layout = {
 					'"""',
 				},
 				ignore_prev_gap = true,
-				insert_gap_between = {
-					enabled = false,
-					text = "",
-				},
 			},
 		},
 	},
@@ -70,7 +52,7 @@ return {
 			indented = true,
 		},
 		sections = {
-			{
+			lang_utils.new_section {
 				name = "header",
 				layout = {
 					'"""',
@@ -78,61 +60,33 @@ return {
 				},
 				insert_gap_between = {
 					enabled = true,
-					text = "",
 				},
 			},
-			{
+			lang_utils.new_section({
 				name = "parameters",
+				layout = { "Parameters", "----------" },
+				insert_gap_between = { enabled = true },
+			}, {
 				layout = {
-					"Parameters",
-					"----------",
+					"%item_name: ${%snippet_tabstop_idx:%item_type}",
+					"	${%snippet_tabstop_idx:description}",
 				},
-				insert_gap_between = {
-					enabled = true,
-					text = "",
-				},
-				items = {
-					layout = {
-						"%item_name: ${%snippet_tabstop_idx:%item_type}",
-						"	${%snippet_tabstop_idx:description}",
-					},
-					insert_gap_between = {
-						enabled = false,
-						text = "",
-					},
-				},
-			},
-			{
-				name = "returns",
-				layout = {
-					"Returns",
-					"-------",
-				},
-				insert_gap_between = {
-					enabled = true,
-					text = "",
-				},
-				items = {
+			}),
+			lang_utils.new_section(
+				{ name = "returns", layout = { "Returns", "-------" }, insert_gap_between = { enabled = true } },
+				{
 					layout = {
 						"${%snippet_tabstop_idx:%item_type}",
 						"	${%snippet_tabstop_idx:description}",
 					},
-					insert_gap_between = {
-						enabled = false,
-						text = "",
-					},
-				},
-			},
-			{
+				}
+			),
+			lang_utils.new_section {
 				name = "footer",
 				layout = {
 					'"""',
 				},
 				ignore_prev_gap = true,
-				insert_gap_between = {
-					enabled = false,
-					text = "",
-				},
 			},
 		},
 	},

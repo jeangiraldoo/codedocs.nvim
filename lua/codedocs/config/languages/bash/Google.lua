@@ -1,3 +1,5 @@
+local language_utils = require "codedocs.config.languages.utils"
+
 return {
 	comment = {
 		settings = {
@@ -5,14 +7,10 @@ return {
 			indented = false,
 		},
 		sections = {
-			{
+			language_utils.new_section {
 				name = "title",
 				layout = {
 					"# ${%snippet_tabstop_idx:description}",
-				},
-				insert_gap_between = {
-					enabled = false,
-					text = "",
 				},
 			},
 		},
@@ -23,75 +21,23 @@ return {
 			indented = false,
 		},
 		sections = {
-			{
+			language_utils.new_section {
 				name = "header",
 				layout = {
 					"#######################################",
 					"# ${%snippet_tabstop_idx:title}",
 				},
-				insert_gap_between = {
-					enabled = false,
-					text = "",
-				},
 			},
-			{
-				name = "globals",
-				layout = {
-					"# Globals:",
-				},
-				insert_gap_between = {
-					enabled = false,
-					text = "",
-				},
-				items = {
-					layout = {
-						"#   %item_name",
-					},
-					insert_gap_between = {
-						enabled = false,
-						text = "",
-					},
-				},
-			},
-			{
-				name = "parameters",
-				layout = {
-					"# Arguments:",
-				},
-				insert_gap_between = {
-					enabled = false,
-					text = "",
-				},
-				items = {
-					layout = {
-						"#   ${%snippet_tabstop_idx:description}",
-					},
-					insert_gap_between = {
-						enabled = false,
-						text = "",
-					},
-				},
-			},
-			{
-				name = "returns",
-				layout = {
-					"Returns:",
-				},
-				insert_gap_between = {
-					enabled = false,
-					text = "",
-				},
-				items = {
-					layout = {
-						"%item_type:",
-					},
-					insert_gap_between = {
-						enabled = false,
-						text = "",
-					},
-				},
-			},
-			{
+			language_utils.new_section(
+				{ name = "globals", layout = { "# Globals:" } },
+				{ layout = { "#   %item_name" } }
+			),
+			language_utils.new_section(
+				{ name = "parameters", layout = { "# Arguments:" } },
+				{ layout = { "#   ${%snippet_tabstop_idx:description}" } }
+			),
+			language_utils.new_section({ name = "returns", layout = { "Returns:" } }, { layout = { "%item_type:" } }),
+			language_utils.new_section {
 				name = "footer",
 				layout = {
 					"#######################################",
