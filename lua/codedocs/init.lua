@@ -65,6 +65,10 @@ end
 
 ---@param user_config CodedocsConfig?
 function Codedocs.setup(user_config)
+	if not user_config then return end
+
+	assert(type(user_config) == "table", "The Codedocs `setup` function expects a table, got " .. type(user_config))
+
 	local config = require "codedocs.config"
 	local merged = vim.tbl_deep_extend("force", config, user_config)
 
