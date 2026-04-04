@@ -21,6 +21,10 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@class CodedocsLuaSpec
+---@field styles { func: CodedocsLuaFuncStyles }
+
+---@type CodedocsLuaSpec
 return {
 	lang_name = "lua",
 	default_style = "EmmyLua",

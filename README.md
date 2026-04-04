@@ -128,9 +128,13 @@ Default styles are defined using the `default_styles` key:
 
 ```lua
 require("codedocs").setup {
-    default_styles = {
-        --- Default styles definitions
-    }
+    languages = {
+        <language name> = {
+            styles = {
+                default = <style name>
+            }
+        }
+    },
 }
 ```
 
@@ -138,10 +142,18 @@ For example, let's set the default styles for Python and Lua:
 
 ```lua
 require("codedocs").setup {
-    default_styles = {
-        lua = "EmmyLua",
-        python = "reST"
-    }
+    languages = {
+        python = {
+            styles = {
+                default = "reST"
+            }
+        },
+        lua = {
+            styles = {
+                default = "EmmyLua"
+            }
+        }
+    },
 }
 ```
 
@@ -304,30 +316,34 @@ This is what such customization would look like:
 
 ```lua
 require("codedocs").setup({
-    styles = { -- Modifications to styles are done in the `styles` key
-        python = { -- language name
-            Google = { -- name of the style to customize
-                func = { -- structure name
-                    sections = {
-                        parameters = {
-                            insert_gap_between = {
-                                enabled = true
-                            },
-                            items = {
-                                insert_gap_between = {
-                                    enabled = true
+    languages = {
+        python = {
+            styles = {
+                definitions = {
+                    Google = {
+                        func = {
+                            sections = {
+                                parameters = {
+                                    insert_gap_between = {
+                                        enabled = true
+                                    },
+                                    items = {
+                                        insert_gap_between = {
+                                            enabled = true
+                                        },
+                                    },
                                 },
-                            },
-                        },
-                        returns = {
-                            items = {
-                                insert_gap_between = {
-                                    enabled = true
+                                returns = {
+                                    items = {
+                                        insert_gap_between = {
+                                            enabled = true
+                                        }
+                                    },
                                 }
-                            },
+                            }
                         }
-                    }
-                }
+                    },
+                },
             },
         },
     }

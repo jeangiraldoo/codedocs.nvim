@@ -4,10 +4,6 @@ local LangSpecs = require "codedocs.lang_specs.init"
 
 local Codedocs = {}
 
-local function _apply_plugin_settings(settings)
-	if settings.debug == true then require("codedocs.utils.debug_logger").enable() end
-end
-
 --- Inserts an annotation relative to a structure and moves the cursor to the annotation title
 ---@param annotation_lines string[]
 ---@param row number 0-based annotation-related positions
@@ -50,25 +46,65 @@ local function _get_supported_struct_node_data(ts_node, struct_identifiers)
 	return _get_supported_struct_node_data(ts_node:parent(), struct_identifiers)
 end
 
-function Codedocs.setup(config)
-	if config.settings then _apply_plugin_settings(config.settings) end
+---@class CodedocsLayoutOpt string[]
 
-	if config and config.default_styles then
-		for lang_name, new_default_style in pairs(config.default_styles) do
-			if not LangSpecs.is_lang_supported(lang_name) then
-				vim.notify(
-					"There is no language called " .. lang_name .. " available in codedocs",
-					vim.log.levels.ERROR
-				)
-				return
-			end
+---@class CodedocsItemExtractionAttributesOpts
+---@field static boolean
+---@field instance "none" | "constructor" | "all"
 
-			local lang_spec = LangSpecs.new(lang_name)
-			lang_spec:set_default_style(new_default_style)
-		end
+---@class CodedocsItemExtractionOpts
+---@field attributes CodedocsItemExtractionAttributesOpts
+
+---@class CodedocsAnnotationSettings
+---@field layout string[]
+---@field section_order string[]
+---@field indented boolean
+---@field insert_at number
+---@field relative_position "above" | "below" | "empty_target_or_above"
+---@field item_extraction CodedocsItemExtractionOpts
+
+---@class CodedocsItemBasedSectionOpts
+---@field layout CodedocsLayoutOpt
+
+---@class CodedocsAnnotationFuncSections
+---@field parameters CodedocsItemExtractionOpts
+
+---@class CodedocsAnnotationSectionOpts
+
+---@class CodedocsFuncStyle
+---@field settings? CodedocsAnnotationSettings
+---@field sections? CodedocsAnnotationFuncSections
+
+---@class StyleDefinition
+---@field settings? CodedocsAnnotationSettings
+
+---@class CodedocsLangStructures
+---@field func? table<string, CodedocsFuncStyle>
+---@field class? table<string, StyleDefinition>
+---@field comment? table<string, StyleDefinition>
+
+---@class CodedocsLangSpec
+---@field default_style? string
+---@field styles? CodedocsLangStructures
+
+---@class CodedocsLangs
+---@field lua CodedocsLuaSpec
+
+---@class CodedocsConfig
+---@field debug? boolean
+---@field languages? CodedocsLangs
+
+---@param user_config CodedocsConfig
+function Codedocs.setup(user_config)
+	local config = require "codedocs.config"
+	local merged = vim.tbl_deep_extend("force", config, user_config)
+
+	for k in pairs(config) do
+		config[k] = nil
 	end
-
-	if config and config.styles then LangSpecs.update_style(config.styles) end
+	for k, v in pairs(merged) do
+		config[k] = v
+	end
 end
 
 function Codedocs.extract_item_data(lang_name)
@@ -95,6 +131,7 @@ function Codedocs.orchestrate_annotation_build(lang_data)
 	local struct_style = lang_spec:get_struct_style(struct_name, lang_data.style_name or lang_spec:get_default_style())
 
 	Debug_logger.log("Structure name: " .. struct_name)
+	Debug_logger.log("Style name: " .. lang_spec:get_default_style())
 	Debug_logger.log("Style: ", struct_style)
 
 	local struct_data = {

@@ -1,3 +1,5 @@
+local defaults = require "codedocs.config"
+
 local LangSpecs = {}
 
 local EXPECTED_OPTS_PER_SECTION = require "codedocs.lang_specs.style_opts"
@@ -319,28 +321,11 @@ function LangSpecs:get_struct_items(struct_name, node, style_name)
 end
 
 function LangSpecs:get_struct_style(struct_name, style_name)
-	local function _validate_style_opts(style)
-		for section_name, section_opts in pairs(style.sections) do
-			local expected_opts = EXPECTED_OPTS_PER_SECTION.sections[section_name]
-			if not expected_opts then error(string.format("'%s' section_name is not supported", section_name), 0) end
-
-			local are_opts_correct, error_msg = _validate_section_opts(expected_opts, section_name, section_opts)
-			if not are_opts_correct then return false, error_msg end
-		end
-		return true
-	end
-
-	if LangSpecs.is_lang_supported(self.lang_name) then
-		local style =
-			require(string.format("codedocs.lang_specs.%s.styles.%s", self.lang_name, struct_name))[style_name]
-		local is_style_correct, error_msg = _validate_style_opts(style)
-		if not is_style_correct then error(error_msg) end
-
-		return style
-	end
+	local style = defaults.languages[self.lang_name].styles[struct_name][style_name]
+	return style
 end
 
-function LangSpecs:get_default_style() return self.default_style end
+function LangSpecs:get_default_style() return defaults.languages[self.lang_name].default_style end
 
 function LangSpecs:get_lang_identifier_pos() return self.identifier_pos end
 
