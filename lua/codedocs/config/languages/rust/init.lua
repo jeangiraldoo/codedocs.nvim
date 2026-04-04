@@ -23,6 +23,21 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@alias CodedocsRustStyleNames
+---| "RustDoc"
+
+---@alias CodedocsRustStructNames
+---| "func"
+---| "comment"
+
+---@class CodedocsRustStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsRustStyleNames, table<CodedocsRustStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsRustStyleNames
+
+---@class CodedocsRustConfig: CodedocsLanguageConfig
+---@field styles CodedocsRustStylesConfig
+
+---@type CodedocsRustConfig
 return {
 	lang_name = "rust",
 	identifier_pos = true,

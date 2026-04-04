@@ -63,55 +63,7 @@ local function _get_supported_struct_node_data(ts_node, struct_identifiers)
 	return _get_supported_struct_node_data(ts_node:parent(), struct_identifiers)
 end
 
----@class CodedocsLayoutOpt string[]
-
----@class CodedocsItemExtractionAttributesOpts
----@field static boolean
----@field instance "none" | "constructor" | "all"
-
----@class CodedocsItemExtractionOpts
----@field attributes CodedocsItemExtractionAttributesOpts
-
----@class CodedocsAnnotationSettings
----@field layout string[]
----@field section_order string[]
----@field indented boolean
----@field insert_at number
----@field relative_position "above" | "below" | "empty_target_or_above"
----@field item_extraction CodedocsItemExtractionOpts
-
----@class CodedocsItemBasedSectionOpts
----@field layout CodedocsLayoutOpt
-
----@class CodedocsAnnotationFuncSections
----@field parameters CodedocsItemExtractionOpts
-
----@class CodedocsAnnotationSectionOpts
-
----@class CodedocsFuncStyle
----@field settings? CodedocsAnnotationSettings
----@field sections? CodedocsAnnotationFuncSections
-
----@class StyleDefinition
----@field settings? CodedocsAnnotationSettings
-
----@class CodedocsLangStructures
----@field func? table<string, CodedocsFuncStyle>
----@field class? table<string, StyleDefinition>
----@field comment? table<string, StyleDefinition>
-
----@class CodedocsLangSpec
----@field default_style? string
----@field styles? CodedocsLangStructures
-
----@class CodedocsLangs
----@field lua CodedocsLuaSpec
-
----@class CodedocsConfig
----@field debug? boolean
----@field languages? CodedocsLangs
-
----@param user_config CodedocsConfig
+---@param user_config CodedocsConfig?
 function Codedocs.setup(user_config)
 	local config = require "codedocs.config"
 	local merged = vim.tbl_deep_extend("force", config, user_config)

@@ -107,6 +107,22 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@alias CodedocsTSStyleNames
+---| "TSDoc"
+
+---@alias CodedocsTSStructNames
+---| "class"
+---| "func"
+---| "comment"
+
+---@class CodedocsTSStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsTSStyleNames, table<CodedocsTSStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsTSStyleNames
+
+---@class CodedocsTSConfig: CodedocsLanguageConfig
+---@field styles CodedocsTSStylesConfig
+
+---@type CodedocsTSConfig
 return {
 	lang_name = "typescript",
 	identifier_pos = true,

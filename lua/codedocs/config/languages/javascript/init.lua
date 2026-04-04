@@ -87,6 +87,22 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@alias CodedocsJSStyleNames
+---| "JSDoc"
+
+---@alias CodedocsJSStructNames
+---| "class"
+---| "func"
+---| "comment"
+
+---@class CodedocsJSStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsJSStyleNames, table<CodedocsJSStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsJSStyleNames
+
+---@class CodedocsJSConfig: CodedocsLanguageConfig
+---@field styles CodedocsJSStylesConfig
+
+---@type CodedocsJSConfig
 return {
 	lang_name = "javascript",
 	identifier_pos = true,

@@ -30,6 +30,21 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@alias CodedocsCPPStyleNames
+---| "Doxygen"
+
+---@alias CodedocsCPPStructNames
+---| "func"
+---| "comment"
+
+---@class CodedocsCPPStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsCPPStyleNames, table<CodedocsCPPStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsCPPStyleNames
+
+---@class CodedocsCPPConfig: CodedocsLanguageConfig
+---@field styles CodedocsCPPStylesConfig
+
+---@type CodedocsCPPConfig
 return {
 	lang_name = "cpp",
 	identifier_pos = false,

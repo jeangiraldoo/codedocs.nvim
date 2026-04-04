@@ -85,6 +85,24 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@alias CodedocsPythonStyleNames
+---| "Google"
+---| "Numpy"
+---| "reST"
+
+---@alias CodedocsPythonStructNames
+---| "class"
+---| "func"
+---| "comment"
+
+---@class CodedocsPythonStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsPythonStyleNames, table<CodedocsPythonStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsPythonStyleNames
+
+---@class CodedocsPythonConfig: CodedocsLanguageConfig
+---@field styles CodedocsPythonStylesConfig
+
+---@type CodedocsPythonConfig
 return {
 	lang_name = "python",
 	identifier_pos = true,

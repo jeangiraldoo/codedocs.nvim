@@ -26,6 +26,21 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@alias CodedocsCStyleNames
+---| "Doxygen"
+
+---@alias CodedocsCStructNames
+---| "func"
+---| "comment"
+
+---@class CodedocsCStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsCStyleNames, table<CodedocsCStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsCStyleNames
+
+---@class CodedocsCConfig: CodedocsLanguageConfig
+---@field styles CodedocsCStylesConfig
+
+---@type CodedocsCConfig
 return {
 	lang_name = "c",
 	identifier_pos = false,

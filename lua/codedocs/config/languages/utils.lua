@@ -24,18 +24,7 @@ local NON_ITEM_BASED_SECTION_DEFAULTS = vim.tbl_deep_extend("force", vim.deepcop
 ---    insert_gap_between: {
 ---        enabled: boolean?,
 ---        text: string? } })? Item options
----@return {
----    name: "" | string,
----    layout: string[],
----    insert_gap_between: {
----        enabled: boolean,
----        text: "" | string },
----    ignore_prev_gap: boolean,
----    items: {
----        layout: string[],
----        insert_gap_between: {
----            enabled: boolean,
----            text: "" | string }}?} Section
+---@return CodedocsSectionOpts
 function Utils.new_section(section_data, items_data)
 	assert(
 		type(section_data) == "table",

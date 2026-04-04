@@ -16,6 +16,21 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@alias CodedocsRubyStyleNames
+---| "YARD"
+
+---@alias CodedocsRubyStructNames
+---| "func"
+---| "comment"
+
+---@class CodedocsRubyStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsRubyStyleNames, table<CodedocsRubyStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsRubyStyleNames
+
+---@class CodedocsRubyConfig: CodedocsLanguageConfig
+---@field styles CodedocsRubyStylesConfig
+
+---@type CodedocsRubyConfig
 return {
 	lang_name = "ruby",
 	identifier_pos = true,

@@ -56,6 +56,21 @@ end
 
 function Func_extractors.returns() return {} end
 
+---@alias CodedocsBashStyleNames
+---| "Google"
+
+---@alias CodedocsBashStructNames
+---| "func"
+---| "comment"
+
+---@class CodedocsBashStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsBashStyleNames, table<CodedocsBashStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsBashStyleNames
+
+---@class CodedocsBashConfig: CodedocsLanguageConfig
+---@field styles CodedocsBashStylesConfig
+
+---@type CodedocsBashConfig
 return {
 	lang_name = "bash",
 	identifier_pos = true,

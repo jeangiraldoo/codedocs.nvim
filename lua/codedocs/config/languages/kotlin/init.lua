@@ -72,6 +72,22 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@alias CodedocsKotlinStyleNames
+---| "KDoc"
+
+---@alias CodedocsKotlinStructNames
+---| "class"
+---| "func"
+---| "comment"
+
+---@class CodedocsKotlinStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsKotlinStyleNames, table<CodedocsKotlinStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsKotlinStyleNames
+
+---@class CodedocsKotlinConfig: CodedocsLanguageConfig
+---@field styles CodedocsKotlinStylesConfig
+
+---@type CodedocsKotlinConfig
 return {
 	lang_name = "kotlin",
 	identifier_pos = true,

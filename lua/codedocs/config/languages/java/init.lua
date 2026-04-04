@@ -50,6 +50,22 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@alias CodedocsJavaStyleNames
+---| "JavaDoc"
+
+---@alias CodedocsJavaStructNames
+---| "class"
+---| "func"
+---| "comment"
+
+---@class CodedocsJavaStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsJavaStyleNames, table<CodedocsJavaStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsJavaStyleNames
+
+---@class CodedocsJavaConfig: CodedocsLanguageConfig
+---@field styles CodedocsJavaStylesConfig
+
+---@type CodedocsJavaConfig
 return {
 	lang_name = "java",
 	identifier_pos = false,

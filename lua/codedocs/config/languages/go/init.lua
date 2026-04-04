@@ -34,6 +34,21 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@alias CodedocsGoStyleNames
+---| "Godoc"
+
+---@alias CodedocsGoStructNames
+---| "func"
+---| "comment"
+
+---@class CodedocsGoStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsGoStyleNames, table<CodedocsGoStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsGoStyleNames
+
+---@class CodedocsGoConfig: CodedocsLanguageConfig
+---@field styles CodedocsGoStylesConfig
+
+---@type CodedocsGoConfig
 return {
 	lang_name = "go",
 	identifier_pos = true,

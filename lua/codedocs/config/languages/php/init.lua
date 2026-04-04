@@ -26,6 +26,21 @@ function Func_extractors.returns(struct_data)
 	]]
 end
 
+---@alias CodedocsPHPStyleNames
+---| "PHPDoc"
+
+---@alias CodedocsPHPStructNames
+---| "func"
+---| "comment"
+
+---@class CodedocsPHPStylesConfig: CodedocsLanguageStylesConfig
+---@field definitions table<CodedocsPHPStyleNames, table<CodedocsPHPStructNames, CodedocsAnnotationStyleOpts>>
+---@field default CodedocsPHPStyleNames
+
+---@class CodedocsPHPConfig: CodedocsLanguageConfig
+---@field styles CodedocsPHPStylesConfig
+
+---@type CodedocsPHPConfig
 return {
 	lang_name = "php",
 	identifier_pos = false,
