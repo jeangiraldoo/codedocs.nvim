@@ -2,10 +2,8 @@ local lang_utils = require "codedocs.config.languages.utils"
 
 return {
 	comment = {
-		settings = {
-			relative_position = "empty_target_or_above",
-			indented = false,
-		},
+		relative_position = "empty_target_or_above",
+		indented = false,
 		sections = {
 			lang_utils.new_section {
 				name = "title",
@@ -16,10 +14,8 @@ return {
 		},
 	},
 	class = {
-		settings = {
-			relative_position = "above",
-			indented = false,
-		},
+		relative_position = "above",
+		indented = false,
 		sections = {
 			lang_utils.new_section {
 				name = "header",
@@ -49,10 +45,8 @@ return {
 		},
 	},
 	func = {
-		settings = {
-			relative_position = "above",
-			indented = false,
-		},
+		relative_position = "above",
+		indented = false,
 		sections = {
 			lang_utils.new_section {
 				name = "header",

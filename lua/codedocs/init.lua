@@ -158,13 +158,13 @@ function Codedocs.orchestrate_annotation_build(lang_data)
 	Debug_logger.log("Style: ", struct_style)
 
 	local struct_data = {
-		should_indent = struct_style.settings.indented,
+		should_indent = struct_style.indented,
 		line_num = row + 1,
 	}
 
 	local annotation_lines = docs_builder(struct_style, items_data, struct_data)
 
-	return annotation_lines, row, struct_style.settings.relative_position
+	return annotation_lines, row, struct_style.relative_position
 end
 
 function Codedocs.insert_docs()
