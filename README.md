@@ -123,6 +123,22 @@ require("paq") {
 > Language, struct and style names must be spelled exactly as shown in the
 > [supported languages section](#language-support).
 
+All options can be customized using the setup function. Here are most of the
+default options:
+
+```lua
+require("codedocs").setup {
+    debug = false,
+    languages = {
+        --- This table is too big to be displayed here
+        --- The path to the config file is `codedocs/config/init.lua`
+    },
+    aliases = {
+        sh = "bash"
+    }
+}
+```
+
 ### Change a language's default annotation style
 
 Default styles are defined using the `default_styles` key:
