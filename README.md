@@ -45,6 +45,7 @@ formats, or just use codedocs as it is! :)
 - Detects and documents code structures with a simple keybind.
 - Supports multiple [languages and styles](#language-support).
 - Easily customize existing formats or add new ones.
+- Annotations use Neovim's built-in snippet engine.
 
 ## Requirements
 
