@@ -73,7 +73,11 @@ function Func_extractors.returns(struct_data)
 	local items = struct_data.lang_query_parser [[
 		(function_definition
 			return_type: (type
-				(identifier) @item_type (#not-eq? @item_type "None")))
+				[
+					(identifier)
+					(generic_type (identifier))
+					(binary_operator)
+				] @item_type (#not-eq? @item_type "None")))
 	]]
 
 	if #items > 0 then return items end
