@@ -22,6 +22,7 @@ jobs:
             - uses: kdheepak/panvimdoc@main
               with:
                   vimdoc: codedocs
+                  toc: false # The README already includes one and they'd collide
                   demojify: true
                   version: "NVIM v0.10+"
                   titledatepattern: "%d %B %Y"
