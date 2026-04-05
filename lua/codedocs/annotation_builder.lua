@@ -77,15 +77,35 @@ local function format_item_line(line, item)
 	return line
 end
 
-local function _build_content(item_data, style)
-	local content = {}
+local function _should_insert_gap_between_sections(section_idx, style, section_style, item_data)
+	local current_section_is_last = section_idx == #style.sections
+	if current_section_is_last then return false end
 
-	for section_idx, section_name in ipairs(style.settings.section_order) do
-		local section_items = item_data[section_name]
-		if #section_items == 0 then goto skip_section end ---A section with no items effectively has no content
+	local next_section_is_item_based = type(style.sections[section_idx + 1].items) == "table"
+	if not next_section_is_item_based then
+		return section_style.insert_gap_between.enabled and not style.sections[section_idx + 1].ignore_prev_gap
+	end
 
-		local section_style = style.sections[section_name]
+	local next_section_has_items = #item_data[style.sections[section_idx + 1].name] > 0
 
+	if not next_section_has_items then return false end
+
+	if #style.sections[section_idx + 1].layout == 0 and #style.sections[section_idx + 1].items.layout == 0 then
+		return false
+	end
+
+	return section_style.insert_gap_between.enabled and not style.sections[section_idx + 1].ignore_prev_gap
+end
+
+local function _add_section_content(content, item_data, section_style)
+	local section_items = item_data[section_style.name]
+	local is_item_based_section = type(section_style.items) == "table"
+	if not is_item_based_section then
+		vim.list_extend(content, section_style.layout)
+		return
+	end
+
+	if section_items and #section_items > 0 then
 		for _, ln in ipairs(section_style.layout) do
 			table.insert(content, ln)
 		end
@@ -100,15 +120,20 @@ local function _build_content(item_data, style)
 				if should_insert_item_gap then table.insert(content, section_style.items.insert_gap_between.text) end
 			end
 		end
-
-		local should_insert_section_gap = style.sections[section_name].insert_gap_between.enabled
-			and style.settings.section_order[section_idx + 1]
-		if should_insert_section_gap then
-			table.insert(content, style.sections[section_name].insert_gap_between.text)
-		end
-
-		::skip_section::
 	end
+end
+
+local function _build_content(item_data, style)
+	local content = {}
+
+	for section_idx, section_style in ipairs(style.sections) do
+		_add_section_content(content, item_data, section_style)
+
+		if _should_insert_gap_between_sections(section_idx, style, section_style, item_data) then
+			table.insert(content, section_style.insert_gap_between.text)
+		end
+	end
+
 	return content
 end
 
@@ -118,41 +143,16 @@ end
 -- @param item_data table Mapping of section names to item lists
 -- @param style table Style configuration for all sections and settings options
 -- @return table Table mapping section names to their formatted content lines
-return function(style, item_data, annotation_structure, struct_data)
+return function(style, item_data, struct_data)
 	assert(type(item_data) == "table", "'item_data' must be a table, got " .. type(item_data))
 	assert(type(style) == "table", "'style' must be a table, got " .. type(style))
 
 	local annotation = Annotation.new()
 
-	for i = 1, (style.settings.insert_at - 1) do
-		-- Add all lines from the original layout that appear before the position where the content is to be inserted.
-		--
-		-- This is done to avoid inserting lines one by one at the insertion position,
-		-- since that would shift all following layout lines every time and be inefficient
-		-- handle_line(annotation_structure[i])
-		annotation:insert(annotation_structure[i], struct_data)
-	end
-
-	for _, title_line in ipairs(style.sections.title.layout) do
-		annotation:insert(title_line, struct_data)
-	end
-
-	local content = style.settings.section_order and _build_content(item_data, style) or {}
+	local content = _build_content(item_data, style) or {}
 	Debug_logger.log("Annotation content", content)
 
-	if
-		(style.sections.title.insert_gap_between and style.sections.title.insert_gap_between.enabled)
-		and vim.tbl_count(content) > 0
-	then
-		annotation:insert(style.sections.title.insert_gap_between.text, struct_data)
-	end
-
 	annotation:extend(content, struct_data)
-
-	for i = style.settings.insert_at, #annotation_structure do
-		-- Add all lines from the original layout that appear after the position where the content is to be inserted
-		annotation:insert(annotation_structure[i], struct_data)
-	end
 
 	return annotation:get_lines()
 end

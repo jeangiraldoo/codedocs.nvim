@@ -45,6 +45,7 @@ formats, or just use codedocs as it is! :)
 - Detects and documents code structures with a simple keybind.
 - Supports multiple [languages and styles](#language-support).
 - Easily customize existing formats or add new ones.
+- Annotations use Neovim's built-in snippet engine.
 
 ## Requirements
 
@@ -122,15 +123,35 @@ require("paq") {
 > Language, struct and style names must be spelled exactly as shown in the
 > [supported languages section](#language-support).
 
+All options can be customized using the setup function. Here are most of the
+default options:
+
+```lua
+require("codedocs").setup {
+    debug = false,
+    languages = {
+        --- This table is too big to be displayed here
+        --- The path to the config file is `codedocs/config/init.lua`
+    },
+    aliases = {
+        sh = "bash"
+    }
+}
+```
+
 ### Change a language's default annotation style
 
 Default styles are defined using the `default_styles` key:
 
 ```lua
 require("codedocs").setup {
-    default_styles = {
-        --- Default styles definitions
-    }
+    languages = {
+        <language name> = {
+            styles = {
+                default = <style name>
+            }
+        }
+    },
 }
 ```
 
@@ -138,10 +159,18 @@ For example, let's set the default styles for Python and Lua:
 
 ```lua
 require("codedocs").setup {
-    default_styles = {
-        lua = "EmmyLua",
-        python = "reST"
-    }
+    languages = {
+        python = {
+            styles = {
+                default = "reST"
+            }
+        },
+        lua = {
+            styles = {
+                default = "EmmyLua"
+            }
+        }
+    },
 }
 ```
 
@@ -192,55 +221,55 @@ In this case, we:
 - Customized the titles for both the parameters and return sections.
 
 To customize an annotation style, keep in mind that it is simply a regular Lua
-table with two top-level keys: `sections` and `settings`.
+table with the following options:
 
-#### Layout option
+| Option Name         | Expected Value Type                                 | Behavior                                          |
+| ------------------- | --------------------------------------------------- | ------------------------------------------------- |
+| `relative_position` | `"above"` \| `"below"` \| `"empty_target_or_above"` | Where to insert the annotation                    |
+| `indented`          | boolean                                             | Whether to indent the entire annotation one level |
+| `sections`          | table (list)                                        | List of sections forming the annotation           |
 
-The `layout` option accepts a `table` type and defines the base lines that
-compose an annotation section, item, or the base annotation layout. It can
-be used both in the `settings` and `sections` tables.
-
-Additionally, since a layout is just a list of strings, the following string
-placeholders are predefined:
-
-- `%snippet_tabstop_index`: Inserts a tabstop index for defining snippet tabstops
-  (e.g., `$%snippet_tabstop_index` or `${%snippet_tabstop_index:default label}`).
-- `%>`: Either a tab character or a number of spaces, based on your Neovim settings
-
-#### Settings
-
-All structures have a `settings` field as it is used for configuring
-fundamental aspects of an annotation style
-
-| Option Name         | Expected Value Type                                 | Behavior                                              |
-| ------------------- | --------------------------------------------------- | ----------------------------------------------------- |
-| `relative_position` | `"above"` \| `"below"` \| `"empty_target_or_above"` | Where to insert the annotation                        |
-| `insert_at`         | boolean                                             | Position in `layout` to insert the annotation content |
-| `section_order`     | table                                               | Order in which sections are added                     |
-| `item_extraction`   | table                                               | How items are parsed for a given section              |
-| `indented`          | boolean                                             | Whether to indent the entire annotation one level     |
-
-The `item_extraction` option has the following suboptions for class attributes
-under the `attributes` key:
-
-| Name       | Expected Value Type                    | Behavior                                    |
-| ---------- | -------------------------------------- | ------------------------------------------- |
-| `static`   | boolean                                | Include static attributes in the annotation |
-| `instance` | `"none"` \| `"constructor"` \| `"all"` | Which instance attributes to include        |
+Sections are the core of an annotation, they determine what it ultimately looks
+like.
 
 #### Sections
 
-Sections are configured under the `sections` key. The following sections are available:
+> [!WARNING]
+> The `sections` option is a list, so you cannot override a single section on its
+> own. Because your config is merged recursively with the defaults, any sections
+> you do not explicitly include will be removed, even if they exist in the defaults.
+>
+> To customize just one section, you should copy the default sections list and then
+> modify the specific section you want.
+>
+> Previously, `sections` was defined as a key value table, where the key represented
+> the section name (equivalent to the `name` field) and the value contained its
+> options (`layout`, `items`, etc.). While this made individual sections easier
+> to override, it made ordering difficult without introducing an additional option
+> (there used to be an option called `section_order` for this), and reduced composability.
+>
+> The current list based approach improves ordering and flexibility overall, at
+> the cost of making single section customization less convenient.
 
-| Structure | Sections                         |
-| --------- | -------------------------------- |
-| `func`    | `title`, `parameters`, `returns` |
-| `class`   | `title`, `attributes`            |
-| `comment` | `title`                          |
+| Option Name          | Expected Type | Behavior                                                        |
+| -------------------- | ------------- | --------------------------------------------------------------- |
+| `name`               | string        | The name of the section, useful for readability and for items\* |
+| `layout`             | string[]      | List of lines that that make up the section                     |
+| `insert_gap_between` | table         | Sets up a gap in between the current section/item and the next  |
+| `ignore_prev_gap`    | boolean       | Skips the gap defined by the previous section (if enabled)      |
+| `items`              | table?        | Sets up options for the section's items                         |
 
-All sections except `title` are **item-based**. Item-based sections are focused
-on styling and laying out their items. An item represents a named component of
-a structure, defined by a `name` and a `type`.
+All options with the exception of `ignore_prev_gap` have some caveats that will
+be explained below in detail.
+
+##### `items` option
+
+When a section uses the `items` option, it is considered an "item-based" section,
+as it includes items extracted at runtime from a structure defined in its layout.
+In contrast, non-item-based sections consist solely of the lines defined in their
+`layout`.
+
+An item represents a named component of a structure, defined by a `name` and a `type`.
 
 For example, the following function:
 
@@ -272,24 +301,57 @@ has the following items:
 }
 ```
 
-##### Options
+The `insert_gap_between` and `layout` options can be reused as suboptions of the
+`items` option; in such case the `layout` option would represent the lines that
+make up each item and that will be appended to the section's `layout` option.
 
-All sections support the `layout` and `insert_gap_between` options.
+##### `insert_gap_between` option
 
-The `insert_gap_between` sets up a gap in between the current section/item and
-the one below. The following suboptions are available:
+The following suboptions are available:
 
 | Name    | Expected Value Type | Behavior                                                   |
 | ------- | ------------------- | ---------------------------------------------------------- |
 | enabled | `boolean`           | Whether a gap is inserted in between two sections or items |
 | text    | `string`            | String used as the gap                                     |
 
-Additionally, Item-based sections have a `items` option where both the `layout`
-and `insert_gap_between` options can be used again to control the appearance of
-each individual item rather than the section as a whole. When used under the
-`items` key the `layout` option's placeholders are expanded with the `%item_name`
-and `%item_type` placeholders, which will be replaced by a given item's name and
-type respectively.
+##### `layout` option
+
+> [!INFO]
+> The layout lines of all sections are concatenated in section order to form the
+> final annotation.
+
+The following string placeholders are predefined:
+
+- `%snippet_tabstop_index`: Inserts a tabstop index for defining snippet tabstops
+  (e.g., `$%snippet_tabstop_index` or `${%snippet_tabstop_index:default label}`).
+- `%>`: Either a tab character or a number of spaces, based on your Neovim settings
+
+When used under the `items` key the aforementioned placeholders are expanded
+with the following ones:
+
+- `%item_name`
+- `%item_type`
+
+When used, they get replaced by the item's name and type respectively.
+
+##### `name` option
+
+The `name` option serves two main purposes:
+
+1. Identifies the section, making it easier to understand its role
+2. Associates the section with a specific group of items extracted from a structure
+
+The second purpose applies only to item-based sections. When items are extracted
+from a structure, they are grouped by section name. For these items to be included,
+the value of `name` must match the corresponding structure section.
+
+The following structure sections are available:
+
+| Structure | Sections                         |
+| --------- | -------------------------------- |
+| `func`    | `title`, `parameters`, `returns` |
+| `class`   | `title`, `attributes`            |
+| `comment` | `title`                          |
 
 #### Customization example
 
@@ -304,30 +366,36 @@ This is what such customization would look like:
 
 ```lua
 require("codedocs").setup({
-    styles = { -- Modifications to styles are done in the `styles` key
-        python = { -- language name
-            Google = { -- name of the style to customize
-                func = { -- structure name
-                    sections = {
-                        parameters = {
-                            insert_gap_between = {
-                                enabled = true
-                            },
-                            items = {
-                                insert_gap_between = {
-                                    enabled = true
+    languages = {
+        python = {
+            styles = {
+                definitions = {
+                    Google = {
+                        func = {
+                            sections = {
+                                 {
+                                    name = "parameters",
+                                    insert_gap_between = {
+                                        enabled = true
+                                    },
+                                    items = {
+                                        insert_gap_between = {
+                                            enabled = true
+                                        },
+                                    },
                                 },
-                            },
-                        },
-                        returns = {
-                            items = {
-                                insert_gap_between = {
-                                    enabled = true
+                                {
+                                    name = "returns",
+                                    items = {
+                                        insert_gap_between = {
+                                            enabled = true
+                                        }
+                                    },
                                 }
-                            },
+                            }
                         }
-                    }
-                }
+                    },
+                },
             },
         },
     }

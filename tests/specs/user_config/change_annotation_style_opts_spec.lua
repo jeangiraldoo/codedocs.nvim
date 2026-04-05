@@ -6,6 +6,7 @@
 ---my own Neovim config, which is not ideal as I usually forget to revert back to what it used to look like
 
 local LangSpecs = require "codedocs.lang_specs.init"
+local utils = require "tests.utils"
 
 local BASE_MOCKED_OPTS = {
 	COMMON_SECTIONS = {
@@ -67,19 +68,25 @@ local MOCKED_USER_STRUCT_OPTS = vim.iter({
 end)
 
 describe("Customizing style options", function()
-	for _, lang_name in ipairs(LangSpecs.get_supported_langs()) do
+	for _, lang_name in ipairs(require("codedocs").get_supported_langs()) do
 		local lang_spec = LangSpecs.new(lang_name)
-		for _, struct_name in ipairs(lang_spec:get_supported_structs()) do
+		for _, struct_name in ipairs(utils.get_supported_structs(lang_name)) do
 			describe("[" .. lang_name .. "/" .. struct_name .. "]:", function()
-				for _, style_name in ipairs(LangSpecs.get_supported_styles(lang_name)) do
+				for _, style_name in ipairs(lang_spec:get_supported_styles()) do
 					it(style_name .. " style", function()
 						local original_style = vim.deepcopy(lang_spec:get_struct_style(struct_name, style_name))
 						local original_mocked_user_opts = MOCKED_USER_STRUCT_OPTS[struct_name]
 
-						LangSpecs.update_style {
-							[lang_name] = {
-								[style_name] = {
-									[struct_name] = original_mocked_user_opts,
+						require("codedocs").setup {
+							languages = {
+								[lang_name] = {
+									styles = {
+										definitions = {
+											[style_name] = {
+												[struct_name] = original_mocked_user_opts,
+											},
+										},
+									},
 								},
 							},
 						}
