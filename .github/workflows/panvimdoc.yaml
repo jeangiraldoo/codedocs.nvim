@@ -24,6 +24,10 @@ jobs:
                   vimdoc: codedocs
                   demojify: true
                   version: "NVIM v0.10+"
+                  titledatepattern: "%d %B %Y"
+                  treesitter: true
+                  ignorerawblocks: true
+                  shiftheadinglevelby: -1
 
             - name: Create Pull Request
               uses: peter-evans/create-pull-request@v7
