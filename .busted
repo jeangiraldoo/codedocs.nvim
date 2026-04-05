@@ -1,0 +1,11 @@
+return {
+	_all = {
+		lua = "nlua",
+		lpath = "./lua/?.lua;./lua/?/init.lua;;",
+		verbose = true,
+		coverage = false,
+	},
+	default = {
+		output = "utfTerminal",
+	},
+}

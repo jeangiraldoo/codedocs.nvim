@@ -665,7 +665,6 @@ describe("Annotation builder - ", function()
 		it("Case #" .. i, function()
 			local base_opts_copy = vim.deepcopy(BASE_ANNOTATION.opts)
 			local new_style = vim.tbl_deep_extend("force", base_opts_copy, case.opts_to_change)
-			print(vim.inspect(new_style))
 			local annotation = annotation_builder(new_style, MOCKED_ITEMS, new_style.settings.layout)
 
 			assert.are.same(case.expected_lines, annotation)
