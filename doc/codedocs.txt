@@ -1,33 +1,5 @@
 *codedocs.txt*            For NVIM v0.10+           Last change: 05 April 2026
 
-==============================================================================
-Table of Contents                                 *codedocs-table-of-contents*
-
-1. Table of contents                              |codedocs-table-of-contents|
-2. Features                                                |codedocs-features|
-3. Requirements                                        |codedocs-requirements|
-4. Installation                                        |codedocs-installation|
-  - vim.pack                                  |codedocs-installation-vim.pack|
-  - lazy.nvim                                |codedocs-installation-lazy.nvim|
-  - packer.nvim                            |codedocs-installation-packer.nvim|
-  - vim-plug                                  |codedocs-installation-vim-plug|
-  - mini.deps                                |codedocs-installation-mini.deps|
-  - minpac                                      |codedocs-installation-minpac|
-  - paq-nvim                                  |codedocs-installation-paq-nvim|
-5. Configuration                                      |codedocs-configuration|
-  - Change a language’s default annotation style|codedocs-configuration-change-a-language’s-default-annotation-style|
-  - Customize an annotation style|codedocs-configuration-customize-an-annotation-style|
-6. Usage                                                      |codedocs-usage|
-  - Command                                           |codedocs-usage-command|
-  - Keymap                                             |codedocs-usage-keymap|
-7. Language support                                |codedocs-language-support|
-8. Annotation examples                          |codedocs-annotation-examples|
-9. Roadmap                                                  |codedocs-roadmap|
-10. Contributing                                       |codedocs-contributing|
-11. Motivation                                           |codedocs-motivation|
-12. License                                                 |codedocs-license|
-13. Links                                                     |codedocs-links|
-
 Codedocs.nvim automatically recognizes various language structures such as
 functions, classes, variables, and more, and inserts appropriate documentation
 strings based on the |codedocs-programming-language| you are using.
