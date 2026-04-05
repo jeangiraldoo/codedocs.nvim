@@ -7,9 +7,47 @@ local TYPES_TO_TEST = {
 	"never",
 	"object",
 	"symbol",
+	"bigint",
+	"null",
+	"undefined",
+	"Number",
+	"String",
+	"Boolean",
+	"Symbol",
+	"BigInt",
+	"Object",
+	"Int8Array",
+	"Uint8Array",
+	"Uint8ClampedArray",
+	"Int16Array",
+	"Uint16Array",
+	"Int32Array",
+	"Uint32Array",
+	"Float32Array",
+	"Float64Array",
+	"BigInt64Array",
+	"BigUint64Array",
 }
 
-local COLLECTIONS_WITH_GENERICS = {}
+local COLLECTIONS_WITH_GENERICS = {
+	"number | %data_type",
+	"Array<%data_type>",
+	"%data_type[]",
+	"[number, %data_type]",
+	"Record<number, %data_type>",
+	"Map<number, %data_type>",
+	"WeakMap<number, %data_type>",
+	"Set<%data_type>",
+	"WeakSet<%data_type>",
+	"{ x: number, y: %data_type }",
+	"Iterable<%data_type>",
+	"Iterator<%data_type>",
+	"Promise<%data_type>",
+	"PromiseLike<%data_type>",
+	"Partial<%data_type>",
+	"(a: %data_type) => number",
+	"(a: number) => %data_type",
+}
 
 return {
 	func = {
