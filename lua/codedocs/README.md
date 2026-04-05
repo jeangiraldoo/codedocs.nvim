@@ -2,61 +2,38 @@
 
 Welcome! This document provides an overview of the Codedocs codebase to
 help you contribute to the project, understand how it works internally,
-or—let's be honest—to help me when I inevitably forget how things are wired
+and to help me get back on track when I inevitably forget how things are wired
 together.
 
-Codedocs is a plugin focused on generating and inserting docstrings for
-programming language structures. In the context of this plugin, a "structure"
-refers to any language construct such as functions, methods, classes, or variables.
+In the context of this plugin, a "structure" refers to any language construct
+such as functions, methods, classes, or variables.
 
 ## Table of contents
 
-- [Components](#components)
+- [Directory structure](#directory-structure)
 - [Logic flow](#logic-flow)
 
-## Components
+## Directory structure
 
-This is a detailed breakdown of the plugin's components and subcomponents.
-
-```mermaid
-architecture-beta
-    group components(cloud)[Components]
-
-    group node_parser(server)[tree_processor] in components
-    service processor(server)[processor] in node_parser
-    service struct_finder(server)[struct_finder] in node_parser
-    group node_types(server)[node_types] in node_parser
-    service nodes(server)[nodes] in node_types
-
-    group docs_gen(server)[docs_gen] in components
-    service builder(server)[builder] in docs_gen
-
-    group specs(server)[specs] in components
-    service paths(database)[paths] in specs
-    group manager(server)[manager] in specs
-    service customizer(server)[customizer] in manager
-    service reader(server)[reader] in manager
-    group validators(server)[validators] in specs
-    service structs(server)[structs] in validators
-    service style(server)[style] in validators
-    service basic(server)[basic] in validators
-    group langs(database)[langs] in specs
-    service style_opts(database)[style_opts] in langs
-    service lang_specs(database)[lang_specs] in langs
-
-    service writer(server)[writer] in components
-    lang_specs:L --> T:reader
-    paths:L --> R:reader
-    reader:L --> R:builder
-    processor:T --> B:builder
-    builder:L --> R:writer
+```bash
+lua
+└── codedocs
+   ├── annotation_builder.lua # Uses item data and language styles to build an annotation
+   ├── config
+   │  ├── init.lua # Default configuration
+   │  └── languages
+   │     ├── ... # A directory per supported language
+   │     └── utils.lua
+   ├── health.lua # Exposes plugin diagnostics that can be checked using the `:checkhealth` command
+   ├── init.lua # Plugin entry point
+   ├── item_extractor.lua # Extracts items out of a language structure
+   ├── lang_specs
+   │  ├── init.lua
+   │  └── style_opts.lua
+   ├── README.md # You are here
+   └── utils
+      └── debug_logger.lua # Allows specific data to be displayed for debugging purposes if the `debug` config option is enabled
 ```
-
-Here is the documentation for the main components:
-
-- [specs](./specs/README.md)
-- [node_parser](./node_parser/README.md)
-- docs_gen
 
 ## Logic flow
 
@@ -68,13 +45,17 @@ command or a keymap.
 flowchart TB
     1((Codedocs<br>triggered)) --> 2
     2[Detect filetype] --> 3
-    3{Is there a Treesitter<br>parser installed<br>for the filetype?}
-    3 -- No ---> 4[/Inform the user with a message/]
-    3 -- Yes ---> 5{Is there a style<br>for the filetype?}
-    5 -- No ---> 6[/Inform the user with a message/]
-    5 -- Yes ---> 7{Is there a supported<br>structure node<br>under the cursor?}
-    7 -- No ---> 8[Insert a generic docstring]
-    7 -- Yes ---> 9[Extract data using<br>the appropriate<br>Struct Parser module]
-    9 ---> 10[Build the docstring<br>using the corresponding<br>Docs Builder module]
-    10 --> 11((Docstring<br>inserted))
+    3{Is there an alias for such filetype?}
+    3 -- No --> 4[Use the filetype as the language name]
+    3 -- Yes --> 5[Use the alias as the language name]
+    5 --> 6
+    4 --> 6
+    6{Is there a Treesitter<br>parser installed<br>for the filetype?}
+    6 -- No ---> 7[/Inform the user with a message/]
+    6 -- Yes ---> 8{Is there a supported<br>structure node<br>under the cursor?}
+    8 -- No ---> 9[Insert a comment]
+    8 -- Yes ---> 10[Extract item data using the item-extractor function for the detected structure]
+    10 ---> 11[Build the annotation using the item data and style options]
+    11 --> 12((The annotation is inserted into the buffer))
+
 ```
