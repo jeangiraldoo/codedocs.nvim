@@ -1,30 +1,32 @@
-*codedocs.txt*            For NVIM v0.10+           Last change: 2026 April 05
+*codedocs.txt*            For NVIM v0.10+           Last change: 05 April 2026
 
 ==============================================================================
 Table of Contents                                 *codedocs-table-of-contents*
 
-1. codedocs.nvim                                      |codedocs-codedocs.nvim|
-  - Table of contents               |codedocs-codedocs.nvim-table-of-contents|
-  - Features                                 |codedocs-codedocs.nvim-features|
-  - Requirements                         |codedocs-codedocs.nvim-requirements|
-  - Installation                         |codedocs-codedocs.nvim-installation|
-  - Configuration                       |codedocs-codedocs.nvim-configuration|
-  - Usage                                       |codedocs-codedocs.nvim-usage|
-  - Language support                 |codedocs-codedocs.nvim-language-support|
-  - Annotation examples           |codedocs-codedocs.nvim-annotation-examples|
-  - Roadmap                                   |codedocs-codedocs.nvim-roadmap|
-  - Contributing                         |codedocs-codedocs.nvim-contributing|
-  - Motivation                             |codedocs-codedocs.nvim-motivation|
-  - License                                   |codedocs-codedocs.nvim-license|
-
-==============================================================================
-1. codedocs.nvim                                      *codedocs-codedocs.nvim*
-
-
-
-
-
-
+1. Table of contents                              |codedocs-table-of-contents|
+2. Features                                                |codedocs-features|
+3. Requirements                                        |codedocs-requirements|
+4. Installation                                        |codedocs-installation|
+  - vim.pack                                  |codedocs-installation-vim.pack|
+  - lazy.nvim                                |codedocs-installation-lazy.nvim|
+  - packer.nvim                            |codedocs-installation-packer.nvim|
+  - vim-plug                                  |codedocs-installation-vim-plug|
+  - mini.deps                                |codedocs-installation-mini.deps|
+  - minpac                                      |codedocs-installation-minpac|
+  - paq-nvim                                  |codedocs-installation-paq-nvim|
+5. Configuration                                      |codedocs-configuration|
+  - Change a language’s default annotation style|codedocs-configuration-change-a-language’s-default-annotation-style|
+  - Customize an annotation style|codedocs-configuration-customize-an-annotation-style|
+6. Usage                                                      |codedocs-usage|
+  - Command                                           |codedocs-usage-command|
+  - Keymap                                             |codedocs-usage-keymap|
+7. Language support                                |codedocs-language-support|
+8. Annotation examples                          |codedocs-annotation-examples|
+9. Roadmap                                                  |codedocs-roadmap|
+10. Contributing                                       |codedocs-contributing|
+11. Motivation                                           |codedocs-motivation|
+12. License                                                 |codedocs-license|
+13. Links                                                     |codedocs-links|
 
 Codedocs.nvim automatically recognizes various language structures such as
 functions, classes, variables, and more, and inserts appropriate documentation
@@ -35,7 +37,8 @@ specific needs, add support for new languages by defining their documentation
 formats, or just use codedocs as it is! :)
 
 
-TABLE OF CONTENTS                   *codedocs-codedocs.nvim-table-of-contents*
+==============================================================================
+1. Table of contents                              *codedocs-table-of-contents*
 
 - |codedocs-features|
 - |codedocs-requirements|
@@ -51,7 +54,8 @@ TABLE OF CONTENTS                   *codedocs-codedocs.nvim-table-of-contents*
 - |codedocs-license|
 
 
-FEATURES                                     *codedocs-codedocs.nvim-features*
+==============================================================================
+2. Features                                                *codedocs-features*
 
 - Works out-of-the-box.
 - Detects and documents code structures with a simple keybind.
@@ -60,7 +64,8 @@ FEATURES                                     *codedocs-codedocs.nvim-features*
 - Annotations use Neovim’s built-in snippet engine.
 
 
-REQUIREMENTS                             *codedocs-codedocs.nvim-requirements*
+==============================================================================
+3. Requirements                                        *codedocs-requirements*
 
 Codedocs relies on Treesitter for its core functionality. Neovim includes
 built-in Treesitter parsers for the following languages—meaning no extra
@@ -73,12 +78,13 @@ For any other language, you’ll need to install the corresponding Treesitter
 parser. The simplest way to do this is with **nvim-treesitter**.
 
 
-INSTALLATION                             *codedocs-codedocs.nvim-installation*
+==============================================================================
+4. Installation                                        *codedocs-installation*
 
 Use the snippet for your plugin manager:
 
 
-VIM.PACK ~
+VIM.PACK                                      *codedocs-installation-vim.pack*
 
 >lua
     vim.pack.add({
@@ -87,7 +93,7 @@ VIM.PACK ~
 <
 
 
-LAZY.NVIM ~
+LAZY.NVIM                                    *codedocs-installation-lazy.nvim*
 
 >lua
     {
@@ -96,7 +102,7 @@ LAZY.NVIM ~
 <
 
 
-PACKER.NVIM ~
+PACKER.NVIM                                *codedocs-installation-packer.nvim*
 
 >lua
     use {
@@ -105,14 +111,14 @@ PACKER.NVIM ~
 <
 
 
-VIM-PLUG ~
+VIM-PLUG                                      *codedocs-installation-vim-plug*
 
 >vim
     Plug 'jeangiraldoo/codedocs.nvim'
 <
 
 
-MINI.DEPS ~
+MINI.DEPS                                    *codedocs-installation-mini.deps*
 
 >lua
     require("mini.deps").add({
@@ -121,7 +127,7 @@ MINI.DEPS ~
 <
 
 
-MINPAC ~
+MINPAC                                          *codedocs-installation-minpac*
 
 >vim
     packadd minpac
@@ -129,7 +135,7 @@ MINPAC ~
 <
 
 
-PAQ-NVIM ~
+PAQ-NVIM                                      *codedocs-installation-paq-nvim*
 
 >lua
     require("paq") {
@@ -138,7 +144,8 @@ PAQ-NVIM ~
 <
 
 
-CONFIGURATION                           *codedocs-codedocs.nvim-configuration*
+==============================================================================
+5. Configuration                                      *codedocs-configuration*
 
 
   [!WARNING] Language, struct and style names must be spelled exactly as shown in
@@ -160,7 +167,7 @@ default options:
 <
 
 
-CHANGE A LANGUAGE’S DEFAULT ANNOTATION STYLE ~
+CHANGE A LANGUAGE’S DEFAULT ANNOTATION STYLE*codedocs-configuration-change-a-language’s-default-annotation-style*
 
 Default styles are defined using the `default_styles` key:
 
@@ -196,7 +203,7 @@ For example, let’s set the default styles for Python and Lua:
 <
 
 
-CUSTOMIZE AN ANNOTATION STYLE ~
+CUSTOMIZE AN ANNOTATION STYLE*codedocs-configuration-customize-an-annotation-style*
 
 You can customize almost (for now!) every aspect of an annotation style.
 Whether you want to make a simple change, like modifying the characters
@@ -261,7 +268,7 @@ Sections are the core of an annotation, they determine what it ultimately looks
 like.
 
 
-SECTIONS
+SECTIONS ~
 
 
   [!WARNING] The `sections` option is a list, so you cannot override a single
@@ -399,7 +406,7 @@ The following structure sections are available:
   class       title, attributes
   comment     title
 
-CUSTOMIZATION EXAMPLE
+CUSTOMIZATION EXAMPLE ~
 
 Say we want to make the following changes to Python’s Google annotation style
 for functions:
@@ -449,7 +456,8 @@ This is what such customization would look like:
 <
 
 
-USAGE                                           *codedocs-codedocs.nvim-usage*
+==============================================================================
+6. Usage                                                      *codedocs-usage*
 
 When an annotation insertion is triggered, the plugin generates one for the
 structure under the cursor. If no supported structure is detected, it inserts
@@ -458,7 +466,7 @@ an inline comment instead.
 An annotation insertion can be triggered in the following ways:
 
 
-COMMAND ~
+COMMAND                                               *codedocs-usage-command*
 
 The simplest way to use the plugin is with the following command:
 
@@ -467,7 +475,7 @@ The simplest way to use the plugin is with the following command:
 <
 
 
-KEYMAP ~
+KEYMAP                                                 *codedocs-usage-keymap*
 
 For a more convenient experience, you can bind the annotation insertion to a
 keymap. For example:
@@ -480,7 +488,8 @@ keymap. For example:
 <
 
 
-LANGUAGE SUPPORT                     *codedocs-codedocs.nvim-language-support*
+==============================================================================
+7. Language support                                *codedocs-language-support*
 
 
   [!NOTE] indicates the default style for that language
@@ -500,26 +509,30 @@ LANGUAGE SUPPORT                     *codedocs-codedocs.nvim-language-support*
   Rust         RustDoc               comment, function
   TypeScript   TSDoc                 comment, function, class
 
-ANNOTATION EXAMPLES               *codedocs-codedocs.nvim-annotation-examples*
+==============================================================================
+8. Annotation examples                          *codedocs-annotation-examples*
 
 Want to see what annotations look like across all languages and styles? Check
 out Annotation Examples <./ANNOTATION_EXAMPLES.md>.
 
 
-ROADMAP                                       *codedocs-codedocs.nvim-roadmap*
+==============================================================================
+9. Roadmap                                                  *codedocs-roadmap*
 
 You can see what’s being worked on and which features are planned by checking
 the GitHub Milestones
 <https://github.com/jeangiraldoo/codedocs.nvim/milestones>.
 
 
-CONTRIBUTING                             *codedocs-codedocs.nvim-contributing*
+==============================================================================
+10. Contributing                                       *codedocs-contributing*
 
 Thank you for your interest in contributing to **Codedocs**! Feel free to read
 the Contribution guide <./CONTRIBUTING.md> to get started.
 
 
-MOTIVATION                                 *codedocs-codedocs.nvim-motivation*
+==============================================================================
+11. Motivation                                           *codedocs-motivation*
 
 I started working on Codedocs because I wanted to enhance my experience with
 Neovim, which I started using daily for my side projects and university
@@ -537,7 +550,8 @@ yet powerful solution for both personal and community use. Plus, it is a fun
 project to work on!
 
 
-LICENSE                                       *codedocs-codedocs.nvim-license*
+==============================================================================
+12. License                                                 *codedocs-license*
 
 Codedocs is licensed under the MIT License. This means you are free to
 download, install, modify, share, and use the plugin for both personal and
@@ -545,6 +559,11 @@ commercial purposes.
 
 The only requirement is that if you modify and redistribute the code, you must
 include the same LICENSE file found in this repository.
+
+==============================================================================
+13. Links                                                     *codedocs-links*
+
+1. *Codedocs showcase*: ./.images/showcase.gif
 
 Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
 
