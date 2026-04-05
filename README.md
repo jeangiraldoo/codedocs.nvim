@@ -19,6 +19,8 @@ You can easily modify the structure of the documentation strings to suit your
 specific needs, add support for new languages by defining their documentation
 formats, or just use codedocs as it is! :)
 
+![Codedocs showcase](./.images/showcase.gif)
+
 ## 📖 Table of contents
 
 - [Features](#features)
