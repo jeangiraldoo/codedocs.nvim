@@ -49,7 +49,7 @@ return {
 					" *",
 					" * @param ${2:int} \\$a ${3:description}",
 					" * @param ${4:int} \\$b ${5:description}",
-					" * @return ${6:} ${7:description}", -- FIX: return type is not being detected
+					" * @return ${6:int} ${7:description}",
 					" */",
 				},
 			},

@@ -25,7 +25,12 @@ return {
 			cursor_pos = 3,
 			expected_items = {
 				parameters = {},
-				returns = {},
+				returns = {
+					{
+						name = "",
+						type = "int",
+					},
+				},
 			},
 		},
 		{
@@ -103,7 +108,7 @@ return {
 				returns = {
 					{
 						name = "",
-						type = "",
+						type = "int",
 					},
 				},
 			},
