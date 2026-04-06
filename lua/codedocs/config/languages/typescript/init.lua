@@ -69,14 +69,34 @@ function Func_extractors.parameters(struct_data)
 				(formal_parameters
 					(required_parameter
 						(identifier) @item_name
-						(type_annotation
-							(predefined_type) @item_type))))
+						type: (type_annotation
+							[
+								(predefined_type)
+								(array_type)
+								(union_type)
+								(generic_type)
+								(tuple_type)
+								(type_identifier)
+								(literal_type)
+								(object_type)
+								(function_type)
+							] @item_type ))))
 			(function_declaration
 				(formal_parameters
 					(required_parameter
 						(identifier) @item_name
-						(type_annotation
-							(predefined_type) @item_type))))
+						type: (type_annotation
+							[
+								(predefined_type)
+								(array_type)
+								(union_type)
+								(generic_type)
+								(tuple_type)
+								(type_identifier)
+								(literal_type)
+								(object_type)
+								(function_type)
+							] @item_type ))))
 		]
 	]]
 end
@@ -85,16 +105,30 @@ function Func_extractors.returns(struct_data)
 	local items = struct_data.lang_query_parser [[
 		[
 			(method_definition
-				(type_annotation
+				return_type: (type_annotation
 					[
 						(predefined_type)
 						(array_type)
+						(union_type)
+						(generic_type)
+						(tuple_type)
+						(type_identifier)
+						(literal_type)
+						(object_type)
+						(function_type)
 					] @item_type (#not-eq? @item_type "void")))
 			(function_declaration
-				(type_annotation
+				return_type: (type_annotation
 					[
 						(predefined_type)
 						(array_type)
+						(union_type)
+						(generic_type)
+						(tuple_type)
+						(type_identifier)
+						(literal_type)
+						(object_type)
+						(function_type)
 					] @item_type (#not-eq? @item_type "void")))
 		]
 	]]

@@ -18,6 +18,21 @@ local TYPES_TO_TEST = {
 	"complex128",
 	"byte",
 	"rune",
+	"error",
+	"any",
+}
+
+local COLLECTIONS_WITH_GENERICS = {
+	"[]%data_type",
+	"[10]%data_type",
+	"map[string]%data_type",
+	"func(int) %data_type",
+	"func(%data_type) int",
+	"chan %data_type",
+	"<-chan %data_type",
+	"chan<- %data_type",
+	"*%data_type",
+	"struct{x %data_type}",
 }
 
 return {
@@ -33,6 +48,7 @@ return {
 			},
 			expected_item_name = "",
 			types_to_test = TYPES_TO_TEST,
+			collections_with_generics = COLLECTIONS_WITH_GENERICS,
 		},
 		parameters = {
 			template = {
@@ -45,6 +61,7 @@ return {
 			},
 			expected_item_name = "a",
 			types_to_test = TYPES_TO_TEST,
+			collections_with_generics = COLLECTIONS_WITH_GENERICS,
 		},
 	},
 }

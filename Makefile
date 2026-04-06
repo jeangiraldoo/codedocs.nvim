@@ -6,7 +6,7 @@ quality-checks:
 install-dev:
 	./scripts/install_deps.sh
 
-tests:
-	nvim --headless -c "PlenaryBustedDirectory tests" -c "qa"
+test:
+	busted tests
 
 all-checks: quality-checks tests

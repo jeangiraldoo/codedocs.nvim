@@ -38,15 +38,29 @@ function Func_extractors.parameters(struct_data)
 		(method_declaration
 			(formal_parameters
 				(formal_parameter
-					(_) @item_type
-					(identifier) @item_name)))
+					type: [
+						(integral_type)
+						(floating_point_type)
+						(generic_type)
+						(boolean_type)
+						(type_identifier)
+						(array_type)
+					] @item_type
+					name: (identifier) @item_name)))
 	]]
 end
 
 function Func_extractors.returns(struct_data)
 	return struct_data.lang_query_parser [[
 		(method_declaration
-			(integral_type) @item_type (#not-eq? @item_type "void"))
+			type: [
+				(integral_type)
+				(floating_point_type)
+				(generic_type)
+				(boolean_type)
+				(type_identifier)
+				(array_type)
+			 ] @item_type (#not-eq? @item_type "void"))
 	]]
 end
 

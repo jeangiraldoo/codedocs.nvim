@@ -1,4 +1,4 @@
-package.path = package.path .. ";" .. vim.fn.expand "<sfile>:p:h" .. "/tests"
+package.path = package.path .. ";" .. debug.getinfo(1, "S").source:sub(2):match "(.*/)" .. "/tests"
 
 local test_utils = require "tests.utils"
 local LANGS_TO_TEST = require("codedocs").get_supported_langs()

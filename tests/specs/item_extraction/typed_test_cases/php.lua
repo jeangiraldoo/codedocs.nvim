@@ -1,6 +1,28 @@
-local TYPES_TO_TEST = {}
+local TYPES_TO_TEST = {
+	"int",
+	"float",
+	"bool",
+	"string",
+	"void",
+	"null",
+	"mixed",
+	"object",
+	"callable",
+	"array",
+	"iterable",
+	"mixed",
+	"callable",
+	"iterable",
+	"never",
+	"true",
+	"false",
+	"resource",
+	"(A&B)",
+}
 
-local COLLECTIONS_WITH_GENERICS = {}
+local COLLECTIONS_WITH_GENERICS = {
+	"int | %data_type",
+}
 
 return {
 	func = {
@@ -36,17 +58,7 @@ return {
 			},
 			expected_item_name = "a",
 			types_to_test = (function()
-				local parametre_only_types = {
-					"mixed",
-					"object",
-					"callable",
-					"array",
-					"iterable",
-					"int",
-					"float",
-					"bool",
-					"string",
-				}
+				local parametre_only_types = {}
 
 				local types_copy = vim.deepcopy(TYPES_TO_TEST)
 				vim.list_extend(types_copy, parametre_only_types)

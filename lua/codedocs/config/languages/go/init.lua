@@ -6,7 +6,16 @@ function Func_extractors.parameters(struct_data)
 			(parameter_list
 				(parameter_declaration
 					(identifier) @item_name
-					(type_identifier) @item_type)))
+					type: [
+						(slice_type)
+						(array_type)
+						(map_type)
+						(function_type)
+						(channel_type)
+						(pointer_type)
+						(struct_type)
+						(type_identifier)
+					] @item_type)))
 	]]
 
 	local final_items = {}
@@ -30,7 +39,16 @@ end
 function Func_extractors.returns(struct_data)
 	return struct_data.lang_query_parser [[
 		(function_declaration
-			(type_identifier) @item_type)
+			result: [
+				(slice_type)
+				(array_type)
+				(map_type)
+				(function_type)
+				(channel_type)
+				(pointer_type)
+				(struct_type)
+				(type_identifier)
+			] @item_type)
 	]]
 end
 
