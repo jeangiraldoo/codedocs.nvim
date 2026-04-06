@@ -19,7 +19,23 @@ local TYPES_TO_TEST = {
 	"str",
 }
 
-local COLLECTIONS_WITH_GENERICS = {}
+local COLLECTIONS_WITH_GENERICS = {
+	"[%data_type; 5]",
+	"&%data_type",
+	"(i32, %data_type)",
+	"Option<%data_type>",
+	"Result<%data_type>",
+	"Vec<%data_type>",
+	"HashMap<string, %data_type>",
+	"BTreeMap<string, %data_type>",
+	"BTreeSet<string, %data_type>",
+	"BinaryHeap<%data_type>",
+	"LinkedList<%data_type>",
+	"VecDeque<%data_type>",
+	"Box<%data_type>",
+	"fn(i32) -> %data_type",
+	"fn(%data_type) -> i32",
+}
 
 return {
 	func = {
