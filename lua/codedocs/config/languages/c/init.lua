@@ -6,10 +6,12 @@ function Func_extractors.parameters(struct_data)
 			(function_declarator
 				(parameter_list
 					(parameter_declaration
-						[
+						type: [
+							(sized_type_specifier)
 							(primitive_type)
 							(struct_specifier
 								(type_identifier))
+							(type_identifier)
 						] @item_type
 						[
 							(identifier)
@@ -22,7 +24,11 @@ end
 function Func_extractors.returns(struct_data)
 	return struct_data.lang_query_parser [[
 		(function_definition
-			(primitive_type) @item_type (#not-eq? @item_type "void"))
+			type: [
+				(sized_type_specifier)
+				(primitive_type)
+				(type_identifier)
+			] @item_type (#not-eq? @item_type "void"))
 	]]
 end
 
