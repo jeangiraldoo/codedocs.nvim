@@ -58,7 +58,7 @@ local function _get_supported_struct_node_data(ts_node, struct_identifiers)
 
 	local struct_name = struct_identifiers[ts_node:type()]
 
-	if struct_name then return { name = struct_name, node = ts_node, pos = ts_node:range() } end
+	if struct_name then return { name = struct_name, node = ts_node } end
 
 	return _get_supported_struct_node_data(ts_node:parent(), struct_identifiers)
 end
@@ -80,16 +80,21 @@ function Codedocs.setup(user_config)
 	end
 end
 
-function Codedocs.extract_item_data(lang_name)
+function Codedocs.extract_item_data(lang_name, struct_name)
 	vim.treesitter.get_parser(0):parse()
 	local node_at_cursor = vim.treesitter.get_node()
 
 	local struct_data = _get_supported_struct_node_data(node_at_cursor, Codedocs.get_struct_identifiers(lang_name))
-		or { name = "comment" }
 
-	if struct_data.name == "comment" then return {}, struct_data.name, vim.api.nvim_win_get_cursor(0)[1] - 1 end
+	local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
+
+	if not struct_data then return {}, struct_name or "comment", cursor_row end
+
+	if struct_name and struct_data.name ~= struct_name then return {}, struct_name, cursor_row end
 
 	local lang_config = require("codedocs.config").languages[lang_name]
+
+	local struct_pos = struct_data.node:range()
 
 	local item_extractors = lang_config.structures[struct_data.name].extractors
 	local items_data = require "codedocs.item_extractor"(
@@ -100,14 +105,18 @@ function Codedocs.extract_item_data(lang_name)
 	)
 
 	Debug_logger.log("Item data: ", items_data)
-	return items_data, struct_data.name, struct_data.pos
+	return items_data, struct_data.name, struct_pos
 end
 
 function Codedocs.orchestrate_annotation_build(lang_data)
 	local lang_spec = LangSpecs.new(lang_data.name)
 
-	local items_data, struct_name, row = Codedocs.extract_item_data(lang_data.name)
-	local struct_style = lang_spec:get_struct_style(struct_name, lang_data.style_name or lang_spec:get_default_style())
+	local items_data, struct_name, annotation_row = Codedocs.extract_item_data(lang_data.name, lang_data.substyle_name)
+
+	local struct_style = lang_spec:get_struct_style(
+		lang_data.substyle_name or struct_name,
+		lang_data.style_name or lang_spec:get_default_style()
+	)
 
 	Debug_logger.log("Structure name: " .. struct_name)
 	Debug_logger.log("Style name: " .. lang_spec:get_default_style())
@@ -115,15 +124,15 @@ function Codedocs.orchestrate_annotation_build(lang_data)
 
 	local struct_data = {
 		should_indent = struct_style.indented,
-		line_num = row + 1,
+		line_num = annotation_row + 1,
 	}
 
 	local annotation_lines = docs_builder(struct_style, items_data, struct_data)
 
-	return annotation_lines, row, struct_style.relative_position
+	return annotation_lines, annotation_row, struct_style.relative_position
 end
 
-function Codedocs.insert_docs()
+function Codedocs.insert_docs(substyle_name)
 	Debug_logger.log "Plugin triggered"
 
 	local lang_name = require("codedocs.config").aliases[vim.bo.filetype] or vim.bo.filetype
@@ -134,7 +143,9 @@ function Codedocs.insert_docs()
 		return
 	end
 
-	local annotation_lines, row, relative_position = Codedocs.orchestrate_annotation_build { name = lang_name }
+	local annotation_lines, row, relative_position =
+		Codedocs.orchestrate_annotation_build { name = lang_name, substyle_name = substyle_name }
+
 	Debug_logger.log("Annotation:", annotation_lines)
 
 	_write_to_buffer(annotation_lines, row, relative_position)

@@ -81,20 +81,19 @@ local function _should_insert_gap_between_sections(section_idx, style, section_s
 	local current_section_is_last = section_idx == #style.sections
 	if current_section_is_last then return false end
 
-	local next_section_is_item_based = type(style.sections[section_idx + 1].items) == "table"
+	local next_section = style.sections[section_idx + 1]
+	local next_section_is_item_based = next_section and type(next_section.items) == "table"
 	if not next_section_is_item_based then
-		return section_style.insert_gap_between.enabled and not style.sections[section_idx + 1].ignore_prev_gap
+		return section_style.insert_gap_between.enabled and not next_section.ignore_prev_gap
 	end
 
-	local next_section_has_items = #item_data[style.sections[section_idx + 1].name] > 0
+	local next_section_has_items = item_data[next_section.name] and #item_data[next_section.name] > 0
 
 	if not next_section_has_items then return false end
 
-	if #style.sections[section_idx + 1].layout == 0 and #style.sections[section_idx + 1].items.layout == 0 then
-		return false
-	end
+	if #next_section.layout == 0 and #next_section.items.layout == 0 then return false end
 
-	return section_style.insert_gap_between.enabled and not style.sections[section_idx + 1].ignore_prev_gap
+	return section_style.insert_gap_between.enabled and not next_section.ignore_prev_gap
 end
 
 local function _add_section_content(content, item_data, section_style)

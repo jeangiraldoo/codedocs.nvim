@@ -401,24 +401,20 @@ require("codedocs").setup({
 
 ## Usage
 
-When an annotation insertion is triggered, the plugin generates one for the
-structure under the cursor. If no supported structure is detected, it inserts an
-inline comment instead.
+An annotation insertion can be triggered using the `:Codedocs` command. There are
+two ways to use the command:
 
-An annotation insertion can be triggered in the following ways:
+- **Without arguments**: The plugin attempts to detect the code structure under
+  the cursor, determines the default style for the current file’s language, and
+  applies the corresponding annotation. If no structure is recognized under the
+  cursor, an inline comment is inserted. By default, a matching annotation exists
+  for each structure unless you’ve customized the configuration.
 
-### Command
+- **With an annotation name**: You can pass the name of any annotation definition
+  defined in the language’s default style. The plugin will generate and insert the
+  annotation using that definition.
 
-The simplest way to use the plugin is with the following command:
-
-```lua
-:Codedocs
-```
-
-### Keymap
-
-For a more convenient experience, you can bind the annotation insertion to a
-keymap. For example:
+For a more convenient experience, you can bind the command to a keymap. For example:
 
 ```lua
 vim.keymap.set(
