@@ -96,46 +96,6 @@ local function _should_insert_gap_between_blocks(block_idx, style, block_style, 
 	return block_style.insert_gap_between.enabled and not next_block.ignore_prev_gap
 end
 
-local function _add_block_content(content, item_data, block_style)
-	local block_items = item_data[block_style.name]
-	local is_item_based_block = type(block_style.items) == "table"
-	if not is_item_based_block then
-		vim.list_extend(content, block_style.layout)
-		return
-	end
-
-	if block_items and #block_items > 0 then
-		for _, ln in ipairs(block_style.layout) do
-			table.insert(content, ln)
-		end
-
-		for item_idx, item in ipairs(block_items) do
-			for _, line in ipairs(block_style.items.layout) do
-				local item_line = format_item_line(line, item)
-				table.insert(content, item_line)
-
-				local should_insert_item_gap = block_style.items.insert_gap_between.enabled
-					and block_items[item_idx + 1]
-				if should_insert_item_gap then table.insert(content, block_style.items.insert_gap_between.text) end
-			end
-		end
-	end
-end
-
-local function _build_content(item_data, style)
-	local content = {}
-
-	for block_idx, block_style in ipairs(style.blocks) do
-		_add_block_content(content, item_data, block_style)
-
-		if _should_insert_gap_between_blocks(block_idx, style, block_style, item_data) then
-			table.insert(content, block_style.insert_gap_between.text)
-		end
-	end
-
-	return content
-end
-
 --- Builds the raw annotation content for each block, without applying the final structure
 -- Iterates through the blocks in the configured order, formats each item according to
 -- its block style, and groups the resulting lines by block name
@@ -148,10 +108,40 @@ return function(style, item_data, struct_data)
 
 	local annotation = Annotation.new()
 
-	local content = _build_content(item_data, style) or {}
-	Debug_logger.log("Annotation content", content)
+	for block_idx, block_style in ipairs(style.blocks) do
+		local is_item_based_block = type(block_style.items) == "table"
 
-	annotation:extend(content, struct_data)
+		if not is_item_based_block then annotation:extend(block_style.layout, struct_data) end
 
-	return annotation:get_lines()
+		local block_items = item_data[block_style.name]
+
+		local at_least_one_block_item = block_items and #block_items > 0
+		if not is_item_based_block or not at_least_one_block_item then goto skip_item_styling end
+
+		annotation:extend(block_style.layout, struct_data)
+
+		for item_idx, item in ipairs(block_items) do
+			for _, line in ipairs(block_style.items.layout) do
+				local item_line = format_item_line(line, item)
+				annotation:insert(item_line, struct_data)
+
+				local is_last_item = block_items[item_idx + 1] == nil
+				if block_style.items.insert_gap_between.enabled and not is_last_item then
+					annotation:insert(block_style.items.insert_gap_between.text, struct_data)
+				end
+			end
+		end
+
+		::skip_item_styling::
+
+		if _should_insert_gap_between_blocks(block_idx, style, block_style, item_data) then
+			annotation:insert(block_style.insert_gap_between.text, struct_data)
+		end
+	end
+
+	local annotation_lines = annotation:get_lines()
+
+	Debug_logger.log("Annotation content", annotation_lines)
+
+	return annotation_lines
 end
