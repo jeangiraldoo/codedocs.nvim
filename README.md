@@ -117,7 +117,7 @@ require("paq") {
 ## Configuration
 
 > [!WARNING]
-> Language, struct and style names must be spelled exactly as shown in the
+> Language, annotation and style names must be spelled exactly as shown in the
 > [supported languages section](#language-support).
 
 All options can be customized using the setup function. Here are most of the
@@ -136,7 +136,7 @@ require("codedocs").setup {
 }
 ```
 
-### Change a language's default annotation style
+### Change a language's default style
 
 Default styles are defined using the `default_styles` key:
 
@@ -171,11 +171,11 @@ require("codedocs").setup {
 }
 ```
 
-### Customize an annotation style
+### Customize an annotation
 
-You can customize almost (for now!) every aspect of an annotation
-style. Whether you want to make a simple change, like modifying the characters
-wrapping the parameter type:
+You can customize almost (for now!) every aspect of an annotation. Whether you
+want to make a simple change, like modifying the characters wrapping the parameter
+type:
 
 ```python
 def cool_function_with_type_hints(a: int, b: bool) -> str:
@@ -217,7 +217,7 @@ In this case, we:
 - Added a third kaomoji to wrap the left side of the return type.
 - Customized the titles for both the parameters and return sections.
 
-To customize an annotation style, keep in mind that it is simply a regular Lua
+To customize an annotation, keep in mind that it is simply a regular Lua
 table with the following options:
 
 | Option Name         | Expected Value Type                                 | Behavior                                          |
@@ -352,8 +352,8 @@ The following structure sections are available:
 
 #### Customization example
 
-Say we want to make the following changes to Python's Google annotation style
-for functions:
+Say we want to make the following changes to the `func` annotation for Python's
+Google style:
 
 - Add a gap in between all items.
 - Add a gap in between sections (functions have a `parameters` and `returns`
@@ -429,7 +429,7 @@ vim.keymap.set(
 > [!NOTE]
 > \* indicates the default style for that language
 
-| Language   | Styles                | Structures                     |
+| Language   | Styles                | Built-in annotations           |
 | ---------- | --------------------- | ------------------------------ |
 | Bash       | \*Google              | `comment`, `function`          |
 | C          | \*Doxygen             | `comment`, `function`          |
