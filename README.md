@@ -425,11 +425,7 @@ vim.keymap.set(
 
 ## Language support
 
-<!-- prettier-ignore -->
-> [!NOTE]
-> \* indicates the default style for that language
-
-| Language   | Styles                | Built-in annotations           |
+| Language   | Styles (\* = default) | Built-in annotations           |
 | ---------- | --------------------- | ------------------------------ |
 | Bash       | \*Google              | `comment`, `function`          |
 | C          | \*Doxygen             | `comment`, `function`          |
