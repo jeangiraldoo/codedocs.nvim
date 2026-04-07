@@ -4,7 +4,7 @@ return {
 	comment = {
 		relative_position = "empty_target_or_above",
 		indented = false,
-		sections = {
+		blocks = {
 			lang_utils.new_section {
 				name = "title",
 				layout = {
@@ -16,7 +16,7 @@ return {
 	class = {
 		relative_position = "above",
 		indented = false,
-		sections = {
+		blocks = {
 			lang_utils.new_section {
 				name = "header",
 				layout = {
@@ -47,7 +47,7 @@ return {
 	func = {
 		relative_position = "above",
 		indented = false,
-		sections = {
+		blocks = {
 			lang_utils.new_section {
 				name = "header",
 				layout = {

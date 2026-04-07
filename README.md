@@ -117,7 +117,7 @@ require("paq") {
 ## Configuration
 
 > [!WARNING]
-> Language, struct and style names must be spelled exactly as shown in the
+> Language, annotation and style names must be spelled exactly as shown in the
 > [supported languages section](#language-support).
 
 All options can be customized using the setup function. Here are most of the
@@ -136,7 +136,7 @@ require("codedocs").setup {
 }
 ```
 
-### Change a language's default annotation style
+### Change a language's default style
 
 Default styles are defined using the `default_styles` key:
 
@@ -171,11 +171,11 @@ require("codedocs").setup {
 }
 ```
 
-### Customize an annotation style
+### Customize an annotation
 
-You can customize almost (for now!) every aspect of an annotation
-style. Whether you want to make a simple change, like modifying the characters
-wrapping the parameter type:
+You can customize almost (for now!) every aspect of an annotation. Whether you
+want to make a simple change, like modifying the characters wrapping the parameter
+type:
 
 ```python
 def cool_function_with_type_hints(a: int, b: bool) -> str:
@@ -212,58 +212,58 @@ def cool_function_with_type_hints(a: int, b: bool) -> str:
 
 In this case, we:
 
-- Increased spacing between items in the parameters section.
+- Increased spacing between items in the parameters block.
 - Wrapped parameter types with two [Kaomojis](https://kaomoji.ru/en/).
 - Added a third kaomoji to wrap the left side of the return type.
-- Customized the titles for both the parameters and return sections.
+- Customized the titles for both the parameters and return blocks.
 
-To customize an annotation style, keep in mind that it is simply a regular Lua
+To customize an annotation, keep in mind that it is simply a regular Lua
 table with the following options:
 
 | Option Name         | Expected Value Type                                 | Behavior                                          |
 | ------------------- | --------------------------------------------------- | ------------------------------------------------- |
 | `relative_position` | `"above"` \| `"below"` \| `"empty_target_or_above"` | Where to insert the annotation                    |
 | `indented`          | boolean                                             | Whether to indent the entire annotation one level |
-| `sections`          | table (list)                                        | List of sections forming the annotation           |
+| `blocks`            | table (list)                                        | List of blocks forming the annotation             |
 
-Sections are the core of an annotation, they determine what it ultimately looks
+Blocks are the core of an annotation, they determine what it ultimately looks
 like.
 
-#### Sections
+#### Blocks
 
 > [!WARNING]
-> The `sections` option is a list, so you cannot override a single section on its
-> own. Because your config is merged recursively with the defaults, any sections
+> The `blocks` option is a list, so you cannot override a single block on its
+> own. Because your config is merged recursively with the defaults, any blocks
 > you do not explicitly include will be removed, even if they exist in the defaults.
 >
-> To customize just one section, you should copy the default sections list and then
-> modify the specific section you want.
+> To customize just one block, you should copy the default blocks list and then
+> modify the specific block you want.
 >
-> Previously, `sections` was defined as a key value table, where the key represented
-> the section name (equivalent to the `name` field) and the value contained its
-> options (`layout`, `items`, etc.). While this made individual sections easier
+> Previously, `blocks` was defined as a key value table, where the key represented
+> the block name (equivalent to the `name` field) and the value contained its
+> options (`layout`, `items`, etc.). While this made individual blocks easier
 > to override, it made ordering difficult without introducing an additional option
 > (there used to be an option called `section_order` for this), and reduced composability.
 >
 > The current list based approach improves ordering and flexibility overall, at
-> the cost of making single section customization less convenient.
+> the cost of making single block customization less convenient.
 
-| Option Name          | Expected Type | Behavior                                                        |
-| -------------------- | ------------- | --------------------------------------------------------------- |
-| `name`               | string        | The name of the section, useful for readability and for items\* |
-| `layout`             | string[]      | List of lines that that make up the section                     |
-| `insert_gap_between` | table         | Sets up a gap in between the current section/item and the next  |
-| `ignore_prev_gap`    | boolean       | Skips the gap defined by the previous section (if enabled)      |
-| `items`              | table?        | Sets up options for the section's items                         |
+| Option Name          | Expected Type | Behavior                                                     |
+| -------------------- | ------------- | ------------------------------------------------------------ |
+| `name`               | string        | The name of the block, useful for readability and for items  |
+| `layout`             | string[]      | List of lines that that make up the block                    |
+| `insert_gap_between` | table         | Sets up a gap in between the current block/item and the next |
+| `ignore_prev_gap`    | boolean       | Skips the gap defined by the previous block (if enabled)     |
+| `items`              | table?        | Sets up options for the block's items                        |
 
 All options with the exception of `ignore_prev_gap` have some caveats that will
 be explained below in detail.
 
 ##### `items` option
 
-When a section uses the `items` option, it is considered an "item-based" section,
+When a block uses the `items` option, it is considered an "item-based" block,
 as it includes items extracted at runtime from a structure defined in its layout.
-In contrast, non-item-based sections consist solely of the lines defined in their
+In contrast, non-item-based blocks consist solely of the lines defined in their
 `layout`.
 
 An item represents a named component of a structure, defined by a `name` and a `type`.
@@ -300,21 +300,21 @@ has the following items:
 
 The `insert_gap_between` and `layout` options can be reused as suboptions of the
 `items` option; in such case the `layout` option would represent the lines that
-make up each item and that will be appended to the section's `layout` option.
+make up each item and that will be appended to the block's `layout` option.
 
 ##### `insert_gap_between` option
 
 The following suboptions are available:
 
-| Name    | Expected Value Type | Behavior                                                   |
-| ------- | ------------------- | ---------------------------------------------------------- |
-| enabled | `boolean`           | Whether a gap is inserted in between two sections or items |
-| text    | `string`            | String used as the gap                                     |
+| Name    | Expected Value Type | Behavior                                                 |
+| ------- | ------------------- | -------------------------------------------------------- |
+| enabled | `boolean`           | Whether a gap is inserted in between two blocks or items |
+| text    | `string`            | String used as the gap                                   |
 
 ##### `layout` option
 
 > [!INFO]
-> The layout lines of all sections are concatenated in section order to form the
+> The layout lines of all blocks are concatenated in block order to form the
 > final annotation.
 
 The following string placeholders are predefined:
@@ -335,16 +335,16 @@ When used, they get replaced by the item's name and type respectively.
 
 The `name` option serves two main purposes:
 
-1. Identifies the section, making it easier to understand its role
-2. Associates the section with a specific group of items extracted from a structure
+1. Identifies the block, making it easier to understand its role
+2. Associates the block with a specific group of items extracted from a structure
 
-The second purpose applies only to item-based sections. When items are extracted
-from a structure, they are grouped by section name. For these items to be included,
-the value of `name` must match the corresponding structure section.
+The second purpose applies only to item-based blocks. When items are extracted
+from a structure, they are grouped by block name. For these items to be included,
+the value of `name` must match the corresponding structure block.
 
-The following structure sections are available:
+The following structure blocks are available:
 
-| Structure | Sections                         |
+| Structure | blocks                           |
 | --------- | -------------------------------- |
 | `func`    | `title`, `parameters`, `returns` |
 | `class`   | `title`, `attributes`            |
@@ -352,12 +352,12 @@ The following structure sections are available:
 
 #### Customization example
 
-Say we want to make the following changes to Python's Google annotation style
-for functions:
+Say we want to make the following changes to the `func` annotation for Python's
+Google style:
 
 - Add a gap in between all items.
-- Add a gap in between sections (functions have a `parameters` and `returns`
-  section)
+- Add a gap in between blocks (functions have a `parameters` and `returns`
+  block)
 
 This is what such customization would look like:
 
@@ -369,7 +369,7 @@ require("codedocs").setup({
                 definitions = {
                     Google = {
                         func = {
-                            sections = {
+                            blocks = {
                                  {
                                     name = "parameters",
                                     insert_gap_between = {
@@ -401,24 +401,20 @@ require("codedocs").setup({
 
 ## Usage
 
-When an annotation insertion is triggered, the plugin generates one for the
-structure under the cursor. If no supported structure is detected, it inserts an
-inline comment instead.
+An annotation insertion can be triggered using the `:Codedocs` command. There are
+two ways to use the command:
 
-An annotation insertion can be triggered in the following ways:
+- **Without arguments**: The plugin attempts to detect the code structure under
+  the cursor, determines the default style for the current file’s language, and
+  applies the corresponding annotation. If no structure is recognized under the
+  cursor, an inline comment is inserted. By default, a matching annotation exists
+  for each structure unless you’ve customized the configuration.
 
-### Command
+- **With an annotation name**: You can pass the name of any annotation definition
+  defined in the language’s default style. The plugin will generate and insert the
+  annotation using that definition.
 
-The simplest way to use the plugin is with the following command:
-
-```lua
-:Codedocs
-```
-
-### Keymap
-
-For a more convenient experience, you can bind the annotation insertion to a
-keymap. For example:
+For a more convenient experience, you can bind the command to a keymap. For example:
 
 ```lua
 vim.keymap.set(
@@ -429,11 +425,7 @@ vim.keymap.set(
 
 ## Language support
 
-<!-- prettier-ignore -->
-> [!NOTE]
-> \* indicates the default style for that language
-
-| Language   | Styles                | Structures                     |
+| Language   | Styles (\* = default) | Built-in annotations           |
 | ---------- | --------------------- | ------------------------------ |
 | Bash       | \*Google              | `comment`, `function`          |
 | C          | \*Doxygen             | `comment`, `function`          |

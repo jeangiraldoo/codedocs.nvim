@@ -77,47 +77,46 @@ local function format_item_line(line, item)
 	return line
 end
 
-local function _should_insert_gap_between_sections(section_idx, style, section_style, item_data)
-	local current_section_is_last = section_idx == #style.sections
-	if current_section_is_last then return false end
+local function _should_insert_gap_between_blocks(block_idx, style, block_style, item_data)
+	local current_block_is_last = block_idx == #style.blocks
+	if current_block_is_last then return false end
 
-	local next_section_is_item_based = type(style.sections[section_idx + 1].items) == "table"
-	if not next_section_is_item_based then
-		return section_style.insert_gap_between.enabled and not style.sections[section_idx + 1].ignore_prev_gap
+	local next_block = style.blocks[block_idx + 1]
+	local next_block_is_item_based = next_block and type(next_block.items) == "table"
+	if not next_block_is_item_based then
+		return block_style.insert_gap_between.enabled and not next_block.ignore_prev_gap
 	end
 
-	local next_section_has_items = #item_data[style.sections[section_idx + 1].name] > 0
+	local next_block_has_items = item_data[next_block.name] and #item_data[next_block.name] > 0
 
-	if not next_section_has_items then return false end
+	if not next_block_has_items then return false end
 
-	if #style.sections[section_idx + 1].layout == 0 and #style.sections[section_idx + 1].items.layout == 0 then
-		return false
-	end
+	if #next_block.layout == 0 and #next_block.items.layout == 0 then return false end
 
-	return section_style.insert_gap_between.enabled and not style.sections[section_idx + 1].ignore_prev_gap
+	return block_style.insert_gap_between.enabled and not next_block.ignore_prev_gap
 end
 
-local function _add_section_content(content, item_data, section_style)
-	local section_items = item_data[section_style.name]
-	local is_item_based_section = type(section_style.items) == "table"
-	if not is_item_based_section then
-		vim.list_extend(content, section_style.layout)
+local function _add_block_content(content, item_data, block_style)
+	local block_items = item_data[block_style.name]
+	local is_item_based_block = type(block_style.items) == "table"
+	if not is_item_based_block then
+		vim.list_extend(content, block_style.layout)
 		return
 	end
 
-	if section_items and #section_items > 0 then
-		for _, ln in ipairs(section_style.layout) do
+	if block_items and #block_items > 0 then
+		for _, ln in ipairs(block_style.layout) do
 			table.insert(content, ln)
 		end
 
-		for item_idx, item in ipairs(section_items) do
-			for _, line in ipairs(section_style.items.layout) do
+		for item_idx, item in ipairs(block_items) do
+			for _, line in ipairs(block_style.items.layout) do
 				local item_line = format_item_line(line, item)
 				table.insert(content, item_line)
 
-				local should_insert_item_gap = section_style.items.insert_gap_between.enabled
-					and section_items[item_idx + 1]
-				if should_insert_item_gap then table.insert(content, section_style.items.insert_gap_between.text) end
+				local should_insert_item_gap = block_style.items.insert_gap_between.enabled
+					and block_items[item_idx + 1]
+				if should_insert_item_gap then table.insert(content, block_style.items.insert_gap_between.text) end
 			end
 		end
 	end
@@ -126,23 +125,23 @@ end
 local function _build_content(item_data, style)
 	local content = {}
 
-	for section_idx, section_style in ipairs(style.sections) do
-		_add_section_content(content, item_data, section_style)
+	for block_idx, block_style in ipairs(style.blocks) do
+		_add_block_content(content, item_data, block_style)
 
-		if _should_insert_gap_between_sections(section_idx, style, section_style, item_data) then
-			table.insert(content, section_style.insert_gap_between.text)
+		if _should_insert_gap_between_blocks(block_idx, style, block_style, item_data) then
+			table.insert(content, block_style.insert_gap_between.text)
 		end
 	end
 
 	return content
 end
 
---- Builds the raw annotation content for each section, without applying the final structure
--- Iterates through the sections in the configured order, formats each item according to
--- its section style, and groups the resulting lines by section name
--- @param item_data table Mapping of section names to item lists
--- @param style table Style configuration for all sections and settings options
--- @return table Table mapping section names to their formatted content lines
+--- Builds the raw annotation content for each block, without applying the final structure
+-- Iterates through the blocks in the configured order, formats each item according to
+-- its block style, and groups the resulting lines by block name
+-- @param item_data table Mapping of block names to item lists
+-- @param style table Style configuration for all blocks and settings options
+-- @return table Table mapping block names to their formatted content lines
 return function(style, item_data, struct_data)
 	assert(type(item_data) == "table", "'item_data' must be a table, got " .. type(item_data))
 	assert(type(style) == "table", "'style' must be a table, got " .. type(style))

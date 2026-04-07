@@ -65,7 +65,7 @@ local BASE_ANNOTATION = {
 	},
 	opts = {
 		settings = {},
-		sections = {
+		blocks = {
 			{
 				name = "title",
 				layout = {
@@ -146,7 +146,7 @@ local CASES = {
 		},
 		opts_to_change = {
 			settings = {},
-			sections = {
+			blocks = {
 				{
 					name = "header",
 					layout = {
@@ -243,7 +243,7 @@ local CASES = {
 			" */",
 		},
 		opts_to_change = {
-			sections = {
+			blocks = {
 				{
 					name = "header",
 					layout = {
@@ -334,7 +334,7 @@ local CASES = {
 		},
 		opts_to_change = {
 			settings = {},
-			sections = {
+			blocks = {
 				{
 					name = "header",
 					layout = {
@@ -431,7 +431,7 @@ local CASES = {
 			" */",
 		},
 		opts_to_change = {
-			sections = {
+			blocks = {
 				{
 					name = "header",
 					layout = {
@@ -518,7 +518,7 @@ local CASES = {
 			" */",
 		},
 		opts_to_change = {
-			sections = {
+			blocks = {
 				{
 					name = "header",
 					layout = {
@@ -596,7 +596,7 @@ local CASES = {
 			" */",
 		},
 		opts_to_change = {
-			sections = {
+			blocks = {
 				{
 					name = "header",
 					layout = {

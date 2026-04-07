@@ -20,7 +20,7 @@ local BASE_MOCKED_OPTS = {
 			relative_position = "above",
 			insert_at = 3,
 		},
-		sections = {
+		blocks = {
 			title = {
 				layout = {
 					"--------",
