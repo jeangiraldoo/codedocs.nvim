@@ -16,14 +16,6 @@ local function compute_line_indent(line_row)
 	return string.rep("\t", tabs) .. string.rep(" ", spaces)
 end
 
-local function get_indent_string()
-	if not vim.bo.expandtab then return "\t" end
-
-	local shiftwidth = vim.bo.shiftwidth
-	if shiftwidth == 0 then shiftwidth = vim.bo.tabstop end
-	return string.rep(" ", shiftwidth)
-end
-
 local Annotation = {
 	placeholders = {
 		indent = "%%>",
@@ -53,9 +45,17 @@ function Annotation:extend(tbl, struct_data)
 end
 
 function Annotation:insert(line, struct_data)
+	local indent_string = (function()
+		if not vim.bo.expandtab then return "\t" end
+
+		local shiftwidth = vim.bo.shiftwidth
+		if shiftwidth == 0 then shiftwidth = vim.bo.tabstop end
+		return string.rep(" ", shiftwidth)
+	end)()
+
 	if line ~= "" and struct_data then
 		line = compute_line_indent(struct_data.line_num) .. line
-		if struct_data and struct_data.should_indent then line = get_indent_string() .. line end
+		if struct_data.should_indent then line = indent_string .. line end
 	end
 
 	if line ~= "" and line:match(self.placeholders.snippet_tabstop_idx) then
@@ -68,7 +68,7 @@ function Annotation:insert(line, struct_data)
 		end)
 	end
 
-	line = line:gsub(self.placeholders.indent, get_indent_string())
+	line = line:gsub(self.placeholders.indent, indent_string)
 
 	table.insert(self._lines, line)
 end
