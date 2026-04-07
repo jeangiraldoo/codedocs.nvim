@@ -24,7 +24,16 @@ local function get_indent_string()
 	return string.rep(" ", shiftwidth)
 end
 
-local Annotation = {}
+local Annotation = {
+	placeholders = {
+		indent = "%%>",
+		snippet_tabstop_idx = "%%snippet_tabstop_idx",
+		item = {
+			name = "%%item_name",
+			type = "%%item_type",
+		},
+	},
+}
 
 function Annotation.new()
 	local new_annotation = {
@@ -44,18 +53,13 @@ function Annotation:extend(tbl, struct_data)
 end
 
 function Annotation:insert(line, struct_data)
-	local SUPPORTED_GENERAL_PLACEHOLDERS = {
-		indent = "%%>",
-		snippet_tabstop_idx = "%%snippet_tabstop_idx",
-	}
-
 	if line ~= "" and struct_data then
 		line = compute_line_indent(struct_data.line_num) .. line
 		if struct_data and struct_data.should_indent then line = get_indent_string() .. line end
 	end
 
-	if line ~= "" and line:match(SUPPORTED_GENERAL_PLACEHOLDERS.snippet_tabstop_idx) then
-		line = line:gsub(SUPPORTED_GENERAL_PLACEHOLDERS.snippet_tabstop_idx, function()
+	if line ~= "" and line:match(self.placeholders.snippet_tabstop_idx) then
+		line = line:gsub(self.placeholders.snippet_tabstop_idx, function()
 			local snippet_tabstop_idx_label = tostring(self._snippet_tabstop_idx_counter)
 
 			self._snippet_tabstop_idx_counter = self._snippet_tabstop_idx_counter + 1
@@ -64,15 +68,15 @@ function Annotation:insert(line, struct_data)
 		end)
 	end
 
-	line = line:gsub(SUPPORTED_GENERAL_PLACEHOLDERS.indent, get_indent_string())
+	line = line:gsub(self.placeholders.indent, get_indent_string())
 
 	table.insert(self._lines, line)
 end
 
 local function format_item_line(line, item)
-	if item.name then line = line:gsub("%%item_name", item.name or "") end
+	if item.name then line = line:gsub(Annotation.placeholders.item.name, item.name or "") end
 
-	if item.type then line = line:gsub("%%item_type", item.type or "") end
+	if item.type then line = line:gsub(Annotation.placeholders.item.type, item.type or "") end
 
 	return line
 end
