@@ -1,21 +1,5 @@
 local Debug_logger = require "codedocs.utils.debug_logger"
 
-local function compute_line_indent(line_row)
-	assert(type(line_row) == "number", "'line_row' must be a number, got " .. type(line_row))
-	assert(line_row >= 0, "'line_row' must be 0 or higher, got " .. line_row)
-
-	local cols = vim.fn.indent(line_row)
-	if cols == -1 then return "" end
-
-	if vim.bo.expandtab then return string.rep(" ", cols) end
-
-	local tabstop = vim.bo.tabstop
-	local tabs = math.floor(cols / tabstop)
-	local spaces = cols % tabstop
-
-	return string.rep("\t", tabs) .. string.rep(" ", spaces)
-end
-
 local function compute_neovim_indentation()
 	if not vim.bo.expandtab then return "\t" end
 
@@ -66,7 +50,22 @@ function Annotation:insert(line, struct_data, item)
 	end
 
 	if struct_data then
-		line = compute_line_indent(struct_data.line_num) .. line
+		local line_indent = (function()
+			local line_row = struct_data.line_num
+			local cols = vim.fn.indent(line_row)
+			if cols == -1 then return "" end
+
+			if vim.bo.expandtab then return string.rep(" ", cols) end
+
+			local tabstop = vim.bo.tabstop
+			local tabs = math.floor(cols / tabstop)
+			local spaces = cols % tabstop
+
+			return string.rep("\t", tabs) .. string.rep(" ", spaces)
+		end)()
+
+		line = line_indent .. line
+
 		if struct_data.should_indent then line = compute_neovim_indentation() .. line end
 	end
 
@@ -124,7 +123,6 @@ return function(style, item_data, struct_data)
 
 		for item_idx, item in ipairs(block_items) do
 			for _, line in ipairs(block_style.items.layout) do
-				-- local item_line = format_item_line(line, item)
 				annotation:insert(line, struct_data, item)
 
 				local is_last_item = block_items[item_idx + 1] == nil
