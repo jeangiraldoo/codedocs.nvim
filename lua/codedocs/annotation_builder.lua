@@ -16,16 +16,31 @@ local function compute_line_indent(line_row)
 	return string.rep("\t", tabs) .. string.rep(" ", spaces)
 end
 
+local function compute_neovim_indentation()
+	if not vim.bo.expandtab then return "\t" end
+
+	local shiftwidth = vim.bo.shiftwidth
+	if shiftwidth == 0 then shiftwidth = vim.bo.tabstop end
+	return string.rep(" ", shiftwidth)
+end
+
 local Annotation = {
 	placeholders = {
-		indent = "%%>",
-		snippet_tabstop_idx = "%%snippet_tabstop_idx",
-		item = {
-			name = "%%item_name",
-			type = "%%item_type",
-		},
+		["%%>"] = function(_, _, _) return compute_neovim_indentation() end,
+		["%%snippet_tabstop_idx"] = function(self, _, _)
+			local snippet_tabstop_idx_label = tostring(self._snippet_tabstop_idx_counter)
+
+			self._snippet_tabstop_idx_counter = self._snippet_tabstop_idx_counter + 1
+
+			return snippet_tabstop_idx_label
+		end,
 	},
 }
+
+Annotation.item_placeholder = vim.tbl_deep_extend("force", vim.deepcopy(Annotation.placeholders), {
+	["%%item_name"] = function(_, item) return item.name end,
+	["%%item_type"] = function(_, item) return item.type end,
+})
 
 function Annotation.new()
 	local new_annotation = {
@@ -44,41 +59,24 @@ function Annotation:extend(tbl, struct_data)
 	end
 end
 
-function Annotation:insert(line, struct_data)
-	local indent_string = (function()
-		if not vim.bo.expandtab then return "\t" end
+function Annotation:insert(line, struct_data, item)
+	if line == "" then
+		table.insert(self._lines, line)
+		return
+	end
 
-		local shiftwidth = vim.bo.shiftwidth
-		if shiftwidth == 0 then shiftwidth = vim.bo.tabstop end
-		return string.rep(" ", shiftwidth)
-	end)()
-
-	if line ~= "" and struct_data then
+	if struct_data then
 		line = compute_line_indent(struct_data.line_num) .. line
-		if struct_data.should_indent then line = indent_string .. line end
+		if struct_data.should_indent then line = compute_neovim_indentation() .. line end
 	end
 
-	if line ~= "" and line:match(self.placeholders.snippet_tabstop_idx) then
-		line = line:gsub(self.placeholders.snippet_tabstop_idx, function()
-			local snippet_tabstop_idx_label = tostring(self._snippet_tabstop_idx_counter)
+	local placeholders = item and self.item_placeholder or self.placeholders
 
-			self._snippet_tabstop_idx_counter = self._snippet_tabstop_idx_counter + 1
-
-			return snippet_tabstop_idx_label
-		end)
+	for placeholder, handler in pairs(placeholders) do
+		line = line:gsub(placeholder, function() return handler(self, item) end)
 	end
-
-	line = line:gsub(self.placeholders.indent, indent_string)
 
 	table.insert(self._lines, line)
-end
-
-local function format_item_line(line, item)
-	if item.name then line = line:gsub(Annotation.placeholders.item.name, item.name or "") end
-
-	if item.type then line = line:gsub(Annotation.placeholders.item.type, item.type or "") end
-
-	return line
 end
 
 local function _should_insert_gap_between_blocks(block_idx, style, block_style, item_data)
@@ -126,12 +124,12 @@ return function(style, item_data, struct_data)
 
 		for item_idx, item in ipairs(block_items) do
 			for _, line in ipairs(block_style.items.layout) do
-				local item_line = format_item_line(line, item)
-				annotation:insert(item_line, struct_data)
+				-- local item_line = format_item_line(line, item)
+				annotation:insert(line, struct_data, item)
 
 				local is_last_item = block_items[item_idx + 1] == nil
 				if block_style.items.insert_gap_between.enabled and not is_last_item then
-					annotation:insert(block_style.items.insert_gap_between.text, struct_data)
+					annotation:insert(block_style.items.insert_gap_between.text, struct_data, item)
 				end
 			end
 		end
