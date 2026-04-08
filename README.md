@@ -138,19 +138,8 @@ require("codedocs").setup {
 
 ### Change a language's default style
 
-Default styles are defined using the `default_style` key:
-
-```lua
-require("codedocs").setup {
-    languages = {
-        <language name> = {
-            default_style =  <style name>
-        }
-    },
-}
-```
-
-For example, let's set the default styles for Python and Lua:
+Default styles are defined using the `default_style` key. For example, let's set
+the default styles for Python and Lua:
 
 ```lua
 require("codedocs").setup {
