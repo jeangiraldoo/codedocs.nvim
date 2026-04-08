@@ -16,9 +16,9 @@ local LANGS_TO_TEST = {
 }
 -- local LANGS_TO_TEST = LangSpecs.get_supported_langs()
 
-local function create_datatype_tester(lang, struct_name, section_name, template, cursor_pos)
+local function create_datatype_tester(lang, target_name, section_name, template, cursor_pos)
 	return function(data_type, expected_item_name)
-		it(("%s (%s / %s) - %s"):format(lang, struct_name, section_name, data_type), function()
+		it(("%s (%s / %s) - %s"):format(lang, target_name, section_name, data_type), function()
 			local typed_template = vim.iter(template)
 				:map(function(line) return (line:gsub("%%data_type", data_type)) end)
 				:totable()
@@ -31,9 +31,9 @@ local function create_datatype_tester(lang, struct_name, section_name, template,
 	end
 end
 
-local function generate_tests_for_section(lang, struct_name, section_name, section_data)
+local function generate_tests_for_section(lang, target_name, section_name, section_data)
 	local test_datatype =
-		create_datatype_tester(lang, struct_name, section_name, section_data.template, section_data.cursor_pos)
+		create_datatype_tester(lang, target_name, section_name, section_data.template, section_data.cursor_pos)
 
 	for _, type_name in ipairs(section_data.types_to_test) do
 		test_datatype(type_name, section_data.expected_item_name)
@@ -50,9 +50,9 @@ end
 describe("Typed item extraction", function()
 	for _, lang in ipairs(LANGS_TO_TEST) do
 		local cases = require("tests.specs.item_extraction.typed_test_cases." .. lang)
-		for struct_name, struct_sections in pairs(cases) do
-			for section_name, section_data in pairs(struct_sections) do
-				generate_tests_for_section(lang, struct_name, section_name, section_data)
+		for target_name, target_sections in pairs(cases) do
+			for section_name, section_data in pairs(target_sections) do
+				generate_tests_for_section(lang, target_name, section_name, section_data)
 			end
 		end
 	end

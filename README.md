@@ -11,13 +11,13 @@
 
 </div>
 
-Codedocs.nvim automatically recognizes various language structures such as
-functions, classes, variables, and more, and inserts appropriate documentation
-strings based on the [programming language](#language-support) you are using.
+Codedocs.nvim automatically recognizes various code targets such as functions,
+classes, variables, and more, and inserts appropriate documentation strings based
+on the [programming language](#language-support) you are using.
 
-You can easily modify the structure of the documentation strings to suit your
-specific needs, add support for new languages by defining their documentation
-formats, or just use codedocs as it is! :)
+You can easily modify the structure of the annotations to suit your specific needs,
+add support for new languages by defining their documentation formats, or just use
+codedocs as it is! :)
 
 ![Codedocs showcase](./.images/showcase.gif)
 
@@ -39,7 +39,7 @@ formats, or just use codedocs as it is! :)
 ## Features
 
 - Works out-of-the-box.
-- Detects and documents code structures with a simple keybind.
+- Detects and documents code targets with a simple keybind.
 - Supports multiple [languages and styles](#language-support).
 - Easily customize existing formats or add new ones.
 - Annotations use Neovim's built-in snippet engine.
@@ -256,11 +256,11 @@ be explained below in detail.
 ##### `items` option
 
 When a block uses the `items` option, it is considered an "item-based" block,
-as it includes items extracted at runtime from a structure defined in its layout.
+as it includes items extracted at runtime from a target defined in its layout.
 In contrast, non-item-based blocks consist solely of the lines defined in their
 `layout`.
 
-An item represents a named component of a structure, defined by a `name` and a `type`.
+An item represents a named component of a target, defined by a `name` and a `type`.
 
 For example, the following function:
 
@@ -330,15 +330,15 @@ When used, they get replaced by the item's name and type respectively.
 The `name` option serves two main purposes:
 
 1. Identifies the block, making it easier to understand its role
-2. Associates the block with a specific group of items extracted from a structure
+2. Associates the block with a specific group of items extracted from a target
 
 The second purpose applies only to item-based blocks. When items are extracted
-from a structure, they are grouped by block name. For these items to be included,
-the value of `name` must match the corresponding structure block.
+from a target, they are grouped by block name. For these items to be included,
+the value of `name` must match the corresponding target block.
 
-The following structure blocks are available:
+The following target blocks are available:
 
-| Structure | blocks                           |
+| target    | blocks                           |
 | --------- | -------------------------------- |
 | `func`    | `title`, `parameters`, `returns` |
 | `class`   | `title`, `attributes`            |
@@ -396,11 +396,11 @@ require("codedocs").setup({
 An annotation insertion can be triggered using the `:Codedocs` command. There are
 two ways to use the command:
 
-- **Without arguments**: The plugin attempts to detect the code structure under
+- **Without arguments**: The plugin attempts to detect the code target under
   the cursor, determines the default style for the current file’s language, and
-  applies the corresponding annotation. If no structure is recognized under the
+  applies the corresponding annotation. If no target is recognized under the
   cursor, an inline comment is inserted. By default, a matching annotation exists
-  for each structure unless you’ve customized the configuration.
+  for each target unless you’ve customized the configuration.
 
 - **With an annotation name**: You can pass the name of any annotation definition
   defined in the language’s default style. The plugin will generate and insert the

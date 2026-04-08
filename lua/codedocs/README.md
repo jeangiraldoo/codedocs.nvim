@@ -5,7 +5,7 @@ help you contribute to the project, understand how it works internally,
 and to help me get back on track when I inevitably forget how things are wired
 together.
 
-In the context of this plugin, a "structure" refers to any language construct
+In the context of this plugin, a "target" refers to any language construct
 such as functions, methods, classes, or variables.
 
 ## Table of contents
@@ -26,7 +26,7 @@ lua
    │     └── utils.lua
    ├── health.lua # Exposes plugin diagnostics that can be checked using the `:checkhealth` command
    ├── init.lua # Plugin entry point
-   ├── item_extractor.lua # Extracts items out of a language structure
+   ├── item_extractor.lua # Extracts items out of a code target
    ├── lang_specs
    │  ├── init.lua
    │  └── style_opts.lua
@@ -52,9 +52,9 @@ flowchart TB
     4 --> 6
     6{Is there a Treesitter<br>parser installed<br>for the filetype?}
     6 -- No ---> 7[/Inform the user with a message/]
-    6 -- Yes ---> 8{Is there a supported<br>structure node<br>under the cursor?}
+    6 -- Yes ---> 8{Is there a supported<br>target node<br>under the cursor?}
     8 -- No ---> 9[Insert a comment]
-    8 -- Yes ---> 10[Extract item data using the item-extractor function for the detected structure]
+    8 -- Yes ---> 10[Extract item data using the item-extractor function for the detected target]
     10 ---> 11[Build the annotation using the item data and style options]
     11 --> 12((The annotation is inserted into the buffer))
 

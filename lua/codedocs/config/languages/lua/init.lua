@@ -1,7 +1,7 @@
 local Func_extractors = {}
 
-function Func_extractors.parameters(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.parameters(target_data)
+	return target_data.lang_query_parser [[
 		[
 				parameters: (parameters
 					name: (identifier) @item_name)
@@ -9,8 +9,8 @@ function Func_extractors.parameters(struct_data)
 	]]
 end
 
-function Func_extractors.returns(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.returns(target_data)
+	return target_data.lang_query_parser [[
 		(return_statement
 			(expression_list) @item_type
 			(#set! parse_as_blank "true")) @return_statement (#has-ancestor? @return_statement function_declaration)
@@ -36,7 +36,7 @@ return {
 		EmmyLua = require "codedocs.config.languages.lua.EmmyLua",
 		LDoc = require "codedocs.config.languages.lua.LDoc",
 	},
-	structures = {
+	targets = {
 		func = {
 			node_identifiers = {
 				"function_definition",

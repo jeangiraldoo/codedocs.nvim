@@ -1,7 +1,7 @@
 local Func_extractors = {}
 
-function Func_extractors.parameters(struct_data)
-	local raw_items = struct_data.lang_query_parser [[
+function Func_extractors.parameters(target_data)
+	local raw_items = target_data.lang_query_parser [[
 		(function_declaration
 			(parameter_list
 				(parameter_declaration
@@ -36,8 +36,8 @@ function Func_extractors.parameters(struct_data)
 	return final_items
 end
 
-function Func_extractors.returns(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.returns(target_data)
+	return target_data.lang_query_parser [[
 		(function_declaration
 			result: [
 				(slice_type)
@@ -69,7 +69,7 @@ return {
 	styles = {
 		Godoc = require "codedocs.config.languages.go.Godoc",
 	},
-	structures = {
+	targets = {
 		func = {
 			node_identifiers = {
 				"function_declaration",

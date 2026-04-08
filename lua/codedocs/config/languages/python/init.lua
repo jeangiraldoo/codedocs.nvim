@@ -1,10 +1,10 @@
 local Class_extractors = {}
 
-function Class_extractors.attributes(struct_data)
+function Class_extractors.attributes(target_data)
 	local results = {}
 
-	if struct_data.opts.attributes.static then
-		local class_attrs = struct_data.lang_query_parser [[
+	if target_data.opts.attributes.static then
+		local class_attrs = target_data.lang_query_parser [[
 			(class_definition
 				body: (block
 					(expression_statement
@@ -14,17 +14,17 @@ function Class_extractors.attributes(struct_data)
 		vim.list_extend(results, class_attrs)
 	end
 
-	if struct_data.opts.attributes.instance == "constructor" then
-		local constructor_node = struct_data.lang_query_parser([[
+	if target_data.opts.attributes.instance == "constructor" then
+		local constructor_node = target_data.lang_query_parser([[
 						(function_definition
 							name: (identifier) @func_name
 							(#eq? @func_name "__init__")) @target
 					]])[1]
 
 		if constructor_node then
-			local constructor_instance_attrs = struct_data.generic_query_parser(
+			local constructor_instance_attrs = target_data.generic_query_parser(
 				constructor_node,
-				struct_data.lang_name,
+				target_data.lang_name,
 				[[
 						(attribute
 							(identifier) @item_name (#not-eq? @item_name "self"))
@@ -36,8 +36,8 @@ function Class_extractors.attributes(struct_data)
 		end
 	end
 
-	if struct_data.opts.attributes.instance == "all" then
-		local all_instance_attrs = struct_data.lang_query_parser [[
+	if target_data.opts.attributes.instance == "all" then
+		local all_instance_attrs = target_data.lang_query_parser [[
 			(assignment
 				left: (attribute
 					object: (identifier) @obj
@@ -55,8 +55,8 @@ end
 
 local Func_extractors = {}
 
-function Func_extractors.parameters(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.parameters(target_data)
+	return target_data.lang_query_parser [[
 		(parameters
 			[
 				(typed_parameter
@@ -68,8 +68,8 @@ function Func_extractors.parameters(struct_data)
 	]]
 end
 
-function Func_extractors.returns(struct_data)
-	local items = struct_data.lang_query_parser [[
+function Func_extractors.returns(target_data)
+	local items = target_data.lang_query_parser [[
 		(function_definition
 			return_type: (type
 				[
@@ -81,7 +81,7 @@ function Func_extractors.returns(struct_data)
 
 	if #items > 0 then return items end
 
-	return struct_data.lang_query_parser [[
+	return target_data.lang_query_parser [[
 		(return_statement
 			(_) @item_type
 			(#set! parse_as_blank "true"))
@@ -110,7 +110,7 @@ return {
 		Numpy = require "codedocs.config.languages.python.Numpy",
 		reST = require "codedocs.config.languages.python.reST",
 	},
-	structures = {
+	targets = {
 		func = {
 			node_identifiers = {
 				"function_definition",

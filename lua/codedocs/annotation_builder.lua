@@ -37,21 +37,21 @@ end
 
 function Annotation:get_lines() return self._lines end
 
-function Annotation:extend(tbl, struct_data)
+function Annotation:extend(tbl, target_data)
 	for _, line in ipairs(tbl) do
-		self.insert(self, line, struct_data)
+		self.insert(self, line, target_data)
 	end
 end
 
-function Annotation:insert(line, struct_data, item)
+function Annotation:insert(line, target_data, item)
 	if line == "" then
 		table.insert(self._lines, line)
 		return
 	end
 
-	if struct_data then
+	if target_data then
 		local line_indent = (function()
-			local line_row = struct_data.line_num
+			local line_row = target_data.line_num
 			local cols = vim.fn.indent(line_row)
 			if cols == -1 then return "" end
 
@@ -66,7 +66,7 @@ function Annotation:insert(line, struct_data, item)
 
 		line = line_indent .. line
 
-		if struct_data.should_indent then line = compute_neovim_indentation() .. line end
+		if target_data.should_indent then line = compute_neovim_indentation() .. line end
 	end
 
 	local placeholders = item and self.item_placeholder or self.placeholders
@@ -103,7 +103,7 @@ end
 -- @param item_data table Mapping of block names to item lists
 -- @param style table Style configuration for all blocks and settings options
 -- @return table Table mapping block names to their formatted content lines
-return function(style, item_data, struct_data)
+return function(style, item_data, target_data)
 	assert(type(item_data) == "table", "'item_data' must be a table, got " .. type(item_data))
 	assert(type(style) == "table", "'style' must be a table, got " .. type(style))
 
@@ -112,22 +112,22 @@ return function(style, item_data, struct_data)
 	for block_idx, block_style in ipairs(style.blocks) do
 		local is_item_based_block = type(block_style.items) == "table"
 
-		if not is_item_based_block then annotation:extend(block_style.layout, struct_data) end
+		if not is_item_based_block then annotation:extend(block_style.layout, target_data) end
 
 		local block_items = item_data[block_style.name]
 
 		local at_least_one_block_item = block_items and #block_items > 0
 		if not is_item_based_block or not at_least_one_block_item then goto skip_item_styling end
 
-		annotation:extend(block_style.layout, struct_data)
+		annotation:extend(block_style.layout, target_data)
 
 		for item_idx, item in ipairs(block_items) do
 			for _, line in ipairs(block_style.items.layout) do
-				annotation:insert(line, struct_data, item)
+				annotation:insert(line, target_data, item)
 
 				local is_last_item = block_items[item_idx + 1] == nil
 				if block_style.items.insert_gap_between.enabled and not is_last_item then
-					annotation:insert(block_style.items.insert_gap_between.text, struct_data, item)
+					annotation:insert(block_style.items.insert_gap_between.text, target_data, item)
 				end
 			end
 		end
@@ -135,7 +135,7 @@ return function(style, item_data, struct_data)
 		::skip_item_styling::
 
 		if _should_insert_gap_between_blocks(block_idx, style, block_style, item_data) then
-			annotation:insert(block_style.insert_gap_between.text, struct_data)
+			annotation:insert(block_style.insert_gap_between.text, target_data)
 		end
 	end
 

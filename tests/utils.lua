@@ -5,7 +5,7 @@ local Utils = {}
 ---@param cursor_pos { row: number, col: number }
 function Utils.mock_buffer(filetype, buffer_lines, cursor_pos)
 	assert(type(filetype) == "string", "The filetype parameter must be a string, got " .. type(filetype))
-	assert(type(buffer_lines) == "table", "The structure parameter must be a table, got " .. type(buffer_lines))
+	assert(type(buffer_lines) == "table", "The buffer_lines parameter must be a table, got " .. type(buffer_lines))
 
 	assert(type(cursor_pos) == "table", "The cursor_pos parameter must be a table, got " .. type(cursor_pos))
 	assert(type(cursor_pos.row) == "number", "The cursor_pos row must be a number, got " .. type(cursor_pos.row))
@@ -23,17 +23,17 @@ function Utils.mock_buffer(filetype, buffer_lines, cursor_pos)
 	vim.bo.expandtab = false
 end
 
----Builds a list with the names of the structures a language supports
----@return string[] supported_struct_names
-function Utils.get_supported_structs(lang_name)
-	local struct_identifiers = require("codedocs").get_struct_identifiers(lang_name)
+---Builds a list with the names of the targets a language supports
+---@return string[] supported_target_names
+function Utils.get_supported_targets(lang_name)
+	local target_identifiers = require("codedocs").get_target_identifiers(lang_name)
 
-	local values = vim.tbl_values(struct_identifiers)
+	local values = vim.tbl_values(target_identifiers)
 	table.sort(values)
-	local supported_struct_names = vim.fn.uniq(values)
-	table.insert(supported_struct_names, "comment")
+	local supported_target_names = vim.fn.uniq(values)
+	table.insert(supported_target_names, "comment")
 
-	return supported_struct_names
+	return supported_target_names
 end
 
 return Utils

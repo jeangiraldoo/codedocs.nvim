@@ -1,10 +1,10 @@
 local Class_extractors = {}
 
-function Class_extractors.attributes(struct_data)
+function Class_extractors.attributes(target_data)
 	local results = {}
 
-	if struct_data.opts.attributes.static then
-		local class_attrs = struct_data.lang_query_parser [[
+	if target_data.opts.attributes.static then
+		local class_attrs = target_data.lang_query_parser [[
 			(companion_object
 				(class_body
 					(property_declaration
@@ -16,8 +16,8 @@ function Class_extractors.attributes(struct_data)
 		vim.list_extend(results, class_attrs)
 	end
 
-	if struct_data.opts.attributes.instance == "constructor" then
-		local constructor_instance_attrs = struct_data.lang_query_parser [[
+	if target_data.opts.attributes.instance == "constructor" then
+		local constructor_instance_attrs = target_data.lang_query_parser [[
 				(class_declaration
 					(primary_constructor
 						(class_parameter
@@ -30,8 +30,8 @@ function Class_extractors.attributes(struct_data)
 		return results
 	end
 
-	if struct_data.opts.attributes.instance == "all" then
-		local all_instance_attrs = struct_data.lang_query_parser [[
+	if target_data.opts.attributes.instance == "all" then
+		local all_instance_attrs = target_data.lang_query_parser [[
 			(class_declaration
 				[
 					(class_body
@@ -55,8 +55,8 @@ end
 
 local Func_extractors = {}
 
-function Func_extractors.parameters(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.parameters(target_data)
+	return target_data.lang_query_parser [[
 		(function_declaration
 			(function_value_parameters
 				(parameter
@@ -68,8 +68,8 @@ function Func_extractors.parameters(struct_data)
 	]]
 end
 
-function Func_extractors.returns(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.returns(target_data)
+	return target_data.lang_query_parser [[
 		(function_declaration
 			[
 				(user_type)
@@ -96,7 +96,7 @@ return {
 	styles = {
 		KDoc = require "codedocs.config.languages.kotlin.KDoc",
 	},
-	structures = {
+	targets = {
 		func = {
 			node_identifiers = {
 				"function_declaration",

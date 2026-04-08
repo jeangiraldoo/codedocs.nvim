@@ -1,4 +1,4 @@
----The goal of this test suite is to verify that style options for all language structure sections are customizable
+---The goal of this test suite is to verify that style options for all language target sections are customizable
 ---
 ---This test is very important since customization is not something that I can directly notice is broken while
 ---working on the plugin (and by the moment of writing this it's broken a few times already), but any user will
@@ -62,27 +62,27 @@ local MOCKED_USER_STRUCT_OPTS = vim.iter({
 		},
 	},
 	comment = {},
-}):fold({}, function(acc, struct_name, struct_sections)
-	acc[struct_name] = vim.tbl_deep_extend("error", struct_sections, BASE_MOCKED_OPTS.COMMON_SECTIONS)
+}):fold({}, function(acc, target_name, target_sections)
+	acc[target_name] = vim.tbl_deep_extend("error", target_sections, BASE_MOCKED_OPTS.COMMON_SECTIONS)
 	return acc
 end)
 
 describe("Customizing style options", function()
 	for _, lang_name in ipairs(Codedocs.get_supported_langs()) do
-		for _, struct_name in ipairs(utils.get_supported_structs(lang_name)) do
-			describe("[" .. lang_name .. "/" .. struct_name .. "]:", function()
+		for _, target_name in ipairs(utils.get_supported_targets(lang_name)) do
+			describe("[" .. lang_name .. "/" .. target_name .. "]:", function()
 				for _, style_name in ipairs(Codedocs.get_supported_styles(lang_name)) do
 					it(style_name .. " style", function()
 						local original_style =
-							vim.deepcopy(Codedocs.get_struct_style(lang_name, struct_name, style_name))
-						local original_mocked_user_opts = MOCKED_USER_STRUCT_OPTS[struct_name]
+							vim.deepcopy(Codedocs.get_target_style(lang_name, target_name, style_name))
+						local original_mocked_user_opts = MOCKED_USER_STRUCT_OPTS[target_name]
 
 						require("codedocs").setup {
 							languages = {
 								[lang_name] = {
 									styles = {
 										[style_name] = {
-											[struct_name] = original_mocked_user_opts,
+											[target_name] = original_mocked_user_opts,
 										},
 									},
 								},
@@ -94,7 +94,7 @@ describe("Customizing style options", function()
 
 						assert.are.same(
 							expected_final_style,
-							Codedocs.get_struct_style(lang_name, struct_name, style_name)
+							Codedocs.get_target_style(lang_name, target_name, style_name)
 						)
 					end)
 				end

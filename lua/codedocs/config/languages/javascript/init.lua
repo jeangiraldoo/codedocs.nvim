@@ -1,10 +1,10 @@
 local Class_extractors = {}
 
-function Class_extractors.attributes(struct_data)
+function Class_extractors.attributes(target_data)
 	local results = {}
 
-	if struct_data.opts.attributes.static then
-		local class_attrs = struct_data.lang_query_parser [[
+	if target_data.opts.attributes.static then
+		local class_attrs = target_data.lang_query_parser [[
 			(class_body
 				(field_definition
 					"static"
@@ -14,8 +14,8 @@ function Class_extractors.attributes(struct_data)
 		vim.list_extend(results, class_attrs)
 	end
 
-	if struct_data.opts.attributes.instance == "constructor" then
-		local constructor_node = struct_data.lang_query_parser([[
+	if target_data.opts.attributes.instance == "constructor" then
+		local constructor_node = target_data.lang_query_parser([[
 				(class_body
 					(method_definition
 						(property_identifier) @name
@@ -23,9 +23,9 @@ function Class_extractors.attributes(struct_data)
 			]])[1]
 
 		if constructor_node then
-			local constructor_instance_attrs = struct_data.generic_query_parser(
+			local constructor_instance_attrs = target_data.generic_query_parser(
 				constructor_node,
-				struct_data.lang_name,
+				target_data.lang_name,
 				[[
 						(assignment_expression
 							(member_expression
@@ -38,14 +38,14 @@ function Class_extractors.attributes(struct_data)
 		return results
 	end
 
-	if struct_data.opts.attributes.instance == "all" then
-		local class_body_instance_attrs = struct_data.lang_query_parser [[
+	if target_data.opts.attributes.instance == "all" then
+		local class_body_instance_attrs = target_data.lang_query_parser [[
 			(class_body
 				(field_definition
 					property: (property_identifier) @item_name) @field (#not-match? @field "static"))
 		]]
 
-		local function_defined_instance_attrs = struct_data.lang_query_parser [[
+		local function_defined_instance_attrs = target_data.lang_query_parser [[
 			(assignment_expression
 				(member_expression
 					(property_identifier) @item_name))
@@ -60,8 +60,8 @@ end
 
 local Func_extractors = {}
 
-function Func_extractors.parameters(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.parameters(target_data)
+	return target_data.lang_query_parser [[
 		[
 			(method_definition
 				(formal_parameters
@@ -80,8 +80,8 @@ function Func_extractors.parameters(struct_data)
 	]]
 end
 
-function Func_extractors.returns(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.returns(target_data)
+	return target_data.lang_query_parser [[
 		(return_statement
 			(_) @item_type (#set! parse_as_blank "true"))
 	]]
@@ -105,7 +105,7 @@ return {
 	styles = {
 		JSDoc = require "codedocs.config.languages.javascript.JSDoc",
 	},
-	structures = {
+	targets = {
 		func = {
 			node_identifiers = {
 				"method_definition",

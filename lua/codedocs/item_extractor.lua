@@ -65,9 +65,9 @@ local function generic_query_parser(ts_node, filetype, query)
 	return items
 end
 
-return function(lang_name, node, struct_extractors, extractor_opts)
+return function(lang_name, node, target_extractors, extractor_opts)
 	local items_list = {}
-	for extractor_name, item_extractor in pairs(struct_extractors) do
+	for extractor_name, item_extractor in pairs(target_extractors) do
 		local raw_items = item_extractor {
 			node = node,
 			opts = extractor_opts,
