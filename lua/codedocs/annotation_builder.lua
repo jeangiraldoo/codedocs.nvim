@@ -98,11 +98,11 @@ local function _should_insert_gap_between_blocks(block_idx, style, block_style, 
 end
 
 --- Builds the raw annotation content for each block, without applying the final structure
--- Iterates through the blocks in the configured order, formats each item according to
--- its block style, and groups the resulting lines by block name
--- @param item_data table Mapping of block names to item lists
--- @param style table Style configuration for all blocks and settings options
--- @return table Table mapping block names to their formatted content lines
+--- Iterates through the blocks in the configured order, formats each item according to
+--- its block style, and groups the resulting lines by block name
+--- @param item_data table Mapping of block names to item lists
+--- @param style table Style configuration for all blocks and settings options
+--- @return table Table mapping block names to their formatted content lines
 return function(style, item_data, target_data)
 	assert(type(item_data) == "table", "'item_data' must be a table, got " .. type(item_data))
 	assert(type(style) == "table", "'style' must be a table, got " .. type(style))
