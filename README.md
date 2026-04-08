@@ -450,11 +450,6 @@ level of customization and simplicity I was looking for. Sometimes, I feel that
 apps and plugins could be more intuitive and user-friendly while still providing
 the same powerful features.
 
-TL;DR: I built Codedocs to improve productivity by automatically generating
-documentation strings, allowing for easy customization, and providing a simple
-yet powerful solution for both personal and community use. Plus, it is a fun
-project to work on!
-
 ## License
 
 Codedocs is licensed under the MIT License. This means you are free to download,
