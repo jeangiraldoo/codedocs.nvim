@@ -132,7 +132,7 @@ function Codedocs.orchestrate_annotation_build(lang_data)
 	return annotation_lines, annotation_row, struct_style.relative_position
 end
 
-function Codedocs.insert_docs(substyle_name)
+function Codedocs.generate(substyle_name)
 	Debug_logger.log "Plugin triggered"
 
 	local lang_name = require("codedocs.config").aliases[vim.bo.filetype] or vim.bo.filetype

@@ -418,7 +418,7 @@ For a more convenient experience, you can bind the command to a keymap. For exam
 
 ```lua
 vim.keymap.set(
-    "n", "<leader>k", require('codedocs').insert_docs,
+    "n", "<leader>k", require('codedocs').generate,
     { desc = "Insert annotation" }
 )
 ```
