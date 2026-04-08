@@ -25,21 +25,16 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsLuaStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsLuaStyleNames, table<CodedocsLuaStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsLuaStyleNames
-
 ---@class CodedocsLuaConfig: CodedocsLanguageConfig
----@field styles CodedocsLuaStylesConfig
+---@field default_style CodedocsLuaStyleNames
+---@field styles table<CodedocsLuaStyleNames, table<CodedocsLuaStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsLuaConfig
 return {
+	default_style = "EmmyLua",
 	styles = {
-		default = "EmmyLua",
-		definitions = {
-			EmmyLua = require "codedocs.config.languages.lua.EmmyLua",
-			LDoc = require "codedocs.config.languages.lua.LDoc",
-		},
+		EmmyLua = require "codedocs.config.languages.lua.EmmyLua",
+		LDoc = require "codedocs.config.languages.lua.LDoc",
 	},
 	structures = {
 		func = {

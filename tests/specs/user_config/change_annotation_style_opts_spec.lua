@@ -81,10 +81,8 @@ describe("Customizing style options", function()
 							languages = {
 								[lang_name] = {
 									styles = {
-										definitions = {
-											[style_name] = {
-												[struct_name] = original_mocked_user_opts,
-											},
+										[style_name] = {
+											[struct_name] = original_mocked_user_opts,
 										},
 									},
 								},

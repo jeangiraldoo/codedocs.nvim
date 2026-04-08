@@ -39,20 +39,15 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsCStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsCStyleNames, table<CodedocsCStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsCStyleNames
-
 ---@class CodedocsCConfig: CodedocsLanguageConfig
----@field styles CodedocsCStylesConfig
+---@field default_style CodedocsCStyleNames
+---@field styles table<CodedocsCStyleNames, table<CodedocsCStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsCConfig
 return {
+	default_style = "Doxygen",
 	styles = {
-		default = "Doxygen",
-		definitions = {
-			Doxygen = require "codedocs.config.languages.c.Doxygen",
-		},
+		Doxygen = require "codedocs.config.languages.c.Doxygen",
 	},
 	structures = {
 		func = {

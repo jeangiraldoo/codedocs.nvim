@@ -40,20 +40,15 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsRustStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsRustStyleNames, table<CodedocsRustStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsRustStyleNames
-
 ---@class CodedocsRustConfig: CodedocsLanguageConfig
----@field styles CodedocsRustStylesConfig
+---@field default_style CodedocsRustStyleNames
+---@field styles table<CodedocsRustStyleNames, table<CodedocsRustStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsRustConfig
 return {
+	default_style = "RustDoc",
 	styles = {
-		default = "RustDoc",
-		definitions = {
-			RustDoc = require "codedocs.config.languages.rust.RustDoc",
-		},
+		RustDoc = require "codedocs.config.languages.rust.RustDoc",
 	},
 	structures = {
 		func = {

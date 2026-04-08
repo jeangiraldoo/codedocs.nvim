@@ -63,20 +63,15 @@ function Func_extractors.returns() return {} end
 ---| "func"
 ---| "comment"
 
----@class CodedocsBashStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsBashStyleNames, table<CodedocsBashStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsBashStyleNames
-
 ---@class CodedocsBashConfig: CodedocsLanguageConfig
----@field styles CodedocsBashStylesConfig
+---@field default_style CodedocsBashStyleNames
+---@field styles table<CodedocsBashStyleNames, table<CodedocsBashStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsBashConfig
 return {
+	default_style = "Google",
 	styles = {
-		default = "Google",
-		definitions = {
-			Google = require "codedocs.config.languages.bash.Google",
-		},
+		Google = require "codedocs.config.languages.bash.Google",
 	},
 	structures = {
 		func = {

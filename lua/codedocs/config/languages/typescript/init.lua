@@ -130,20 +130,15 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsTSStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsTSStyleNames, table<CodedocsTSStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsTSStyleNames
-
 ---@class CodedocsTSConfig: CodedocsLanguageConfig
----@field styles CodedocsTSStylesConfig
+---@field default_style CodedocsTSStyleNames
+---@field styles table<CodedocsTSStyleNames, table<CodedocsTSStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsTSConfig
 return {
+	default_style = "TSDoc",
 	styles = {
-		default = "TSDoc",
-		definitions = {
-			TSDoc = require "codedocs.config.languages.typescript.TSDoc",
-		},
+		TSDoc = require "codedocs.config.languages.typescript.TSDoc",
 	},
 	structures = {
 		func = {

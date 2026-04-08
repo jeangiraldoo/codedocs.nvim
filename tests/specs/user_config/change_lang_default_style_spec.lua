@@ -10,9 +10,7 @@ for _, lang_name in ipairs(Codedocs.get_supported_langs()) do
 					require("codedocs.init").setup {
 						languages = {
 							[lang_name] = {
-								styles = {
-									default = style_name,
-								},
+								default_style = style_name,
 							},
 						},
 					}

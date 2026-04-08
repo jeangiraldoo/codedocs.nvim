@@ -95,20 +95,15 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsJSStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsJSStyleNames, table<CodedocsJSStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsJSStyleNames
-
 ---@class CodedocsJSConfig: CodedocsLanguageConfig
----@field styles CodedocsJSStylesConfig
+---@field default_style CodedocsJSStyleNames
+---@field styles table<CodedocsJSStyleNames, table<CodedocsJSStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsJSConfig
 return {
+	default_style = "JSDoc",
 	styles = {
-		default = "JSDoc",
-		definitions = {
-			JSDoc = require "codedocs.config.languages.javascript.JSDoc",
-		},
+		JSDoc = require "codedocs.config.languages.javascript.JSDoc",
 	},
 	structures = {
 		func = {

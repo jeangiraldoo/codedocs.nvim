@@ -46,12 +46,9 @@
 ---@field indented boolean
 ---@field relative_position "above" | "below" | "empty_target_or_above"
 
----@class CodedocsLanguageStylesConfig
----@field default string? Default style name
----@field definitions table<string, table<string, CodedocsAnnotationStyleOpts>>
-
 ---@class CodedocsLanguageConfig
----@field styles CodedocsLanguageStylesConfig
+---@field default_style string? Default style name
+---@field styles table<string, table<string, CodedocsAnnotationStyleOpts>>
 
 ---@class CodedocsConfig
 ---@field debug boolean? Wether or not to enable debug mode

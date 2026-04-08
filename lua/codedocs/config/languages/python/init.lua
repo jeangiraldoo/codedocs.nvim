@@ -98,22 +98,17 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsPythonStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsPythonStyleNames, table<CodedocsPythonStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsPythonStyleNames
-
 ---@class CodedocsPythonConfig: CodedocsLanguageConfig
----@field styles CodedocsPythonStylesConfig
+---@field default_style CodedocsPythonStyleNames
+---@field styles table<CodedocsPythonStyleNames, table<CodedocsPythonStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsPythonConfig
 return {
+	default_style = "reST",
 	styles = {
-		default = "reST",
-		definitions = {
-			Google = require "codedocs.config.languages.python.Google",
-			Numpy = require "codedocs.config.languages.python.Numpy",
-			reST = require "codedocs.config.languages.python.reST",
-		},
+		Google = require "codedocs.config.languages.python.Google",
+		Numpy = require "codedocs.config.languages.python.Numpy",
+		reST = require "codedocs.config.languages.python.reST",
 	},
 	structures = {
 		func = {

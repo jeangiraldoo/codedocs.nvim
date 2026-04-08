@@ -72,20 +72,15 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsJavaStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsJavaStyleNames, table<CodedocsJavaStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsJavaStyleNames
-
 ---@class CodedocsJavaConfig: CodedocsLanguageConfig
----@field styles CodedocsJavaStylesConfig
+---@field default_style CodedocsJavaStyleNames
+---@field styles table<CodedocsJavaStyleNames, table<CodedocsJavaStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsJavaConfig
 return {
+	default_style = "JavaDoc",
 	styles = {
-		default = "JavaDoc",
-		definitions = {
-			JavaDoc = require "codedocs.config.languages.java.JavaDoc",
-		},
+		JavaDoc = require "codedocs.config.languages.java.JavaDoc",
 	},
 	structures = {
 		func = {

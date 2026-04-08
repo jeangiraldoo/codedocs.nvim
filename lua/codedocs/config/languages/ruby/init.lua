@@ -23,20 +23,15 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsRubyStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsRubyStyleNames, table<CodedocsRubyStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsRubyStyleNames
-
 ---@class CodedocsRubyConfig: CodedocsLanguageConfig
----@field styles CodedocsRubyStylesConfig
+---@field default_style CodedocsRubyStyleNames
+---@field styles table<CodedocsRubyStyleNames, table<CodedocsRubyStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsRubyConfig
 return {
+	default_style = "YARD",
 	styles = {
-		default = "YARD",
-		definitions = {
-			YARD = require "codedocs.config.languages.ruby.YARD",
-		},
+		YARD = require "codedocs.config.languages.ruby.YARD",
 	},
 	structures = {
 		func = {

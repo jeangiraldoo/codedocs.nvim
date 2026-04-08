@@ -43,20 +43,15 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsCPPStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsCPPStyleNames, table<CodedocsCPPStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsCPPStyleNames
-
 ---@class CodedocsCPPConfig: CodedocsLanguageConfig
----@field styles CodedocsCPPStylesConfig
+---@field default_style CodedocsCPPStyleNames
+---@field styles table<CodedocsCPPStyleNames, table<CodedocsCPPStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsCPPConfig
 return {
+	default_style = "Doxygen",
 	styles = {
-		default = "Doxygen",
-		definitions = {
-			Doxygen = require "codedocs.config.languages.cpp.Doxygen",
-		},
+		Doxygen = require "codedocs.config.languages.cpp.Doxygen",
 	},
 	structures = {
 		func = {

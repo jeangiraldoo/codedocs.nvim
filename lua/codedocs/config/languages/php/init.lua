@@ -43,20 +43,15 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsPHPStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsPHPStyleNames, table<CodedocsPHPStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsPHPStyleNames
-
 ---@class CodedocsPHPConfig: CodedocsLanguageConfig
----@field styles CodedocsPHPStylesConfig
+---@field default_style CodedocsPHPStyleNames
+---@field styles table<CodedocsPHPStyleNames, table<CodedocsPHPStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsPHPConfig
 return {
+	default_style = "PHPDoc",
 	styles = {
-		default = "PHPDoc",
-		definitions = {
-			PHPDoc = require "codedocs.config.languages.php.PHPDoc",
-		},
+		PHPDoc = require "codedocs.config.languages.php.PHPDoc",
 	},
 	structures = {
 		func = {

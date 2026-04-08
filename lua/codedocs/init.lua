@@ -4,16 +4,16 @@ local docs_builder = require "codedocs.annotation_builder"
 local Codedocs = {}
 function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
 
-function Codedocs.get_default_style(lang_name) return require("codedocs.config").languages[lang_name].styles.default end
+function Codedocs.get_default_style(lang_name) return require("codedocs.config").languages[lang_name].default_style end
 
 function Codedocs.get_struct_style(lang_name, struct_name, style_name)
-	local style = require("codedocs.config").languages[lang_name].styles.definitions[style_name][struct_name]
+	local style = require("codedocs.config").languages[lang_name].styles[style_name][struct_name]
 	return style
 end
 
 ---@return string[] supported_styles List of style names
 function Codedocs.get_supported_styles(lang_name)
-	return vim.tbl_keys(require("codedocs.config").languages[lang_name].styles.definitions)
+	return vim.tbl_keys(require("codedocs.config").languages[lang_name].styles)
 end
 
 function Codedocs.get_struct_identifiers(lang_name)

@@ -138,15 +138,13 @@ require("codedocs").setup {
 
 ### Change a language's default style
 
-Default styles are defined using the `default_styles` key:
+Default styles are defined using the `default_style` key:
 
 ```lua
 require("codedocs").setup {
     languages = {
         <language name> = {
-            styles = {
-                default = <style name>
-            }
+            default_style =  <style name>
         }
     },
 }
@@ -158,14 +156,10 @@ For example, let's set the default styles for Python and Lua:
 require("codedocs").setup {
     languages = {
         python = {
-            styles = {
-                default = "reST"
-            }
+            default_style =  "reST"
         },
         lua = {
-            styles = {
-                default = "EmmyLua"
-            }
+            default_style = "EmmyLua"
         }
     },
 }
@@ -366,32 +360,30 @@ require("codedocs").setup({
     languages = {
         python = {
             styles = {
-                definitions = {
-                    Google = {
-                        func = {
-                            blocks = {
-                                 {
-                                    name = "parameters",
+                Google = {
+                    func = {
+                        blocks = {
+                             {
+                                name = "parameters",
+                                insert_gap_between = {
+                                    enabled = true
+                                },
+                                items = {
                                     insert_gap_between = {
                                         enabled = true
                                     },
-                                    items = {
-                                        insert_gap_between = {
-                                            enabled = true
-                                        },
-                                    },
                                 },
-                                {
-                                    name = "returns",
-                                    items = {
-                                        insert_gap_between = {
-                                            enabled = true
-                                        }
-                                    },
-                                }
+                            },
+                            {
+                                name = "returns",
+                                items = {
+                                    insert_gap_between = {
+                                        enabled = true
+                                    }
+                                },
                             }
                         }
-                    },
+                    }
                 },
             },
         },

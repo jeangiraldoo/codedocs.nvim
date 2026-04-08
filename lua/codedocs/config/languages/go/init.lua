@@ -59,20 +59,15 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsGoStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsGoStyleNames, table<CodedocsGoStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsGoStyleNames
-
 ---@class CodedocsGoConfig: CodedocsLanguageConfig
----@field styles CodedocsGoStylesConfig
+---@field default_style CodedocsGoStyleNames
+---@field styles table<CodedocsGoStyleNames, table<CodedocsGoStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsGoConfig
 return {
+	default_style = "Godoc",
 	styles = {
-		default = "Godoc",
-		definitions = {
-			Godoc = require "codedocs.config.languages.go.Godoc",
-		},
+		Godoc = require "codedocs.config.languages.go.Godoc",
 	},
 	structures = {
 		func = {

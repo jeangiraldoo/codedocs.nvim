@@ -86,20 +86,15 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsKotlinStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsKotlinStyleNames, table<CodedocsKotlinStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsKotlinStyleNames
-
 ---@class CodedocsKotlinConfig: CodedocsLanguageConfig
----@field styles CodedocsKotlinStylesConfig
+---@field default_style CodedocsKotlinStyleNames
+---@field styles table<CodedocsKotlinStyleNames, table<CodedocsKotlinStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsKotlinConfig
 return {
+	default_style = "KDoc",
 	styles = {
-		default = "KDoc",
-		definitions = {
-			KDoc = require "codedocs.config.languages.kotlin.KDoc",
-		},
+		KDoc = require "codedocs.config.languages.kotlin.KDoc",
 	},
 	structures = {
 		func = {
