@@ -104,7 +104,6 @@ end
 
 ---@type CodedocsJSConfig
 return {
-	lang_name = "javascript",
 	styles = {
 		default = "JSDoc",
 		definitions = {

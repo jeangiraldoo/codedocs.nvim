@@ -139,7 +139,6 @@ end
 
 ---@type CodedocsTSConfig
 return {
-	lang_name = "typescript",
 	styles = {
 		default = "TSDoc",
 		definitions = {

@@ -32,7 +32,6 @@ end
 
 ---@type CodedocsRubyConfig
 return {
-	lang_name = "ruby",
 	styles = {
 		default = "YARD",
 		definitions = {

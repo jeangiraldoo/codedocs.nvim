@@ -1,9 +1,20 @@
 local Debug_logger = require "codedocs.utils.debug_logger"
 local docs_builder = require "codedocs.annotation_builder"
-local LangSpecs = require "codedocs.lang_specs.init"
 
 local Codedocs = {}
 function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
+
+function Codedocs.get_default_style(lang_name) return require("codedocs.config").languages[lang_name].styles.default end
+
+function Codedocs.get_struct_style(lang_name, struct_name, style_name)
+	local style = require("codedocs.config").languages[lang_name].styles.definitions[style_name][struct_name]
+	return style
+end
+
+---@return string[] supported_styles List of style names
+function Codedocs.get_supported_styles(lang_name)
+	return vim.tbl_keys(require("codedocs.config").languages[lang_name].styles.definitions)
+end
 
 function Codedocs.get_struct_identifiers(lang_name)
 	local structures_data = require("codedocs.config").languages[lang_name].structures
@@ -109,17 +120,16 @@ function Codedocs.extract_item_data(lang_name, struct_name)
 end
 
 function Codedocs.orchestrate_annotation_build(lang_data)
-	local lang_spec = LangSpecs.new(lang_data.name)
-
 	local items_data, struct_name, annotation_row = Codedocs.extract_item_data(lang_data.name, lang_data.substyle_name)
 
-	local struct_style = lang_spec:get_struct_style(
+	local struct_style = Codedocs.get_struct_style(
+		lang_data.name,
 		lang_data.substyle_name or struct_name,
-		lang_data.style_name or lang_spec:get_default_style()
+		lang_data.style_name or Codedocs.get_default_style(lang_data.name)
 	)
 
 	Debug_logger.log("Structure name: " .. struct_name)
-	Debug_logger.log("Style name: " .. lang_spec:get_default_style())
+	Debug_logger.log("Style name: " .. Codedocs.get_default_style(lang_data.name))
 	Debug_logger.log("Style: ", struct_style)
 
 	local struct_data = {

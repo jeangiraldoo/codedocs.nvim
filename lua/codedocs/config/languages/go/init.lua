@@ -68,7 +68,6 @@ end
 
 ---@type CodedocsGoConfig
 return {
-	lang_name = "go",
 	styles = {
 		default = "Godoc",
 		definitions = {

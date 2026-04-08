@@ -52,7 +52,6 @@ end
 
 ---@type CodedocsPHPConfig
 return {
-	lang_name = "php",
 	styles = {
 		default = "PHPDoc",
 		definitions = {

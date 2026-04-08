@@ -34,7 +34,6 @@ end
 
 ---@type CodedocsLuaConfig
 return {
-	lang_name = "lua",
 	styles = {
 		default = "EmmyLua",
 		definitions = {

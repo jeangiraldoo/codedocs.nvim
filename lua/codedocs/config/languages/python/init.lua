@@ -107,7 +107,6 @@ end
 
 ---@type CodedocsPythonConfig
 return {
-	lang_name = "python",
 	styles = {
 		default = "reST",
 		definitions = {

@@ -95,7 +95,6 @@ end
 
 ---@type CodedocsKotlinConfig
 return {
-	lang_name = "kotlin",
 	styles = {
 		default = "KDoc",
 		definitions = {

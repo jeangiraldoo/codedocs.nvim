@@ -5,7 +5,7 @@
 ---immediately tell. Additionally, the process of manually checking that customization works requires that I edit
 ---my own Neovim config, which is not ideal as I usually forget to revert back to what it used to look like
 
-local LangSpecs = require "codedocs.lang_specs.init"
+local Codedocs = require "codedocs"
 local utils = require "tests.utils"
 
 local BASE_MOCKED_OPTS = {
@@ -68,13 +68,13 @@ local MOCKED_USER_STRUCT_OPTS = vim.iter({
 end)
 
 describe("Customizing style options", function()
-	for _, lang_name in ipairs(require("codedocs").get_supported_langs()) do
-		local lang_spec = LangSpecs.new(lang_name)
+	for _, lang_name in ipairs(Codedocs.get_supported_langs()) do
 		for _, struct_name in ipairs(utils.get_supported_structs(lang_name)) do
 			describe("[" .. lang_name .. "/" .. struct_name .. "]:", function()
-				for _, style_name in ipairs(lang_spec:get_supported_styles()) do
+				for _, style_name in ipairs(Codedocs.get_supported_styles(lang_name)) do
 					it(style_name .. " style", function()
-						local original_style = vim.deepcopy(lang_spec:get_struct_style(struct_name, style_name))
+						local original_style =
+							vim.deepcopy(Codedocs.get_struct_style(lang_name, struct_name, style_name))
 						local original_mocked_user_opts = MOCKED_USER_STRUCT_OPTS[struct_name]
 
 						require("codedocs").setup {
@@ -94,7 +94,10 @@ describe("Customizing style options", function()
 						local expected_final_style =
 							vim.tbl_deep_extend("keep", vim.deepcopy(original_mocked_user_opts), original_style)
 
-						assert.are.same(expected_final_style, lang_spec:get_struct_style(struct_name, style_name))
+						assert.are.same(
+							expected_final_style,
+							Codedocs.get_struct_style(lang_name, struct_name, style_name)
+						)
 					end)
 				end
 			end)

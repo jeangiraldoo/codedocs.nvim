@@ -81,7 +81,6 @@ end
 
 ---@type CodedocsJavaConfig
 return {
-	lang_name = "java",
 	styles = {
 		default = "JavaDoc",
 		definitions = {

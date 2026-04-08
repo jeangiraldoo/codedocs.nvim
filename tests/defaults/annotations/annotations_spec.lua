@@ -1,15 +1,14 @@
 package.path = package.path .. ";" .. debug.getinfo(1, "S").source:sub(2):match "(.*/)" .. "/tests"
 
 local test_utils = require "tests.utils"
-local LangSpecs = require "codedocs.lang_specs.init"
+local Codedocs = require "codedocs"
 
 describe("Default style annotations", function()
-	for _, lang in ipairs(require("codedocs").get_supported_langs()) do
-		local lang_spec = LangSpecs.new(lang)
+	for _, lang in ipairs(Codedocs.get_supported_langs()) do
 		for struct_name, struct_cases in pairs(require("tests.defaults.annotations.test_cases." .. lang)) do
 			describe(lang .. " - " .. struct_name, function()
 				for idx, struct_case in ipairs(struct_cases) do
-					for _, style_name in ipairs(lang_spec:get_supported_styles()) do
+					for _, style_name in ipairs(Codedocs.get_supported_styles(lang)) do
 						it("(" .. style_name .. ") - Case #" .. idx, function()
 							test_utils.mock_buffer(
 								lang,
