@@ -2,33 +2,17 @@ local Func_extractors = {}
 
 function Func_extractors.parameters(struct_data)
 	return struct_data.lang_query_parser [[
-		[
-			(method_declaration
-				(formal_parameters
-					(simple_parameter
-						(variable_name
-							(name) @item_name))))
-						type: [
-							(primitive_type)
-							(union_type)
-							(named_type)
-							(intersection_type)
-							(disjunctive_normal_form_type)
-						]? @item_type
-
-			(function_definition
-				(formal_parameters
-					(simple_parameter
-						(variable_name
-							(name) @item_name))))
-						type: [
-							(primitive_type)
-							(union_type)
-							(named_type)
-							(disjunctive_normal_form_type)
-							(intersection_type)
-						]? @item_type
-		]
+		parameters: (formal_parameters
+			(simple_parameter
+				type: [
+				  (primitive_type) @item_type
+				  (union_type) @item_type
+				  (named_type) @item_type
+				  (disjunctive_normal_form_type) @item_type
+				  (intersection_type) @item_type
+				]?
+				name: (variable_name
+					(name) @item_name)))
 	]]
 end
 
@@ -69,7 +53,6 @@ end
 ---@type CodedocsPHPConfig
 return {
 	lang_name = "php",
-	identifier_pos = false,
 	styles = {
 		default = "PHPDoc",
 		definitions = {

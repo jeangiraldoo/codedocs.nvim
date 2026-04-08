@@ -53,7 +53,6 @@ end
 ---@type CodedocsCPPConfig
 return {
 	lang_name = "cpp",
-	identifier_pos = false,
 	styles = {
 		default = "Doxygen",
 		definitions = {

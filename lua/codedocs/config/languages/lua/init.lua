@@ -3,12 +3,8 @@ local Func_extractors = {}
 function Func_extractors.parameters(struct_data)
 	return struct_data.lang_query_parser [[
 		[
-			(function_declaration
 				parameters: (parameters
-					name: (identifier) @item_name))
-			(function_definition
-				parameters: (parameters
-					name: (identifier) @item_name))
+					name: (identifier) @item_name)
 		]
 	]]
 end
@@ -39,7 +35,6 @@ end
 ---@type CodedocsLuaConfig
 return {
 	lang_name = "lua",
-	identifier_pos = true,
 	styles = {
 		default = "EmmyLua",
 		definitions = {

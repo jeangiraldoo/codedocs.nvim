@@ -33,7 +33,6 @@ end
 ---@type CodedocsRubyConfig
 return {
 	lang_name = "ruby",
-	identifier_pos = true,
 	styles = {
 		default = "YARD",
 		definitions = {

@@ -57,15 +57,14 @@ local Func_extractors = {}
 
 function Func_extractors.parameters(struct_data)
 	return struct_data.lang_query_parser [[
-		(function_definition
-			(parameters
-				[
-					(typed_parameter
-						(identifier) @item_name
-						(#not-eq? @item_name "self")
-						(type) @item_type)
-					(identifier) @item_name (#not-eq? @item_name "self")
-				]))
+		(parameters
+			[
+				(typed_parameter
+					(identifier) @item_name
+					(#not-eq? @item_name "self")
+					(type) @item_type)
+				(identifier) @item_name (#not-eq? @item_name "self")
+			])
 	]]
 end
 
@@ -109,7 +108,6 @@ end
 ---@type CodedocsPythonConfig
 return {
 	lang_name = "python",
-	identifier_pos = true,
 	styles = {
 		default = "reST",
 		definitions = {

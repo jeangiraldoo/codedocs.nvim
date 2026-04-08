@@ -49,7 +49,6 @@ end
 ---@type CodedocsCConfig
 return {
 	lang_name = "c",
-	identifier_pos = false,
 	styles = {
 		default = "Doxygen",
 		definitions = {

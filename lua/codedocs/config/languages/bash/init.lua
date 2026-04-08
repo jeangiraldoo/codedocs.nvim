@@ -73,7 +73,6 @@ function Func_extractors.returns() return {} end
 ---@type CodedocsBashConfig
 return {
 	lang_name = "bash",
-	identifier_pos = true,
 	styles = {
 		default = "Google",
 		definitions = {

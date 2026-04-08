@@ -50,7 +50,6 @@ end
 ---@type CodedocsRustConfig
 return {
 	lang_name = "rust",
-	identifier_pos = true,
 	styles = {
 		default = "RustDoc",
 		definitions = {
