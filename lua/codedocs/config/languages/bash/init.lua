@@ -3,45 +3,32 @@ local Func_extractors = {}
 function Func_extractors.globals(target_data)
 	local root_node = target_data.node:tree():root()
 
-	local global_variables = (function()
-		local query = vim.treesitter.query.parse(
-			target_data.lang_name,
-			[[
-				((variable_assignment
-					(variable_name) @target) @variable_assignment
-				(#not-has-parent? @variable_assignment declaration_command))
-			]]
-		)
-		return vim.iter(query:iter_matches(root_node, 0)):map(function(_, match) return match[1][1] end):totable()
-	end)()
+	local global_variables = target_data.generic_query_parser(
+		root_node,
+		target_data.lang_name,
+		[[
+			((variable_name) @item_name
+			(#has-parent? @item_name variable_assignment)
+			(#not-has-ancestor? @item_name declaration_command))
+		]]
+	)
 
-	local variable_expansions_in_function = (function()
-		local query = vim.treesitter.query.parse(target_data.lang_name, "(expansion) @t")
-		return vim.iter(query:iter_matches(target_data.node, 0))
-			:map(function(_, match)
-				local match_node = match[1][1]
+	local variable_expansions_in_function = target_data.generic_query_parser(
+		target_data.node,
+		target_data.lang_name,
+		"(expansion (variable_name) @item_name)"
+	)
 
-				local variable_reference = target_data.generic_query_parser(
-					match_node,
-					target_data.lang_name,
-					[[
-							((expansion
-								(variable_name) @item_name))
-						]]
-				)[1]
-				return variable_reference
-			end)
-			:totable()
-	end)()
-
-	local globals_referenced = {}
-	for _, global_variable in ipairs(global_variables) do
-		for _, variable_reference in ipairs(variable_expansions_in_function) do
-			if variable_reference and variable_reference.name == vim.treesitter.get_node_text(global_variable, 0) then
-				table.insert(globals_referenced, variable_reference)
+	local globals_referenced = vim.iter(global_variables)
+		:filter(function(global_var)
+			for _, variable_expansion in ipairs(variable_expansions_in_function) do
+				if variable_expansion.name == global_var.name then return true end
 			end
-		end
-	end
+
+			return false
+		end)
+		:totable()
+
 	return globals_referenced
 end
 
