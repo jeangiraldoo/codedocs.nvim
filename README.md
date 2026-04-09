@@ -426,21 +426,21 @@ that any comment can be deleted by placing your cursor on it and pressing `dgc`.
 
 | Language   | Styles (\* = default) | Built-in annotations           |
 | ---------- | --------------------- | ------------------------------ |
-| Bash       | \*Google              | `comment`, `function`          |
-| C          | \*Doxygen             | `comment`, `function`          |
-| C++        | \*Doxygen             | `comment`, `function`          |
-| Go         | \*Godoc               | `comment`, `function`          |
+| bash       | \*Google              | `comment`, `function`          |
+| c          | \*Doxygen             | `comment`, `function`          |
+| c++ (cpp)  | \*Doxygen             | `comment`, `function`          |
+| go         | \*Godoc               | `comment`, `function`          |
 | html       | \*Codedocs            | `comment`                      |
-| JavaScript | \*JSDoc               | `comment`, `function`, `class` |
-| Java       | \*JavaDoc             | `comment`, `function`, `class` |
-| Kotlin     | \*KDoc                | `comment`, `function`, `class` |
-| Lua        | \*EmmyLua, LDoc       | `comment`, `function`          |
-| Markdown   | \*Codedocs            | `comment`                      |
-| Python     | Google, NumPy, \*reST | `comment`, `function`, `class` |
-| PHP        | \*PHPDoc              | `comment`, `function`          |
-| Ruby       | \*YARD                | `comment`, `function`          |
-| Rust       | \*RustDoc             | `comment`, `function`          |
-| TypeScript | \*TSDoc               | `comment`, `function`, `class` |
+| javascript | \*JSDoc               | `comment`, `function`, `class` |
+| java       | \*JavaDoc             | `comment`, `function`, `class` |
+| kotlin     | \*KDoc                | `comment`, `function`, `class` |
+| lua        | \*EmmyLua, LDoc       | `comment`, `function`          |
+| markdown   | \*Codedocs            | `comment`                      |
+| python     | Google, NumPy, \*reST | `comment`, `function`, `class` |
+| php        | \*PHPDoc              | `comment`, `function`          |
+| ruby       | \*YARD                | `comment`, `function`          |
+| rust       | \*RustDoc             | `comment`, `function`          |
+| typescript | \*TSDoc               | `comment`, `function`, `class` |
 
 ## Annotation examples
 
