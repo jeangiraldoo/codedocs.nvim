@@ -390,6 +390,8 @@ require("codedocs").setup({
 
 ## Usage
 
+### Generate an annotation
+
 An annotation insertion can be triggered using the `:Codedocs` command. There are
 two ways to use the command:
 
@@ -411,6 +413,8 @@ vim.keymap.set(
     { desc = "Insert annotation" }
 )
 ```
+
+### Delete an annotation
 
 Although it is not actually a Codedocs feature but a Neovim one, you should know
 that any comment can be deleted by placing your cursor on it and pressing `dgc`.
