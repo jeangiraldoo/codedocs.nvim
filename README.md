@@ -11,13 +11,13 @@
 
 </div>
 
-Codedocs.nvim automatically recognizes various language structures such as
-functions, classes, variables, and more, and inserts appropriate documentation
-strings based on the [programming language](#language-support) you are using.
+Codedocs.nvim automatically recognizes various code targets such as functions,
+classes, variables, and more, and inserts appropriate documentation strings based
+on the [programming language](#language-support) you are using.
 
-You can easily modify the structure of the documentation strings to suit your
-specific needs, add support for new languages by defining their documentation
-formats, or just use codedocs as it is! :)
+You can easily modify the structure of the annotations to suit your specific needs,
+add support for new languages by defining their documentation formats, or just use
+codedocs as it is! :)
 
 ![Codedocs showcase](./.images/showcase.gif)
 
@@ -31,7 +31,6 @@ formats, or just use codedocs as it is! :)
 - [Language support](#language-support)
 - [Annotation examples](#annotation-examples)
 - [Roadmap](#roadmap)
-- [Technical documentation](./lua/codedocs/README.md)
 - [Contributing](#contributing)
 - [Motivation](#motivation)
 - [License](#license)
@@ -39,7 +38,7 @@ formats, or just use codedocs as it is! :)
 ## Features
 
 - Works out-of-the-box.
-- Detects and documents code structures with a simple keybind.
+- Detects and documents code targets with a simple keybind.
 - Supports multiple [languages and styles](#language-support).
 - Easily customize existing formats or add new ones.
 - Annotations use Neovim's built-in snippet engine.
@@ -58,6 +57,14 @@ parser. The simplest way to do this is with
 **[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)**.
 
 ## Installation
+
+> [!WARNING]
+> Development is done using [Trunk Based Development](https://trunkbaseddevelopment.com),
+> meaning all new changes are merged into `main`, making it the equivalent of `nightly`;
+> versions are done through Git tags.
+>
+> All changes are thoroughly tested before merging, but it is still recommended
+> to pin to a specific tag unless you wish to be constantly up to date.
 
 Use the snippet for your plugin manager:
 
@@ -138,34 +145,17 @@ require("codedocs").setup {
 
 ### Change a language's default style
 
-Default styles are defined using the `default_styles` key:
-
-```lua
-require("codedocs").setup {
-    languages = {
-        <language name> = {
-            styles = {
-                default = <style name>
-            }
-        }
-    },
-}
-```
-
-For example, let's set the default styles for Python and Lua:
+Default styles are defined using the `default_style` key. For example, let's set
+the default styles for Python and Lua:
 
 ```lua
 require("codedocs").setup {
     languages = {
         python = {
-            styles = {
-                default = "reST"
-            }
+            default_style =  "reST"
         },
         lua = {
-            styles = {
-                default = "EmmyLua"
-            }
+            default_style = "EmmyLua"
         }
     },
 }
@@ -262,11 +252,11 @@ be explained below in detail.
 ##### `items` option
 
 When a block uses the `items` option, it is considered an "item-based" block,
-as it includes items extracted at runtime from a structure defined in its layout.
+as it includes items extracted at runtime from a target defined in its layout.
 In contrast, non-item-based blocks consist solely of the lines defined in their
 `layout`.
 
-An item represents a named component of a structure, defined by a `name` and a `type`.
+An item represents a named component of a target, defined by a `name` and a `type`.
 
 For example, the following function:
 
@@ -336,15 +326,15 @@ When used, they get replaced by the item's name and type respectively.
 The `name` option serves two main purposes:
 
 1. Identifies the block, making it easier to understand its role
-2. Associates the block with a specific group of items extracted from a structure
+2. Associates the block with a specific group of items extracted from a target
 
 The second purpose applies only to item-based blocks. When items are extracted
-from a structure, they are grouped by block name. For these items to be included,
-the value of `name` must match the corresponding structure block.
+from a target, they are grouped by block name. For these items to be included,
+the value of `name` must match the corresponding target block.
 
-The following structure blocks are available:
+The following target blocks are available:
 
-| Structure | blocks                           |
+| target    | blocks                           |
 | --------- | -------------------------------- |
 | `func`    | `title`, `parameters`, `returns` |
 | `class`   | `title`, `attributes`            |
@@ -366,32 +356,30 @@ require("codedocs").setup({
     languages = {
         python = {
             styles = {
-                definitions = {
-                    Google = {
-                        func = {
-                            blocks = {
-                                 {
-                                    name = "parameters",
+                Google = {
+                    func = {
+                        blocks = {
+                             {
+                                name = "parameters",
+                                insert_gap_between = {
+                                    enabled = true
+                                },
+                                items = {
                                     insert_gap_between = {
                                         enabled = true
                                     },
-                                    items = {
-                                        insert_gap_between = {
-                                            enabled = true
-                                        },
-                                    },
                                 },
-                                {
-                                    name = "returns",
-                                    items = {
-                                        insert_gap_between = {
-                                            enabled = true
-                                        }
-                                    },
-                                }
+                            },
+                            {
+                                name = "returns",
+                                items = {
+                                    insert_gap_between = {
+                                        enabled = true
+                                    }
+                                },
                             }
                         }
-                    },
+                    }
                 },
             },
         },
@@ -401,14 +389,16 @@ require("codedocs").setup({
 
 ## Usage
 
+### Generate an annotation
+
 An annotation insertion can be triggered using the `:Codedocs` command. There are
 two ways to use the command:
 
-- **Without arguments**: The plugin attempts to detect the code structure under
+- **Without arguments**: The plugin attempts to detect the code target under
   the cursor, determines the default style for the current file’s language, and
-  applies the corresponding annotation. If no structure is recognized under the
+  applies the corresponding annotation. If no target is recognized under the
   cursor, an inline comment is inserted. By default, a matching annotation exists
-  for each structure unless you’ve customized the configuration.
+  for each target unless you’ve customized the configuration.
 
 - **With an annotation name**: You can pass the name of any annotation definition
   defined in the language’s default style. The plugin will generate and insert the
@@ -418,10 +408,15 @@ For a more convenient experience, you can bind the command to a keymap. For exam
 
 ```lua
 vim.keymap.set(
-    "n", "<leader>k", require('codedocs').insert_docs,
+    "n", "<leader>k", require('codedocs').generate,
     { desc = "Insert annotation" }
 )
 ```
+
+### Delete an annotation
+
+Although it is not actually a Codedocs feature but a Neovim one, you should know
+that any comment can be deleted by placing your cursor on it and pressing `dgc`.
 
 ## Language support
 
@@ -468,11 +463,6 @@ While I found a few plugins with similar functionality, none of them offered the
 level of customization and simplicity I was looking for. Sometimes, I feel that
 apps and plugins could be more intuitive and user-friendly while still providing
 the same powerful features.
-
-TL;DR: I built Codedocs to improve productivity by automatically generating
-documentation strings, allowing for easy customization, and providing a simple
-yet powerful solution for both personal and community use. Plus, it is a fun
-project to work on!
 
 ## License
 

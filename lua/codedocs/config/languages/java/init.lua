@@ -1,10 +1,9 @@
 local Class_extractors = {}
 
-function Class_extractors.attributes(struct_data)
-	-- local settings = struct_data.style.settings.item_extraction.attributes
+function Class_extractors.attributes(target_data)
 	local results = {}
-	if struct_data.opts.attributes.static then
-		local class_attrs = struct_data.lang_query_parser [[
+	if target_data.opts.attributes.static then
+		local class_attrs = target_data.lang_query_parser [[
 			(class_body
 				(field_declaration
 					(modifiers) @name (#match? @name "static")
@@ -15,8 +14,8 @@ function Class_extractors.attributes(struct_data)
 		vim.list_extend(results, class_attrs)
 	end
 
-	if struct_data.opts.attributes.instance == "all" then
-		local instance_attrs = struct_data.lang_query_parser [[
+	if target_data.opts.attributes.instance == "all" then
+		local instance_attrs = target_data.lang_query_parser [[
 			(class_body
 				(field_declaration
 					(modifiers) @name
@@ -33,8 +32,8 @@ end
 
 local Func_extractors = {}
 
-function Func_extractors.parameters(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.parameters(target_data)
+	return target_data.lang_query_parser [[
 		(method_declaration
 			(formal_parameters
 				(formal_parameter
@@ -50,8 +49,8 @@ function Func_extractors.parameters(struct_data)
 	]]
 end
 
-function Func_extractors.returns(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.returns(target_data)
+	return target_data.lang_query_parser [[
 		(method_declaration
 			type: [
 				(integral_type)
@@ -72,24 +71,17 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsJavaStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsJavaStyleNames, table<CodedocsJavaStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsJavaStyleNames
-
 ---@class CodedocsJavaConfig: CodedocsLanguageConfig
----@field styles CodedocsJavaStylesConfig
+---@field default_style CodedocsJavaStyleNames
+---@field styles table<CodedocsJavaStyleNames, table<CodedocsJavaStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsJavaConfig
 return {
-	lang_name = "java",
-	identifier_pos = false,
+	default_style = "JavaDoc",
 	styles = {
-		default = "JavaDoc",
-		definitions = {
-			JavaDoc = require "codedocs.config.languages.java.JavaDoc",
-		},
+		JavaDoc = require "codedocs.config.languages.java.JavaDoc",
 	},
-	structures = {
+	targets = {
 		func = {
 			node_identifiers = {
 				"method_declaration",

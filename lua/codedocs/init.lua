@@ -1,27 +1,38 @@
 local Debug_logger = require "codedocs.utils.debug_logger"
 local docs_builder = require "codedocs.annotation_builder"
-local LangSpecs = require "codedocs.lang_specs.init"
 
 local Codedocs = {}
 function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
 
-function Codedocs.get_struct_identifiers(lang_name)
-	local structures_data = require("codedocs.config").languages[lang_name].structures
+function Codedocs.get_default_style(lang_name) return require("codedocs.config").languages[lang_name].default_style end
 
-	if structures_data._identifiers then return structures_data._identifiers end
+function Codedocs.get_target_style(lang_name, target_name, style_name)
+	local style = require("codedocs.config").languages[lang_name].styles[style_name][target_name]
+	return style
+end
 
-	local struct_identifiers = {}
-	for struct_name, structure_data in pairs(structures_data) do
-		for _, node_identifier in ipairs(structure_data.node_identifiers) do
-			struct_identifiers[node_identifier] = struct_name
+---@return string[] supported_styles List of style names
+function Codedocs.get_supported_styles(lang_name)
+	return vim.tbl_keys(require("codedocs.config").languages[lang_name].styles)
+end
+
+function Codedocs.get_target_identifiers(lang_name)
+	local targets_data = require("codedocs.config").languages[lang_name].targets
+
+	if targets_data._identifiers then return targets_data._identifiers end
+
+	local target_identifiers = {}
+	for target_name, target_data in pairs(targets_data) do
+		for _, node_identifier in ipairs(target_data.node_identifiers) do
+			target_identifiers[node_identifier] = target_name
 		end
 	end
 
-	structures_data._identifiers = struct_identifiers
-	return struct_identifiers
+	targets_data._identifiers = target_identifiers
+	return target_identifiers
 end
 
---- Inserts an annotation relative to a structure and moves the cursor to the annotation title
+--- Inserts an annotation relative to a target and moves the cursor to the annotation title
 ---@param annotation_lines string[]
 ---@param row number 0-based annotation-related positions
 ---@param relative_position "above" | "below" | "empty_target_or_above" Position relative to the target row
@@ -51,16 +62,16 @@ local function _write_to_buffer(annotation_lines, row, relative_position)
 end
 
 ---@param ts_node TSNode Treesitter node to traverse upwards from
----@param struct_identifiers table<string, string> Treesitter node types to check for
+---@param target_identifiers table<string, string> Treesitter node types to check for
 ---@return { name: string, node: TSNode } | nil
-local function _get_supported_struct_node_data(ts_node, struct_identifiers)
+local function _get_supported_target_node_data(ts_node, target_identifiers)
 	if not ts_node then return end
 
-	local struct_name = struct_identifiers[ts_node:type()]
+	local target_name = target_identifiers[ts_node:type()]
 
-	if struct_name then return { name = struct_name, node = ts_node } end
+	if target_name then return { name = target_name, node = ts_node } end
 
-	return _get_supported_struct_node_data(ts_node:parent(), struct_identifiers)
+	return _get_supported_target_node_data(ts_node:parent(), target_identifiers)
 end
 
 ---@param user_config CodedocsConfig?
@@ -80,59 +91,58 @@ function Codedocs.setup(user_config)
 	end
 end
 
-function Codedocs.extract_item_data(lang_name, struct_name)
+function Codedocs.extract_item_data(lang_name, target_name)
 	vim.treesitter.get_parser(0):parse()
 	local node_at_cursor = vim.treesitter.get_node()
 
-	local struct_data = _get_supported_struct_node_data(node_at_cursor, Codedocs.get_struct_identifiers(lang_name))
+	local target_data = _get_supported_target_node_data(node_at_cursor, Codedocs.get_target_identifiers(lang_name))
 
 	local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
 
-	if not struct_data then return {}, struct_name or "comment", cursor_row end
+	if not target_data then return {}, target_name or "comment", cursor_row end
 
-	if struct_name and struct_data.name ~= struct_name then return {}, struct_name, cursor_row end
+	if target_name and target_data.name ~= target_name then return {}, target_name, cursor_row end
 
 	local lang_config = require("codedocs.config").languages[lang_name]
 
-	local struct_pos = struct_data.node:range()
+	local target_pos = target_data.node:range()
 
-	local item_extractors = lang_config.structures[struct_data.name].extractors
+	local item_extractors = lang_config.targets[target_data.name].extractors
 	local items_data = require "codedocs.item_extractor"(
 		lang_name,
-		struct_data.node,
+		target_data.node,
 		item_extractors,
-		lang_config.structures[struct_data.name].opts
+		lang_config.targets[target_data.name].opts
 	)
 
 	Debug_logger.log("Item data: ", items_data)
-	return items_data, struct_data.name, struct_pos
+	return items_data, target_data.name, target_pos
 end
 
 function Codedocs.orchestrate_annotation_build(lang_data)
-	local lang_spec = LangSpecs.new(lang_data.name)
+	local items_data, target_name, annotation_row = Codedocs.extract_item_data(lang_data.name, lang_data.substyle_name)
 
-	local items_data, struct_name, annotation_row = Codedocs.extract_item_data(lang_data.name, lang_data.substyle_name)
-
-	local struct_style = lang_spec:get_struct_style(
-		lang_data.substyle_name or struct_name,
-		lang_data.style_name or lang_spec:get_default_style()
+	local target_style = Codedocs.get_target_style(
+		lang_data.name,
+		lang_data.substyle_name or target_name,
+		lang_data.style_name or Codedocs.get_default_style(lang_data.name)
 	)
 
-	Debug_logger.log("Structure name: " .. struct_name)
-	Debug_logger.log("Style name: " .. lang_spec:get_default_style())
-	Debug_logger.log("Style: ", struct_style)
+	Debug_logger.log("Structure name: " .. target_name)
+	Debug_logger.log("Style name: " .. Codedocs.get_default_style(lang_data.name))
+	Debug_logger.log("Style: ", target_style)
 
-	local struct_data = {
-		should_indent = struct_style.indented,
+	local target_data = {
+		should_indent = target_style.indented,
 		line_num = annotation_row + 1,
 	}
 
-	local annotation_lines = docs_builder(struct_style, items_data, struct_data)
+	local annotation_lines = docs_builder(target_style, items_data, target_data)
 
-	return annotation_lines, annotation_row, struct_style.relative_position
+	return annotation_lines, annotation_row, target_style.relative_position
 end
 
-function Codedocs.insert_docs(substyle_name)
+function Codedocs.generate(substyle_name)
 	Debug_logger.log "Plugin triggered"
 
 	local lang_name = require("codedocs.config").aliases[vim.bo.filetype] or vim.bo.filetype

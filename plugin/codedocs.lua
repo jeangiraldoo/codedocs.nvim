@@ -17,7 +17,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 vim.api.nvim_set_keymap(
 	"n",
 	"<Plug>Codedocs",
-	"<cmd>lua require('codedocs').insert_docs()<CR>",
+	"<cmd>lua require('codedocs').generate()<CR>",
 	{ noremap = true, silent = true }
 )
 local function get_annotation_list()
@@ -34,7 +34,7 @@ vim.api.nvim_create_user_command("Codedocs", function(opts)
 		vim.notify("Invalid option: " .. (choice or "nil"), vim.log.levels.ERROR)
 		return
 	end
-	require("codedocs").insert_docs(choice)
+	require("codedocs").generate(choice)
 end, {
 	nargs = "?",
 	complete = function(arglead)

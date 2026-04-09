@@ -1,20 +1,16 @@
 local Func_extractors = {}
 
-function Func_extractors.parameters(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.parameters(target_data)
+	return target_data.lang_query_parser [[
 		[
-			(function_declaration
 				parameters: (parameters
-					name: (identifier) @item_name))
-			(function_definition
-				parameters: (parameters
-					name: (identifier) @item_name))
+					name: (identifier) @item_name)
 		]
 	]]
 end
 
-function Func_extractors.returns(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.returns(target_data)
+	return target_data.lang_query_parser [[
 		(return_statement
 			(expression_list) @item_type
 			(#set! parse_as_blank "true")) @return_statement (#has-ancestor? @return_statement function_declaration)
@@ -29,25 +25,18 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsLuaStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsLuaStyleNames, table<CodedocsLuaStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsLuaStyleNames
-
 ---@class CodedocsLuaConfig: CodedocsLanguageConfig
----@field styles CodedocsLuaStylesConfig
+---@field default_style CodedocsLuaStyleNames
+---@field styles table<CodedocsLuaStyleNames, table<CodedocsLuaStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsLuaConfig
 return {
-	lang_name = "lua",
-	identifier_pos = true,
+	default_style = "EmmyLua",
 	styles = {
-		default = "EmmyLua",
-		definitions = {
-			EmmyLua = require "codedocs.config.languages.lua.EmmyLua",
-			LDoc = require "codedocs.config.languages.lua.LDoc",
-		},
+		EmmyLua = require "codedocs.config.languages.lua.EmmyLua",
+		LDoc = require "codedocs.config.languages.lua.LDoc",
 	},
-	structures = {
+	targets = {
 		func = {
 			node_identifiers = {
 				"function_definition",

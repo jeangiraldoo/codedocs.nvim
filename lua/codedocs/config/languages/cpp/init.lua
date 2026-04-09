@@ -1,7 +1,7 @@
 local Func_extractors = {}
 
-function Func_extractors.parameters(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.parameters(target_data)
+	return target_data.lang_query_parser [[
 		(function_definition
 			(function_declarator
 				(parameter_list
@@ -24,8 +24,8 @@ function Func_extractors.parameters(struct_data)
 	]]
 end
 
-function Func_extractors.returns(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.returns(target_data)
+	return target_data.lang_query_parser [[
 		(function_definition
 			type: [
 				(primitive_type)
@@ -43,24 +43,17 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsCPPStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsCPPStyleNames, table<CodedocsCPPStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsCPPStyleNames
-
 ---@class CodedocsCPPConfig: CodedocsLanguageConfig
----@field styles CodedocsCPPStylesConfig
+---@field default_style CodedocsCPPStyleNames
+---@field styles table<CodedocsCPPStyleNames, table<CodedocsCPPStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsCPPConfig
 return {
-	lang_name = "cpp",
-	identifier_pos = false,
+	default_style = "Doxygen",
 	styles = {
-		default = "Doxygen",
-		definitions = {
-			Doxygen = require "codedocs.config.languages.cpp.Doxygen",
-		},
+		Doxygen = require "codedocs.config.languages.cpp.Doxygen",
 	},
-	structures = {
+	targets = {
 		func = {
 			node_identifiers = {
 				"function_definition",

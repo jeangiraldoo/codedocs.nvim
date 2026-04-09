@@ -1,11 +1,11 @@
 local Func_extractors = {}
 
-function Func_extractors.globals(struct_data)
-	local root_node = struct_data.node:tree():root()
+function Func_extractors.globals(target_data)
+	local root_node = target_data.node:tree():root()
 
 	local global_variables = (function()
 		local query = vim.treesitter.query.parse(
-			struct_data.lang_name,
+			target_data.lang_name,
 			[[
 				((variable_assignment
 					(variable_name) @target) @variable_assignment
@@ -16,14 +16,14 @@ function Func_extractors.globals(struct_data)
 	end)()
 
 	local variable_expansions_in_function = (function()
-		local query = vim.treesitter.query.parse(struct_data.lang_name, "(expansion) @t")
-		return vim.iter(query:iter_matches(struct_data.node, 0))
+		local query = vim.treesitter.query.parse(target_data.lang_name, "(expansion) @t")
+		return vim.iter(query:iter_matches(target_data.node, 0))
 			:map(function(_, match)
 				local match_node = match[1][1]
 
-				local variable_reference = struct_data.generic_query_parser(
+				local variable_reference = target_data.generic_query_parser(
 					match_node,
-					struct_data.lang_name,
+					target_data.lang_name,
 					[[
 							((expansion
 								(variable_name) @item_name))
@@ -45,8 +45,8 @@ function Func_extractors.globals(struct_data)
 	return globals_referenced
 end
 
-function Func_extractors.parameters(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.parameters(target_data)
+	return target_data.lang_query_parser [[
 		(command
 			argument: (string
 				(simple_expansion
@@ -63,24 +63,17 @@ function Func_extractors.returns() return {} end
 ---| "func"
 ---| "comment"
 
----@class CodedocsBashStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsBashStyleNames, table<CodedocsBashStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsBashStyleNames
-
 ---@class CodedocsBashConfig: CodedocsLanguageConfig
----@field styles CodedocsBashStylesConfig
+---@field default_style CodedocsBashStyleNames
+---@field styles table<CodedocsBashStyleNames, table<CodedocsBashStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsBashConfig
 return {
-	lang_name = "bash",
-	identifier_pos = true,
+	default_style = "Google",
 	styles = {
-		default = "Google",
-		definitions = {
-			Google = require "codedocs.config.languages.bash.Google",
-		},
+		Google = require "codedocs.config.languages.bash.Google",
 	},
-	structures = {
+	targets = {
 		func = {
 			node_identifiers = {
 				"function_definition",

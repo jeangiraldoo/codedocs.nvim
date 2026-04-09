@@ -1,7 +1,7 @@
 local Func_extractors = {}
 
-function Func_extractors.parameters(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.parameters(target_data)
+	return target_data.lang_query_parser [[
 		(function_item
 			parameters: (parameters
 				(parameter
@@ -18,8 +18,8 @@ function Func_extractors.parameters(struct_data)
 	]]
 end
 
-function Func_extractors.returns(struct_data)
-	return struct_data.lang_query_parser [[
+function Func_extractors.returns(target_data)
+	return target_data.lang_query_parser [[
 		(function_item
 			return_type: [
 				(primitive_type)
@@ -40,24 +40,17 @@ end
 ---| "func"
 ---| "comment"
 
----@class CodedocsRustStylesConfig: CodedocsLanguageStylesConfig
----@field definitions table<CodedocsRustStyleNames, table<CodedocsRustStructNames, CodedocsAnnotationStyleOpts>>
----@field default CodedocsRustStyleNames
-
 ---@class CodedocsRustConfig: CodedocsLanguageConfig
----@field styles CodedocsRustStylesConfig
+---@field default_style CodedocsRustStyleNames
+---@field styles table<CodedocsRustStyleNames, table<CodedocsRustStructNames, CodedocsAnnotationStyleOpts>>
 
 ---@type CodedocsRustConfig
 return {
-	lang_name = "rust",
-	identifier_pos = true,
+	default_style = "RustDoc",
 	styles = {
-		default = "RustDoc",
-		definitions = {
-			RustDoc = require "codedocs.config.languages.rust.RustDoc",
-		},
+		RustDoc = require "codedocs.config.languages.rust.RustDoc",
 	},
-	structures = {
+	targets = {
 		func = {
 			node_identifiers = {
 				"function_item",
