@@ -2,9 +2,14 @@ package.path = package.path .. ";" .. debug.getinfo(1, "S").source:sub(2):match 
 
 local test_utils = require "tests.utils"
 local Codedocs = require "codedocs"
+local IGNORE = {}
+
+local LANGS_TO_TEST = vim.iter(require("codedocs").get_supported_langs())
+	:filter(function(v) return not vim.list_contains(IGNORE, v) end)
+	:totable()
 
 describe("Default style annotations", function()
-	for _, lang in ipairs(Codedocs.get_supported_langs()) do
+	for _, lang in ipairs(LANGS_TO_TEST) do
 		for target_name, target_cases in pairs(require("tests.defaults.annotations.test_cases." .. lang)) do
 			describe(lang .. " - " .. target_name, function()
 				for idx, target_case in ipairs(target_cases) do

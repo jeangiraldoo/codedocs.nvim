@@ -1,7 +1,12 @@
 package.path = package.path .. ";" .. debug.getinfo(1, "S").source:sub(2):match "(.*/)" .. "/tests"
 
 local test_utils = require "tests.utils"
-local LANGS_TO_TEST = require("codedocs").get_supported_langs()
+local IGNORE = {
+	"markdown",
+}
+local LANGS_TO_TEST = vim.iter(require("codedocs").get_supported_langs())
+	:filter(function(v) return not vim.list_contains(IGNORE, v) end)
+	:totable()
 
 describe("Basic item extraction", function()
 	for _, lang in ipairs(LANGS_TO_TEST) do

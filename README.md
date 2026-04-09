@@ -420,6 +420,10 @@ that any comment can be deleted by placing your cursor on it and pressing `dgc`.
 
 ## Language support
 
+> [!INFO]
+> The `Codedocs` style is not an official style. It exists to provide annotations
+> for languages without native styles or to offer a custom alternative.
+
 | Language   | Styles (\* = default) | Built-in annotations           |
 | ---------- | --------------------- | ------------------------------ |
 | Bash       | \*Google              | `comment`, `function`          |
@@ -430,6 +434,7 @@ that any comment can be deleted by placing your cursor on it and pressing `dgc`.
 | Java       | \*JavaDoc             | `comment`, `function`, `class` |
 | Kotlin     | \*KDoc                | `comment`, `function`, `class` |
 | Lua        | \*EmmyLua, LDoc       | `comment`, `function`          |
+| Markdown   | \*Codedocs            | `comment`                      |
 | Python     | Google, NumPy, \*reST | `comment`, `function`, `class` |
 | PHP        | \*PHPDoc              | `comment`, `function`          |
 | Ruby       | \*YARD                | `comment`, `function`          |
