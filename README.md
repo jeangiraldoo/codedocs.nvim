@@ -412,6 +412,9 @@ vim.keymap.set(
 )
 ```
 
+Although it is not actually a Codedocs feature but a Neovim one, you should know
+that any comment can be deleted by placing your cursor on it and pressing `dgc`.
+
 ## Language support
 
 | Language   | Styles (\* = default) | Built-in annotations           |
