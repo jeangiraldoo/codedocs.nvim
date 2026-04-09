@@ -420,21 +420,27 @@ that any comment can be deleted by placing your cursor on it and pressing `dgc`.
 
 ## Language support
 
-| Language   | Styles (\* = default) | Built-in annotations           |
-| ---------- | --------------------- | ------------------------------ |
-| Bash       | \*Google              | `comment`, `function`          |
-| C          | \*Doxygen             | `comment`, `function`          |
-| C++        | \*Doxygen             | `comment`, `function`          |
-| Go         | \*Godoc               | `comment`, `function`          |
-| JavaScript | \*JSDoc               | `comment`, `function`, `class` |
-| Java       | \*JavaDoc             | `comment`, `function`, `class` |
-| Kotlin     | \*KDoc                | `comment`, `function`, `class` |
-| Lua        | \*EmmyLua, LDoc       | `comment`, `function`          |
-| Python     | Google, NumPy, \*reST | `comment`, `function`, `class` |
-| PHP        | \*PHPDoc              | `comment`, `function`          |
-| Ruby       | \*YARD                | `comment`, `function`          |
-| Rust       | \*RustDoc             | `comment`, `function`          |
-| TypeScript | \*TSDoc               | `comment`, `function`, `class` |
+> [!INFO]
+> The `Codedocs` style is not an official style. It exists to provide annotations
+> for languages without native styles or to offer a custom alternative.
+
+| Language   | Styles (\* = default) | Built-in annotations       |
+| ---------- | --------------------- | -------------------------- |
+| bash       | \*Google              | `comment`, `func`          |
+| c          | \*Doxygen             | `comment`, `func`          |
+| c++ (cpp)  | \*Doxygen             | `comment`, `func`          |
+| go         | \*Godoc               | `comment`, `func`          |
+| html       | \*Codedocs            | `comment`                  |
+| javascript | \*JSDoc               | `comment`, `func`, `class` |
+| java       | \*JavaDoc             | `comment`, `func`, `class` |
+| kotlin     | \*KDoc                | `comment`, `func`, `class` |
+| lua        | \*EmmyLua, LDoc       | `comment`, `func`          |
+| markdown   | \*Codedocs            | `comment`                  |
+| python     | Google, NumPy, \*reST | `comment`, `func`, `class` |
+| php        | \*PHPDoc              | `comment`, `func`          |
+| ruby       | \*YARD                | `comment`, `func`          |
+| rust       | \*RustDoc             | `comment`, `func`          |
+| typescript | \*TSDoc               | `comment`, `func`, `class` |
 
 ## Annotation examples
 

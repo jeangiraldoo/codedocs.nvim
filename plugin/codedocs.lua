@@ -23,8 +23,7 @@ vim.api.nvim_set_keymap(
 local function get_annotation_list()
 	local lang = vim.bo.filetype
 	local lang_stuff = require("codedocs.config").languages[lang]
-	local substyles = vim.tbl_keys(lang_stuff.styles.definitions[lang_stuff.styles.default])
-	print(vim.inspect(substyles))
+	local substyles = vim.tbl_keys(lang_stuff.styles[lang_stuff.default_style])
 	return substyles
 end
 
@@ -38,7 +37,6 @@ vim.api.nvim_create_user_command("Codedocs", function(opts)
 end, {
 	nargs = "?",
 	complete = function(arglead)
-		print(vim.inspect(get_annotation_list()))
 		return vim.tbl_filter(function(opt) return opt:find(arglead) == 1 end, get_annotation_list())
 	end,
 })

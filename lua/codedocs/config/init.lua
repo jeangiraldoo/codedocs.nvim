@@ -72,6 +72,8 @@ return {
 		php = require "codedocs.config.languages.php",
 		lua = require "codedocs.config.languages.lua",
 		rust = require "codedocs.config.languages.rust",
+		markdown = require "codedocs.config.languages.markdown",
+		html = require "codedocs.config.languages.html",
 	},
 	aliases = {
 		sh = "bash",
