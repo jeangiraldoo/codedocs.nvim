@@ -430,6 +430,7 @@ that any comment can be deleted by placing your cursor on it and pressing `dgc`.
 | C          | \*Doxygen             | `comment`, `function`          |
 | C++        | \*Doxygen             | `comment`, `function`          |
 | Go         | \*Godoc               | `comment`, `function`          |
+| html       | \*Codedocs            | `comment`                      |
 | JavaScript | \*JSDoc               | `comment`, `function`, `class` |
 | Java       | \*JavaDoc             | `comment`, `function`, `class` |
 | Kotlin     | \*KDoc                | `comment`, `function`, `class` |

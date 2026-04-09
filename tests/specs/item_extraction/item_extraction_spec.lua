@@ -3,6 +3,7 @@ package.path = package.path .. ";" .. debug.getinfo(1, "S").source:sub(2):match 
 local test_utils = require "tests.utils"
 local IGNORE = {
 	"markdown",
+	"html",
 }
 local LANGS_TO_TEST = vim.iter(require("codedocs").get_supported_langs())
 	:filter(function(v) return not vim.list_contains(IGNORE, v) end)
