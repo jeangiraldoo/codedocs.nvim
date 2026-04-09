@@ -59,6 +59,14 @@ parser. The simplest way to do this is with
 
 ## Installation
 
+> [!WARNING]
+> Development is done using [Trunk Based Development](https://trunkbaseddevelopment.com),
+> meaning all new changes are merged into `main`, making it the equivalent of `nightly`;
+> versions are done through Git tags.
+>
+> All changes are thoroughly tested before merging, but it is still recommended
+> to pin to a specific tag unless you wish to be constantly up to date.
+
 Use the snippet for your plugin manager:
 
 ### [vim.pack](https://neovim.io/doc/user/pack.html#vim.pack)
