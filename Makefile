@@ -1,13 +1,15 @@
-.PHONY: tests, new-lang
+.PHONY: test, new-lang, quality-checks, install-dev, all-checks
+
+SCRIPTS_DIR = cd scripts && .
 
 quality-checks:
-	./scripts/local_checks.sh
+	$(SCRIPTS_DIR)/local_checks.sh
 
 install-dev:
-	./scripts/install_deps.sh
+	$(SCRIPTS_DIR)/install_deps.sh
 
 new-lang:
-	cd scripts && ./new_language.sh
+	$(SCRIPTS_DIR)/new_language.sh
 
 test:
 	busted tests
