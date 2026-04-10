@@ -11,8 +11,6 @@
 ---@type CodedocsHTMLConfig
 return {
 	default_style = "Codedocs",
-	styles = {
-		Codedocs = require "codedocs.config.languages.html.Codedocs",
-	},
+	styles = {},
 	targets = {},
 }
