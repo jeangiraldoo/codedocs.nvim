@@ -11,8 +11,6 @@
 ---@type CodedocsMarkdownConfig
 return {
 	default_style = "Codedocs",
-	styles = {
-		Codedocs = require "codedocs.config.languages.markdown.Codedocs",
-	},
+	styles = {},
 	targets = {},
 }

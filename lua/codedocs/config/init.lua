@@ -56,8 +56,30 @@
 ---@field languages CodedocsLanguagesConfigs? Languages configuration
 
 local source = debug.getinfo(1, "S").source:sub(2)
-local base = vim.fn.fnamemodify(source, ":h") .. "/languages"
-local builtin_languages = vim.fn.readdir(base, function(name) return vim.fn.isdirectory(base .. "/" .. name) == 1 end)
+local languages_base = vim.fn.fnamemodify(source, ":h") .. "/languages"
+local builtin_languages = vim.fn.readdir(
+	languages_base,
+	function(name) return vim.fn.isdirectory(languages_base .. "/" .. name) == 1 end
+)
+
+local function read_lua_file_names(path)
+	local files = vim.fn.readdir(path, function(name) return name:sub(-4) == ".lua" end)
+	local res = vim.iter(files)
+		:map(function(file_name)
+			local name = file_name:gsub("%.lua$", "")
+			return name
+		end)
+		:totable()
+	return res
+end
+
+local function construct_table_from_files(lang_name, dir_name)
+	local path = languages_base .. "/" .. lang_name .. "/" .. dir_name
+	return vim.iter(read_lua_file_names(path)):fold({}, function(targets_acc, file_name)
+		targets_acc[file_name] = require(("codedocs.config.languages.%s.%s.%s"):format(lang_name, dir_name, file_name))
+		return targets_acc
+	end)
+end
 
 ---@type CodedocsConfig
 return {
@@ -65,7 +87,12 @@ return {
 	---The `languages` table is created dynamically when the plugin first loads as there's a lot of languages;
 	---a literal `require` call per language is not pretty
 	languages = vim.iter(builtin_languages):fold({}, function(acc, lang_name)
-		acc[lang_name] = require("codedocs.config.languages." .. lang_name)
+		local base_lang_config = require("codedocs.config.languages." .. lang_name)
+
+		base_lang_config.styles = construct_table_from_files(lang_name, "styles")
+		base_lang_config.targets = construct_table_from_files(lang_name, "targets")
+
+		acc[lang_name] = base_lang_config
 		return acc
 	end),
 	aliases = {
