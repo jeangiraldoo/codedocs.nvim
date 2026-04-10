@@ -10,14 +10,6 @@ Framework_
 
 ![Codedocs showcase](./.images/showcase.gif)
 
-Codedocs.nvim automatically recognizes various code targets such as functions,
-classes, variables, and more, and inserts appropriate documentation strings based
-on the [programming language](#language-support) you are using.
-
-You can easily modify the structure of the annotations to suit your specific needs,
-add support for new languages by defining their documentation formats, or just use
-codedocs as it is! :)
-
 <!-- markdownlint-disable-next-line MD033 -->
 <div align="center">
 
@@ -45,11 +37,13 @@ codedocs as it is! :)
 
 ## Features
 
-- Works out-of-the-box.
-- Detects and documents code targets with a simple keybind.
+- Autodetects functions, classes, or other code targets under the cursor and
+  generates the appropriate annotation.
+- Generates annotations beyond code, including in markup and other text-based filetypes
 - Supports multiple [languages and styles](#language-support).
-- Easily customize existing formats or add new ones.
-- Annotations use Neovim's built-in snippet engine.
+- Easily customize existing annotations or add new ones.
+- All built-in annotations use Neovim's built-in snippet engine.
+- Works out-of-the-box.
 
 ## Requirements
 
