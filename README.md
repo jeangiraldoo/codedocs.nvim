@@ -1,5 +1,15 @@
 # codedocs.nvim
 
+![Codedocs showcase](./.images/showcase.gif)
+
+Codedocs.nvim automatically recognizes various code targets such as functions,
+classes, variables, and more, and inserts appropriate documentation strings based
+on the [programming language](#language-support) you are using.
+
+You can easily modify the structure of the annotations to suit your specific needs,
+add support for new languages by defining their documentation formats, or just use
+codedocs as it is! :)
+
 <!-- markdownlint-disable-next-line MD033 -->
 <div align="center">
 
@@ -10,16 +20,6 @@
 ![Repository size](https://img.shields.io/github/repo-size/jeangiraldoo/codedocs.nvim?style=for-the-badge&logo=files&logoColor=yellow&label=SIZE&labelColor=%232E3A59&color=%23A8D8A1)
 
 </div>
-
-Codedocs.nvim automatically recognizes various code targets such as functions,
-classes, variables, and more, and inserts appropriate documentation strings based
-on the [programming language](#language-support) you are using.
-
-You can easily modify the structure of the annotations to suit your specific needs,
-add support for new languages by defining their documentation formats, or just use
-codedocs as it is! :)
-
-![Codedocs showcase](./.images/showcase.gif)
 
 ## 📖 Table of contents
 
