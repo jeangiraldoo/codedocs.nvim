@@ -55,26 +55,19 @@
 ---@field aliases table<string, CodedocsSupportedLanguages>? Aliases for filetypes -> supported languages
 ---@field languages CodedocsLanguagesConfigs? Languages configuration
 
+local source = debug.getinfo(1, "S").source:sub(2)
+local base = vim.fn.fnamemodify(source, ":h") .. "/languages"
+local builtin_languages = vim.fn.readdir(base, function(name) return vim.fn.isdirectory(base .. "/" .. name) == 1 end)
+
 ---@type CodedocsConfig
 return {
 	debug = false,
-	languages = {
-		bash = require "codedocs.config.languages.bash",
-		c = require "codedocs.config.languages.c",
-		cpp = require "codedocs.config.languages.cpp",
-		go = require "codedocs.config.languages.go",
-		java = require "codedocs.config.languages.java",
-		kotlin = require "codedocs.config.languages.kotlin",
-		javascript = require "codedocs.config.languages.javascript",
-		typescript = require "codedocs.config.languages.typescript",
-		python = require "codedocs.config.languages.python",
-		ruby = require "codedocs.config.languages.ruby",
-		php = require "codedocs.config.languages.php",
-		lua = require "codedocs.config.languages.lua",
-		rust = require "codedocs.config.languages.rust",
-		markdown = require "codedocs.config.languages.markdown",
-		html = require "codedocs.config.languages.html",
-	},
+	---The `languages` table is created dynamically when the plugin first loads as there's a lot of languages;
+	---a literal `require` call per language is not pretty
+	languages = vim.iter(builtin_languages):fold({}, function(acc, lang_name)
+		acc[lang_name] = require("codedocs.config.languages." .. lang_name)
+		return acc
+	end),
 	aliases = {
 		sh = "bash",
 	},
