@@ -1,4 +1,12 @@
+<!-- markdownlint-disable-next-line MD041 MD033 -->
+<div align="center">
+
 # codedocs.nvim
+
+_A simple, customizable, yet powerful Annotation
+Framework_
+
+</div>
 
 ![Codedocs showcase](./.images/showcase.gif)
 
