@@ -430,7 +430,7 @@ require("codedocs").setup({
 
 ## Language support
 
-> [!INFO]
+> [!NOTE]
 > The `Codedocs` style is not an official style. It exists to provide annotations
 > for languages without native styles or to offer a custom alternative.
 
