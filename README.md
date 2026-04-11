@@ -450,6 +450,7 @@ require("codedocs").setup({
 | php        | \*PHPDoc              | `comment`, `func`          |
 | ruby       | \*YARD                | `comment`, `func`          |
 | rust       | \*RustDoc             | `comment`, `func`          |
+| sql        | \*Codedocs            | `comment`                  |
 | typescript | \*TSDoc               | `comment`, `func`, `class` |
 | toml       | \*Codedocs            | `comment`                  |
 
