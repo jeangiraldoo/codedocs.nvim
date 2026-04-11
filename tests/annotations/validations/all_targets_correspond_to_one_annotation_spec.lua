@@ -1,9 +1,10 @@
---- Verifies that, for each language, every structure implements all of its supported styles
+--- Verifies that, for each language, under each style, there's an annotation that corresponds
+--- to each defined code target
 
 local utils = require "tests.utils"
 local Codedocs = require "codedocs"
 
-describe("All styles are implemented for each target: ", function()
+describe("All styles implemented an annotation per target: ", function()
 	for _, lang_name in ipairs(Codedocs.get_supported_langs()) do
 		local supported_styles = Codedocs.get_supported_styles(lang_name)
 		local supported_targets = utils.get_supported_targets(lang_name)
