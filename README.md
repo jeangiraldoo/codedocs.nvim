@@ -405,7 +405,7 @@ For a more convenient experience, you can bind the command to a keymap. For exam
 
 ```lua
 vim.keymap.set(
-    "n", "<leader>k", require('codedocs').generate,
+    "n", "<leader>k", "<cmd>Codedocs<CR>",
     { desc = "Insert annotation" }
 )
 ```
@@ -414,6 +414,23 @@ vim.keymap.set(
 
 Although it is not actually a Codedocs feature but a Neovim one, you should know
 that any comment can be deleted by placing your cursor on it and pressing `dgc`.
+
+### Lua API
+
+> [!TIP]
+> You can check the function signatures using a LSP such as [LuaLS](https://luals.github.io/)
+
+A Lua API is provided in case you find any of the already existing functionality
+useful. The API can be accessed by requiring the `codedocs` module:
+
+```lua
+local Codedocs = require("codedocs")
+```
+
+The following functions are available:
+
+- `generate`: Triggers an annotation generation (it's what `:Codedocs` uses under
+  the hood)
 
 ## Language support
 
