@@ -1,6 +1,4 @@
-# codedocs.nvim
-
-<!-- markdownlint-disable-next-line MD033 -->
+<!-- markdownlint-disable-next-line MD033 MD041 -->
 <div align="center">
 
 ![Codedocs is built with lua](https://img.shields.io/badge/%20Lua-%23D0B8EB?style=for-the-badge&logo=lua)
@@ -9,15 +7,12 @@
 ![Neovim is under the MIT License](https://img.shields.io/badge/MIT-%232E3A59?style=for-the-badge&label=License&labelColor=%232E3A59&color=%23F4A6A6)
 ![Repository size](https://img.shields.io/github/repo-size/jeangiraldoo/codedocs.nvim?style=for-the-badge&logo=files&logoColor=yellow&label=SIZE&labelColor=%232E3A59&color=%23A8D8A1)
 
+# codedocs.nvim
+
+_A simple, customizable, yet powerful Annotation
+Framework_
+
 </div>
-
-Codedocs.nvim automatically recognizes various code targets such as functions,
-classes, variables, and more, and inserts appropriate documentation strings based
-on the [programming language](#language-support) you are using.
-
-You can easily modify the structure of the annotations to suit your specific needs,
-add support for new languages by defining their documentation formats, or just use
-codedocs as it is! :)
 
 ![Codedocs showcase](./.images/showcase.gif)
 
@@ -26,8 +21,8 @@ codedocs as it is! :)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Configuration](#configuration)
 - [Usage](#usage)
+- [Configuration](#configuration)
 - [Language support](#language-support)
 - [Annotation examples](#annotation-examples)
 - [Roadmap](#roadmap)
@@ -37,11 +32,13 @@ codedocs as it is! :)
 
 ## Features
 
-- Works out-of-the-box.
-- Detects and documents code targets with a simple keybind.
+- Autodetects functions, classes, or other code targets under the cursor and
+  generates the appropriate annotation.
+- Generates annotations beyond code, including in markup and other text-based filetypes
 - Supports multiple [languages and styles](#language-support).
-- Easily customize existing formats or add new ones.
-- Annotations use Neovim's built-in snippet engine.
+- Easily customize existing annotations or add new ones.
+- All built-in annotations use Neovim's built-in snippet engine.
+- Works out-of-the-box.
 
 ## Requirements
 
@@ -121,11 +118,55 @@ require("paq") {
 }
 ```
 
-## Configuration
+## Usage
 
-> [!WARNING]
-> Language, annotation and style names must be spelled exactly as shown in the
-> [supported languages section](#language-support).
+### Generate an annotation
+
+An annotation insertion can be triggered using the `:Codedocs` command. There are
+two ways to use the command:
+
+- **Without arguments**: The plugin attempts to detect the code target under
+  the cursor, determines the default style for the current file’s language, and
+  applies the corresponding annotation. If no target is recognized under the
+  cursor, an inline comment is inserted. By default, a matching annotation exists
+  for each target unless you’ve customized the configuration.
+
+- **With an annotation name**: You can pass the name of any annotation definition
+  defined in the language’s default style. The plugin will generate and insert the
+  annotation using that definition.
+
+For a more convenient experience, you can bind the command to a keymap. For example:
+
+```lua
+vim.keymap.set(
+    "n", "<leader>k", "<cmd>Codedocs<CR>",
+    { desc = "Insert annotation" }
+)
+```
+
+### Delete an annotation
+
+Although it is not actually a Codedocs feature but a Neovim one, you should know
+that any comment can be deleted by placing your cursor on it and pressing `dgc`.
+
+### Lua API
+
+> [!TIP]
+> You can check the function signatures using a LSP such as [LuaLS](https://luals.github.io/)
+
+A Lua API is provided in case you find any of the already existing functionality
+useful. The API can be accessed by requiring the `codedocs` module:
+
+```lua
+local Codedocs = require("codedocs")
+```
+
+The following functions are available:
+
+- `generate`: Triggers an annotation generation (it's what `:Codedocs` uses under
+  the hood)
+
+## Configuration
 
 All options can be customized using the setup function. Here are most of the
 default options:
@@ -387,40 +428,9 @@ require("codedocs").setup({
 })
 ```
 
-## Usage
-
-### Generate an annotation
-
-An annotation insertion can be triggered using the `:Codedocs` command. There are
-two ways to use the command:
-
-- **Without arguments**: The plugin attempts to detect the code target under
-  the cursor, determines the default style for the current file’s language, and
-  applies the corresponding annotation. If no target is recognized under the
-  cursor, an inline comment is inserted. By default, a matching annotation exists
-  for each target unless you’ve customized the configuration.
-
-- **With an annotation name**: You can pass the name of any annotation definition
-  defined in the language’s default style. The plugin will generate and insert the
-  annotation using that definition.
-
-For a more convenient experience, you can bind the command to a keymap. For example:
-
-```lua
-vim.keymap.set(
-    "n", "<leader>k", require('codedocs').generate,
-    { desc = "Insert annotation" }
-)
-```
-
-### Delete an annotation
-
-Although it is not actually a Codedocs feature but a Neovim one, you should know
-that any comment can be deleted by placing your cursor on it and pressing `dgc`.
-
 ## Language support
 
-> [!INFO]
+> [!NOTE]
 > The `Codedocs` style is not an official style. It exists to provide annotations
 > for languages without native styles or to offer a custom alternative.
 
