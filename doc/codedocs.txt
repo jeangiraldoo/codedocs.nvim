@@ -1,13 +1,4 @@
-*codedocs.txt*            For NVIM v0.10+           Last change: 09 April 2026
-
-Codedocs.nvim automatically recognizes various code targets such as functions,
-classes, variables, and more, and inserts appropriate documentation strings
-based on the |codedocs-programming-language| you are using.
-
-You can easily modify the structure of the annotations to suit your specific
-needs, add support for new languages by defining their documentation formats,
-or just use codedocs as it is! :)
-
+*codedocs.txt*            For NVIM v0.10+           Last change: 11 April 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -15,8 +6,8 @@ or just use codedocs as it is! :)
 - |codedocs-features|
 - |codedocs-requirements|
 - |codedocs-installation|
-- |codedocs-configuration|
 - |codedocs-usage|
+- |codedocs-configuration|
 - |codedocs-language-support|
 - |codedocs-annotation-examples|
 - |codedocs-roadmap|
@@ -28,11 +19,13 @@ or just use codedocs as it is! :)
 ==============================================================================
 2. Features                                                *codedocs-features*
 
-- Works out-of-the-box.
-- Detects and documents code targets with a simple keybind.
+- Autodetects functions, classes, or other code targets under the cursor and
+    generates the appropriate annotation.
+- Generates annotations beyond code, including in markup and other text-based filetypes
 - Supports multiple |codedocs-languages-and-styles|.
-- Easily customize existing formats or add new ones.
-- Annotations use Neovim’s built-in snippet engine.
+- Easily customize existing annotations or add new ones.
+- All built-in annotations use Neovim’s built-in snippet engine.
+- Works out-of-the-box.
 
 
 ==============================================================================
@@ -123,11 +116,63 @@ PAQ-NVIM                                      *codedocs-installation-paq-nvim*
 
 
 ==============================================================================
-5. Configuration                                      *codedocs-configuration*
+5. Usage                                                      *codedocs-usage*
 
 
-  [!WARNING] Language, annotation and style names must be spelled exactly as
-  shown in the |codedocs-supported-languages-section|.
+GENERATE AN ANNOTATION                 *codedocs-usage-generate-an-annotation*
+
+An annotation insertion can be triggered using the `:Codedocs` command. There
+are two ways to use the command:
+
+- **Without arguments**: The plugin attempts to detect the code target under the
+    cursor, determines the default style for the current file’s language, and
+    applies the corresponding annotation. If no target is recognized under the
+    cursor, an inline comment is inserted. By default, a matching annotation exists
+    for each target unless you’ve customized the configuration.
+- **With an annotation name**: You can pass the name of any annotation definition
+    defined in the language’s default style. The plugin will generate and insert
+    the annotation using that definition.
+
+For a more convenient experience, you can bind the command to a keymap. For
+example:
+
+>lua
+    vim.keymap.set(
+        "n", "<leader>k", "<cmd>Codedocs<CR>",
+        { desc = "Insert annotation" }
+    )
+<
+
+
+DELETE AN ANNOTATION                     *codedocs-usage-delete-an-annotation*
+
+Although it is not actually a Codedocs feature but a Neovim one, you should
+know that any comment can be deleted by placing your cursor on it and pressing
+`dgc`.
+
+
+LUA API                                               *codedocs-usage-lua-api*
+
+
+  [!TIP] You can check the function signatures using a LSP such as LuaLS
+  <https://luals.github.io/>
+A Lua API is provided in case you find any of the already existing
+functionality useful. The API can be accessed by requiring the `codedocs`
+module:
+
+>lua
+    local Codedocs = require("codedocs")
+<
+
+The following functions are available:
+
+- `generate`: Triggers an annotation generation (it’s what `:Codedocs` uses under
+    the hood)
+
+
+==============================================================================
+6. Configuration                                      *codedocs-configuration*
+
 All options can be customized using the setup function. Here are most of the
 default options:
 
@@ -415,46 +460,10 @@ This is what such customization would look like:
 
 
 ==============================================================================
-6. Usage                                                      *codedocs-usage*
-
-
-GENERATE AN ANNOTATION                 *codedocs-usage-generate-an-annotation*
-
-An annotation insertion can be triggered using the `:Codedocs` command. There
-are two ways to use the command:
-
-- **Without arguments**: The plugin attempts to detect the code target under the
-    cursor, determines the default style for the current file’s language, and
-    applies the corresponding annotation. If no target is recognized under the
-    cursor, an inline comment is inserted. By default, a matching annotation exists
-    for each target unless you’ve customized the configuration.
-- **With an annotation name**: You can pass the name of any annotation definition
-    defined in the language’s default style. The plugin will generate and insert
-    the annotation using that definition.
-
-For a more convenient experience, you can bind the command to a keymap. For
-example:
-
->lua
-    vim.keymap.set(
-        "n", "<leader>k", require('codedocs').generate,
-        { desc = "Insert annotation" }
-    )
-<
-
-
-DELETE AN ANNOTATION                     *codedocs-usage-delete-an-annotation*
-
-Although it is not actually a Codedocs feature but a Neovim one, you should
-know that any comment can be deleted by placing your cursor on it and pressing
-`dgc`.
-
-
-==============================================================================
 7. Language support                                *codedocs-language-support*
 
 
-  [!INFO] The `Codedocs` style is not an official style. It exists to provide
+  [!NOTE] The `Codedocs` style is not an official style. It exists to provide
   annotations for languages without native styles or to offer a custom
   alternative.
   Language     Styles ( = default)   Built-in annotations
