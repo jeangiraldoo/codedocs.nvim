@@ -168,10 +168,6 @@ The following functions are available:
 
 ## Configuration
 
-> [!WARNING]
-> Language, annotation and style names must be spelled exactly as shown in the
-> [supported languages section](#language-support).
-
 All options can be customized using the setup function. Here are most of the
 default options:
 
