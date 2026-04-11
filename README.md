@@ -451,6 +451,7 @@ require("codedocs").setup({
 | ruby       | \*YARD                | `comment`, `func`          |
 | rust       | \*RustDoc             | `comment`, `func`          |
 | typescript | \*TSDoc               | `comment`, `func`, `class` |
+| toml       | \*Codedocs            | `comment`                  |
 
 ## Annotation examples
 
