@@ -11,6 +11,7 @@ when making contributions.
   - [Commits](#commits)
   - [Documentation](#documentation)
   - [Code](#code)
+- [Technical documentation](#technical-documentation)
 
 ## Getting started
 
@@ -73,3 +74,8 @@ To maintain code consistency, follow these formatting and linting rules:
 - **No global variables** – If you must use a global variable, explain why in your
   pull request.
 - **Use snake_case** for module, directory, and variable names.
+
+## Technical documentation
+
+Check the [technical documentation](./lua/codedocs/README.md) for an overview of the
+codebase and its inner workings.
