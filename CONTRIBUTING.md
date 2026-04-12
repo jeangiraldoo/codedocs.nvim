@@ -77,5 +77,5 @@ To maintain code consistency, follow these formatting and linting rules:
 
 ## Technical documentation
 
-Check the [technical documentation](./lua/codedocs/README.md) for an overview of the
-codebase and its inner workings.
+Check the [technical documentation](./lua/codedocs/README.md) for an overview of
+the codebase and its inner workings.
