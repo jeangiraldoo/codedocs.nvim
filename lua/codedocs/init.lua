@@ -92,31 +92,30 @@ function Codedocs.setup(user_config)
 end
 
 function Codedocs.extract_item_data(lang_name, target_name)
+	assert(type(lang_name) == "string", "'lang_name' parameter must be a string, got " .. type(lang_name))
+	if target_name then
+		assert(type(target_name) == "string", "'target_name' parameter must be a string, got " .. type(target_name))
+	end
+
 	vim.treesitter.get_parser(0):parse()
 	local node_at_cursor = vim.treesitter.get_node()
 
 	local target_data = _get_supported_target_node_data(node_at_cursor, Codedocs.get_target_identifiers(lang_name))
 
-	local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
+	if not target_data or (target_name and target_name ~= target_data.name) then
+		return {}, target_name or "comment", vim.api.nvim_win_get_cursor(0)[1] - 1
+	end
 
-	if not target_data then return {}, target_name or "comment", cursor_row end
+	local targets_config = require("codedocs.config").languages[lang_name].targets[target_data.name]
 
-	if target_name and target_data.name ~= target_name then return {}, target_name, cursor_row end
+	local items =
+		require "codedocs.item_extractor"(lang_name, target_data.node, targets_config.extractors, targets_config.opts)
 
-	local lang_config = require("codedocs.config").languages[lang_name]
+	Debug_logger.log("Item data: ", items)
 
 	local target_pos = target_data.node:range()
 
-	local item_extractors = lang_config.targets[target_data.name].extractors
-	local items_data = require "codedocs.item_extractor"(
-		lang_name,
-		target_data.node,
-		item_extractors,
-		lang_config.targets[target_data.name].opts
-	)
-
-	Debug_logger.log("Item data: ", items_data)
-	return items_data, target_data.name, target_pos
+	return items, target_data.name, target_pos
 end
 
 function Codedocs.orchestrate_annotation_build(lang_data)
