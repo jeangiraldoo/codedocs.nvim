@@ -74,7 +74,7 @@ describe("Customizing style options", function()
 				for _, style_name in ipairs(Codedocs.get_supported_styles(lang_name)) do
 					it(style_name .. " style", function()
 						local original_style =
-							vim.deepcopy(Codedocs.get_target_style(lang_name, target_name, style_name))
+							vim.deepcopy(Codedocs.get_annotation_tbl(lang_name, style_name, target_name))
 						local original_mocked_user_opts = MOCKED_USER_STRUCT_OPTS[target_name]
 
 						require("codedocs").setup {
@@ -94,7 +94,7 @@ describe("Customizing style options", function()
 
 						assert.are.same(
 							expected_final_style,
-							Codedocs.get_target_style(lang_name, target_name, style_name)
+							Codedocs.get_annotation_tbl(lang_name, style_name, target_name)
 						)
 					end)
 				end

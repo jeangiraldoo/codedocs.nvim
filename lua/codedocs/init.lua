@@ -6,9 +6,22 @@ function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.co
 
 function Codedocs.get_default_style(lang_name) return require("codedocs.config").languages[lang_name].default_style end
 
-function Codedocs.get_target_style(lang_name, target_name, style_name)
-	local style = require("codedocs.config").languages[lang_name].styles[style_name][target_name]
-	return style
+---Returns an existing annotation table from the configuration table
+---Equivalent to `require("codedocs.config").languages[[lang_name]].styles[[style_name]][[annotation_name]]
+---@param lang_name string
+---@param style_name string
+---@param annotation_name string
+---@return CodedocsAnnotationStyleOpts annotation_tbl
+function Codedocs.get_annotation_tbl(lang_name, style_name, annotation_name)
+	assert(type(lang_name) == "string", "The 'lang_name' parameter must be a string, got " .. type(lang_name))
+	assert(type(style_name) == "string", "The 'style_name' parameter must be a string, got " .. type(style_name))
+	assert(
+		type(annotation_name) == "string",
+		"The 'annotation_name' parameter must be a string, got " .. type(annotation_name)
+	)
+
+	local annotation_tbl = require("codedocs.config").languages[lang_name].styles[style_name][annotation_name]
+	return annotation_tbl
 end
 
 ---@return string[] supported_styles List of style names
@@ -121,24 +134,24 @@ end
 function Codedocs.orchestrate_annotation_build(lang_data)
 	local items_data, target_name, annotation_row = Codedocs.extract_item_data(lang_data.name, lang_data.substyle_name)
 
-	local target_style = Codedocs.get_target_style(
+	local annotation_tbl = Codedocs.get_annotation_tbl(
 		lang_data.name,
-		lang_data.substyle_name or target_name,
-		lang_data.style_name or Codedocs.get_default_style(lang_data.name)
+		lang_data.style_name or Codedocs.get_default_style(lang_data.name),
+		lang_data.substyle_name or target_name
 	)
 
 	Debug_logger.log("Structure name: " .. target_name)
 	Debug_logger.log("Style name: " .. Codedocs.get_default_style(lang_data.name))
-	Debug_logger.log("Style: ", target_style)
+	Debug_logger.log("Annotation table: ", annotation_tbl)
 
 	local target_data = {
-		should_indent = target_style.indented,
+		should_indent = annotation_tbl.indented,
 		line_num = annotation_row + 1,
 	}
 
-	local annotation_lines = docs_builder(target_style, items_data, target_data)
+	local annotation_lines = docs_builder(annotation_tbl, items_data, target_data)
 
-	return annotation_lines, annotation_row, target_style.relative_position
+	return annotation_lines, annotation_row, annotation_tbl.relative_position
 end
 
 function Codedocs.generate(substyle_name)

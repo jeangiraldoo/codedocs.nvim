@@ -13,7 +13,7 @@ describe("All styles implemented an annotation per target: ", function()
 			describe(lang_name .. " (" .. target_name .. ") /", function()
 				for _, style_name in ipairs(supported_styles) do
 					it(style_name, function()
-						local style = Codedocs.get_target_style(lang_name, target_name, style_name)
+						local style = Codedocs.get_annotation_tbl(lang_name, style_name, target_name)
 						assert.is_not_nil(style)
 					end)
 				end
