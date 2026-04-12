@@ -262,22 +262,14 @@ like.
 
 #### Blocks
 
-> [!WARNING]
+> [!IMPORTANT]
 > The `blocks` option is a list, so you cannot override a single block on its
 > own. Because your config is merged recursively with the defaults, any blocks
 > you do not explicitly include will be removed, even if they exist in the defaults.
 >
-> To customize just one block, you should copy the default blocks list and then
-> modify the specific block you want.
->
-> Previously, `blocks` was defined as a key value table, where the key represented
-> the block name (equivalent to the `name` field) and the value contained its
-> options (`layout`, `items`, etc.). While this made individual blocks easier
-> to override, it made ordering difficult without introducing an additional option
-> (there used to be an option called `section_order` for this), and reduced composability.
->
-> The current list based approach improves ordering and flexibility overall, at
-> the cost of making single block customization less convenient.
+> To customize just one block, copy the default `blocks` list and modify the
+> specific block you want. Check the [customization example](#customization-example)
+> for a complete example.
 
 | Option Name          | Expected Type | Behavior                                                     |
 | -------------------- | ------------- | ------------------------------------------------------------ |
@@ -375,51 +367,43 @@ the value of `name` must match the corresponding target block.
 
 The following target blocks are available:
 
-| target    | blocks                           |
-| --------- | -------------------------------- |
-| `func`    | `title`, `parameters`, `returns` |
-| `class`   | `title`, `attributes`            |
-| `comment` | `title`                          |
+| target  | blocks                           |
+| ------- | -------------------------------- |
+| `func`  | `title`, `parameters`, `returns` |
+| `class` | `title`, `attributes`            |
 
 #### Customization example
 
 Say we want to make the following changes to the `func` annotation for Python's
 Google style:
 
-- Add a gap in between all items.
-- Add a gap in between blocks (functions have a `parameters` and `returns`
-  block)
+- Add a gap in between parameters.
+- Add a gap in between blocks
 
-This is what such customization would look like:
+As mentioned earlier, the blocks option is a list, so you can’t override a single
+block in isolation; you have to redefine the entire list. That’s fine if you
+intend to change the whole annotation, but if you only need to adjust one block,
+it’s better to copy the annotation and modify only the blocks you need.
 
 ```lua
+local original_blocks_list = require("codedocs.config").languages.python.styles.Google.func.blocks
+local new_func_blocks = vim.deepcopy(original_blocks_list) -- We copy the original annotation blocks list
+print(vim.inspect(new_func_blocks)) -- It's helpful to print the list to check what it looks like before modifying it
+
+local second_block = new_func_blocks[2] -- In this specific case the second block is the parameters one
+second_block.items.insert_gap_between.enabled = true -- We enable the insertion of a gap in between items (parameters in this case)
+
+for _, block in ipairs(new_func_blocks) do -- We iterate over each block
+    block.insert_gap_between.enabled = true -- We enable the insertion of a gap in between the current block and the next
+end
+
 require("codedocs").setup({
     languages = {
         python = {
             styles = {
                 Google = {
-                    func = {
-                        blocks = {
-                             {
-                                name = "parameters",
-                                insert_gap_between = {
-                                    enabled = true
-                                },
-                                items = {
-                                    insert_gap_between = {
-                                        enabled = true
-                                    },
-                                },
-                            },
-                            {
-                                name = "returns",
-                                items = {
-                                    insert_gap_between = {
-                                        enabled = true
-                                    }
-                                },
-                            }
-                        }
+                    func = { -- The func annotation key
+                        blocks = new_func_blocks -- We assign the new list which will replace the default one
                     }
                 },
             },

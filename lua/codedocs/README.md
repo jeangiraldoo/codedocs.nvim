@@ -27,9 +27,6 @@ lua
    ├── health.lua # Exposes plugin diagnostics that can be checked using the `:checkhealth` command
    ├── init.lua # Plugin entry point
    ├── item_extractor.lua # Extracts items out of a code target
-   ├── lang_specs
-   │  ├── init.lua
-   │  └── style_opts.lua
    ├── README.md # You are here
    └── utils
       └── debug_logger.lua # Allows specific data to be displayed for debugging purposes if the `debug` config option is enabled
