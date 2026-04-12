@@ -1,4 +1,4 @@
-*codedocs.txt*            For NVIM v0.10+           Last change: 11 April 2026
+*codedocs.txt*            For NVIM v0.10+           Last change: 12 April 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -482,7 +482,9 @@ This is what such customization would look like:
   php          PHPDoc                comment, func
   ruby         YARD                  comment, func
   rust         RustDoc               comment, func
+  sql          Codedocs              comment
   typescript   TSDoc                 comment, func, class
+  toml         Codedocs              comment
 
 ==============================================================================
 8. Annotation examples                          *codedocs-annotation-examples*
