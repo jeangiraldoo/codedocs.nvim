@@ -1,5 +1,4 @@
 local Debug_logger = require "codedocs.utils.debug_logger"
-local docs_builder = require "codedocs.annotation_builder"
 
 local Codedocs = {}
 
@@ -97,7 +96,7 @@ function Codedocs.orchestrate_annotation_build(lang_data)
 		line_num = annotation_row + 1,
 	}
 
-	local annotation_lines = docs_builder(annotation_tbl, items_data, target_data)
+	local annotation_lines = require "codedocs.annotation_builder"(annotation_tbl, items_data, target_data)
 
 	return annotation_lines, annotation_row, annotation_tbl.relative_position
 end
