@@ -367,11 +367,10 @@ the value of `name` must match the corresponding target block.
 
 The following target blocks are available:
 
-| target    | blocks                           |
-| --------- | -------------------------------- |
-| `func`    | `title`, `parameters`, `returns` |
-| `class`   | `title`, `attributes`            |
-| `comment` | `title`                          |
+| target  | blocks                           |
+| ------- | -------------------------------- |
+| `func`  | `title`, `parameters`, `returns` |
+| `class` | `title`, `attributes`            |
 
 #### Customization example
 
