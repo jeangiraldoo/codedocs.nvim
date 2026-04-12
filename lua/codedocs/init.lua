@@ -29,21 +29,7 @@ function Codedocs.get_supported_styles(lang_name)
 	return vim.tbl_keys(require("codedocs.config").languages[lang_name].styles)
 end
 
-function Codedocs.get_target_identifiers(lang_name)
-	local targets_data = require("codedocs.config").languages[lang_name].targets
-
-	if targets_data._identifiers then return targets_data._identifiers end
-
-	local target_identifiers = {}
-	for target_name, target_data in pairs(targets_data) do
-		for _, node_identifier in ipairs(target_data.node_identifiers) do
-			target_identifiers[node_identifier] = target_name
-		end
-	end
-
-	targets_data._identifiers = target_identifiers
-	return target_identifiers
-end
+Codedocs.get_target_identifiers = require("codedocs.item_extractor").get_target_identifiers
 
 --- Inserts an annotation relative to a target and moves the cursor to the annotation title
 ---@param annotation_lines string[]
@@ -74,19 +60,6 @@ local function _write_to_buffer(annotation_lines, row, relative_position)
 	vim.snippet.expand(lines)
 end
 
----@param ts_node TSNode Treesitter node to traverse upwards from
----@param target_identifiers table<string, string> Treesitter node types to check for
----@return { name: string, node: TSNode } | nil
-local function _get_supported_target_node_data(ts_node, target_identifiers)
-	if not ts_node then return end
-
-	local target_name = target_identifiers[ts_node:type()]
-
-	if target_name then return { name = target_name, node = ts_node } end
-
-	return _get_supported_target_node_data(ts_node:parent(), target_identifiers)
-end
-
 ---@param user_config CodedocsConfig?
 function Codedocs.setup(user_config)
 	if not user_config then return end
@@ -104,35 +77,9 @@ function Codedocs.setup(user_config)
 	end
 end
 
-function Codedocs.extract_item_data(lang_name, target_name)
-	assert(type(lang_name) == "string", "'lang_name' parameter must be a string, got " .. type(lang_name))
-	if target_name then
-		assert(type(target_name) == "string", "'target_name' parameter must be a string, got " .. type(target_name))
-	end
-
-	vim.treesitter.get_parser(0):parse()
-	local node_at_cursor = vim.treesitter.get_node()
-
-	local target_data = _get_supported_target_node_data(node_at_cursor, Codedocs.get_target_identifiers(lang_name))
-
-	if not target_data or (target_name and target_name ~= target_data.name) then
-		return {}, target_name or "comment", vim.api.nvim_win_get_cursor(0)[1] - 1
-	end
-
-	local targets_config = require("codedocs.config").languages[lang_name].targets[target_data.name]
-
-	local items =
-		require "codedocs.item_extractor"(lang_name, target_data.node, targets_config.extractors, targets_config.opts)
-
-	Debug_logger.log("Item data: ", items)
-
-	local target_pos = target_data.node:range()
-
-	return items, target_data.name, target_pos
-end
-
 function Codedocs.orchestrate_annotation_build(lang_data)
-	local items_data, target_name, annotation_row = Codedocs.extract_item_data(lang_data.name, lang_data.substyle_name)
+	local item_extractor = require "codedocs.item_extractor"
+	local items_data, target_name, annotation_row = item_extractor.extract(lang_data.name, lang_data.substyle_name)
 
 	local annotation_tbl = Codedocs.get_annotation_tbl(
 		lang_data.name,

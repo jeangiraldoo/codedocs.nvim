@@ -28,7 +28,7 @@ local function create_datatype_tester(lang, target_name, section_name, template,
 				:totable()
 
 			test_utils.mock_buffer(lang, typed_template, cursor_pos)
-			local actual_item = require("codedocs").extract_item_data(lang)[section_name][1]
+			local actual_item = require("codedocs.item_extractor").extract(lang)[section_name][1]
 			assert.are.same(expected_item_name, actual_item.name)
 			assert.are.same(data_type, actual_item.type)
 		end)
@@ -56,7 +56,7 @@ local function test_generic(lang, generic_cases)
 			it("#" .. idx, function()
 				test_utils.mock_buffer(lang, generic_case.structure, generic_case.cursor_pos)
 
-				assert.are.same(generic_case.expected_items, require("codedocs").extract_item_data(lang))
+				assert.are.same(generic_case.expected_items, require("codedocs.item_extractor").extract(lang))
 			end)
 		end
 	end)

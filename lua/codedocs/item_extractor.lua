@@ -1,3 +1,5 @@
+local Item_extractor = {}
+
 local function remove_duplicate_items_by_name(items)
 	local seen = {}
 	local deduplicated_list = {}
@@ -65,17 +67,63 @@ local function generic_query_parser(ts_node, filetype, query)
 	return items
 end
 
-return function(lang_name, node, target_extractors, extractor_opts)
-	local items_list = {}
-	for extractor_name, item_extractor in pairs(target_extractors) do
+---@param ts_node TSNode Treesitter node to traverse upwards from
+---@param target_identifiers table<string, string> Treesitter node types to check for
+---@return { name: string, node: TSNode } | nil
+local function _get_supported_target_node_data(ts_node, target_identifiers)
+	if not ts_node then return end
+
+	local target_name = target_identifiers[ts_node:type()]
+
+	if target_name then return { name = target_name, node = ts_node } end
+
+	return _get_supported_target_node_data(ts_node:parent(), target_identifiers)
+end
+
+function Item_extractor.get_target_identifiers(lang_name)
+	local targets_data = require("codedocs.config").languages[lang_name].targets
+
+	if targets_data._identifiers then return targets_data._identifiers end
+
+	local target_identifiers = {}
+	for target_name, target_data in pairs(targets_data) do
+		for _, node_identifier in ipairs(target_data.node_identifiers) do
+			target_identifiers[node_identifier] = target_name
+		end
+	end
+
+	targets_data._identifiers = target_identifiers
+	return target_identifiers
+end
+
+function Item_extractor.extract(lang_name, target_name)
+	assert(type(lang_name) == "string", "'lang_name' parameter must be a string, got " .. type(lang_name))
+	if target_name then
+		assert(type(target_name) == "string", "'target_name' parameter must be a string, got " .. type(target_name))
+	end
+
+	vim.treesitter.get_parser(0):parse()
+	local node_at_cursor = vim.treesitter.get_node()
+
+	local target_data =
+		_get_supported_target_node_data(node_at_cursor, Item_extractor.get_target_identifiers(lang_name))
+
+	if not target_data or (target_name and target_name ~= target_data.name) then
+		return {}, target_name or "comment", vim.api.nvim_win_get_cursor(0)[1] - 1
+	end
+
+	local targets_config = require("codedocs.config").languages[lang_name].targets[target_data.name]
+
+	local items = {}
+	for extractor_name, item_extractor in pairs(targets_config.extractors) do
 		local raw_items = item_extractor {
-			node = node,
-			opts = extractor_opts,
+			node = target_data.node,
+			opts = targets_config.opts,
 			lang_name = lang_name,
 			generic_query_parser = generic_query_parser,
 			lang_query_parser =
 				---@param query TSQuery
-				function(query) return generic_query_parser(node, lang_name, query) end,
+				function(query) return generic_query_parser(target_data.node, lang_name, query) end,
 		} or {}
 
 		local final_items
@@ -98,8 +146,12 @@ return function(lang_name, node, target_extractors, extractor_opts)
 			end, raw_items)
 		end
 
-		items_list[extractor_name] = final_items
+		items[extractor_name] = final_items
 	end
 
-	return items_list
+	local target_pos = target_data.node:range()
+
+	return items, target_data.name, target_pos
 end
+
+return Item_extractor
