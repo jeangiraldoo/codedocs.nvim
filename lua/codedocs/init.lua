@@ -2,34 +2,6 @@ local Debug_logger = require "codedocs.utils.debug_logger"
 local docs_builder = require "codedocs.annotation_builder"
 
 local Codedocs = {}
-function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
-
-function Codedocs.get_default_style(lang_name) return require("codedocs.config").languages[lang_name].default_style end
-
----Returns an existing annotation table from the configuration table
----Equivalent to `require("codedocs.config").languages[[lang_name]].styles[[style_name]][[annotation_name]]
----@param lang_name string
----@param style_name string
----@param annotation_name string
----@return CodedocsAnnotationStyleOpts annotation_tbl
-function Codedocs.get_annotation_tbl(lang_name, style_name, annotation_name)
-	assert(type(lang_name) == "string", "The 'lang_name' parameter must be a string, got " .. type(lang_name))
-	assert(type(style_name) == "string", "The 'style_name' parameter must be a string, got " .. type(style_name))
-	assert(
-		type(annotation_name) == "string",
-		"The 'annotation_name' parameter must be a string, got " .. type(annotation_name)
-	)
-
-	local annotation_tbl = require("codedocs.config").languages[lang_name].styles[style_name][annotation_name]
-	return annotation_tbl
-end
-
----@return string[] supported_styles List of style names
-function Codedocs.get_supported_styles(lang_name)
-	return vim.tbl_keys(require("codedocs.config").languages[lang_name].styles)
-end
-
-Codedocs.get_target_identifiers = require("codedocs.item_extractor").get_target_identifiers
 
 --- Inserts an annotation relative to a target and moves the cursor to the annotation title
 ---@param annotation_lines string[]
@@ -59,6 +31,35 @@ local function _write_to_buffer(annotation_lines, row, relative_position)
 	local lines = table.concat(annotation_lines, "\n")
 	vim.snippet.expand(lines)
 end
+
+function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
+
+function Codedocs.get_default_style(lang_name) return require("codedocs.config").languages[lang_name].default_style end
+
+---Returns an existing annotation table from the configuration table
+---Equivalent to `require("codedocs.config").languages[[lang_name]].styles[[style_name]][[annotation_name]]
+---@param lang_name string
+---@param style_name string
+---@param annotation_name string
+---@return CodedocsAnnotationStyleOpts annotation_tbl
+function Codedocs.get_annotation_tbl(lang_name, style_name, annotation_name)
+	assert(type(lang_name) == "string", "The 'lang_name' parameter must be a string, got " .. type(lang_name))
+	assert(type(style_name) == "string", "The 'style_name' parameter must be a string, got " .. type(style_name))
+	assert(
+		type(annotation_name) == "string",
+		"The 'annotation_name' parameter must be a string, got " .. type(annotation_name)
+	)
+
+	local annotation_tbl = require("codedocs.config").languages[lang_name].styles[style_name][annotation_name]
+	return annotation_tbl
+end
+
+---@return string[] supported_styles List of style names
+function Codedocs.get_supported_styles(lang_name)
+	return vim.tbl_keys(require("codedocs.config").languages[lang_name].styles)
+end
+
+Codedocs.get_target_identifiers = require("codedocs.item_extractor").get_target_identifiers
 
 ---@param user_config CodedocsConfig?
 function Codedocs.setup(user_config)
