@@ -34,8 +34,6 @@ end
 
 function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
 
-function Codedocs.get_default_style(lang_name) return require("codedocs.config").languages[lang_name].default_style end
-
 ---Returns an existing annotation table from the configuration table
 ---Equivalent to `require("codedocs.config").languages[[lang_name]].styles[[style_name]][[annotation_name]]
 ---@param lang_name string
@@ -86,14 +84,12 @@ function Codedocs.orchestrate_annotation_build(annotation_data)
 	local items_data, target_name, annotation_row =
 		item_extractor.extract(annotation_data.name, annotation_data.annotation_name)
 
-	local annotation_tbl = Codedocs.get_annotation_tbl(
-		annotation_data.name,
-		annotation_data.style_name or Codedocs.get_default_style(annotation_data.name),
-		annotation_data.annotation_name or target_name
-	)
+	local style = annotation_data.style_name or require("codedocs.config").languages[annotation_data.name].default_style
+	local annotation_tbl =
+		Codedocs.get_annotation_tbl(annotation_data.name, style, annotation_data.annotation_name or target_name)
 
 	Debug_logger.log("Structure name: " .. target_name)
-	Debug_logger.log("Style name: " .. Codedocs.get_default_style(annotation_data.name))
+	Debug_logger.log("Style name: " .. style)
 	Debug_logger.log("Annotation table: ", annotation_tbl)
 
 	local target_data = {
