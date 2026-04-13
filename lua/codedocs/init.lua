@@ -55,7 +55,9 @@ end
 
 ---@return string[] supported_styles List of style names
 function Codedocs.get_supported_styles(lang_name)
-	return vim.tbl_keys(require("codedocs.config").languages[lang_name].styles)
+	local supported_styles = vim.tbl_keys(require("codedocs.config").languages[lang_name].styles)
+	table.sort(supported_styles)
+	return supported_styles
 end
 
 Codedocs.get_target_identifiers = require("codedocs.item_extractor").get_target_identifiers

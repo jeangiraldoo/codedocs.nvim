@@ -1,4 +1,5 @@
 local Utils = {}
+local Codedocs = require "codedocs"
 
 ---@param filetype string
 ---@param buffer_lines string[]
@@ -35,6 +36,14 @@ function Utils.get_supported_targets(lang_name)
 	table.insert(supported_target_names, "comment")
 
 	return supported_target_names
+end
+
+function Utils.for_style(func)
+	for _, lang_name in ipairs(Codedocs.get_supported_langs()) do
+		for _, style_name in ipairs(Codedocs.get_supported_styles(lang_name)) do
+			func(lang_name, style_name)
+		end
+	end
 end
 
 return Utils
