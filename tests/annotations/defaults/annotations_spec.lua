@@ -23,10 +23,10 @@ describe("Default style annotations", function()
 
 							assert.are.same(
 								target_case.expected_annotation[style_name],
-								require("codedocs").orchestrate_annotation_build {
-									name = lang,
-									style_name = style_name,
-								}
+								require("codedocs").build_annotation(
+									lang,
+									{ style_name = style_name, annotation_name = target_name }
+								).lines
 							)
 						end)
 					end

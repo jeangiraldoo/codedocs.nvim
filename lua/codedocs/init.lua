@@ -91,30 +91,60 @@ function Codedocs.setup(user_config)
 	end
 end
 
-function Codedocs.orchestrate_annotation_build(annotation_data)
-	local item_extractor = require "codedocs.item_extractor"
-	local items_data, target_name, annotation_row =
-		item_extractor.extract(annotation_data.name, annotation_data.annotation_name)
+---@param lang_name string
+---@param annotation_data {annotation_name: string, style_name: string?}?
+---@return { lines: string[], row: number, relative_position: string} | nil
+function Codedocs.build_annotation(lang_name, annotation_data)
+	vim.validate {
+		lang_name = { lang_name, "string" },
+		annotation_data = { annotation_data, { "table", "nil" } },
+	}
 
-	local style = annotation_data.style_name or require("codedocs.config").languages[annotation_data.name].default_style
-	local annotation_tbl =
-		Codedocs.get_annotation_tbl(annotation_data.name, style, annotation_data.annotation_name or target_name)
+	local lang_config = require("codedocs.config").languages[lang_name]
 
-	Debug_logger.log("Structure name: " .. target_name)
-	Debug_logger.log("Style name: " .. style)
-	Debug_logger.log("Annotation table: ", annotation_tbl)
+	local style_name = lang_config.default_style
 
+	local items, target_name, annotation_row
+	if annotation_data and annotation_data.annotation_name then
+		target_name = annotation_data.annotation_name
+
+		--If a specific annotation is requested, the style where it is contained can be specified
+		style_name = annotation_data.style_name or style_name
+
+		local target_exists = lang_config.targets[target_name]
+		if target_exists then
+			local item_extractor = require "codedocs.item_extractor"
+			local target_under_cursor
+			items, target_under_cursor, annotation_row = item_extractor.extract(lang_name)
+
+			--- If a specific annotation is requested but the detected target is a different,
+			--- ignore target-specific items and generate the requested annotation with no items
+			if target_under_cursor ~= target_name then items = {} end
+		else
+			items, annotation_row = {}, vim.api.nvim_win_get_cursor(0)[1] - 1
+		end
+	else
+		local item_extractor = require "codedocs.item_extractor"
+		items, target_name, annotation_row = item_extractor.extract(lang_name)
+	end
+
+	local annotation_exists = lang_config.styles[lang_config.default_style][target_name] ~= nil
+	if not annotation_exists then
+		vim.notify("No annotation is called " .. target_name, vim.log.levels.ERROR)
+		return
+	end
+
+	local annotation_tbl = Codedocs.get_annotation_tbl(lang_name, style_name, target_name)
 	local target_data = {
 		should_indent = annotation_tbl.indented,
 		line_num = annotation_row + 1,
 	}
 
-	local annotation_lines = require "codedocs.annotation_builder"(annotation_tbl, items_data, target_data)
-
-	return annotation_lines, annotation_row, annotation_tbl.relative_position
+	local annotation_lines = require "codedocs.annotation_builder"(annotation_tbl, items, target_data)
+	return { lines = annotation_lines, row = annotation_row, relative_position = annotation_tbl.relative_position }
 end
 
----@param annotation_data { annotation_name: string }?
+---@param annotation_data { annotation_name: string, style_name: string? }?
 function Codedocs.generate(annotation_data)
 	vim.validate {
 		annotation_data = { annotation_data, { "table", "nil" } },
@@ -132,12 +162,10 @@ function Codedocs.generate(annotation_data)
 		return
 	end
 
-	annotation_data.name = lang_name
-	local annotation_lines, row, relative_position = Codedocs.orchestrate_annotation_build(annotation_data)
-
-	Debug_logger.log("Annotation:", annotation_lines)
-
-	_write_to_buffer(annotation_lines, row, relative_position)
+	local annotation_result = Codedocs.build_annotation(lang_name, annotation_data)
+	if annotation_result and not vim.tbl_isempty(annotation_result.lines) then
+		_write_to_buffer(annotation_result.lines, annotation_result.row, annotation_result.relative_position)
+	end
 end
 
 return Codedocs
