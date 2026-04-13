@@ -20,16 +20,10 @@ vim.api.nvim_set_keymap(
 	"<cmd>lua require('codedocs').generate()<CR>",
 	{ noremap = true, silent = true }
 )
-local function get_annotation_list()
-	local lang = vim.bo.filetype
-	local lang_stuff = require("codedocs.config").languages[lang]
-	local substyles = vim.tbl_keys(lang_stuff.styles[lang_stuff.default_style])
-	return substyles
-end
 
 vim.api.nvim_create_user_command("Codedocs", function(opts)
 	local choice = opts.fargs[1]
-	if choice and not vim.tbl_contains(get_annotation_list(), choice) then
+	if choice and not vim.tbl_contains(require("codedocs").get_annotation_list(), choice) then
 		vim.notify("Invalid option: " .. (choice or "nil"), vim.log.levels.ERROR)
 		return
 	end
@@ -37,6 +31,9 @@ vim.api.nvim_create_user_command("Codedocs", function(opts)
 end, {
 	nargs = "?",
 	complete = function(arglead)
-		return vim.tbl_filter(function(opt) return opt:find(arglead) == 1 end, get_annotation_list())
+		return vim.tbl_filter(
+			function(opt) return opt:find(arglead) == 1 end,
+			require("codedocs").get_annotation_list()
+		)
 	end,
 })

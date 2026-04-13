@@ -34,6 +34,13 @@ end
 
 function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
 
+function Codedocs.get_annotation_list()
+	local lang = vim.bo.filetype
+	local lang_stuff = require("codedocs.config").languages[lang]
+	local annotation_names = vim.tbl_keys(lang_stuff.styles[lang_stuff.default_style])
+	return annotation_names
+end
+
 ---Returns an existing annotation table from the configuration table
 ---Equivalent to `require("codedocs.config").languages[[lang_name]].styles[[style_name]][[annotation_name]]
 ---@param lang_name string
@@ -108,9 +115,9 @@ function Codedocs.generate(annotation_data)
 		annotation_data = { annotation_data, { "table", "nil" } },
 	}
 
-	if annotation_data then vim.validate {
-		annotation_name = { annotation_data.annotation_name, "string" },
-	} end
+	-- if annotation_data then vim.validate {
+	-- 	annotation_name = { annotation_data.annotation_name, "string" },
+	-- } end
 
 	local lang_name = require("codedocs.config").aliases[vim.bo.filetype] or vim.bo.filetype
 	Debug_logger.log("Language: " .. lang_name)
