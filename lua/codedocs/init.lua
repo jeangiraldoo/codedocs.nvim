@@ -32,10 +32,15 @@ local function _write_to_buffer(annotation_lines, row, relative_position)
 	vim.snippet.expand(lines)
 end
 
+local function _determine_lang_name()
+	local filetype = vim.bo.filetype
+	return require("codedocs.config").aliases[filetype] or filetype
+end
+
 function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
 
 function Codedocs.get_annotation_list()
-	local lang = vim.bo.filetype
+	local lang = _determine_lang_name()
 	local lang_stuff = require("codedocs.config").languages[lang]
 	local annotation_names = vim.tbl_keys(lang_stuff.styles[lang_stuff.default_style])
 	return annotation_names
@@ -119,7 +124,7 @@ function Codedocs.generate(annotation_data)
 	-- 	annotation_name = { annotation_data.annotation_name, "string" },
 	-- } end
 
-	local lang_name = require("codedocs.config").aliases[vim.bo.filetype] or vim.bo.filetype
+	local lang_name = _determine_lang_name()
 	Debug_logger.log("Language: " .. lang_name)
 
 	if not vim.treesitter.get_parser(0, lang_name, { error = false }) then
