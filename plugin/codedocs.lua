@@ -33,7 +33,7 @@ vim.api.nvim_create_user_command("Codedocs", function(opts)
 		vim.notify("Invalid option: " .. (choice or "nil"), vim.log.levels.ERROR)
 		return
 	end
-	require("codedocs").generate(choice)
+	require("codedocs").generate { annotation_name = choice }
 end, {
 	nargs = "?",
 	complete = function(arglead)

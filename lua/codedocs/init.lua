@@ -77,18 +77,19 @@ function Codedocs.setup(user_config)
 	end
 end
 
-function Codedocs.orchestrate_annotation_build(lang_data)
+function Codedocs.orchestrate_annotation_build(annotation_data)
 	local item_extractor = require "codedocs.item_extractor"
-	local items_data, target_name, annotation_row = item_extractor.extract(lang_data.name, lang_data.substyle_name)
+	local items_data, target_name, annotation_row =
+		item_extractor.extract(annotation_data.name, annotation_data.annotation_name)
 
 	local annotation_tbl = Codedocs.get_annotation_tbl(
-		lang_data.name,
-		lang_data.style_name or Codedocs.get_default_style(lang_data.name),
-		lang_data.substyle_name or target_name
+		annotation_data.name,
+		annotation_data.style_name or Codedocs.get_default_style(annotation_data.name),
+		annotation_data.annotation_name or target_name
 	)
 
 	Debug_logger.log("Structure name: " .. target_name)
-	Debug_logger.log("Style name: " .. Codedocs.get_default_style(lang_data.name))
+	Debug_logger.log("Style name: " .. Codedocs.get_default_style(annotation_data.name))
 	Debug_logger.log("Annotation table: ", annotation_tbl)
 
 	local target_data = {
@@ -101,8 +102,21 @@ function Codedocs.orchestrate_annotation_build(lang_data)
 	return annotation_lines, annotation_row, annotation_tbl.relative_position
 end
 
-function Codedocs.generate(substyle_name)
+---@param annotation_data { annotation_name: string }?
+function Codedocs.generate(annotation_data)
 	Debug_logger.log "Plugin triggered"
+	if annotation_data then
+		assert(
+			type(annotation_data) == "table",
+			"The 'annotation_data' parameter must be a table, got " .. type(annotation_data)
+		)
+		if annotation_data.annotation_name then
+			assert(
+				type(annotation_data.annotation_name) == "string",
+				"The 'annotation_name' key must be a string, got " .. type(annotation_data.annotation_name)
+			)
+		end
+	end
 
 	local lang_name = require("codedocs.config").aliases[vim.bo.filetype] or vim.bo.filetype
 	Debug_logger.log("Language: " .. lang_name)
@@ -112,8 +126,8 @@ function Codedocs.generate(substyle_name)
 		return
 	end
 
-	local annotation_lines, row, relative_position =
-		Codedocs.orchestrate_annotation_build { name = lang_name, substyle_name = substyle_name }
+	annotation_data.name = lang_name
+	local annotation_lines, row, relative_position = Codedocs.orchestrate_annotation_build(annotation_data)
 
 	Debug_logger.log("Annotation:", annotation_lines)
 
