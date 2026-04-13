@@ -97,10 +97,10 @@ function Item_extractor.get_target_identifiers(lang_name)
 end
 
 function Item_extractor.extract(lang_name, target_name)
-	assert(type(lang_name) == "string", "'lang_name' parameter must be a string, got " .. type(lang_name))
-	if target_name then
-		assert(type(target_name) == "string", "'target_name' parameter must be a string, got " .. type(target_name))
-	end
+	vim.validate {
+		lang_name = { lang_name, "string" },
+		target_name = { target_name, { "string", "nil" } },
+	}
 
 	vim.treesitter.get_parser(0):parse()
 	local node_at_cursor = vim.treesitter.get_node()

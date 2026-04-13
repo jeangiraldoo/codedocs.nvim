@@ -26,16 +26,11 @@ local NON_ITEM_BASED_SECTION_DEFAULTS = vim.tbl_deep_extend("force", vim.deepcop
 ---        text: string? } })? Item options
 ---@return CodedocsSectionOpts
 function Utils.new_section(section_data, items_data)
-	assert(
-		type(section_data) == "table",
-		"The `section_data` parameter must be a table, received " .. type(section_data)
-	)
-	if items_data then
-		assert(
-			type(items_data) == "table",
-			"The `section_data` parameter must be a table, received " .. type(items_data)
-		)
-	end
+	vim.validate {
+		section_data = { section_data, "table" },
+		items_data = { items_data, { "table", "nil" } },
+	}
+
 	local section_opts = vim.tbl_deep_extend("force", vim.deepcopy(NON_ITEM_BASED_SECTION_DEFAULTS), section_data)
 	if items_data then
 		section_opts.items = vim.tbl_deep_extend("force", vim.deepcopy(COMMON_SECTION_OPTS), items_data)

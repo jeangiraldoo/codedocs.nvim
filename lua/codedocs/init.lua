@@ -7,10 +7,11 @@ local Codedocs = {}
 ---@param row number 0-based annotation-related positions
 ---@param relative_position "above" | "below" | "empty_target_or_above" Position relative to the target row
 local function _write_to_buffer(annotation_lines, row, relative_position)
-	assert(type(annotation_lines) == "table", "'annotation' must be a string, got " .. type(annotation_lines))
-	assert(type(relative_position) == "string", "'relative_position' must be a string, got " .. type(relative_position))
-	assert(type(row) == "number", "'row' must be a number, got " .. type(row))
-	assert(row >= 0, "'annotation_row' must be 0 or higher, got " .. row)
+	vim.validate {
+		annotation_lines = { annotation_lines, "table" },
+		row = { row, "number" },
+		relative_position = { relative_position, "string" },
+	}
 
 	local should_insert_extra_line = (
 		relative_position == "empty_target_or_above" and vim.api.nvim_get_current_line() ~= ""
@@ -42,12 +43,11 @@ function Codedocs.get_default_style(lang_name) return require("codedocs.config")
 ---@param annotation_name string
 ---@return CodedocsAnnotationStyleOpts annotation_tbl
 function Codedocs.get_annotation_tbl(lang_name, style_name, annotation_name)
-	assert(type(lang_name) == "string", "The 'lang_name' parameter must be a string, got " .. type(lang_name))
-	assert(type(style_name) == "string", "The 'style_name' parameter must be a string, got " .. type(style_name))
-	assert(
-		type(annotation_name) == "string",
-		"The 'annotation_name' parameter must be a string, got " .. type(annotation_name)
-	)
+	vim.validate {
+		lang_name = { lang_name, "string" },
+		style_name = { style_name, "string" },
+		annotation_name = { annotation_name, "string" },
+	}
 
 	local annotation_tbl = require("codedocs.config").languages[lang_name].styles[style_name][annotation_name]
 	return annotation_tbl
@@ -62,9 +62,11 @@ Codedocs.get_target_identifiers = require("codedocs.item_extractor").get_target_
 
 ---@param user_config CodedocsConfig?
 function Codedocs.setup(user_config)
-	if not user_config then return end
+	vim.validate {
+		user_config = { user_config, "table" },
+	}
 
-	assert(type(user_config) == "table", "The Codedocs `setup` function expects a table, got " .. type(user_config))
+	if not user_config then return end
 
 	local config = require "codedocs.config"
 	local merged = vim.tbl_deep_extend("force", config, user_config)
@@ -104,19 +106,13 @@ end
 
 ---@param annotation_data { annotation_name: string }?
 function Codedocs.generate(annotation_data)
-	Debug_logger.log "Plugin triggered"
-	if annotation_data then
-		assert(
-			type(annotation_data) == "table",
-			"The 'annotation_data' parameter must be a table, got " .. type(annotation_data)
-		)
-		if annotation_data.annotation_name then
-			assert(
-				type(annotation_data.annotation_name) == "string",
-				"The 'annotation_name' key must be a string, got " .. type(annotation_data.annotation_name)
-			)
-		end
-	end
+	vim.validate {
+		annotation_data = { annotation_data, { "table", "nil" } },
+	}
+
+	if annotation_data then vim.validate {
+		annotation_name = { annotation_data.annotation_name, "string" },
+	} end
 
 	local lang_name = require("codedocs.config").aliases[vim.bo.filetype] or vim.bo.filetype
 	Debug_logger.log("Language: " .. lang_name)
