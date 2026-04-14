@@ -42,12 +42,16 @@ Framework_
 
 ## Requirements
 
-Codedocs relies on Treesitter for its core functionality. Neovim includes
-built-in Treesitter parsers for the following languages—meaning no extra setup
-is needed for:
+No requirements are needed if you’re only using annotations unrelated to code
+(such as comments) and aren’t using the autodetection feature.
+
+To use the full feature set, Codedocs relies on Treesitter for its core functionality.
+Neovim includes built-in Treesitter parsers for the following languages, so no
+additional setup is required:
 
 - Lua
 - C
+- Markdown
 
 For any other language, you'll need to install the corresponding Treesitter
 parser. The simplest way to do this is with

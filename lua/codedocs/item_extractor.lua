@@ -101,6 +101,11 @@ function Item_extractor.extract(lang_name)
 		lang_name = { lang_name, "string" },
 	}
 
+	if not vim.treesitter.get_parser(0, lang_name, { error = false }) then
+		vim.notify("Tree-sitter parser for " .. lang_name .. " is not installed", vim.log.levels.ERROR)
+		return
+	end
+
 	vim.treesitter.get_parser(0):parse()
 	local node_at_cursor = vim.treesitter.get_node()
 
@@ -148,7 +153,7 @@ function Item_extractor.extract(lang_name)
 
 	local target_pos = target_data.node:range()
 
-	return items, target_data.name, target_pos
+	return { items = items, name = target_data.name, row = target_pos }
 end
 
 return Item_extractor

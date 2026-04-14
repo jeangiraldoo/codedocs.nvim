@@ -115,7 +115,10 @@ function Codedocs.build_annotation(lang_name, annotation_data)
 		if target_exists then
 			local item_extractor = require "codedocs.item_extractor"
 			local target_under_cursor
-			items, target_under_cursor, annotation_row = item_extractor.extract(lang_name)
+			local target_data = item_extractor.extract(lang_name)
+			if not target_data then return end
+
+			items, target_under_cursor, annotation_row = target_data.items, target_data.name, target_data.row
 
 			--- If a specific annotation is requested but the detected target is a different,
 			--- ignore target-specific items and generate the requested annotation with no items
@@ -125,7 +128,9 @@ function Codedocs.build_annotation(lang_name, annotation_data)
 		end
 	else
 		local item_extractor = require "codedocs.item_extractor"
-		items, target_name, annotation_row = item_extractor.extract(lang_name)
+		local target_data = item_extractor.extract(lang_name)
+		if not target_data then return end
+		items, target_name, annotation_row = target_data.items, target_data.name, target_data.row
 	end
 
 	local annotation_exists = lang_config.styles[lang_config.default_style][target_name] ~= nil
@@ -157,10 +162,10 @@ function Codedocs.generate(annotation_data)
 	local lang_name = _determine_lang_name()
 	Debug_logger.log("Language: " .. lang_name)
 
-	if not vim.treesitter.get_parser(0, lang_name, { error = false }) then
-		vim.notify("Tree-sitter parser for " .. lang_name .. " is not installed", vim.log.levels.ERROR)
-		return
-	end
+	-- if not vim.treesitter.get_parser(0, lang_name, { error = false }) then
+	-- 	vim.notify("Tree-sitter parser for " .. lang_name .. " is not installed", vim.log.levels.ERROR)
+	-- 	return
+	-- end
 
 	local annotation_result = Codedocs.build_annotation(lang_name, annotation_data)
 	if annotation_result and not vim.tbl_isempty(annotation_result.lines) then
