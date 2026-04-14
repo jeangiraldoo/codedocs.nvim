@@ -104,8 +104,11 @@ end
 --- @param style table Style configuration for all blocks and settings options
 --- @return table Table mapping block names to their formatted content lines
 return function(style, item_data, target_data)
-	assert(type(item_data) == "table", "'item_data' must be a table, got " .. type(item_data))
-	assert(type(style) == "table", "'style' must be a table, got " .. type(style))
+	vim.validate {
+		style = { style, "table" },
+		item_data = { item_data, "table" },
+		target_data = { target_data, { "table", "nil" } },
+	}
 
 	local annotation = Annotation.new()
 

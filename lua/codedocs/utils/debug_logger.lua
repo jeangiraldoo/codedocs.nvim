@@ -1,8 +1,10 @@
 local Debug_logging = {}
 
 function Debug_logging.log(msg, tbl)
-	assert(type(msg) == "string", "'msg' must be a string, got " .. type(msg))
-	assert(tbl == nil or type(tbl) == "table", "'tbl' must be a string, got " .. type(tbl))
+	vim.validate {
+		msg = { msg, "string" },
+		tbl = { tbl, { "table", "nil" } },
+	}
 
 	if not require("codedocs.config").debug then return end
 

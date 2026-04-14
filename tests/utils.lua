@@ -1,15 +1,17 @@
 local Utils = {}
+local Codedocs = require "codedocs"
 
 ---@param filetype string
 ---@param buffer_lines string[]
 ---@param cursor_pos { row: number, col: number }
 function Utils.mock_buffer(filetype, buffer_lines, cursor_pos)
-	assert(type(filetype) == "string", "The filetype parameter must be a string, got " .. type(filetype))
-	assert(type(buffer_lines) == "table", "The buffer_lines parameter must be a table, got " .. type(buffer_lines))
-
-	assert(type(cursor_pos) == "table", "The cursor_pos parameter must be a table, got " .. type(cursor_pos))
-	assert(type(cursor_pos.row) == "number", "The cursor_pos row must be a number, got " .. type(cursor_pos.row))
-	assert(type(cursor_pos.col) == "number", "The cursor_pos col must be a number, got " .. type(cursor_pos.col))
+	vim.validate {
+		filetype = { filetype, "string" },
+		buffer_lines = { buffer_lines, "table" },
+		cursor_pos = { cursor_pos, "table" },
+		cursor_pos_row = { cursor_pos.row, "number" },
+		cursor_pos_col = { cursor_pos.col, "number" },
+	}
 
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.api.nvim_set_current_buf(buf)
@@ -34,6 +36,14 @@ function Utils.get_supported_targets(lang_name)
 	table.insert(supported_target_names, "comment")
 
 	return supported_target_names
+end
+
+function Utils.for_style(func)
+	for _, lang_name in ipairs(Codedocs.get_supported_langs()) do
+		for _, style_name in ipairs(Codedocs.get_supported_styles(lang_name)) do
+			func(lang_name, style_name)
+		end
+	end
 end
 
 return Utils
