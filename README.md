@@ -206,6 +206,201 @@ require("codedocs").setup {
 }
 ```
 
+### How annotations work
+
+> [!CAUTION]
+> All annotations are expected to include all the options, using any of the valid
+> values, for the plugin to work properly
+
+An annotation is a regular Lua table that can interact with code items,
+and with some options (keys).
+
+#### Items
+
+An item is a unit of data that can be extracted from code structures such as functions,
+classes, and similar constructs. In the context of the plugin, a code structure
+from which items are extracted is referred to as a `target`.
+
+Ultimately, an item is a table with a `name` and `type` keys.
+
+For example, the following function:
+
+```python
+def foo(a: int, b: string) -> int:
+    ...
+```
+
+has the following items:
+
+```lua
+{
+    parameters = { -- List of parameter items
+        {
+            name = "a",
+            type = "int"
+        },
+        {
+            name = "b",
+            type = "string"
+        },
+    },
+    returns = {
+        {
+            name = "",
+            type = "int"
+        }
+    }
+}
+```
+
+Since the plugin relies on Treesitter for extraction, a target is identified by
+one or more Treesitter node types.
+
+For example, this is what the `targets` key of the default Lua configuration looks
+like:
+
+```lua
+local default_config = {
+    languages = {
+        lua = {
+            default_style = "EmmyLua",
+            styles = {
+                --Style/annotation data
+            },
+            targets = {
+                func = {
+                    node_identifiers = { ---Determines what Treesitter node types identify the target
+                        "function_definition",
+                        "function_declaration",
+                    },
+                    extractors = {
+                        parameters = function()
+                            ---Some logic that eventually returns a list of items
+                        end,
+                        returns = function()
+                            ---Some logic that eventually returns a list of items
+                        end
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+When the target is processed the result is a table where each key corresponds to
+one of the keys under `extractors`, and the values are the list of items returned
+by each function.
+
+#### Options
+
+| Option Name         | Expected Value Type                                 | Behavior                                          |
+| ------------------- | --------------------------------------------------- | ------------------------------------------------- |
+| `relative_position` | `"above"` \| `"below"` \| `"empty_target_or_above"` | Where to insert the annotation                    |
+| `indented`          | boolean                                             | Whether to indent the entire annotation one level |
+| `blocks`            | table (list)                                        | List of blocks forming the annotation             |
+
+Blocks are the core of an annotation, they determine what it ultimately looks
+like.
+
+##### Blocks
+
+> [!IMPORTANT]
+> The `blocks` option is a list, so you cannot override a single block on its
+> own. Because your config is merged recursively with the defaults, any blocks
+> you do not explicitly include will be removed, even if they exist in the defaults.
+>
+> To customize just one block, copy the default `blocks` list and modify the
+> specific block you want.
+
+| Option Name          | Expected Type | Behavior                                                     |
+| -------------------- | ------------- | ------------------------------------------------------------ |
+| `name`               | string        | The name of the block, useful for readability and for items  |
+| `layout`             | string[]      | List of lines that that make up the block                    |
+| `insert_gap_between` | table         | Sets up a gap in between the current block/item and the next |
+| `ignore_prev_gap`    | boolean       | Skips the gap defined by the previous block (if enabled)     |
+| `items`              | table?        | Sets up options for the block's items                        |
+
+All options with the exception of `ignore_prev_gap` have some caveats that will
+be explained below in detail.
+
+###### `layout` option
+
+> [!INFO]
+> The layout lines of all blocks are concatenated in block order to form the
+> final annotation.
+
+The following string placeholders are predefined:
+
+- `%snippet_tabstop_index`: Inserts a tabstop index for defining snippet tabstops
+  (e.g., `$%snippet_tabstop_index` or `${%snippet_tabstop_index:default label}`).
+- `%>`: Either a tab character or a number of spaces, based on your Neovim settings
+
+###### `insert_gap_between` option
+
+The following suboptions are available:
+
+| Name    | Expected Value Type | Behavior                                                 |
+| ------- | ------------------- | -------------------------------------------------------- |
+| enabled | `boolean`           | Whether a gap is inserted in between two blocks or items |
+| text    | `string`            | String used as the gap                                   |
+
+###### `name` and `items` option
+
+The `name` option serves two main purposes:
+
+1. It identifies the block, making its role easier to understand
+2. It links the block to a specific group of items extracted from a target
+
+The second purpose only applies to item-based blocks. When items are extracted
+from a target, they are grouped by block name. For a block to access those items,
+its `name` must match the corresponding group in the target.
+
+For example, given a target called `func` with the following items table:
+
+```lua
+local items = {
+    parameters = {
+        {
+            name = "a",
+            type = "string"
+        },
+        {
+            name = "b",
+            type = "int"
+        }
+    },
+    returns = {
+        {
+            name = "",
+            type = "int"
+        }
+    }
+}
+```
+
+If the annotation to be generated is also named `func` these items become available
+for use. Any block whose `name` matches a key in the items table, such as `parameters`
+or `returns` in the example, can access the corresponding items. This is done through
+the `items` option, which supports options like
+`insert_gap_between` and `layout`.
+
+In this context, the `layout` defines how each individual item is rendered, and
+its output is appended to the block’s own `layout`. Additionally, the default `layout`
+placeholders are expanded with the following ones:
+
+- `%item_name`
+- `%item_type`
+
+When used, they get replaced by the item's name and type respectively.
+
+The following target blocks are available:
+
+| target  | blocks                           |
+| ------- | -------------------------------- |
+| `func`  | `title`, `parameters`, `returns` |
+| `class` | `title`, `attributes`            |
+
 ### Customize an annotation
 
 You can customize almost (for now!) every aspect of an annotation. Whether you
@@ -252,134 +447,12 @@ In this case, we:
 - Added a third kaomoji to wrap the left side of the return type.
 - Customized the titles for both the parameters and return blocks.
 
-To customize an annotation, keep in mind that it is simply a regular Lua
-table with the following options:
+The [How annotations work](#how-annotations-work) section covers everything you
+need to know about annotations. Since all built-in annotations are implemented this
+way, you can customize them using the same principles.
 
-| Option Name         | Expected Value Type                                 | Behavior                                          |
-| ------------------- | --------------------------------------------------- | ------------------------------------------------- |
-| `relative_position` | `"above"` \| `"below"` \| `"empty_target_or_above"` | Where to insert the annotation                    |
-| `indented`          | boolean                                             | Whether to indent the entire annotation one level |
-| `blocks`            | table (list)                                        | List of blocks forming the annotation             |
-
-Blocks are the core of an annotation, they determine what it ultimately looks
-like.
-
-#### Blocks
-
-> [!IMPORTANT]
-> The `blocks` option is a list, so you cannot override a single block on its
-> own. Because your config is merged recursively with the defaults, any blocks
-> you do not explicitly include will be removed, even if they exist in the defaults.
->
-> To customize just one block, copy the default `blocks` list and modify the
-> specific block you want. Check the [customization example](#customization-example)
-> for a complete example.
-
-| Option Name          | Expected Type | Behavior                                                     |
-| -------------------- | ------------- | ------------------------------------------------------------ |
-| `name`               | string        | The name of the block, useful for readability and for items  |
-| `layout`             | string[]      | List of lines that that make up the block                    |
-| `insert_gap_between` | table         | Sets up a gap in between the current block/item and the next |
-| `ignore_prev_gap`    | boolean       | Skips the gap defined by the previous block (if enabled)     |
-| `items`              | table?        | Sets up options for the block's items                        |
-
-All options with the exception of `ignore_prev_gap` have some caveats that will
-be explained below in detail.
-
-##### `items` option
-
-When a block uses the `items` option, it is considered an "item-based" block,
-as it includes items extracted at runtime from a target defined in its layout.
-In contrast, non-item-based blocks consist solely of the lines defined in their
-`layout`.
-
-An item represents a named component of a target, defined by a `name` and a `type`.
-
-For example, the following function:
-
-```python
-def foo(a: int, b: string) -> int:
-    ...
-```
-
-has the following items:
-
-```lua
-{
-    parameters = { -- List of parameter items
-        {
-            name = "a",
-            type = "int"
-        },
-        {
-            name = "b",
-            type = "string"
-        },
-    },
-    returns = {
-        {
-            name = "",
-            type = "int"
-        }
-    }
-}
-```
-
-The `insert_gap_between` and `layout` options can be reused as suboptions of the
-`items` option; in such case the `layout` option would represent the lines that
-make up each item and that will be appended to the block's `layout` option.
-
-##### `insert_gap_between` option
-
-The following suboptions are available:
-
-| Name    | Expected Value Type | Behavior                                                 |
-| ------- | ------------------- | -------------------------------------------------------- |
-| enabled | `boolean`           | Whether a gap is inserted in between two blocks or items |
-| text    | `string`            | String used as the gap                                   |
-
-##### `layout` option
-
-> [!INFO]
-> The layout lines of all blocks are concatenated in block order to form the
-> final annotation.
-
-The following string placeholders are predefined:
-
-- `%snippet_tabstop_index`: Inserts a tabstop index for defining snippet tabstops
-  (e.g., `$%snippet_tabstop_index` or `${%snippet_tabstop_index:default label}`).
-- `%>`: Either a tab character or a number of spaces, based on your Neovim settings
-
-When used under the `items` key the aforementioned placeholders are expanded
-with the following ones:
-
-- `%item_name`
-- `%item_type`
-
-When used, they get replaced by the item's name and type respectively.
-
-##### `name` option
-
-The `name` option serves two main purposes:
-
-1. Identifies the block, making it easier to understand its role
-2. Associates the block with a specific group of items extracted from a target
-
-The second purpose applies only to item-based blocks. When items are extracted
-from a target, they are grouped by block name. For these items to be included,
-the value of `name` must match the corresponding target block.
-
-The following target blocks are available:
-
-| target  | blocks                           |
-| ------- | -------------------------------- |
-| `func`  | `title`, `parameters`, `returns` |
-| `class` | `title`, `attributes`            |
-
-#### Customization example
-
-Say we want to make the following changes to the `func` annotation for Python's
-Google style:
+With that in mind, suppose we want to make the following changes to the `func` annotation
+for Python's Google style:
 
 - Add a gap in between parameters.
 - Add a gap in between blocks
@@ -414,6 +487,64 @@ require("codedocs").setup({
         },
     }
 })
+```
+
+### Add a new language
+
+> [!IMPORTANT]
+> Check the [How annotations work](#how-annotations-work) section to understand
+> how annotations work, how they are defined, and their relationship with the
+> `targets` key.
+
+To add support for a new language, simply add a key under `languages` with the name
+of that language. For example, to add support for `Cobol` with a default style called
+`cobolito`:
+
+```lua
+require("codedocs").setup {
+    languages = {
+        cobol = {
+            default_style = "cobolito",
+            styles = {
+                cobolito = {
+                    --The annotations contained in the `cobolito` style should be defined  here
+                }
+            },
+            targets = {
+                --The target definitions
+            }
+        }
+    }
+}
+```
+
+### Add a new annotation
+
+> [!IMPORTANT]
+> Check the [How annotations work](#how-annotations-work) section to see what
+> annotation options are available and how they work
+
+To add a new annotation for an existing language, simply add the annotation name
+as a key under the desired style. The value of that key should be a table containing
+the annotation options.
+
+For example, to add a new annotation called `deprecated` under the EmmyLua style
+in Lua:
+
+```lua
+require("codedocs").setup {
+    languages = {
+        lua = {
+            styles = {
+                EmmyLua = {
+                    deprecated = {
+                        --Annotation options go here
+                    }
+                }
+            }
+        }
+    }
+}
 ```
 
 ## Language support
