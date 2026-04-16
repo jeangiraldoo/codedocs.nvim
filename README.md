@@ -566,7 +566,7 @@ require("codedocs").setup {
 | lua        | \*EmmyLua, LDoc       | `comment`, `func`            |
 | markdown   | \*Codedocs            | `comment`                    |
 | python     | Google, NumPy, \*reST | `comment`, `func`, `class`   |
-| php        | \*PHPDoc              | `comment`, `func`            |
+| php        | \*PHPDoc              | `comment`, `func`, `phptag`  |
 | ruby       | \*YARD                | `comment`, `func`            |
 | rust       | \*RustDoc             | `comment`, `func`            |
 | sql        | \*Codedocs            | `comment`                    |

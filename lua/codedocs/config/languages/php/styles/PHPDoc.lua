@@ -13,6 +13,19 @@ return {
 			},
 		},
 	},
+	phptag = {
+		relative_position = "empty_target_or_above",
+		indent = false,
+		blocks = {
+			lang_utils.new_section {
+				name = "title",
+				layout = {
+					"<?php",
+					"${%snippet_tabstop_idx:code}",
+				},
+			},
+		},
+	},
 	func = {
 		relative_position = "above",
 		indent = false,
