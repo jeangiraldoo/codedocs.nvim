@@ -587,8 +587,8 @@ style in Lua:
   annotations for languages without native styles or to offer a custom
   alternative.
   Language     Styles ( = default)   Built-in annotations
-  ------------ --------------------- ----------------------
-  bash         Google                comment, func
+  ------------ --------------------- ------------------------
+  bash         Google                comment, func, shebang
   c            Doxygen               comment, func
   c++ (cpp)    Doxygen               comment, func
   go           Godoc                 comment, func
