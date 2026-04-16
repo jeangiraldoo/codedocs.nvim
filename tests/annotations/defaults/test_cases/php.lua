@@ -13,6 +13,18 @@ return {
 			},
 		},
 	},
+	phptag = {
+		{
+			structure = { "" },
+			cursor_pos = 1,
+			expected_annotation = {
+				PHPDoc = {
+					"<?php",
+					"${1:code}",
+				},
+			},
+		},
+	},
 	func = {
 		{
 			structure = {
