@@ -10,11 +10,6 @@ display_step_title() {
 display_step_title "<< Creating new language >>\n\n"
 
 LANGUAGES_PATH=../lua/codedocs/config/languages
-INIT_TEMPLATE='return {
-	default_style = "",
-	styles = {},
-	targets = {}
-}'
 
 STYLE_TEMPLATE='local lang_utils = require "codedocs.config.languages.utils"
 
@@ -45,7 +40,6 @@ return {
 echo "What's the language name?"
 read name
 mkdir $LANGUAGES_PATH/$name
-echo "$INIT_TEMPLATE" >> $LANGUAGES_PATH/$name/init.lua
 
 ####################################################################
 # Creates the language files that are placed in a specific directory
@@ -58,6 +52,11 @@ create_language_dir_files() {
 	read -a array
 	dir=$LANGUAGES_PATH/$name/$1
 	mkdir $dir
+
+	if [ "$1" = "styles" ]; then
+		first_style="${array[0]}"
+	fi
+
 	for file_name in "${array[@]}"; do
 		echo "$2" >> $dir/$file_name.lua
 	done
@@ -66,3 +65,11 @@ create_language_dir_files() {
 create_language_dir_files "styles" "$STYLE_TEMPLATE"
 
 create_language_dir_files "targets" "$TARGET_TEMPLATE"
+
+INIT_TEMPLATE="return {
+	default_style = \"$first_style\",
+	styles = {},
+	targets = {}
+}"
+
+echo "$INIT_TEMPLATE" >> $LANGUAGES_PATH/$name/init.lua
