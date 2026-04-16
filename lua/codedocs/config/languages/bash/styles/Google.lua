@@ -13,6 +13,18 @@ return {
 			},
 		},
 	},
+	shebang = {
+		relative_position = "empty_target_or_above",
+		indented = false,
+		blocks = {
+			language_utils.new_section {
+				name = "title",
+				layout = {
+					"#${%snippet_tabstop_idx:!/usr/bin/env bash}",
+				},
+			},
+		},
+	},
 	func = {
 		relative_position = "above",
 		indented = false,
