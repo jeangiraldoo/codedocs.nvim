@@ -12,6 +12,19 @@ return {
 			},
 		},
 	},
+	shebang = {
+		{
+			structure = {
+				"",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				Google = {
+					"#${1:!/usr/bin/env bash}",
+				},
+			},
+		},
+	},
 	func = {
 		{
 			structure = {
