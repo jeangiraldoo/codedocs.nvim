@@ -4,10 +4,10 @@
 # Date Created: 2026-04-10
 
 display_step_title() {
-	printf "\033[36m$1\033[0m"
+	printf "\033[36m%s\033[0m\n\n" "${1}"
 }
 
-display_step_title "<< Creating new language >>\n\n"
+display_step_title "<< Creating new language >>"
 
 LANGUAGES_PATH=../lua/codedocs/config/languages
 DEFAULT_ANNOTATION_TEST_PATH=../tests/annotations/defaults/test_cases/
@@ -40,7 +40,7 @@ return {
 
 echo "What's the language name?"
 read name
-mkdir $LANGUAGES_PATH/$name
+mkdir "${LANGUAGES_PATH}/${name}"
 
 ####################################################################
 # Creates the language files that are placed in a specific directory
@@ -49,19 +49,20 @@ mkdir $LANGUAGES_PATH/$name
 #   template string to be placed in each file
 ####################################################################
 create_language_dir_files() {
-	echo "What $1 are there?"
-	local var_name="$1"
-	declare -n ref="$var_name"
+	echo "What ${1} are there?"
+
+	local var_name="${1}"
+	declare -n ref="${var_name}"
 	read -a ref
-	dir=$LANGUAGES_PATH/$name/$1
-	mkdir $dir
+	dir="${LANGUAGES_PATH}/${name}/${1}"
+	mkdir "${dir}"
 
 	if [ "$1" = "styles" ]; then
 		first_style="${ref[0]}"
 	fi
 
 	for file_name in "${ref[@]}"; do
-		echo "$2" >> $dir/$file_name.lua
+		echo "${2}" >> "${dir}/${file_name}.lua"
 	done
 }
 
@@ -70,12 +71,12 @@ create_language_dir_files "styles" "$STYLE_TEMPLATE"
 create_language_dir_files "targets" "$TARGET_TEMPLATE"
 
 INIT_TEMPLATE="return {
-	default_style = \"$first_style\",
+	default_style = \"${first_style}\",
 	styles = {},
 	targets = {}
 }"
 
-echo "$INIT_TEMPLATE" >> $LANGUAGES_PATH/$name/init.lua
+echo "${INIT_TEMPLATE}" >> "${LANGUAGES_PATH}/${name}/init.lua"
 
 default_annotation_test_content=$({
 	printf "return {\n"
