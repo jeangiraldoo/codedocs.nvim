@@ -70,13 +70,16 @@ create_language_dir_files "styles" "$STYLE_TEMPLATE"
 
 create_language_dir_files "targets" "$TARGET_TEMPLATE"
 
-INIT_TEMPLATE="return {
-	default_style = \"${first_style}\",
+lang_init_content=$(cat << END
+return {
+	default_style = "${first_style}",
 	styles = {},
-	targets = {}
-}"
+	targets = {},
+}
+END
+)
 
-echo "${INIT_TEMPLATE}" >> "${LANGUAGES_PATH}/${name}/init.lua"
+echo "${lang_init_content}" >> "${LANGUAGES_PATH}/${name}/init.lua"
 
 default_annotation_test_content=$({
 	printf "return {\n"
