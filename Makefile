@@ -9,7 +9,7 @@ install-dev:
 	$(SCRIPTS_DIR)/install_deps.sh
 
 new-lang:
-	$(SCRIPTS_DIR)/new_language.sh
+	$(SCRIPTS_DIR)/new_lang.sh
 
 test:
 	busted tests
