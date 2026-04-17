@@ -10,6 +10,7 @@ display_step_title() {
 display_step_title "<< Creating new language >>\n\n"
 
 LANGUAGES_PATH=../lua/codedocs/config/languages
+DEFAULT_ANNOTATION_TEST_PATH=../tests/annotations/defaults/test_cases/
 
 STYLE_TEMPLATE='local lang_utils = require "codedocs.config.languages.utils"
 
@@ -49,15 +50,17 @@ mkdir $LANGUAGES_PATH/$name
 ####################################################################
 create_language_dir_files() {
 	echo "What $1 are there?"
-	read -a array
+	local var_name="$1"
+	declare -n ref="$var_name"
+	read -a ref
 	dir=$LANGUAGES_PATH/$name/$1
 	mkdir $dir
 
 	if [ "$1" = "styles" ]; then
-		first_style="${array[0]}"
+		first_style="${ref[0]}"
 	fi
 
-	for file_name in "${array[@]}"; do
+	for file_name in "${ref[@]}"; do
 		echo "$2" >> $dir/$file_name.lua
 	done
 }
@@ -73,3 +76,25 @@ INIT_TEMPLATE="return {
 }"
 
 echo "$INIT_TEMPLATE" >> $LANGUAGES_PATH/$name/init.lua
+
+default_annotation_test_content=$({
+	printf "return {\n"
+	targets=("comment" "${targets[@]}")
+
+	for target_name in "${targets[@]}"; do
+		printf "\t%s = {\n" "${target_name}"
+		printf "\t\t{\n"
+		printf "\t\t\tstructure = {},\n"
+		printf "\t\t\tcursor_pos = 1,\n"
+		printf "\t\t\texpected_annotation = {\n"
+		for style_name in "${styles[@]}"; do
+			printf "\t\t\t\t%s = {},\n" "${style_name}"
+		done
+		printf "\t\t\t}\n"
+		printf "\t\t}\n"
+		printf "\t},\n"
+	done
+	echo "}"
+})
+
+echo "${default_annotation_test_content}" >> "${DEFAULT_ANNOTATION_TEST_PATH}/${name}.lua"
