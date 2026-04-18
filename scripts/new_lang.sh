@@ -57,10 +57,6 @@ create_language_dir_files() {
 	dir="${LANGUAGES_PATH}/${name}/${1}"
 	mkdir "${dir}"
 
-	if [ "$1" = "styles" ]; then
-		first_style="${ref[0]}"
-	fi
-
 	for file_name in "${ref[@]}"; do
 		echo "${2}" >> "${dir}/${file_name}.lua"
 	done
@@ -72,7 +68,7 @@ create_language_dir_files "targets" "$TARGET_TEMPLATE"
 
 lang_init_content=$(cat << END
 return {
-	default_style = "${first_style}",
+	default_style = "${styles[0]}",
 	styles = {},
 	targets = {},
 }
