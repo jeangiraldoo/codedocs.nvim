@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                 For NVIM v0.10+    Last change: 16 April 2026
+                                 For NVIM v0.10+    Last change: 18 April 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -586,25 +586,47 @@ style in Lua:
   [!NOTE] The `Codedocs` style is not an official style. It exists to provide
   annotations for languages without native styles or to offer a custom
   alternative.
-  Language     Styles ( = default)   Built-in annotations
-  ------------ --------------------- ------------------------
-  bash         Google                comment, func, shebang
-  c            Doxygen               comment, func
-  c++ (cpp)    Doxygen               comment, func
-  go           Godoc                 comment, func
-  html         Codedocs              comment
-  javascript   JSDoc                 comment, func, class
-  java         JavaDoc               comment, func, class
-  kotlin       KDoc                  comment, func, class
-  lua          EmmyLua, LDoc         comment, func
-  markdown     Codedocs              comment
-  python       Google, NumPy, reST   comment, func, class
-  php          PHPDoc                comment, func, phptag
-  ruby         YARD                  comment, func
-  rust         RustDoc               comment, func
-  sql          Codedocs              comment
-  typescript   TSDoc                 comment, func, class
-  toml         Codedocs              comment
+  ---------------------------------------------------------------------------
+  Language     Styles ( =         Built-in annotations
+               default)           
+  ------------ ------------------ -------------------------------------------
+  bash         Google             comment, func, shebang
+
+  c            Doxygen            comment, func
+
+  c++ (cpp)    Doxygen            comment, func
+
+  go           Godoc              comment, func
+
+  gdscript     Codedocs           comment, export, onready, warning_ignore
+
+  html         Codedocs           comment
+
+  javascript   JSDoc              comment, func, class
+
+  java         JavaDoc            comment, func, class
+
+  kotlin       KDoc               comment, func, class
+
+  lua          EmmyLua, LDoc      comment, func
+
+  markdown     Codedocs           comment
+
+  python       Google, NumPy,     comment, func, class
+               reST               
+
+  php          PHPDoc             comment, func, phptag
+
+  ruby         YARD               comment, func
+
+  rust         RustDoc            comment, func
+
+  sql          Codedocs           comment
+
+  typescript   TSDoc              comment, func, class
+
+  toml         Codedocs           comment
+  ---------------------------------------------------------------------------
 
 ==============================================================================
 8. Annotation examples                          *codedocs-annotation-examples*
