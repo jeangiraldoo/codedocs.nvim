@@ -98,3 +98,36 @@ default_annotation_test_content=$({
 })
 
 echo "${default_annotation_test_content}" >> "${DEFAULT_ANNOTATION_TEST_PATH}/${lang_name}.lua"
+
+updated_readme=$(
+	awk -v lang_name="${lang_name}" \
+		-v default_style="${styles[0]}" \
+		-v styles="${styles[*]}" -v annotations="${targets[*]}" '
+
+	function turn_comma_separated(str) {
+		gsub(/ +/, ", ", str);
+		return str
+	}
+
+	BEGIN {
+		FS="|";
+		styles=turn_comma_separated(styles)
+		annotations=turn_comma_separated(annotations)
+	}
+
+	/^#+ Language support/ { section_found=1; print; next }
+
+	!section_found {print}
+
+	section_found {
+		if ($0 ~ /\|/ && !inserted && lang_name < substr($2, 2, 1)) {
+			print "| " lang_name " | \\*" styles " | " annotations " |"
+			inserted=1
+		}
+
+		print
+	}
+	' ../README.md
+)
+
+echo "${updated_readme}" > ../README.md
