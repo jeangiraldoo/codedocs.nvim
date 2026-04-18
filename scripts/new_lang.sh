@@ -34,15 +34,6 @@ display_step_title() {
 	printf "\033[36m%s\033[0m\n\n" "${1}"
 }
 
-display_step_title "<< Creating new language >>"
-
-echo "What's the language name?"
-read -r lang_name
-
-lang_dir_path="${LANGS_DIR_PATH}/${lang_name}"
-
-mkdir "${lang_dir_path}"
-
 ####################################################################
 # Creates the language files that are placed in a specific directory
 # Arguments:
@@ -63,8 +54,16 @@ create_language_dir_files() {
 	done
 }
 
-create_language_dir_files "styles" "$STYLE_TEMPLATE"
+display_step_title "<< Creating new language >>"
 
+echo "What's the language name?"
+read -r lang_name
+
+lang_dir_path="${LANGS_DIR_PATH}/${lang_name}"
+
+mkdir "${lang_dir_path}"
+
+create_language_dir_files "styles" "$STYLE_TEMPLATE"
 create_language_dir_files "targets" "$TARGET_TEMPLATE"
 
 lang_init_content=$(cat << END
