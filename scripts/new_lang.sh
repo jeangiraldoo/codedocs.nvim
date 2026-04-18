@@ -9,7 +9,7 @@ display_step_title() {
 
 display_step_title "<< Creating new language >>"
 
-LANGUAGES_PATH=../lua/codedocs/config/languages
+LANGS_DIR_PATH=../lua/codedocs/config/languages
 DEFAULT_ANNOTATION_TEST_PATH=../tests/annotations/defaults/test_cases/
 
 STYLE_TEMPLATE='local lang_utils = require "codedocs.config.languages.utils"
@@ -39,8 +39,11 @@ return {
 }'
 
 echo "What's the language name?"
-read name
-mkdir "${LANGUAGES_PATH}/${name}"
+read -r lang_name
+
+lang_dir_path="${LANGS_DIR_PATH}/${lang_name}"
+
+mkdir "${lang_dir_path}"
 
 ####################################################################
 # Creates the language files that are placed in a specific directory
@@ -54,7 +57,7 @@ create_language_dir_files() {
 	local var_name="${1}"
 	declare -n ref="${var_name}"
 	read -a ref
-	dir="${LANGUAGES_PATH}/${name}/${1}"
+	dir="${lang_dir_path}/${1}"
 	mkdir "${dir}"
 
 	for file_name in "${ref[@]}"; do
@@ -75,7 +78,7 @@ return {
 END
 )
 
-echo "${lang_init_content}" >> "${LANGUAGES_PATH}/${name}/init.lua"
+echo "${lang_init_content}" >> "${lang_dir_path}/init.lua"
 
 default_annotation_test_content=$({
 	printf "return {\n"
@@ -97,4 +100,4 @@ default_annotation_test_content=$({
 	echo "}"
 })
 
-echo "${default_annotation_test_content}" >> "${DEFAULT_ANNOTATION_TEST_PATH}/${name}.lua"
+echo "${default_annotation_test_content}" >> "${DEFAULT_ANNOTATION_TEST_PATH}/${lang_name}.lua"
