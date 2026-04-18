@@ -3,16 +3,9 @@
 # Author: Jean Giraldo
 # Date Created: 2026-04-10
 
-display_step_title() {
-	printf "\033[36m%s\033[0m\n\n" "${1}"
-}
-
-display_step_title "<< Creating new language >>"
-
-LANGS_DIR_PATH=../lua/codedocs/config/languages
-DEFAULT_ANNOTATION_TEST_PATH=../tests/annotations/defaults/test_cases/
-
-STYLE_TEMPLATE='local lang_utils = require "codedocs.config.languages.utils"
+readonly LANGS_DIR_PATH=../lua/codedocs/config/languages
+readonly DEFAULT_ANNOTATION_TEST_PATH=../tests/annotations/defaults/test_cases/
+readonly STYLE_TEMPLATE='local lang_utils = require "codedocs.config.languages.utils"
 
 return {
 	comment = {
@@ -28,8 +21,7 @@ return {
 		},
 	},
 }'
-
-TARGET_TEMPLATE='local extractors = {}
+readonly TARGET_TEMPLATE='local extractors = {}
 
 return {
 	node_identifiers = {
@@ -37,6 +29,12 @@ return {
 	extractors = extractors,
 	opts = {},
 }'
+
+display_step_title() {
+	printf "\033[36m%s\033[0m\n\n" "${1}"
+}
+
+display_step_title "<< Creating new language >>"
 
 echo "What's the language name?"
 read -r lang_name
