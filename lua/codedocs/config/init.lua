@@ -75,6 +75,10 @@ end
 
 local function construct_table_from_files(lang_name, dir_name)
 	local path = languages_base .. "/" .. lang_name .. "/" .. dir_name
+
+	local stat = vim.loop.fs_stat(path)
+	if not stat or stat.type ~= "directory" then return {} end
+
 	return vim.iter(read_lua_file_names(path)):fold({}, function(targets_acc, file_name)
 		targets_acc[file_name] = require(("codedocs.config.languages.%s.%s.%s"):format(lang_name, dir_name, file_name))
 		return targets_acc
