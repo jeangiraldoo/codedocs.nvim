@@ -24,7 +24,6 @@ Framework_
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Language support](#language-support)
-- [Annotation examples](#annotation-examples)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [Motivation](#motivation)
@@ -553,31 +552,26 @@ require("codedocs").setup {
 > The `Codedocs` style is not an official style. It exists to provide annotations
 > for languages without native styles or to offer a custom alternative.
 
-| Language   | Styles (\* = default) | Built-in annotations                             |
-| ---------- | --------------------- | ------------------------------------------------ |
-| bash       | \*Google              | `comment`, `func`, `shebang`                     |
-| c          | \*Doxygen             | `comment`, `func`                                |
-| c++ (cpp)  | \*Doxygen             | `comment`, `func`                                |
-| go         | \*Godoc               | `comment`, `func`                                |
-| gdscript   | \*Codedocs            | `comment`, `export`, `onready`, `warning_ignore` |
-| html       | \*Codedocs            | `comment`                                        |
-| javascript | \*JSDoc               | `comment`, `func`, `class`                       |
-| java       | \*JavaDoc             | `comment`, `func`, `class`                       |
-| kotlin     | \*KDoc                | `comment`, `func`, `class`                       |
-| lua        | \*EmmyLua, LDoc       | `comment`, `func`                                |
-| markdown   | \*Codedocs            | `comment`                                        |
-| python     | Google, NumPy, \*reST | `comment`, `func`, `class`                       |
-| php        | \*PHPDoc              | `comment`, `func`, `phptag`                      |
-| ruby       | \*YARD                | `comment`, `func`                                |
-| rust       | \*RustDoc             | `comment`, `func`                                |
-| sql        | \*Codedocs            | `comment`                                        |
-| typescript | \*TSDoc               | `comment`, `func`, `class`                       |
-| toml       | \*Codedocs            | `comment`                                        |
-
-## Annotation examples
-
-Want to see what annotations look like across all languages and styles? Check out
-[Annotation Examples](./ANNOTATION_EXAMPLES.md).
+| Language   | Styles (\* = default)                                               | Built-in annotations                             |
+| ---------- | ------------------------------------------------------------------- | ------------------------------------------------ |
+| bash       | \*[Google][Google bash ref]                                         | `comment`, `func`, `shebang`                     |
+| c          | \*[Doxygen][Doxygen ref]                                            | `comment`, `func`                                |
+| c++ (cpp)  | \*[Doxygen][Doxygen ref]                                            | `comment`, `func`                                |
+| go         | \*[Godoc][Godoc ref]                                                | `comment`, `func`                                |
+| gdscript   | \*[Codedocs][GDScript ref]                                          | `comment`, `export`, `onready`, `warning_ignore` |
+| html       | \*Codedocs                                                          | `comment`                                        |
+| javascript | \*[JSDoc][JSDoc ref]                                                | `comment`, `func`, `class`                       |
+| java       | \*[JavaDoc][JavaDoc ref]                                            | `comment`, `func`, `class`                       |
+| kotlin     | \*[KDoc][KDoc ref]                                                  | `comment`, `func`, `class`                       |
+| lua        | \*[EmmyLua][EmmyLua ref], [LDoc][LDoc ref]                          | `comment`, `func`                                |
+| markdown   | \*Codedocs                                                          | `comment`                                        |
+| python     | [Google][Google python ref], [NumPy][Numpy ref], \*[reST][reST ref] | `comment`, `func`, `class`                       |
+| php        | \*[PHPDoc][PHPDoc ref]                                              | `comment`, `func`, `phptag`                      |
+| ruby       | \*[YARD][YARD ref]                                                  | `comment`, `func`                                |
+| rust       | \*[RustDoc][RustDoc ref]                                            | `comment`, `func`                                |
+| sql        | \*Codedocs                                                          | `comment`                                        |
+| typescript | \*[TSDoc][TSDoc ref]                                                | `comment`, `func`, `class`                       |
+| toml       | \*Codedocs                                                          | `comment`                                        |
 
 ## Roadmap
 
@@ -610,3 +604,20 @@ purposes.
 
 The only requirement is that if you modify and redistribute the code, you must
 include the same LICENSE file found in this repository.
+
+[Doxygen ref]: https://www.doxygen.nl/manual/commands.html
+[GDScript ref]: https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#annotations
+[EmmyLua ref]: https://emmylua.github.io/annotation.html
+[YARD ref]: https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
+[PHPDoc ref]: https://docs.phpdoc.org/guide/references/phpdoc
+[LDoc ref]: https://stevedonovan.github.io/ldoc/manual/doc.md.html
+[TSDoc ref]: https://tsdoc.org/
+[Godoc ref]: https://go.dev/doc/comment
+[JSDoc ref]: https://jsdoc.app/
+[KDoc ref]: https://kotlinlang.org/docs/kotlin-doc.html
+[Google bash ref]: https://google.github.io/styleguide/shellguide.html
+[Google python ref]: https://google.github.io/styleguide/pyguide.html
+[Numpy ref]: https://numpydoc.readthedocs.io/en/latest/format.html
+[reST ref]: https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html
+[RustDoc ref]: https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html
+[JavaDoc ref]: https://www.oracle.com/latam/technical-resources/articles/java/javadoc-tool.html
