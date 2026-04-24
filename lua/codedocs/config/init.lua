@@ -1,3 +1,5 @@
+local dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
+
 ---@alias CodedocsSupportedLanguages
 ---| "lua"
 ---| "python"
@@ -55,33 +57,25 @@
 ---@field aliases table<string, CodedocsSupportedLanguages>? Aliases for filetypes -> supported languages
 ---@field languages CodedocsLanguagesConfigs? Languages configuration
 
-local source = debug.getinfo(1, "S").source:sub(2)
-local languages_base = vim.fn.fnamemodify(source, ":h") .. "/languages"
-local builtin_languages = vim.fn.readdir(
-	languages_base,
-	function(name) return vim.fn.isdirectory(languages_base .. "/" .. name) == 1 end
-)
+---@param lang_name string
+---@param subdir_name string
+---@return table<string, table>
+local function _build_dir_tbl(lang_name, subdir_name)
+	vim.validate {
+		lang_name = { lang_name, "string" },
+		subdir_name = { subdir_name, "string" },
+	}
 
-local function read_lua_file_names(path)
-	local files = vim.fn.readdir(path, function(name) return name:sub(-4) == ".lua" end)
-	local res = vim.iter(files)
-		:map(function(file_name)
-			local name = file_name:gsub("%.lua$", "")
-			return name
-		end)
-		:totable()
-	return res
-end
+	local lang_path = vim.fs.joinpath(dir, "languages", lang_name, subdir_name)
 
-local function construct_table_from_files(lang_name, dir_name)
-	local path = languages_base .. "/" .. lang_name .. "/" .. dir_name
+	return vim.iter(vim.fs.dir(lang_path)):fold({}, function(acc, item_name, item_type)
+		if item_type == "file" then
+			local file_name = item_name:gsub("%.lua$", "")
 
-	local stat = vim.loop.fs_stat(path)
-	if not stat or stat.type ~= "directory" then return {} end
+			acc[file_name] = require(("codedocs.config.languages.%s.%s.%s"):format(lang_name, subdir_name, file_name))
+		end
 
-	return vim.iter(read_lua_file_names(path)):fold({}, function(targets_acc, file_name)
-		targets_acc[file_name] = require(("codedocs.config.languages.%s.%s.%s"):format(lang_name, dir_name, file_name))
-		return targets_acc
+		return acc
 	end)
 end
 
@@ -90,13 +84,15 @@ return {
 	debug = false,
 	---The `languages` table is created dynamically when the plugin first loads as there's a lot of languages;
 	---a literal `require` call per language is not pretty
-	languages = vim.iter(builtin_languages):fold({}, function(acc, lang_name)
-		local base_lang_config = require("codedocs.config.languages." .. lang_name)
+	languages = vim.iter(vim.fs.dir(vim.fs.joinpath(dir, "languages"))):fold({}, function(acc, name, type)
+		if type ~= "directory" then return acc end
 
-		base_lang_config.styles = construct_table_from_files(lang_name, "styles")
-		base_lang_config.targets = construct_table_from_files(lang_name, "targets")
+		local base_lang_config = require("codedocs.config.languages." .. name)
 
-		acc[lang_name] = base_lang_config
+		base_lang_config.styles = _build_dir_tbl(name, "styles")
+		base_lang_config.targets = _build_dir_tbl(name, "targets")
+
+		acc[name] = base_lang_config
 		return acc
 	end),
 	aliases = {

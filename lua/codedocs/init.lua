@@ -72,6 +72,98 @@ end
 
 Codedocs.get_target_identifiers = require("codedocs.item_extractor").get_target_identifiers
 
+local function validate_config(config)
+	vim.validate {
+		["config.debug"] = { config.debug, "boolean" },
+	}
+	vim.validate {
+		["config.aliases"] = { config.aliases, "table" },
+	}
+	vim.validate {
+		["config.languages"] = { config.languages, "table" },
+	}
+
+	for lang_name, opts in pairs(config.languages) do
+		local lang_path = ("config.languages.%s"):format(lang_name)
+		vim.validate {
+			[lang_path] = { opts, "table" },
+		}
+
+		vim.validate {
+			[lang_path .. ".default_style"] = { opts.default_style, "string" },
+		}
+		vim.validate {
+			[lang_path .. ".styles"] = { opts.styles, "table" },
+		}
+		vim.validate {
+			[lang_path .. ".targets"] = { opts.targets, "table" },
+		}
+
+		for style_name, annotations in pairs(opts.styles) do
+			for annotation_name, annotation_opts in pairs(annotations) do
+				local annotation_path = lang_path .. (".styles.%s.%s"):format(style_name, annotation_name)
+
+				vim.validate {
+					[annotation_path] = {
+						annotation_opts,
+						"table",
+					},
+				}
+				vim.validate {
+					[annotation_path .. ".relative_position"] = {
+						annotation_opts.relative_position,
+						"string",
+					},
+				}
+				local function validate_block(block, block_idx_path)
+					vim.validate {
+						[block_idx_path .. ".layout"] = { block.layout, "table" },
+					}
+					vim.validate {
+						[block_idx_path .. ".insert_gap_between"] = { block.insert_gap_between, "table" },
+					}
+					vim.validate {
+						[block_idx_path .. ".insert_gap_between.enabled"] = {
+							block.insert_gap_between.enabled,
+							"boolean",
+						},
+					}
+					vim.validate {
+						[block_idx_path .. ".insert_gap_between.text"] = { block.insert_gap_between.text, "string" },
+					}
+				end
+
+				---TODO: There's discrepancies with the usage of `indented`, there's also `indent`
+				-- vim.validate {
+				-- 	["config.languages." .. lang_name .. ".styles." .. style_name .. "." .. annotation_name .. ".indented"] = {
+				-- 		annotation_opts.indent,
+				-- 		"boolean",
+				-- 	},
+				-- }
+				for idx, block in ipairs(annotation_opts.blocks) do
+					local block_idx_path = annotation_path .. ".blocks(" .. idx .. ")"
+					vim.validate {
+						[block_idx_path] = { block, "table" },
+					}
+
+					vim.validate {
+						[block_idx_path .. ".name"] = { block.name, "string" },
+					}
+
+					validate_block(block, block_idx_path)
+
+					if block.items then
+						vim.validate {
+							[block_idx_path .. " .items"] = { block.items, "table" },
+						}
+						validate_block(block.items, block_idx_path .. " .items")
+					end
+				end
+			end
+		end
+	end
+end
+
 ---@param user_config CodedocsConfig?
 function Codedocs.setup(user_config)
 	vim.validate {
@@ -89,6 +181,8 @@ function Codedocs.setup(user_config)
 	for k, v in pairs(merged) do
 		config[k] = v
 	end
+
+	validate_config(merged)
 end
 
 ---@param lang_name string
