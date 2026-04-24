@@ -1,0 +1,82 @@
+name: tests
+
+on:
+    pull_request:
+        branches:
+            - main
+
+env:
+    parsers: '"lua", "python", "bash", "java", "javascript", "c", "cpp", "typescript", "php", "ruby", "rust", "go", "kotlin"'
+
+jobs:
+    tests:
+        name: run
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                neovim_version: ["v0.10.0", "v0.11.0", "v0.12.0", "nightly"]
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Clone nvim-treesitter (0.12+)
+              if: matrix.neovim_version == 'nightly' || matrix.neovim_version == 'v0.12.0'
+              run: |
+                  git clone --depth 1 https://github.com/nvim-treesitter/nvim-treesitter ~/.local/share/nvim/site/pack/vendor/start/nvim-treesitter
+
+            - name: Clone nvim-treesitter (0.10 / 0.11)
+              if: matrix.neovim_version == 'v0.10.0' || matrix.neovim_version == 'v0.11.0'
+              run: |
+                  git clone --depth 1 -b master https://github.com/nvim-treesitter/nvim-treesitter ~/.local/share/nvim/site/pack/vendor/start/nvim-treesitter
+
+            - name: Expose Codedocs to Neovim
+              run: |
+                  mkdir -p ~/.local/share/nvim/site/pack/vendor/start
+                  ln -s "$(pwd)" ~/.local/share/nvim/site/pack/vendor/start
+
+            - uses: leafo/gh-actions-lua@v11
+              with:
+                  luaVersion: "5.1"
+
+            - uses: leafo/gh-actions-luarocks@v4.0.0
+
+            - name: Install busted
+              run: |
+                  luarocks init
+                  luarocks config --scope project lua_version 5.1
+                  luarocks install busted 2.2.0
+                  luarocks install nlua
+
+            - name: Setup neovim
+              uses: rhysd/action-setup-vim@v1
+              with:
+                  neovim: true
+                  version: ${{ matrix.neovim_version }}
+
+            - name: Add luarocks bins to PATH
+              run: echo "$(pwd)/lua_modules/bin" >> $GITHUB_PATH
+
+            - name: Setup LuaRocks env
+              run: |
+                  eval "$(luarocks path)"
+                  echo "LUA_PATH=$LUA_PATH" >> $GITHUB_ENV
+                  echo "LUA_CPATH=$LUA_CPATH" >> $GITHUB_ENV
+
+            - name: Install treesitter-cli
+              run: |
+                  npm install -g tree-sitter-cli
+
+            - name: Setup Treesitter parsers (nightly / 0.12)
+              if: matrix.neovim_version == 'nightly' || matrix.neovim_version == 'v0.12.0'
+              run: |
+                  nvim --headless -c "lua require('nvim-treesitter').install({${parsers}}):wait(300000)" -c "qa"
+
+            - name: Setup Treesitter parsers (0.10 / 0.11)
+              if: matrix.neovim_version == 'v0.10.0' || matrix.neovim_version == 'v0.11.0'
+              run: |
+                  nvim --headless -c "lua require('nvim-treesitter.configs').setup({ ensure_installed = {${parsers}}, sync_install = true})" -c "qa"
+
+            - name: Run tests
+              run: |
+                  make test
