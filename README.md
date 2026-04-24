@@ -552,26 +552,34 @@ require("codedocs").setup {
 > The `Codedocs` style is not an official style. It exists to provide annotations
 > for languages without native styles or to offer a custom alternative.
 
-| Language   | Styles (\* = default)                                               | Built-in annotations                             |
-| ---------- | ------------------------------------------------------------------- | ------------------------------------------------ |
-| bash       | \*[Google][Google bash ref]                                         | `comment`, `func`, `shebang`                     |
-| c          | \*[Doxygen][Doxygen ref]                                            | `comment`, `func`                                |
-| c++ (cpp)  | \*[Doxygen][Doxygen ref]                                            | `comment`, `func`                                |
-| go         | \*[Godoc][Godoc ref]                                                | `comment`, `func`                                |
-| gdscript   | \*[Codedocs][GDScript ref]                                          | `comment`, `export`, `onready`, `warning_ignore` |
-| html       | \*Codedocs                                                          | `comment`                                        |
-| javascript | \*[JSDoc][JSDoc ref]                                                | `comment`, `func`, `class`                       |
-| java       | \*[JavaDoc][JavaDoc ref]                                            | `comment`, `func`, `class`                       |
-| kotlin     | \*[KDoc][KDoc ref]                                                  | `comment`, `func`, `class`                       |
-| lua        | \*[EmmyLua][EmmyLua ref], [LDoc][LDoc ref]                          | `comment`, `func`                                |
-| markdown   | \*Codedocs                                                          | `comment`                                        |
-| python     | [Google][Google python ref], [NumPy][Numpy ref], \*[reST][reST ref] | `comment`, `func`, `class`                       |
-| php        | \*[PHPDoc][PHPDoc ref]                                              | `comment`, `func`, `phptag`                      |
-| ruby       | \*[YARD][YARD ref]                                                  | `comment`, `func`                                |
-| rust       | \*[RustDoc][RustDoc ref]                                            | `comment`, `func`                                |
-| sql        | \*Codedocs                                                          | `comment`                                        |
-| typescript | \*[TSDoc][TSDoc ref]                                                | `comment`, `func`, `class`                       |
-| toml       | \*Codedocs                                                          | `comment`                                        |
+### Global annotations
+
+The following annotations are available in all languages and styles:
+
+- `comment`
+
+### Language-specific annotations
+
+| Language   | Styles (\* = default)                                               | Annotations                           |
+| ---------- | ------------------------------------------------------------------- | ------------------------------------- |
+| bash       | \*[Google][Google bash ref]                                         | `func`, `shebang`                     |
+| c          | \*[Doxygen][Doxygen ref]                                            | `func`                                |
+| c++ (cpp)  | \*[Doxygen][Doxygen ref]                                            | `func`                                |
+| go         | \*[Godoc][Godoc ref]                                                | `func`                                |
+| gdscript   | \*[Codedocs][GDScript ref]                                          | `export`, `onready`, `warning_ignore` |
+| html       | \*Codedocs                                                          | Only global annotations               |
+| javascript | \*[JSDoc][JSDoc ref]                                                | `func`, `class`                       |
+| java       | \*[JavaDoc][JavaDoc ref]                                            | `func`, `class`                       |
+| kotlin     | \*[KDoc][KDoc ref]                                                  | `func`, `class`                       |
+| lua        | \*[EmmyLua][EmmyLua ref], [LDoc][LDoc ref]                          | `func`                                |
+| markdown   | \*Codedocs                                                          | Only global annotations               |
+| python     | [Google][Google python ref], [NumPy][Numpy ref], \*[reST][reST ref] | `func`, `class`                       |
+| php        | \*[PHPDoc][PHPDoc ref]                                              | `func`, `phptag`                      |
+| ruby       | \*[YARD][YARD ref]                                                  | `func`                                |
+| rust       | \*[RustDoc][RustDoc ref]                                            | `func`                                |
+| sql        | \*Codedocs                                                          | Only global annotations               |
+| typescript | \*[TSDoc][TSDoc ref]                                                | `func`, `class`                       |
+| toml       | \*Codedocs                                                          | Only global annotations               |
 
 ## Roadmap
 
