@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                 For NVIM v0.10+    Last change: 18 April 2026
+                                   For NVIM v0.10+    Last change: 09 May 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -10,7 +10,6 @@
 - |codedocs-usage|
 - |codedocs-configuration|
 - |codedocs-language-support|
-- |codedocs-annotation-examples|
 - |codedocs-roadmap|
 - |codedocs-contributing|
 - |codedocs-motivation|
@@ -586,57 +585,59 @@ style in Lua:
   [!NOTE] The `Codedocs` style is not an official style. It exists to provide
   annotations for languages without native styles or to offer a custom
   alternative.
-  ---------------------------------------------------------------------------
-  Language     Styles ( =         Built-in annotations
-               default)           
-  ------------ ------------------ -------------------------------------------
-  bash         Google             comment, func, shebang
 
-  c            Doxygen            comment, func
+GLOBAL ANNOTATIONS              *codedocs-language-support-global-annotations*
 
-  c++ (cpp)    Doxygen            comment, func
+The following annotations are available in all languages and styles:
 
-  go           Godoc              comment, func
+- `comment`
 
-  gdscript     Codedocs           comment, export, onready, warning_ignore
 
-  html         Codedocs           comment
+LANGUAGE-SPECIFIC ANNOTATIONS*codedocs-language-support-language-specific-annotations*
 
-  javascript   JSDoc              comment, func, class
+  ------------------------------------------------------------------------------
+  Language     Styles ( = default)                       Annotations
+  ------------ ----------------------------------------- -----------------------
+  bash         Google                                    func,shebang
 
-  java         JavaDoc            comment, func, class
+  c            Doxygen                                   func
 
-  kotlin       KDoc               comment, func, class
+  c++(cpp)     Doxygen                                   func
 
-  lua          EmmyLua, LDoc      comment, func
+  go           Godoc                                     func
 
-  markdown     Codedocs           comment
+  gdscript     Codedocs                                  export,onready,
+                                                         warning_ignore
 
-  python       Google, NumPy,     comment, func, class
-               reST               
+  html         Codedocs                                  Only global annotations
 
-  php          PHPDoc             comment, func, phptag
+  javascript   JSDoc                                     func,class
 
-  ruby         YARD               comment, func
+  java         JavaDoc                                   func,class
 
-  rust         RustDoc            comment, func
+  kotlin       KDoc                                      func,class
 
-  sql          Codedocs           comment
+  lua          EmmyLua,LDoc                              func
 
-  typescript   TSDoc              comment, func, class
+  markdown     Codedocs                                  Only global annotations
 
-  toml         Codedocs           comment
-  ---------------------------------------------------------------------------
+  python       Google, NumPy, reST                       func,class
+
+  php          PHPDoc                                    func,phptag
+
+  ruby         YARD                                      func
+
+  rust         RustDoc                                   func
+
+  sql          Codedocs                                  Onlyglobal annotations
+
+  typescript   TSDoc                                     func,class
+
+  toml         Codedocs                                  Only global annotations
+  ------------------------------------------------------------------------------
 
 ==============================================================================
-8. Annotation examples                          *codedocs-annotation-examples*
-
-Want to see what annotations look like across all languages and styles? Check
-out Annotation Examples <./ANNOTATION_EXAMPLES.md>.
-
-
-==============================================================================
-9. Roadmap                                                  *codedocs-roadmap*
+8. Roadmap                                                  *codedocs-roadmap*
 
 You can see what’s being worked on and which features are planned by checking
 the GitHub Milestones
@@ -644,14 +645,14 @@ the GitHub Milestones
 
 
 ==============================================================================
-10. Contributing                                       *codedocs-contributing*
+9. Contributing                                        *codedocs-contributing*
 
 Thank you for your interest in contributing to **Codedocs**! Feel free to read
 the Contribution guide <./CONTRIBUTING.md> to get started.
 
 
 ==============================================================================
-11. Motivation                                           *codedocs-motivation*
+10. Motivation                                           *codedocs-motivation*
 
 I started working on Codedocs because I wanted to enhance my experience with
 Neovim, which I started using daily for my side projects and university
@@ -665,7 +666,7 @@ providing the same powerful features.
 
 
 ==============================================================================
-12. License                                                 *codedocs-license*
+11. License                                                 *codedocs-license*
 
 Codedocs is licensed under the MIT License. This means you are free to
 download, install, modify, share, and use the plugin for both personal and
@@ -675,7 +676,7 @@ The only requirement is that if you modify and redistribute the code, you must
 include the same LICENSE file found in this repository.
 
 ==============================================================================
-13. Links                                                     *codedocs-links*
+12. Links                                                     *codedocs-links*
 
 1. *Codedocs showcase*: ./.images/showcase.gif
 
