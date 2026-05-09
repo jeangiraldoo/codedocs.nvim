@@ -15,6 +15,37 @@ return {
 	func = {
 		{
 			structure = {
+				"function foo() {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				TSDoc = {
+					"/**",
+					" * ${1:title}",
+					" */",
+				},
+			},
+		},
+		{
+			structure = {
+				"function foo(a: number, b: number) {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				TSDoc = {
+					"/**",
+					" * ${1:title}",
+					" *",
+					" * @param a - ${2:description}",
+					" * @param b - ${3:description}",
+					" */",
+				},
+			},
+		},
+		{
+			structure = {
 				"function foo(a: number, b: number): number {",
 				"	return a + b",
 				"}",
