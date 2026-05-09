@@ -66,5 +66,47 @@ return {
 				},
 			},
 		},
+		{
+			structure = {
+				"<?php",
+				"function foo(int $a, $b, int $c): int {",
+				"	return $a + $b;",
+				"}",
+			},
+			cursor_pos = 2,
+			expected_annotation = {
+				PHPDoc = {
+					"/**",
+					" * ${1:title}",
+					" *",
+					" * @param ${2:int} \\$a ${3:description}",
+					" * @param ${4:} \\$b ${5:description}",
+					" * @param ${6:int} \\$c ${7:description}",
+					" * @return ${8:int} ${9:description}",
+					" */",
+				},
+			},
+		},
+		{
+			structure = {
+				"<?php",
+				"function foo($a, $b, int $c): int {",
+				"	return $a + $b;",
+				"}",
+			},
+			cursor_pos = 2,
+			expected_annotation = {
+				PHPDoc = {
+					"/**",
+					" * ${1:title}",
+					" *",
+					" * @param ${2:} \\$a ${3:description}",
+					" * @param ${4:} \\$b ${5:description}",
+					" * @param ${6:int} \\$c ${7:description}",
+					" * @return ${8:int} ${9:description}",
+					" */",
+				},
+			},
+		},
 	},
 }
