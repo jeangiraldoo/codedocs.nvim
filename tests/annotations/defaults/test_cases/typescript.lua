@@ -27,6 +27,24 @@ return {
 				},
 			},
 		},
+		-- {
+		-- 	structure = {
+		-- 		"function foo() {",
+		-- 		"	return a + b",
+		-- 		"}",
+		-- 	},
+		-- 	cursor_pos = 1,
+		-- 	expected_annotation = {
+		-- 		TSDoc = {
+		-- 			"/**",
+		-- 			" * ${1:title}",
+		--BUG: no gap is present when there's only a return with no params
+		-- 			" *",
+		-- 			" * @returns ${2:description}",
+		-- 			" */",
+		-- 		},
+		-- 	},
+		-- },
 		{
 			structure = {
 				"function foo(a: number, b: number) {",

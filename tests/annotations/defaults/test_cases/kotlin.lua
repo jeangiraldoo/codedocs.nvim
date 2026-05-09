@@ -15,6 +15,37 @@ return {
 	func = {
 		{
 			structure = {
+				"fun foo() {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				KDoc = {
+					"/**",
+					" * ${1:title}",
+					" */",
+				},
+			},
+		},
+		-- {
+		-- 	structure = {
+		-- 		"fun foo(): int {",
+		-- 		"}",
+		-- 	},
+		-- 	cursor_pos = 1,
+		-- 	expected_annotation = {
+		-- 		KDoc = {
+		-- 			"/**",
+		-- 			" * ${1:title}",
+		--BUG: no gap is present when there's only a return with no params
+		-- 			" *",
+		-- 			" * @return ${2:description}",
+		-- 			" */",
+		-- 		},
+		-- 	},
+		-- },
+		{
+			structure = {
 				"fun foo(a: int , b: int): int {",
 				"	return a + b",
 				"}",

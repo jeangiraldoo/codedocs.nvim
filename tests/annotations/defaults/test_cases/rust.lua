@@ -15,6 +15,34 @@ return {
 	func = {
 		{
 			structure = {
+				"fn foo() {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				RustDoc = {
+					"/// ${1:title}",
+				},
+			},
+		},
+		{
+			structure = {
+				"fn foo() -> i32 {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				RustDoc = {
+					"/// ${1:title}",
+					"///",
+					"/// # Returns",
+					"///",
+					"/// ${2:description}",
+				},
+			},
+		},
+		{
+			structure = {
 				"fn foo(a: i32, b: i32) -> i32 {",
 				"	a + b",
 				"}",
