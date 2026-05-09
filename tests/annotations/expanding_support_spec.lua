@@ -33,6 +33,10 @@ describe("Add support for a new language", function()
 								blocks = {
 									{
 										name = "title",
+										insert_gap_between = {
+											enabled = false,
+											text = "",
+										},
 										layout = {
 											"---${%snippet_tabstop_idx:title}",
 											"---Second line",
@@ -71,6 +75,10 @@ describe("Adding new annotation", function()
 								blocks = {
 									{
 										name = "title",
+										insert_gap_between = {
+											enabled = false,
+											text = "",
+										},
 										layout = {
 											"---${%snippet_tabstop_idx:title}",
 											"---Second line",
