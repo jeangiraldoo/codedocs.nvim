@@ -15,6 +15,37 @@ return {
 	func = {
 		{
 			structure = {
+				"public void foo() {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				JavaDoc = {
+					"/**",
+					" * ${1:title}",
+					" */",
+				},
+			},
+		},
+		-- {
+		-- 	structure = {
+		-- 		"public int foo() {",
+		-- 		"}",
+		-- 	},
+		-- 	cursor_pos = 1,
+		-- 	expected_annotation = {
+		-- 		JavaDoc = {
+		-- 			"/**",
+		-- 			" * ${1:title}",
+		--BUG: no gap is present when there's only a return with no params
+		-- 			" *",
+		-- 			" * @return ${4:description}",
+		-- 			" */",
+		-- 		},
+		-- 	},
+		-- },
+		{
+			structure = {
 				"public int foo(int a, int b) {",
 				"	return a + b;",
 				"}",

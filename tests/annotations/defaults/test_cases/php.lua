@@ -29,6 +29,57 @@ return {
 		{
 			structure = {
 				"<?php",
+				"function foo() {",
+				"}",
+			},
+			cursor_pos = 2,
+			expected_annotation = {
+				PHPDoc = {
+					"/**",
+					" * ${1:title}",
+					" */",
+				},
+			},
+		},
+		-- {
+		-- 	structure = {
+		-- 		"<?php",
+		-- 		"function foo() {",
+		-- 		"	return $a + $b;",
+		-- 		"}",
+		-- 	},
+		-- 	cursor_pos = 2,
+		-- 	expected_annotation = {
+		-- 		PHPDoc = {
+		-- 			"/**",
+		-- 			" * ${1:title}",
+		-- 			" *",
+		-- 			" * @return ${2:} ${3:description}",
+		-- 			" */",
+		-- 		},
+		-- 	},
+		-- },
+		-- {
+		-- 	structure = {
+		-- 		"<?php",
+		-- 		"function foo(): int {",
+		-- 		"	return $a + $b;",
+		-- 		"}",
+		-- 	},
+		-- 	cursor_pos = 2,
+		-- 	expected_annotation = {
+		-- 		PHPDoc = {
+		-- 			"/**",
+		-- 			" * ${1:title}",
+		-- 			" *",
+		-- 			" * @return ${2:} ${3:description}",
+		-- 			" */",
+		-- 		},
+		-- 	},
+		-- },
+		{
+			structure = {
+				"<?php",
 				"function foo($a, $b) {",
 				"	return $a + $b;",
 				"}",

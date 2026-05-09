@@ -18,6 +18,39 @@ return {
 	func = {
 		{
 			structure = {
+				"local function foo()",
+				"end",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				EmmyLua = {
+					"---${1:title}",
+				},
+				LDoc = {
+					"--- ${1:title}",
+				},
+			},
+		},
+		{
+			structure = {
+				"local function foo()",
+				"	return a + b",
+				"end",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				EmmyLua = {
+					"---${1:title}",
+					"---@return ${2:type} ${3:description}",
+				},
+				LDoc = {
+					"--- ${1:title}",
+					"-- @return ${2:type} ${3:description}",
+				},
+			},
+		},
+		{
+			structure = {
 				"local function foo(a, b)",
 				"	return a + b",
 				"end",
