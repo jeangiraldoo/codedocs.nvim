@@ -4,12 +4,14 @@ function extractors.attributes(target_data)
 	local results = {}
 
 	if target_data.opts.attributes.static then
-		local class_attrs = target_data.lang_query_parser [[
-			(class_body
-				(field_definition
-					"static"
-					(property_identifier) @item_name))
-		]]
+		local class_attrs = target_data.extract_items {
+			query = [[
+				(class_body
+					(field_definition
+						"static"
+						(property_identifier) @item_name))
+			]],
+		}
 
 		vim.list_extend(results, class_attrs)
 	end
@@ -22,18 +24,17 @@ function extractors.attributes(target_data)
 						(#eq? @name "constructor")))
 			]]
 
-		local constructor_node = target_data.extract_ts_nodes(target_data.node, target_data.lang_name, q)[1]
+		local constructor_node = target_data.extract_ts_nodes({ query = q })[1]
 
 		if constructor_node then
-			local constructor_instance_attrs = target_data.generic_query_parser(
-				constructor_node,
-				target_data.lang_name,
-				[[
-						(assignment_expression
-							(member_expression
-								(property_identifier) @item_name))
-					]]
-			)
+			local constructor_instance_attrs = target_data.extract_items {
+				node = constructor_node,
+				query = [[
+					(assignment_expression
+						(member_expression
+							(property_identifier) @item_name))
+				]],
+			}
 
 			vim.list_extend(results, constructor_instance_attrs)
 		end
@@ -41,17 +42,21 @@ function extractors.attributes(target_data)
 	end
 
 	if target_data.opts.attributes.instance == "all" then
-		local class_body_instance_attrs = target_data.lang_query_parser [[
-			(class_body
-				(field_definition
-					property: (property_identifier) @item_name) @field (#not-match? @field "static"))
-		]]
+		local class_body_instance_attrs = target_data.extract_items {
+			query = [[
+				(class_body
+					(field_definition
+						property: (property_identifier) @item_name) @field (#not-match? @field "static"))
+			]],
+		}
 
-		local function_defined_instance_attrs = target_data.lang_query_parser [[
-			(assignment_expression
-				(member_expression
-					(property_identifier) @item_name))
-		]]
+		local function_defined_instance_attrs = target_data.extract_items {
+			query = [[
+				(assignment_expression
+					(member_expression
+						(property_identifier) @item_name))
+			]],
+		}
 
 		vim.list_extend(results, class_body_instance_attrs)
 		vim.list_extend(results, function_defined_instance_attrs)

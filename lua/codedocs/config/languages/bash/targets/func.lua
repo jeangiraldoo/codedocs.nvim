@@ -3,21 +3,17 @@ local extractors = {}
 function extractors.globals(target_data)
 	local root_node = target_data.node:tree():root()
 
-	local global_variables = target_data.generic_query_parser(
-		root_node,
-		target_data.lang_name,
-		[[
+	local global_variables = target_data.extract_items {
+		node = root_node,
+		query = [[
 			((variable_name) @item_name
 			(#has-parent? @item_name variable_assignment)
 			(#not-has-ancestor? @item_name declaration_command))
-		]]
-	)
+		]],
+	}
 
-	local variable_expansions_in_function = target_data.generic_query_parser(
-		target_data.node,
-		target_data.lang_name,
-		"(expansion (variable_name) @item_name)"
-	)
+	local variable_expansions_in_function =
+		target_data.extract_items { query = "(expansion (variable_name) @item_name)" }
 
 	local globals_referenced = vim.iter(global_variables)
 		:filter(function(global_var)
@@ -33,12 +29,14 @@ function extractors.globals(target_data)
 end
 
 function extractors.parameters(target_data)
-	return target_data.lang_query_parser [[
-		(command
-			argument: (string
-				(simple_expansion
-					(variable_name) @item_name)))
-	]]
+	return target_data.extract_items {
+		query = [[
+			(command
+				argument: (string
+					(simple_expansion
+						(variable_name) @item_name)))
+		]],
+	}
 end
 
 function extractors.returns() return {} end
