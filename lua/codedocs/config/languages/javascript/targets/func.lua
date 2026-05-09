@@ -1,30 +1,34 @@
 local extractors = {}
 
 function extractors.parameters(target_data)
-	return target_data.lang_query_parser [[
-		[
-			(method_definition
-				(formal_parameters
-					(identifier) @item_name
+	return target_data.extract_items {
+		query = [[
+			[
+				(method_definition
+					(formal_parameters
+						(identifier) @item_name
+					)
 				)
-			)
-			(function_declaration
-				(formal_parameters
-					(identifier) @item_name
+				(function_declaration
+					(formal_parameters
+						(identifier) @item_name
+					)
 				)
-			)
-			(arrow_function
-				parameters: (formal_parameters
-					(identifier) @item_name))
-		]
-	]]
+				(arrow_function
+					parameters: (formal_parameters
+						(identifier) @item_name))
+			]
+		]],
+	}
 end
 
 function extractors.returns(target_data)
-	return target_data.lang_query_parser [[
-		(return_statement
-			(_) @item_type (#set! parse_as_blank "true"))
-	]]
+	return target_data.extract_items {
+		query = [[
+			(return_statement
+				(_) @item_type (#set! parse_as_blank "true"))
+		]],
+	}
 end
 
 return {

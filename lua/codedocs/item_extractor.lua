@@ -127,12 +127,12 @@ function Item_extractor.extract(lang_name)
 		local raw_items = item_extractor {
 			node = target_data.node,
 			opts = targets_config.opts,
-			lang_name = lang_name,
-			generic_query_parser = generic_query_parser,
-			extract_ts_nodes = extract_ts_nodes,
-			lang_query_parser =
-				---@param query TSQuery
-				function(query) return generic_query_parser(target_data.node, lang_name, query) end,
+			extract_ts_nodes = function(data)
+				return extract_ts_nodes(data.node or target_data.node, lang_name, data.query)
+			end,
+			extract_items = function(data)
+				return generic_query_parser(data.node or target_data.node, lang_name, data.query)
+			end,
 		} or {}
 
 		local final_items
