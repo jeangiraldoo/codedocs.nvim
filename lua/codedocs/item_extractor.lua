@@ -14,26 +14,32 @@ local function remove_duplicate_items_by_name(items)
 	return deduplicated_list
 end
 
-local function generic_query_parser(ts_node, filetype, query)
+local function extract_ts_nodes(ts_node, filetype, query)
 	if not query then return {} end
 
 	local query_obj = vim.treesitter.query.parse(filetype, query)
 
 	local node_matches = query_obj:iter_matches(ts_node, 0)
-	local query_capture_tags = query_obj.captures
 
-	if vim.tbl_contains(query_capture_tags, "target") then
-		local target_nodes = {}
-		for _, match, _ in node_matches do
-			for id, capture_node in pairs(match) do
-				local nodes = type(capture_node) == "table" and capture_node or { capture_node }
-				for _, ts_capture_node in ipairs(nodes) do
-					if query_capture_tags[id] == "target" then table.insert(target_nodes, ts_capture_node) end
-				end
+	local target_nodes = {}
+	for _, match, _ in node_matches do
+		for _, capture_node in pairs(match) do
+			local nodes = type(capture_node) == "table" and capture_node or { capture_node }
+			for _, ts_capture_node in ipairs(nodes) do
+				table.insert(target_nodes, ts_capture_node)
 			end
 		end
-		return target_nodes
 	end
+
+	return target_nodes
+end
+
+local function generic_query_parser(ts_node, filetype, query)
+	if not query then return {} end
+
+	local query_obj = vim.treesitter.query.parse(filetype, query)
+
+	local query_capture_tags = query_obj.captures
 
 	local items = {}
 
@@ -123,6 +129,7 @@ function Item_extractor.extract(lang_name)
 			opts = targets_config.opts,
 			lang_name = lang_name,
 			generic_query_parser = generic_query_parser,
+			extract_ts_nodes = extract_ts_nodes,
 			lang_query_parser =
 				---@param query TSQuery
 				function(query) return generic_query_parser(target_data.node, lang_name, query) end,
