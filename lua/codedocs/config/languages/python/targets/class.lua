@@ -15,11 +15,13 @@ function extractors.attributes(target_data)
 	end
 
 	if target_data.opts.attributes.instance == "constructor" then
-		local constructor_node = target_data.lang_query_parser([[
-						(function_definition
-							name: (identifier) @func_name
-							(#eq? @func_name "__init__")) @target
-					]])[1]
+		local query = [[
+			(function_definition
+				name: (identifier) @func_name
+				(#eq? @func_name "__init__"))
+		]]
+
+		local constructor_node = target_data.extract_ts_nodes(target_data.node, target_data.lang_name, query)[1]
 
 		if constructor_node then
 			local constructor_instance_attrs = target_data.generic_query_parser(
