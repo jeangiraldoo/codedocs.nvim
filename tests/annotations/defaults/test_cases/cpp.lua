@@ -27,23 +27,22 @@ return {
 				},
 			},
 		},
-		-- {
-		-- 	structure = {
-		-- 		"int foo() {",
-		-- 		"}",
-		-- 	},
-		-- 	cursor_pos = 1,
-		-- 	expected_annotation = {
-		-- 		Doxygen = {
-		-- 			"/**",
-		-- 			" * ${1:title}",
-		--BUG: no gap is present when there's only a return with no params
-		-- 			" *",
-		-- 			" * @return ${4:description}",
-		-- 			" */",
-		-- 		},
-		-- 	},
-		-- },
+		{
+			structure = {
+				"int foo() {",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				Doxygen = {
+					"/**",
+					" * ${1:title}",
+					" *",
+					" * @return ${2:description}",
+					" */",
+				},
+			},
+		},
 		{
 			structure = {
 				"int foo(int a, int b) {",

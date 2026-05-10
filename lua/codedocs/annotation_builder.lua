@@ -6,25 +6,6 @@ local function compute_neovim_indentation()
 	return string.rep(" ", shiftwidth)
 end
 
-local function _should_insert_gap_between_blocks(block_idx, blocks, block_style, item_data)
-	local current_block_is_last = block_idx == #blocks
-	if current_block_is_last then return false end
-
-	local next_block = blocks[block_idx + 1]
-	local next_block_is_item_based = next_block and type(next_block.items) == "table"
-	if not next_block_is_item_based then
-		return block_style.insert_gap_between.enabled and not next_block.ignore_prev_gap
-	end
-
-	local next_block_has_items = item_data[next_block.name] and #item_data[next_block.name] > 0
-
-	if not next_block_has_items then return false end
-
-	if #next_block.layout == 0 and #next_block.items.layout == 0 then return false end
-
-	return block_style.insert_gap_between.enabled and not next_block.ignore_prev_gap
-end
-
 local Annotation = {
 	placeholders = {
 		["%%>"] = function(_, _, _) return compute_neovim_indentation() end,
@@ -112,16 +93,26 @@ function Annotation:insert(line, item)
 end
 
 function Annotation:insert_blocks(blocks, items)
+	local insert_gap = false
+	local last_created_block_idx = 1
 	for block_idx, block in ipairs(blocks) do
 		local is_item_based_block = type(block.items) == "table"
 
 		local block_items = items[block.name]
 
-		local at_least_one_block_item = block_items and #block_items > 0
-		if not is_item_based_block or at_least_one_block_item then self:new_block(block, block_items) end
+		local at_least_one_block_item = block_items and #block_items > 0 and #block.items.layout > 0
+		if not is_item_based_block or at_least_one_block_item then
+			if block_idx > 1 and insert_gap and not block.ignore_prev_gap then
+				self:insert(blocks[last_created_block_idx].insert_gap_between.text)
+				insert_gap = false
+			end
+			self:new_block(block, block_items)
+		end
 
-		if _should_insert_gap_between_blocks(block_idx, blocks, block, items) then
-			self:insert(block.insert_gap_between.text)
+		insert_gap = insert_gap or block.insert_gap_between.enabled
+		if block.insert_gap_between.enabled then
+			insert_gap = block.insert_gap_between.enabled
+			last_created_block_idx = block_idx
 		end
 	end
 end

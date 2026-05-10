@@ -71,6 +71,7 @@ return {
 				reST = {
 					'	"""',
 					"	${1:title}",
+					"",
 					"	:return: ${2:description}",
 					"	:rtype: ${3:int}",
 					'	"""',

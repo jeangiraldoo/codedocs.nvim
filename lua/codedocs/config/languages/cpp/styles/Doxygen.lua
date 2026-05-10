@@ -45,6 +45,7 @@ return {
 				layout = {
 					" */",
 				},
+				ignore_prev_gap = true,
 				insert_gap_between = {
 					enabled = false,
 					text = " *",
