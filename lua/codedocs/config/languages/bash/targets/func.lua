@@ -5,15 +5,12 @@ function extractors.globals(target_data)
 
 	local global_variables = target_data.extract_items {
 		node = root_node,
-		query = [[
-			((variable_name) @item_name
-			(#has-parent? @item_name variable_assignment)
-			(#not-has-ancestor? @item_name declaration_command))
-		]],
+		query = vim.treesitter.query.get("bash", "codedocs_global_vars"),
 	}
 
-	local variable_expansions_in_function =
-		target_data.extract_items { query = "(expansion (variable_name) @item_name)" }
+	local variable_expansions_in_function = target_data.extract_items {
+		query = vim.treesitter.query.get("bash", "codedocs_func_var_expansions"),
+	}
 
 	local globals_referenced = vim.iter(global_variables)
 		:filter(function(global_var)
@@ -30,12 +27,7 @@ end
 
 function extractors.parameters(target_data)
 	return target_data.extract_items {
-		query = [[
-			(command
-				argument: (string
-					(simple_expansion
-						(variable_name) @item_name)))
-		]],
+		query = vim.treesitter.query.get("bash", "codedocs_func_params"),
 	}
 end
 

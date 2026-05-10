@@ -2,41 +2,13 @@ local extractors = {}
 
 function extractors.parameters(target_data)
 	return target_data.extract_items {
-		query = [[
-			(function_definition
-				(function_declarator
-					(parameter_list
-						(parameter_declaration
-							type: [
-								(primitive_type)
-								(qualified_identifier)
-								(struct_specifier
-									(type_identifier))
-								(sized_type_specifier)
-								(type_identifier)
-							] @item_type
-							[
-								(identifier)
-								(pointer_declarator
-									(identifier))
-								(reference_declarator
-									(identifier))
-							] @item_name))))
-		]],
+		query = vim.treesitter.query.get("cpp", "codedocs_func_params"),
 	}
 end
 
 function extractors.returns(target_data)
 	return target_data.extract_items {
-		query = [[
-			(function_definition
-				type: [
-					(primitive_type)
-					(sized_type_specifier)
-					(qualified_identifier)
-					(type_identifier)
-				] @item_type (#not-eq? @item_type "void"))
-		]],
+		query = vim.treesitter.query.get("cpp", "codedocs_func_returns"),
 	}
 end
 

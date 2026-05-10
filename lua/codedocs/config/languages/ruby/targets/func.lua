@@ -2,21 +2,13 @@ local extractors = {}
 
 function extractors.parameters(target_data)
 	return target_data.extract_items {
-		query = [[
-			(method
-				(method_parameters
-					(identifier) @item_name))
-		]],
+		query = vim.treesitter.query.get("ruby", "codedocs_func_params"),
 	}
 end
 
 function extractors.returns(target_data)
 	return target_data.extract_items {
-		query = [[
-			(return
-				(_) @item_type
-				(#set! parse_as_blank "true"))
-		]],
+		query = vim.treesitter.query.get("ruby", "codedocs_func_returns"),
 	}
 end
 

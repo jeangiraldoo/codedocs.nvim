@@ -5,14 +5,7 @@ function extractors.attributes(target_data)
 
 	if target_data.opts.attributes.static then
 		local class_attrs = target_data.extract_items {
-			query = [[
-				(companion_object
-					(class_body
-						(property_declaration
-							(variable_declaration
-								(simple_identifier) @item_name
-								(user_type) @item_type))))
-			]],
+			query = vim.treesitter.query.get("kotlin", "codedocs_class_static_attributes"),
 		}
 
 		vim.list_extend(results, class_attrs)
@@ -20,14 +13,7 @@ function extractors.attributes(target_data)
 
 	if target_data.opts.attributes.instance == "constructor" then
 		local constructor_instance_attrs = target_data.extract_items {
-			query = [[
-				(class_declaration
-					(primary_constructor
-						(class_parameter
-							(binding_pattern_kind)
-							(simple_identifier) @item_name
-							(user_type) @item_type)))
-			]],
+			query = vim.treesitter.query.get("kotlin", "codedocs_class_constructor_instance_attrs"),
 		}
 
 		vim.list_extend(results, constructor_instance_attrs)
@@ -36,21 +22,7 @@ function extractors.attributes(target_data)
 
 	if target_data.opts.attributes.instance == "all" then
 		local all_instance_attrs = target_data.extract_items {
-			query = [[
-				(class_declaration
-					[
-						(class_body
-							(property_declaration
-								(variable_declaration
-									(simple_identifier) @item_name
-									(user_type) @item_type)))
-						(primary_constructor
-							(class_parameter
-								(binding_pattern_kind)
-								(simple_identifier) @item_name
-								(user_type) @item_type))
-					])
-			]],
+			query = vim.treesitter.query.get("kotlin", "codedocs_class_all_instance_attributes"),
 		}
 
 		vim.list_extend(results, all_instance_attrs)

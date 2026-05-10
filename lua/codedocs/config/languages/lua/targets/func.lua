@@ -1,23 +1,16 @@
 local extractors = {}
 
 function extractors.parameters(target_data)
+	local t = vim.treesitter.query.get("lua", "codedocs-func-params")
 	return target_data.extract_items {
-		query = [[
-			[
-				parameters: (parameters
-					name: (identifier) @item_name)
-			]
-		]],
+		query = t,
 	}
 end
 
 function extractors.returns(target_data)
+	local t = vim.treesitter.query.get("lua", "codedocs-func-returns")
 	return target_data.extract_items {
-		query = [[
-			(return_statement
-				(expression_list) @item_type
-				(#set! parse_as_blank "true")) @return_statement (#has-ancestor? @return_statement function_declaration)
-		]],
+		query = t,
 	}
 end
 
