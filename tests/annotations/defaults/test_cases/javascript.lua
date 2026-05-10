@@ -27,24 +27,23 @@ return {
 				},
 			},
 		},
-		-- {
-		-- 	structure = {
-		-- 		"function foo() {",
-		-- 		"	return a + b",
-		-- 		"}",
-		-- 	},
-		-- 	cursor_pos = 1,
-		-- 	expected_annotation = {
-		-- 		JSDoc = {
-		-- 			"/**",
-		-- 			" * ${1:description}",
-		--BUG: no gap is present when there's only a return with no params
-		-- 			" *",
-		-- 			" * @returns {${6:type}} ${7:description}",
-		-- 			" */",
-		-- 		},
-		-- 	},
-		-- },
+		{
+			structure = {
+				"function foo() {",
+				"	return a + b",
+				"}",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				JSDoc = {
+					"/**",
+					" * ${1:description}",
+					" *",
+					" * @returns {${2:type}} ${3:description}",
+					" */",
+				},
+			},
+		},
 		{
 			structure = {
 				"function foo(a, b) {",

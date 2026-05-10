@@ -25,22 +25,21 @@ return {
 				},
 			},
 		},
-		-- {
-		-- 	structure = {
-		-- 		"def foo()",
-		-- 		"	return a + b",
-		-- 		"end",
-		-- 	},
-		-- 	cursor_pos = 1,
-		-- 	expected_annotation = {
-		-- 		YARD = {
-		-- 			"# ${1:title}",
-		--BUG: no gap is present when there's only a return with no params
-		-- 			"#",
-		-- 			"# @return [${6:type}] ${7:description}",
-		-- 		},
-		-- 	},
-		-- },
+		{
+			structure = {
+				"def foo()",
+				"	return a + b",
+				"end",
+			},
+			cursor_pos = 1,
+			expected_annotation = {
+				YARD = {
+					"# ${1:title}",
+					"#",
+					"# @return [${2:type}] ${3:description}",
+				},
+			},
+		},
 		{
 			structure = {
 				"def foo(a, b)",
