@@ -2,44 +2,19 @@ local extractors = {}
 
 function extractors.parameters(target_data)
 	return target_data.extract_items {
-		query = [[
-			parameters: (formal_parameters
-				(simple_parameter
-					type: [
-					  (primitive_type) @item_type
-					  (union_type) @item_type
-					  (named_type) @item_type
-					  (disjunctive_normal_form_type) @item_type
-					  (intersection_type) @item_type
-					]?
-					name: (variable_name
-						(name) @item_name)))
-		]],
+		query = vim.treesitter.query.get("php", "codedocs_func_params"),
 	}
 end
 
 function extractors.returns(target_data)
 	local items = target_data.extract_items {
-		query = [[
-			(function_definition
-				return_type: [
-					(primitive_type)
-					(union_type)
-					(named_type)
-					(bottom_type)
-					(intersection_type)
-					(disjunctive_normal_form_type)
-				] @item_type )
-		]],
+		query = vim.treesitter.query.get("php", "codedocs_func_returns"),
 	}
 
 	if #items > 0 then return items end
 
 	return target_data.extract_items {
-		query = [[
-			(return_statement
-				(_) @item_type (#set! parse_as_blank "true"))
-		]],
+		query = vim.treesitter.query.get("php", "codedocs_func_return_statement"),
 	}
 end
 

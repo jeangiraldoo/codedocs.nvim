@@ -2,28 +2,13 @@ local extractors = {}
 
 function extractors.parameters(target_data)
 	return target_data.extract_items {
-		query = [[
-			(function_declaration
-				(function_value_parameters
-					(parameter
-						(simple_identifier) @item_name
-						[
-							(user_type)
-							(function_type)
-						] @item_type)))
-		]],
+		query = vim.treesitter.query.get("kotlin", "codedocs_func_params"),
 	}
 end
 
 function extractors.returns(target_data)
 	return target_data.extract_items {
-		query = [[
-			(function_declaration
-				[
-					(user_type)
-					(function_type)
-				] @item_type (#not-eq? @item_type "Unit"))
-		]],
+		query = vim.treesitter.query.get("kotlin", "codedocs_func_returns"),
 	}
 end
 

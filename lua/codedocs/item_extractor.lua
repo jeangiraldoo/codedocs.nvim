@@ -14,11 +14,7 @@ local function remove_duplicate_items_by_name(items)
 	return deduplicated_list
 end
 
-local function extract_ts_nodes(ts_node, filetype, query)
-	if not query then return {} end
-
-	local query_obj = vim.treesitter.query.parse(filetype, query)
-
+local function extract_ts_nodes(ts_node, query_obj)
 	local node_matches = query_obj:iter_matches(ts_node, 0)
 
 	local target_nodes = {}
@@ -34,10 +30,8 @@ local function extract_ts_nodes(ts_node, filetype, query)
 	return target_nodes
 end
 
-local function generic_query_parser(ts_node, filetype, query)
-	if not query then return {} end
-
-	local query_obj = vim.treesitter.query.parse(filetype, query)
+local function generic_query_parser(ts_node, query_obj)
+	if not query_obj then return {} end
 
 	local query_capture_tags = query_obj.captures
 
@@ -45,6 +39,7 @@ local function generic_query_parser(ts_node, filetype, query)
 
 	for _, match, metadata in query_obj:iter_matches(ts_node, 0) do
 		local new_item = {}
+
 		for id, capture_node in pairs(match) do
 			local nodes = type(capture_node) == "table" and capture_node or { capture_node }
 
@@ -54,10 +49,13 @@ local function generic_query_parser(ts_node, filetype, query)
 				local node_text = metadata.parse_as_blank ~= "true"
 						and vim.treesitter.get_node_text(match_capture_node, 0)
 					or ""
+
 				if capture_name == "item_name" then new_item.name = node_text end
+
 				if capture_name == "item_type" then new_item.type = node_text end
 			end
 		end
+
 		local exists = false
 
 		for _, v in ipairs(items) do
@@ -127,12 +125,8 @@ function Item_extractor.extract(lang_name)
 		local raw_items = item_extractor {
 			node = target_data.node,
 			opts = targets_config.opts,
-			extract_ts_nodes = function(data)
-				return extract_ts_nodes(data.node or target_data.node, lang_name, data.query)
-			end,
-			extract_items = function(data)
-				return generic_query_parser(data.node or target_data.node, lang_name, data.query)
-			end,
+			extract_ts_nodes = function(data) return extract_ts_nodes(data.node or target_data.node, data.query) end,
+			extract_items = function(data) return generic_query_parser(data.node or target_data.node, data.query) end,
 		} or {}
 
 		local final_items

@@ -2,22 +2,7 @@ local extractors = {}
 
 function extractors.parameters(target_data)
 	local raw_items = target_data.extract_items {
-		query = [[
-			(function_declaration
-				(parameter_list
-					(parameter_declaration
-						(identifier) @item_name
-						type: [
-							(slice_type)
-							(array_type)
-							(map_type)
-							(function_type)
-							(channel_type)
-							(pointer_type)
-							(struct_type)
-							(type_identifier)
-						] @item_type)))
-		]],
+		query = vim.treesitter.query.get("go", "codedocs_func_params"),
 	}
 
 	local final_items = {}
@@ -40,19 +25,7 @@ end
 
 function extractors.returns(target_data)
 	return target_data.extract_items {
-		query = [[
-			(function_declaration
-				result: [
-					(slice_type)
-					(array_type)
-					(map_type)
-					(function_type)
-					(channel_type)
-					(pointer_type)
-					(struct_type)
-					(type_identifier)
-				] @item_type)
-		]],
+		query = vim.treesitter.query.get("go", "codedocs_func_returns"),
 	}
 end
 

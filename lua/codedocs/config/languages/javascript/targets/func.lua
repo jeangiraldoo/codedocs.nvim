@@ -2,32 +2,13 @@ local extractors = {}
 
 function extractors.parameters(target_data)
 	return target_data.extract_items {
-		query = [[
-			[
-				(method_definition
-					(formal_parameters
-						(identifier) @item_name
-					)
-				)
-				(function_declaration
-					(formal_parameters
-						(identifier) @item_name
-					)
-				)
-				(arrow_function
-					parameters: (formal_parameters
-						(identifier) @item_name))
-			]
-		]],
+		query = vim.treesitter.query.get("javascript", "codedocs_func_params"),
 	}
 end
 
 function extractors.returns(target_data)
 	return target_data.extract_items {
-		query = [[
-			(return_statement
-				(_) @item_type (#set! parse_as_blank "true"))
-		]],
+		query = vim.treesitter.query.get("javascript", "codedocs_func_returns"),
 	}
 end
 
