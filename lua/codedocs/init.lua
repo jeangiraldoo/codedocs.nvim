@@ -234,12 +234,15 @@ function Codedocs.build_annotation(lang_name, annotation_data)
 	end
 
 	local annotation_tbl = Codedocs.get_annotation_tbl(lang_name, style_name, target_name)
-	local target_data = {
-		should_indent = annotation_tbl.indented,
-		line_num = annotation_row + 1,
-	}
 
-	local annotation_lines = require "codedocs.annotation_builder"(annotation_tbl, items, target_data)
+	local annotation = require("codedocs.annotation_builder").new(annotation_tbl.indented, annotation_row + 1)
+
+	annotation:insert_blocks(annotation_tbl.blocks, items)
+
+	local annotation_lines = annotation:get_lines()
+
+	Debug_logger.log("Annotation content", annotation_lines)
+
 	return { lines = annotation_lines, row = annotation_row, relative_position = annotation_tbl.relative_position }
 end
 
