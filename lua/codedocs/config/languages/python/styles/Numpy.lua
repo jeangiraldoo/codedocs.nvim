@@ -1,11 +1,9 @@
-local lang_utils = require "codedocs.config.languages.utils"
-
 return {
 	comment = {
 		relative_position = "empty_target_or_above",
 		indented = false,
 		blocks = {
-			lang_utils.new_section {
+			{
 				name = "title",
 				layout = {
 					"# ${%snippet_tabstop_idx:description}",
@@ -17,7 +15,7 @@ return {
 		relative_position = "below",
 		indented = true,
 		blocks = {
-			lang_utils.new_section {
+			{
 				name = "header",
 				layout = {
 					'"""',
@@ -27,13 +25,17 @@ return {
 					enabled = true,
 				},
 			},
-			lang_utils.new_section({ name = "attributes", layout = { "Attributes:", "___________" } }, {
-				layout = {
-					"%item_name : ${%snippet_tabstop_idx:%item_type}",
-					"	${%snippet_tabstop_idx:description}",
+			{
+				name = "attributes",
+				layout = { "Attributes:", "___________" },
+				items = {
+					layout = {
+						"%item_name : ${%snippet_tabstop_idx:%item_type}",
+						"	${%snippet_tabstop_idx:description}",
+					},
 				},
-			}),
-			lang_utils.new_section {
+			},
+			{
 				name = "footer",
 				layout = {
 					'"""',
@@ -46,7 +48,7 @@ return {
 		relative_position = "below",
 		indented = true,
 		blocks = {
-			lang_utils.new_section {
+			{
 				name = "header",
 				layout = {
 					'"""',
@@ -56,26 +58,29 @@ return {
 					enabled = true,
 				},
 			},
-			lang_utils.new_section({
+			{
 				name = "parameters",
 				layout = { "Parameters", "----------" },
 				insert_gap_between = { enabled = true },
-			}, {
-				layout = {
-					"%item_name: ${%snippet_tabstop_idx:%item_type}",
-					"	${%snippet_tabstop_idx:description}",
+				items = {
+					layout = {
+						"%item_name: ${%snippet_tabstop_idx:%item_type}",
+						"	${%snippet_tabstop_idx:description}",
+					},
 				},
-			}),
-			lang_utils.new_section(
-				{ name = "returns", layout = { "Returns", "-------" }, insert_gap_between = { enabled = true } },
-				{
+			},
+			{
+				name = "returns",
+				layout = { "Returns", "-------" },
+				insert_gap_between = { enabled = true },
+				items = {
 					layout = {
 						"${%snippet_tabstop_idx:%item_type}",
 						"	${%snippet_tabstop_idx:description}",
 					},
-				}
-			),
-			lang_utils.new_section {
+				},
+			},
+			{
 				name = "footer",
 				layout = {
 					'"""',

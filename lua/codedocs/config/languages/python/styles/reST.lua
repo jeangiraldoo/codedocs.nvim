@@ -1,11 +1,9 @@
-local lang_utils = require "codedocs.config.languages.utils"
-
 return {
 	comment = {
 		relative_position = "empty_target_or_above",
 		indented = false,
 		blocks = {
-			lang_utils.new_section {
+			{
 				name = "title",
 				layout = {
 					"# ${%snippet_tabstop_idx:description}",
@@ -17,7 +15,7 @@ return {
 		relative_position = "below",
 		indented = true,
 		blocks = {
-			lang_utils.new_section {
+			{
 				name = "header",
 				layout = {
 					'"""',
@@ -27,13 +25,16 @@ return {
 					enabled = true,
 				},
 			},
-			lang_utils.new_section({ name = "attributes" }, {
-				layout = {
-					":var %item_name: ${%snippet_tabstop_idx:description}",
-					":vartype %item_name: ${%snippet_tabstop_idx:%item_type}",
+			{
+				name = "attributes",
+				items = {
+					layout = {
+						":var %item_name: ${%snippet_tabstop_idx:description}",
+						":vartype %item_name: ${%snippet_tabstop_idx:%item_type}",
+					},
 				},
-			}),
-			lang_utils.new_section {
+			},
+			{
 				name = "footer",
 				layout = {
 					'"""',
@@ -46,7 +47,7 @@ return {
 		relative_position = "below",
 		indented = true,
 		blocks = {
-			lang_utils.new_section {
+			{
 				name = "header",
 				layout = {
 					'"""',
@@ -56,19 +57,25 @@ return {
 					enabled = true,
 				},
 			},
-			lang_utils.new_section({ name = "parameters" }, {
-				layout = {
-					":param %item_name: ${%snippet_tabstop_idx:description}",
-					":type %item_name: ${%snippet_tabstop_idx:%item_type}",
+			{
+				name = "parameters",
+				items = {
+					layout = {
+						":param %item_name: ${%snippet_tabstop_idx:description}",
+						":type %item_name: ${%snippet_tabstop_idx:%item_type}",
+					},
 				},
-			}),
-			lang_utils.new_section({ name = "returns" }, {
-				layout = {
-					":return: ${%snippet_tabstop_idx:description}",
-					":rtype: ${%snippet_tabstop_idx:%item_type}",
+			},
+			{
+				name = "returns",
+				items = {
+					layout = {
+						":return: ${%snippet_tabstop_idx:description}",
+						":rtype: ${%snippet_tabstop_idx:%item_type}",
+					},
 				},
-			}),
-			lang_utils.new_section {
+			},
+			{
 				name = "footer",
 				layout = {
 					'"""',

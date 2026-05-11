@@ -13,29 +13,23 @@ local NON_ITEM_BASED_SECTION_DEFAULTS = vim.tbl_deep_extend("force", vim.deepcop
 	ignore_prev_gap = false,
 })
 
----@param section_data {
----    name: string?,
----    layout: string[]?,
----    insert_gap_between: {
----        enabled: boolean?,
----        text: string? }? } Section options
----@param items_data ({
----    layout: string[]?,
----    insert_gap_between: {
----        enabled: boolean?,
----        text: string? } })? Item options
----@return CodedocsSectionOpts
-function Utils.new_section(section_data, items_data)
+function Utils.new_blocks_list(blocks_list)
 	vim.validate {
-		section_data = { section_data, "table" },
-		items_data = { items_data, { "table", "nil" } },
+		blocks_list = { blocks_list, "table" },
 	}
 
-	local section_opts = vim.tbl_deep_extend("force", vim.deepcopy(NON_ITEM_BASED_SECTION_DEFAULTS), section_data)
-	if items_data then
-		section_opts.items = vim.tbl_deep_extend("force", vim.deepcopy(COMMON_SECTION_OPTS), items_data)
+	local final_list = {}
+	for _, block in ipairs(blocks_list) do
+		local new_block_opts = vim.tbl_deep_extend("force", vim.deepcopy(NON_ITEM_BASED_SECTION_DEFAULTS), block)
+
+		if new_block_opts.items then
+			new_block_opts.items = vim.tbl_deep_extend("force", vim.deepcopy(COMMON_SECTION_OPTS), new_block_opts.items)
+		end
+
+		table.insert(final_list, new_block_opts)
 	end
-	return section_opts
+
+	return final_list
 end
 
 return Utils

@@ -87,9 +87,17 @@ return {
 	languages = vim.iter(vim.fs.dir(vim.fs.joinpath(dir, "languages"))):fold({}, function(acc, name, type)
 		if type ~= "directory" then return acc end
 
+		local lang_utils = require "codedocs.config.languages.utils"
 		local base_lang_config = require("codedocs.config.languages." .. name)
 
 		base_lang_config.styles = _build_dir_tbl(name, "styles")
+
+		for _, annotations in pairs(base_lang_config.styles) do
+			for _, annotation_opts in pairs(annotations) do
+				annotation_opts.blocks = lang_utils.new_blocks_list(annotation_opts.blocks)
+			end
+		end
+
 		base_lang_config.targets = _build_dir_tbl(name, "targets")
 
 		acc[name] = base_lang_config
