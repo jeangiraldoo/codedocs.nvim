@@ -12,6 +12,7 @@ such as functions, methods, classes, or variables.
 
 - [Directory structure](#directory-structure)
 - [Logic flow](#logic-flow)
+- [Configuration](#configuration)
 
 ## Directory structure
 
@@ -56,3 +57,16 @@ flowchart TB
     11 --> 12((The annotation is inserted into the buffer))
 
 ```
+
+## Configuration
+
+### Dynamic creation
+
+Unlike other plugins, the configuration table is built dynamically when the plugin
+first loads. This is done because many languages are supported, each language
+defines many annotation styles, and each style includes a number of individual
+annotations. Additionally, most languages implement a set of code targets.
+
+Creating the table as-is directly in the source code was prone to errors in early
+versions because it required a lot of `require` statements, which is why the
+dynamic approach was chosen.
