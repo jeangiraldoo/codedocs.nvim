@@ -154,7 +154,7 @@ function Item_extractor.extract(lang_name)
 
 	local target_pos = target_data.node:range()
 
-	return { items = items, name = target_data.name, row = target_pos }
+	return { items = items, target_name = target_data.name, row = target_pos }
 end
 
 return Item_extractor

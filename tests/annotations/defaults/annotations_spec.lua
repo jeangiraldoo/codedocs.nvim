@@ -21,13 +21,13 @@ describe("Default style annotations", function()
 								{ row = target_case.cursor_pos, col = target_case.cursor_col or 1 }
 							)
 
-							assert.are.same(
-								target_case.expected_annotation[style_name],
-								require("codedocs").build_annotation(
-									lang,
-									{ style_name = style_name, annotation_name = target_name }
-								).lines
-							)
+							local annotation_data = Codedocs.get_annotation_data(lang, {
+								style_name = style_name,
+								annotation_name = target_name,
+							})
+							local annotation_result = Codedocs.build_annotation(lang, annotation_data)
+
+							assert.are.same(target_case.expected_annotation[style_name], annotation_result.lines)
 						end)
 					end
 				end
