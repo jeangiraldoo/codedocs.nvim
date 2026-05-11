@@ -17,20 +17,38 @@ such as functions, methods, classes, or variables.
 ## Directory structure
 
 ```bash
-lua
-└── codedocs
-   ├── annotation_builder.lua # Uses item data and language styles to build an annotation
-   ├── config
-   │  ├── init.lua # Default configuration
-   │  └── languages
-   │     ├── ... # A directory per supported language
-   │     └── utils.lua
-   ├── health.lua # Exposes plugin diagnostics that can be checked using the `:checkhealth` command
-   ├── init.lua # Plugin entry point
-   ├── item_extractor.lua # Extracts items out of a code target
-   ├── README.md # You are here
-   └── utils
-      └── debug_logger.lua # Allows specific data to be displayed for debugging purposes if the `debug` config option is enabled
+root
+├── README.md # User-facing documentation
+├── CONTRIBUTING.md
+├── LICENSE
+├── MAKEFILE # Project commands
+├── docs
+│   ├── codedocs.txt # `:h codedocs` documentation
+│   └── tags # ctags tags for the built-in `:h codedocs` documentation
+├── queries
+│   └── ... # language directories
+│       └── *.scm # Treesitter queries used to extract target items
+│── scripts
+│   └── *.sh # Miscellaneous scripts that help develop the plugin
+│── tests
+│   └── * # Directories at any depth
+│       └ *_spec.lua # Miscellaneous scripts that help develop the plugin
+│── plugin
+│   └── codedocs.lua # General plugin setup
+└── lua
+│   └── codedocs
+│       ├── annotation_builder.lua # Uses item data and language styles to build an annotation
+│       ├── config
+│       │   ├── init.lua # Default configuration
+│       │   └── languages
+│       │       ├── ... # A directory per supported language
+│       │       └── utils.lua
+│       ├── health.lua # Exposes plugin diagnostics that can be checked using the `:checkhealth` command
+│       ├── init.lua # Plugin entry point
+│       ├── item_extractor.lua # Extracts items out of a code target
+│       ├── README.md # You are here
+│       └── utils
+│           └── debug_logger.lua # Allows specific data to be displayed for debugging purposes if the `debug` config option is enabled
 ```
 
 ## Logic flow
