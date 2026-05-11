@@ -1,11 +1,9 @@
-local lang_utils = require "codedocs.config.languages.utils"
-
 return {
 	comment = {
 		relative_position = "empty_target_or_above",
 		indent = false,
 		blocks = {
-			lang_utils.new_section {
+			{
 				name = "title",
 				layout = {
 					"// ${%snippet_tabstop_idx:description}",
@@ -17,7 +15,7 @@ return {
 		relative_position = "empty_target_or_above",
 		indent = false,
 		blocks = {
-			lang_utils.new_section {
+			{
 				name = "title",
 				layout = {
 					"<?php",
@@ -30,7 +28,7 @@ return {
 		relative_position = "above",
 		indent = false,
 		blocks = {
-			lang_utils.new_section {
+			{
 				name = "header",
 				layout = {
 					"/**",
@@ -41,23 +39,31 @@ return {
 					text = " *",
 				},
 			},
-			lang_utils.new_section({ name = "parameters", insert_gap_between = { text = " *" } }, {
-				layout = {
-					" * @param ${%snippet_tabstop_idx:%item_type} \\$%item_name ${%snippet_tabstop_idx:description}",
+			{
+				name = "parameters",
+				insert_gap_between = { text = " *" },
+				items = {
+					layout = {
+						" * @param ${%snippet_tabstop_idx:%item_type} \\$%item_name ${%snippet_tabstop_idx:description}",
+					},
+					insert_gap_between = {
+						text = " *",
+					},
 				},
-				insert_gap_between = {
-					text = " *",
+			},
+			{
+				name = "returns",
+				insert_gap_between = { text = " *" },
+				items = {
+					layout = {
+						" * @return ${%snippet_tabstop_idx:%item_type} ${%snippet_tabstop_idx:description}",
+					},
+					insert_gap_between = {
+						text = " *",
+					},
 				},
-			}),
-			lang_utils.new_section({ name = "returns", insert_gap_between = { text = " *" } }, {
-				layout = {
-					" * @return ${%snippet_tabstop_idx:%item_type} ${%snippet_tabstop_idx:description}",
-				},
-				insert_gap_between = {
-					text = " *",
-				},
-			}),
-			lang_utils.new_section {
+			},
+			{
 				name = "footer",
 				layout = {
 					" */",

@@ -5,7 +5,7 @@ return {
 		relative_position = "empty_target_or_above",
 		indented = false,
 		blocks = {
-			language_utils.new_section {
+			{
 				name = "title",
 				layout = {
 					"# ${%snippet_tabstop_idx:description}",
@@ -17,7 +17,7 @@ return {
 		relative_position = "empty_target_or_above",
 		indented = false,
 		blocks = {
-			language_utils.new_section {
+			{
 				name = "title",
 				layout = {
 					"#${%snippet_tabstop_idx:!/usr/bin/env bash}",
@@ -29,23 +29,29 @@ return {
 		relative_position = "above",
 		indented = false,
 		blocks = {
-			language_utils.new_section {
+			{
 				name = "header",
 				layout = {
 					"#######################################",
 					"# ${%snippet_tabstop_idx:title}",
 				},
 			},
-			language_utils.new_section(
-				{ name = "globals", layout = { "# Globals:" } },
-				{ layout = { "#   %item_name" } }
-			),
-			language_utils.new_section(
-				{ name = "parameters", layout = { "# Arguments:" } },
-				{ layout = { "#   ${%snippet_tabstop_idx:description}" } }
-			),
-			language_utils.new_section({ name = "returns", layout = { "Returns:" } }, { layout = { "%item_type:" } }),
-			language_utils.new_section {
+			{
+				name = "globals",
+				layout = { "# Globals:" },
+				items = { layout = { "#   %item_name" } },
+			},
+			{
+				name = "parameters",
+				layout = { "# Arguments:" },
+				items = { layout = { "#   ${%snippet_tabstop_idx:description}" } },
+			},
+			{
+				name = "returns",
+				layout = { "Returns:" },
+				items = { layout = { "%item_type:" } },
+			},
+			{
 				name = "footer",
 				layout = {
 					"#######################################",
