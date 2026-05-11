@@ -1,4 +1,5 @@
 local Util = require "tests.utils"
+local Codedocs = require "codedocs"
 
 local ANNOTATION_DATA = {
 	without_items = {
@@ -21,7 +22,7 @@ local ANNOTATION_DATA = {
 
 describe("Add support for a new language", function()
 	insulate("Cobol - Cobolito style", function()
-		require("codedocs").setup {
+		Codedocs.setup {
 			languages = {
 				cobol = {
 					default_style = "cobolito",
@@ -53,11 +54,13 @@ describe("Add support for a new language", function()
 		Util.mock_buffer("cobol", { "" }, { row = 1, col = 1 })
 
 		it("cobol - cobolito (without items)", function()
-			local annotation_lines = require("codedocs").build_annotation("cobol", {
-				style_name = "cobolito",
-				annotation_name = ANNOTATION_DATA.without_items.new_annotation_name,
-			}).lines
-			assert.are.same(ANNOTATION_DATA.without_items.expected_lines, annotation_lines)
+			local annotation_data1 = Codedocs.get_annotation_data(
+				"cobol",
+				{ style_name = "cobolito", annotation_name = ANNOTATION_DATA.without_items.new_annotation_name }
+			)
+			local annotation_result = Codedocs.build_annotation("cobol", annotation_data1)
+
+			assert.are.same(ANNOTATION_DATA.without_items.expected_lines, annotation_result.lines)
 		end)
 	end)
 end)
@@ -93,11 +96,13 @@ describe("Adding new annotation", function()
 		}
 
 		it(lang_name .. " - " .. style_name .. "(without items)", function()
-			local annotation_lines = require("codedocs").build_annotation(lang_name, {
-				style_name = style_name,
-				annotation_name = ANNOTATION_DATA.without_items.new_annotation_name,
-			}).lines
-			assert.are.same(ANNOTATION_DATA.without_items.expected_lines, annotation_lines)
+			local annotation_data = Codedocs.get_annotation_data(
+				lang_name,
+				{ style_name = style_name, annotation_name = ANNOTATION_DATA.without_items.new_annotation_name }
+			)
+			local annotation_result = Codedocs.build_annotation(lang_name, annotation_data)
+
+			assert.are.same(ANNOTATION_DATA.without_items.expected_lines, annotation_result.lines)
 		end)
 	end)
 
@@ -177,9 +182,11 @@ describe("Adding new annotation", function()
 			"end",
 		}, { row = 1, col = 1 })
 
-		local annotation_lines = require("codedocs").build_annotation("lua", {
-			annotation_name = ANNOTATION_DATA.with_items.new_annotation_name,
-		}).lines
+		local annotation_data1 =
+			Codedocs.get_annotation_data("lua", { annotation_name = ANNOTATION_DATA.with_items.new_annotation_name })
+		local annotation_result = Codedocs.build_annotation("lua", annotation_data1)
+		local annotation_lines = annotation_result.lines
+
 		assert.are.same(ANNOTATION_DATA.with_items.expected_lines, annotation_lines)
 	end)
 end)
