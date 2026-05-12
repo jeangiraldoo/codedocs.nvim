@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                   For NVIM v0.10+    Last change: 09 May 2026
+                                   For NVIM v0.10+    Last change: 12 May 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -595,46 +595,46 @@ The following annotations are available in all languages and styles:
 
 LANGUAGE-SPECIFIC ANNOTATIONS*codedocs-language-support-language-specific-annotations*
 
-  ------------------------------------------------------------------------------
-  Language     Styles ( = default)                       Annotations
-  ------------ ----------------------------------------- -----------------------
-  bash         Google                                    func,shebang
+  -----------------------------------------------------------------------------
+  Language     Styles ( = default)                    Annotations
+  ------------ -------------------------------------- -------------------------
+  bash         Google                                 func,shebang
 
-  c            Doxygen                                   func
+  c            Doxygen                                func
 
-  c++(cpp)     Doxygen                                   func
+  c++(cpp)     Doxygen                                func
 
-  go           Godoc                                     func
+  go           Godoc                                  func
 
-  gdscript     Codedocs                                  export,onready,
-                                                         warning_ignore
+  gdscript     Codedocs                               export,onready,
+                                                      warning_ignore
 
-  html         Codedocs                                  Only global annotations
+  html         Codedocs                               Only global annotations
 
-  javascript   JSDoc                                     func,class
+  javascript   JSDoc                                  func,class
 
-  java         JavaDoc                                   func,class
+  java         JavaDoc                                func,class
 
-  kotlin       KDoc                                      func,class
+  kotlin       KDoc                                   func,class
 
-  lua          EmmyLua,LDoc                              func
+  lua          EmmyLua,LDoc                           func
 
-  markdown     Codedocs                                  Only global annotations
+  markdown     Codedocs                               Only global annotations
 
-  python       Google, NumPy, reST                       func,class
+  python       Google, NumPy, reST                    func,class
 
-  php          PHPDoc                                    func,phptag
+  php          PHPDoc                                 func,phptag
 
-  ruby         YARD                                      func
+  ruby         YARD                                   func
 
-  rust         RustDoc                                   func
+  rust         RustDoc                                func
 
-  sql          Codedocs                                  Onlyglobal annotations
+  sql          Codedocs                               Onlyglobal annotations
 
-  typescript   TSDoc                                     func,class
+  typescript   TSDoc                                  func,class
 
-  toml         Codedocs                                  Only global annotations
-  ------------------------------------------------------------------------------
+  toml         Codedocs                               Only global annotations
+  -----------------------------------------------------------------------------
 
 ==============================================================================
 8. Roadmap                                                  *codedocs-roadmap*
