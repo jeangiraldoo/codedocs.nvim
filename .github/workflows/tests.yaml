@@ -4,6 +4,12 @@ on:
     pull_request:
         branches:
             - main
+        types:
+            - opened
+            - synchronize
+            - reopened
+        paths:
+            - "**/*.lua"
 
 env:
     parsers: '"lua", "python", "bash", "java", "javascript", "c", "cpp", "typescript", "php", "ruby", "rust", "go", "kotlin"'
