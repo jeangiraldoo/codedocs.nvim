@@ -19,7 +19,7 @@ There's many ways to help the project:
 
 - You can propose new features, documentation improvements, bug fixes, or
   anything that can help the project in the long run.
-- You can check the currently opened [issues](https://github.com/jeangiraldoo/codedocs.nvim/issues)
+- You can check the currently opened [issues][codedocs-issues]
   and help fix any bugs or implement features.
 - You can also code support for new languages, structures, or styles!
 
@@ -32,8 +32,8 @@ The guidelines are described below:
 
 ### Commits
 
-[Commitlint](https://commitlint.js.org/) is used to ensure that all commits
-comply with the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+[Commitlint][commitlint] is used to ensure that all commits
+comply with the [Conventional Commits][conventional-commits]
 standard. This makes skimming commit messages and filtering commits simpler.
 
 Linting rules are defined in the `.commitlintrc.yaml` file at the root of the repository.
@@ -41,7 +41,7 @@ Linting rules are defined in the `.commitlintrc.yaml` file at the root of the re
 ### Documentation
 
 Documentation is written entirely in `Markdown` and is linted using
-[Markdownlint](https://github.com/DavidAnson/markdownlint).
+[Markdownlint][markdownlint].
 
 Linting rules are defined in the `.markdownlint.yaml` file at the root of the repository.
 
@@ -56,17 +56,17 @@ users have a good experience while using the plugin:
 
 Codedocs is built using **Lua** and **Treesitter**. Since Neovim natively supports
 Lua, you don’t need to install anything extra. For Treesitter, Neovim has
-[built-in support](https://neovim.io/doc/user/treesitter.html), so you'll just need
+[built-in support][neovim-treesitter-docs], so you'll just need
 to install the appropriate parsers for the languages you're working with.
 
 #### Style & Formatting
 
 To maintain code consistency, follow these formatting and linting rules:
 
-- **Formatting**: Use [Stylua](https://github.com/JohnnyMorganz/StyLua).
+- **Formatting**: Use [Stylua][stylua].
   Formatting rules that override Stylua's defaults are defined in the `.stylua.toml`
   file at the root of the repository.
-- **Linting**: Run [Luacheck](https://github.com/mpeterv/luacheck) to catch issues
+- **Linting**: Run [Luacheck][luacheck] to catch issues
   like unused variables and syntax errors.
 
 #### Best Practices
@@ -79,3 +79,11 @@ To maintain code consistency, follow these formatting and linting rules:
 
 Check the [technical documentation](./lua/codedocs/README.md) for an overview of
 the codebase and its inner workings.
+
+[luacheck]: https://github.com/mpeterv/luacheck
+[stylua]: https://github.com/JohnnyMorganz/StyLua
+[markdownlint]: https://github.com/DavidAnson/markdownlint
+[commitlint]: https://commitlint.js.org/
+[neovim-treesitter-docs]: https://neovim.io/doc/user/treesitter.html
+[conventional-commits]: https://www.conventionalcommits.org/en/v1.0.0/
+[codedocs-issues]: https://github.com/jeangiraldoo/codedocs.nvim/issues
