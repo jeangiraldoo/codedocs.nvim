@@ -54,12 +54,12 @@ additional setup is required:
 
 For any other language, you'll need to install the corresponding Treesitter
 parser. The simplest way to do this is with
-**[nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter)**.
+**[nvim-treesitter][nvim-treesitter]**.
 
 ## Installation
 
 > [!WARNING]
-> Development is done using [Trunk Based Development](https://trunkbaseddevelopment.com),
+> Development is done using [Trunk Based Development][trunk-based-dev],
 > meaning all new changes are merged into `main`, making it the equivalent of `nightly`;
 > versions are done through Git tags.
 >
@@ -68,7 +68,7 @@ parser. The simplest way to do this is with
 
 Use the snippet for your plugin manager:
 
-### [vim.pack](https://neovim.io/doc/user/pack.html#vim.pack)
+### [vim.pack][vim.pack]
 
 ```lua
 vim.pack.add({
@@ -76,7 +76,7 @@ vim.pack.add({
 })
 ```
 
-### [lazy.nvim](http://www.lazyvim.org/)
+### [lazy.nvim][lazy.nvim]
 
 ```lua
 {
@@ -84,7 +84,7 @@ vim.pack.add({
 }
 ```
 
-### [packer.nvim](https://github.com/wbthomason/packer.nvim)
+### [packer.nvim][packer]
 
 ```lua
 use {
@@ -92,13 +92,13 @@ use {
 }
 ```
 
-### [vim-plug](https://github.com/junegunn/vim-plug)
+### [vim-plug][vim-plug]
 
 ```vim
 Plug 'jeangiraldoo/codedocs.nvim'
 ```
 
-### [mini.deps](https://github.com/echasnovski/mini.deps)
+### [mini.deps][mini.deps]
 
 ```lua
 require("mini.deps").add({
@@ -106,14 +106,14 @@ require("mini.deps").add({
 })
 ```
 
-### [minpac](https://github.com/k-takata/minpac)
+### [minpac][minpac]
 
 ```vim
 packadd minpac
 call minpac#add('jeangiraldoo/codedocs.nvim')
 ```
 
-### [paq-nvim](https://github.com/savq/paq-nvim)
+### [paq-nvim][paq-nvim]
 
 ```lua
 require("paq") {
@@ -155,7 +155,7 @@ that any comment can be deleted by placing your cursor on it and pressing `dgc`.
 ### Lua API
 
 > [!TIP]
-> You can check the function signatures using a LSP such as [LuaLS](https://luals.github.io/)
+> You can check the function signatures using a LSP such as [LuaLS][luals]
 
 A Lua API is provided in case you find any of the already existing functionality
 useful. The API can be accessed by requiring the `codedocs` module:
@@ -442,7 +442,7 @@ def cool_function_with_type_hints(a: int, b: bool) -> str:
 In this case, we:
 
 - Increased spacing between items in the parameters block.
-- Wrapped parameter types with two [Kaomojis](https://kaomoji.ru/en/).
+- Wrapped parameter types with two [Kaomojis][kaomojis].
 - Added a third kaomoji to wrap the left side of the return type.
 - Customized the titles for both the parameters and return blocks.
 
@@ -585,7 +585,7 @@ The following annotations are available in all languages and styles:
 
 You can see what's being worked on and which features are planned by checking
 the
-[GitHub Milestones](https://github.com/jeangiraldoo/codedocs.nvim/milestones).
+[GitHub Milestones][codedocs-milestones].
 
 ## Contributing
 
@@ -629,3 +629,15 @@ include the same LICENSE file found in this repository.
 [reST ref]: https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html
 [RustDoc ref]: https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html
 [JavaDoc ref]: https://www.oracle.com/latam/technical-resources/articles/java/javadoc-tool.html
+[codedocs-milestones]: https://github.com/jeangiraldoo/codedocs.nvim/milestones
+[kaomojis]: https://kaomoji.ru/en/
+[luals]: https://luals.github.io/
+[paq-nvim]: https://github.com/savq/paq-nvim
+[minpac]: https://github.com/k-takata/minpac
+[mini.deps]: https://github.com/echasnovski/mini.deps
+[vim-plug]: https://github.com/junegunn/vim-plug
+[packer]: https://github.com/wbthomason/packer.nvim
+[lazy.nvim]: http://www.lazyvim.org/
+[vim.pack]: https://neovim.io/doc/user/pack.html#vim.pack
+[trunk-based-dev]: https://trunkbaseddevelopment.com
+[nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
