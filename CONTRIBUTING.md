@@ -46,7 +46,10 @@ Documentation is written entirely in `Markdown` and is linted using
 Technical guidelines:
 
 - Linting rules are defined in the `.markdownlint.yaml` file at the root of the
-  repository.
+  repository
+- External links should be defined as references at the bottom of the file
+- HTML may be used as a last resort when something can't be achieved with plain
+  Markdown
 
 Non-technical guidelines:
 
