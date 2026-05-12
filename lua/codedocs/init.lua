@@ -278,7 +278,7 @@ function Codedocs.generate(annotation_data)
 	local annotation_result = Codedocs.build_annotation(lang_name, annotation_data1)
 
 	if annotation_result and not vim.tbl_isempty(annotation_result.lines) then
-		_write_to_buffer(annotation_result.lines, annotation_data1.annotation_row, annotation_result.relative_position)
+		_write_to_buffer(annotation_result.lines, annotation_data1.row, annotation_result.relative_position)
 	end
 end
 
