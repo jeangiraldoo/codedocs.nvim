@@ -1,5 +1,3 @@
-local language_utils = require "codedocs.config.languages.utils"
-
 return {
 	comment = {
 		relative_position = "empty_target_or_above",
