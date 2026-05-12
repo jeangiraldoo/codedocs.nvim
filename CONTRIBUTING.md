@@ -43,10 +43,12 @@ Linting rules are defined in the `.commitlintrc.yaml` file at the root of the re
 Documentation is written entirely in `Markdown` and is linted using
 [Markdownlint][markdownlint].
 
-Linting rules are defined in the `.markdownlint.yaml` file at the root of the repository.
+Technical guidelines:
 
-The following guidelines are not technical, but are still important to ensure
-users have a good experience while using the plugin:
+- Linting rules are defined in the `.markdownlint.yaml` file at the root of the
+  repository.
+
+Non-technical guidelines:
 
 - Documentation should be easy to read and understand.
 - Documentation should be well organized into sections.
