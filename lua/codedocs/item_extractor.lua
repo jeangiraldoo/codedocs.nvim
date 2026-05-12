@@ -116,7 +116,13 @@ function Item_extractor.extract(lang_name)
 	local target_data =
 		_get_supported_target_node_data(node_at_cursor, Item_extractor.get_target_identifiers(lang_name))
 
-	if not target_data then return {}, "comment", vim.api.nvim_win_get_cursor(0)[1] - 1 end
+	if not target_data then
+		return {
+			items = {},
+			target_name = "comment",
+			row = vim.api.nvim_win_get_cursor(0)[1] - 1,
+		}
+	end
 
 	local targets_config = require("codedocs.config").languages[lang_name].targets[target_data.name]
 
