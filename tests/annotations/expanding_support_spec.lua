@@ -1,50 +1,44 @@
 local Util = require "tests.utils"
 local Codedocs = require "codedocs"
 
-local ANNOTATION_DATA = {
-	without_items = {
-		new_annotation_name = "new_annotation",
-		expected_lines = {
-			"---${1:title}",
-			"---Second line",
-		},
-	},
-	with_items = {
-		new_annotation_name = "if_statement",
-		expected_lines = {
-			"---first line",
-			"---${1:block title}",
-			"apollo | first",
-			"artemis | second",
-		},
-	},
-}
-
 describe("Add support for a new language", function()
-	insulate("Cobol - Cobolito style", function()
+	local data = {
+		lang_name = "cobol",
+		style_name = "cobolito",
+		annotation = {
+			name = "super_cobol",
+			opts = {
+				relative_position = "empty_target_or_above",
+				indented = false,
+				blocks = {
+					{
+						name = "title",
+						insert_gap_between = {
+							enabled = false,
+							text = "",
+						},
+						layout = {
+							"---${%snippet_tabstop_idx:title}",
+							"---Second line",
+						},
+					},
+				},
+			},
+			expected_lines = {
+				"---${1:title}",
+				"---Second line",
+			},
+		},
+	}
+
+	insulate(("%s - %s style"):format(data.lang_name, data.style_name), function()
 		Codedocs.setup {
 			languages = {
 				cobol = {
-					default_style = "cobolito",
+					default_style = data.style_name,
 					styles = {
-						cobolito = {
-							[ANNOTATION_DATA.without_items.new_annotation_name] = {
-								relative_position = "empty_target_or_above",
-								indented = false,
-								blocks = {
-									{
-										name = "title",
-										insert_gap_between = {
-											enabled = false,
-											text = "",
-										},
-										layout = {
-											"---${%snippet_tabstop_idx:title}",
-											"---Second line",
-										},
-									},
-								},
-							},
+						[data.style_name] = {
+							[data.annotation.name] = data.annotation.opts,
 						},
 					},
 					targets = {},
@@ -53,42 +47,51 @@ describe("Add support for a new language", function()
 		}
 		Util.mock_buffer("cobol", { "" }, { row = 1, col = 1 })
 
-		it("cobol - cobolito (without items)", function()
+		it(("%s - %s (without items)"):format(data.lang_name, data.style_name), function()
 			local annotation_data1 = Codedocs.get_annotation_data(
-				"cobol",
-				{ style_name = "cobolito", annotation_name = ANNOTATION_DATA.without_items.new_annotation_name }
+				data.lang_name,
+				{ style_name = data.style_name, annotation_name = data.annotation.name }
 			)
 			local annotation_result = Codedocs.build_annotation("cobol", annotation_data1)
 
-			assert.are.same(ANNOTATION_DATA.without_items.expected_lines, annotation_result.lines)
+			assert.are.same(data.annotation.expected_lines, annotation_result.lines)
 		end)
 	end)
 end)
 
-describe("Adding new annotation", function()
+describe("Adding new target-less annotation", function()
+	local annotation = {
+		name = "new_annotation",
+		opts = {
+			relative_position = "empty_target_or_above",
+			indented = false,
+			blocks = {
+				{
+					name = "title",
+					insert_gap_between = {
+						enabled = false,
+						text = "",
+					},
+					layout = {
+						"---${%snippet_tabstop_idx:title}",
+						"---Second line",
+					},
+				},
+			},
+		},
+		expected_lines = {
+			"---${1:title}",
+			"---Second line",
+		},
+	}
+
 	Util.for_style(function(lang_name, style_name)
 		require("codedocs").setup {
 			languages = {
 				[lang_name] = {
 					styles = {
 						[style_name] = {
-							[ANNOTATION_DATA.without_items.new_annotation_name] = {
-								relative_position = "empty_target_or_above",
-								indented = false,
-								blocks = {
-									{
-										name = "title",
-										insert_gap_between = {
-											enabled = false,
-											text = "",
-										},
-										layout = {
-											"---${%snippet_tabstop_idx:title}",
-											"---Second line",
-										},
-									},
-								},
-							},
+							[annotation.name] = annotation.opts,
 						},
 					},
 				},
@@ -96,83 +99,95 @@ describe("Adding new annotation", function()
 		}
 
 		it(lang_name .. " - " .. style_name .. "(without items)", function()
-			local annotation_data = Codedocs.get_annotation_data(
-				lang_name,
-				{ style_name = style_name, annotation_name = ANNOTATION_DATA.without_items.new_annotation_name }
-			)
+			local annotation_data =
+				Codedocs.get_annotation_data(lang_name, { style_name = style_name, annotation_name = annotation.name })
 			local annotation_result = Codedocs.build_annotation(lang_name, annotation_data)
 
-			assert.are.same(ANNOTATION_DATA.without_items.expected_lines, annotation_result.lines)
+			assert.are.same(annotation.expected_lines, annotation_result.lines)
 		end)
 	end)
+end)
 
+describe("Add new annotation with target", function()
 	---Adding test cases per language would require mocking buffers with language-specific code, making the test more
 	---verbose without adding much value. Since the previous test already verifies that non–code-related annotations can
 	---be created, it’s sufficient here to confirm that a code-related annotation can be generated for a given language
+
+	local annotation = {
+		opts = {
+			relative_position = "empty_target_or_above",
+			indented = false,
+			blocks = {
+				{
+					name = "title",
+					layout = {
+						"---first line",
+					},
+					insert_gap_between = {
+						enabled = false,
+						text = "",
+					},
+				},
+				{
+					name = "someblock",
+					layout = {
+						"---${%snippet_tabstop_idx:block title}",
+					},
+					insert_gap_between = {
+						enabled = false,
+						text = "",
+					},
+					items = {
+						layout = {
+							"%item_name | %item_type",
+						},
+						insert_gap_between = {
+							enabled = false,
+							text = "",
+						},
+					},
+				},
+			},
+		},
+		expected_lines = {
+			"---first line",
+			"---${1:block title}",
+			"apollo | first",
+			"artemis | second",
+		},
+	}
+
+	local target = {
+		name = "if_statement",
+		opts = {
+			node_identifiers = {
+				"if_statement",
+			},
+			extractors = {
+				someblock = function()
+					return {
+						{
+							name = "apollo",
+							type = "first",
+						},
+						{
+							name = "artemis",
+							type = "second",
+						},
+					}
+				end,
+			},
+		},
+	}
+
 	it("Lua - EmmyLua - if_statement (with items)", function()
 		require("codedocs").setup {
 			languages = {
 				lua = {
 					styles = {
-						EmmyLua = {
-							[ANNOTATION_DATA.with_items.new_annotation_name] = {
-								relative_position = "empty_target_or_above",
-								indented = false,
-								blocks = {
-									{
-										name = "title",
-										layout = {
-											"---first line",
-										},
-										insert_gap_between = {
-											enabled = false,
-											text = "",
-										},
-									},
-									{
-										name = "someblock",
-										layout = {
-											"---${%snippet_tabstop_idx:block title}",
-										},
-										insert_gap_between = {
-											enabled = false,
-											text = "",
-										},
-										items = {
-											layout = {
-												"%item_name | %item_type",
-											},
-											insert_gap_between = {
-												enabled = false,
-												text = "",
-											},
-										},
-									},
-								},
-							},
-						},
+						EmmyLua = { [target.name] = annotation.opts },
 					},
-					targets = {
-						[ANNOTATION_DATA.with_items.new_annotation_name] = {
-							node_identifiers = {
-								"if_statement",
-							},
-							extractors = {
-								someblock = function()
-									return {
-										{
-											name = "apollo",
-											type = "first",
-										},
-										{
-											name = "artemis",
-											type = "second",
-										},
-									}
-								end,
-							},
-						},
-					},
+					targets = { [target.name] = target.opts },
 				},
 			},
 		}
@@ -182,11 +197,10 @@ describe("Adding new annotation", function()
 			"end",
 		}, { row = 1, col = 1 })
 
-		local annotation_data1 =
-			Codedocs.get_annotation_data("lua", { annotation_name = ANNOTATION_DATA.with_items.new_annotation_name })
+		local annotation_data1 = Codedocs.get_annotation_data("lua", { annotation_name = target.name })
 		local annotation_result = Codedocs.build_annotation("lua", annotation_data1)
 		local annotation_lines = annotation_result.lines
 
-		assert.are.same(ANNOTATION_DATA.with_items.expected_lines, annotation_lines)
+		assert.are.same(annotation.expected_lines, annotation_lines)
 	end)
 end)
