@@ -11,40 +11,16 @@ local annotation_builder = require "codedocs.annotation_builder"
 
 local MOCKED_ITEMS = {
 	primary_section = {
-		{
-			name = "a",
-			type = "int",
-		},
-		{
-			name = "b",
-			type = "",
-		},
-		{
-			name = "c",
-			type = "int",
-		},
-		{
-			name = "",
-			type = "string",
-		},
+		{ name = "a", type = "int" },
+		{ name = "b", type = "" },
+		{ name = "c", type = "int" },
+		{ name = "", type = "string" },
 	},
 	secondary_section = {
-		{
-			name = "d",
-			type = "int",
-		},
-		{
-			name = "e",
-			type = "int",
-		},
-		{
-			name = "f",
-			type = "int",
-		},
-		{
-			name = "",
-			type = "string",
-		},
+		{ name = "d", type = "int" },
+		{ name = "e", type = "int" },
+		{ name = "f", type = "int" },
+		{ name = "", type = "string" },
 	},
 }
 
@@ -56,15 +32,14 @@ local BASE_ANNOTATION = {
 		" * @item a",
 		" * @item b",
 		" * @item c",
-		" * @item",
+		" * @item ",
 		" * @secondary_item d",
 		" * @secondary_item e",
 		" * @secondary_item f",
-		" * @secondary_item",
+		" * @secondary_item ",
 		" */",
 	},
 	opts = {
-		settings = {},
 		blocks = {
 			{
 				name = "title",
@@ -145,7 +120,6 @@ local CASES = {
 			" ]-",
 		},
 		opts_to_change = {
-			settings = {},
 			blocks = {
 				{
 					name = "header",
@@ -333,7 +307,6 @@ local CASES = {
 			" */",
 		},
 		opts_to_change = {
-			settings = {},
 			blocks = {
 				{
 					name = "header",
@@ -661,6 +634,15 @@ local CASES = {
 }
 
 describe("Annotation builder - ", function()
+	it("Control case", function()
+		local annotation = annotation_builder.new()
+		annotation:insert_blocks(BASE_ANNOTATION.opts.blocks, MOCKED_ITEMS)
+
+		local lines = annotation:get_lines()
+
+		assert.are.same(BASE_ANNOTATION.expected_lines, lines)
+	end)
+
 	for i, case in ipairs(CASES) do
 		it("Case #" .. i, function()
 			local base_opts_copy = vim.deepcopy(BASE_ANNOTATION.opts)
