@@ -1,0 +1,10 @@
+/// ${1:title}
+///
+/// # Arguments
+///
+/// * `a` - ${2:description}
+/// * `b` - ${3:description}
+///
+/// # Returns
+///
+/// ${4:description}

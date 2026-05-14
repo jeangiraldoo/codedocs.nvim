@@ -1,0 +1,1 @@
+@warning_ignore("${1:warning}")

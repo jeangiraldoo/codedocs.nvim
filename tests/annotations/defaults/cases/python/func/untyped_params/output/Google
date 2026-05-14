@@ -1,0 +1,7 @@
+	"""
+	${1:title}
+
+	Args:
+		a (${2:}): ${3:description}
+		b (${4:}): ${5:description}
+	"""

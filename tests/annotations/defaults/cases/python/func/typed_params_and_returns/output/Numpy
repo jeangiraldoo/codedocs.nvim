@@ -1,0 +1,15 @@
+	"""
+	${1:title}
+
+	Parameters
+	----------
+	a: ${2:int}
+		${3:description}
+	b: ${4:int}
+		${5:description}
+
+	Returns
+	-------
+	${6:int}
+		${7:description}
+	"""

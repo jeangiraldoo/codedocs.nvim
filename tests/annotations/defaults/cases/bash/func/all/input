@@ -1,0 +1,16 @@
+SOME_GLOBAL=2
+SESSION_ID=3
+dir=1
+local house=1
+local age=1
+local name=1
+
+foo() {
+	if [[ -d "${dir}/${SESSION_ID}" ]]; then
+		echo "$1"
+		echo "$2"
+		echo "$3"
+		echo "$4"
+		echo "${SESSION_ID}"
+	fi
+}

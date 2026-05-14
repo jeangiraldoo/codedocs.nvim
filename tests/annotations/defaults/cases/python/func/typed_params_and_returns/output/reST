@@ -1,0 +1,10 @@
+	"""
+	${1:title}
+
+	:param a: ${2:description}
+	:type a: ${3:int}
+	:param b: ${4:description}
+	:type b: ${5:int}
+	:return: ${6:description}
+	:rtype: ${7:int}
+	"""

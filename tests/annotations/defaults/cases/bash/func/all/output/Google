@@ -1,0 +1,11 @@
+#######################################
+# ${1:title}
+# Globals:
+#   SESSION_ID
+#   dir
+# Arguments:
+#   ${2:description}
+#   ${3:description}
+#   ${4:description}
+#   ${5:description}
+#######################################

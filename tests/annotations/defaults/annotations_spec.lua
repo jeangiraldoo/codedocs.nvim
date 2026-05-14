@@ -1,37 +1,53 @@
-package.path = package.path .. ";" .. debug.getinfo(1, "S").source:sub(2):match "(.*/)" .. "/tests"
-
 local test_utils = require "tests.utils"
 local Codedocs = require "codedocs"
+
 local IGNORE = {}
+
+package.path = package.path .. ";" .. debug.getinfo(1, "S").source:sub(2):match "(.*/)" .. "/tests"
+local DIR = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
 
 local LANGS_TO_TEST = vim.iter(require("codedocs").get_supported_langs())
 	:filter(function(v) return not vim.list_contains(IGNORE, v) end)
 	:totable()
 
+local function test_case(lang, style_name, annotation_name, case_name)
+	it(("%s - %s/%s (%s) "):format(lang, style_name, annotation_name, case_name), function()
+		local rel_path = ("cases/%s/%s/%s/"):format(lang, annotation_name, case_name)
+		local base_path = vim.fs.joinpath(DIR, rel_path)
+
+		local lua_rel_path = rel_path:gsub("/", ".")
+
+		local input = vim.fn.readfile(vim.fs.joinpath(base_path, "input"))
+
+		local expected_output = vim.fn.readfile(vim.fs.joinpath(base_path, "output/" .. style_name))
+
+		local metadata = require("tests.annotations.defaults." .. lua_rel_path .. ".metadata")
+
+		test_utils.mock_buffer(lang, input, { row = metadata.cursor.row, col = metadata.cursor.col or 1 })
+
+		local annotation_data = Codedocs.get_annotation_data(lang, {
+			style_name = style_name,
+			annotation_name = annotation_name,
+		})
+		local annotation_result = Codedocs.build_annotation(lang, annotation_data)
+
+		assert.are.same(expected_output, annotation_result.lines)
+	end)
+end
+
 describe("Default style annotations", function()
+	local langs_config = require("codedocs.config").languages
+
 	for _, lang in ipairs(LANGS_TO_TEST) do
-		for target_name, target_cases in pairs(require("tests.annotations.defaults.test_cases." .. lang)) do
-			describe(lang .. " - " .. target_name, function()
-				for idx, target_case in ipairs(target_cases) do
-					for _, style_name in ipairs(Codedocs.get_supported_styles(lang)) do
-						it("(" .. style_name .. ") - Case #" .. idx, function()
-							test_utils.mock_buffer(
-								lang,
-								target_case.structure,
-								{ row = target_case.cursor_pos, col = target_case.cursor_col or 1 }
-							)
+		for style_name, annotations in pairs(langs_config[lang].styles) do
+			for annotation_name, _ in pairs(annotations) do
+				local annotation_case_names =
+					test_utils.read_dir_names(DIR .. ("/cases/%s/%s/"):format(lang, annotation_name))
 
-							local annotation_data = Codedocs.get_annotation_data(lang, {
-								style_name = style_name,
-								annotation_name = target_name,
-							})
-							local annotation_result = Codedocs.build_annotation(lang, annotation_data)
-
-							assert.are.same(target_case.expected_annotation[style_name], annotation_result.lines)
-						end)
-					end
+				for _, case_name in ipairs(annotation_case_names) do
+					test_case(lang, style_name, annotation_name, case_name)
 				end
-			end)
+			end
 		end
 	end
 end)
