@@ -1,0 +1,8 @@
+/**
+ * ${1:title}
+ *
+ * @param ${2:} \$a ${3:description}
+ * @param ${4:} \$b ${5:description}
+ * @param ${6:int} \$c ${7:description}
+ * @return ${8:int} ${9:description}
+ */

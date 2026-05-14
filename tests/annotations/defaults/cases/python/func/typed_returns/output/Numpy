@@ -1,0 +1,8 @@
+	"""
+	${1:title}
+
+	Returns
+	-------
+	${2:int}
+		${3:description}
+	"""

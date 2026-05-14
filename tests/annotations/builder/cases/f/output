@@ -1,0 +1,12 @@
+/**
+ * 
+ *
+ * @the_type [int] @the_name {a} ${1:description}
+ * @the_type [] @the_name {b} ${2:description}
+ * @the_type [int] @the_name {c} ${3:description}
+ * @the_type [string] @the_name {} ${4:description}
+ * @secondary_item d
+ * @secondary_item e
+ * @secondary_item f
+ * @secondary_item 
+ */

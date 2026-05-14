@@ -1,0 +1,10 @@
+	"""
+	${1:title}
+
+	Args:
+		a (${2:}): ${3:description}
+		b (${4:}): ${5:description}
+
+	Returns:
+		${6:int}: ${7:description}
+	"""

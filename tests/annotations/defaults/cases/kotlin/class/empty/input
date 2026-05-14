@@ -1,0 +1,10 @@
+class Foo {
+	private var name: Int = 0
+
+	companion object {
+		var value: Int = 0
+	}
+	fun foo(a: Int, b: Int): Int {
+		return a + b
+	}
+}

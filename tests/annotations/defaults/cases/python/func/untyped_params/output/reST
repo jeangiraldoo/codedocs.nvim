@@ -1,0 +1,8 @@
+	"""
+	${1:title}
+
+	:param a: ${2:description}
+	:type a: ${3:}
+	:param b: ${4:description}
+	:type b: ${5:}
+	"""

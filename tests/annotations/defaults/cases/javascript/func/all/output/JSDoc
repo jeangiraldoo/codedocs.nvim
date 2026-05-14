@@ -1,0 +1,7 @@
+/**
+ * ${1:description}
+ *
+ * @param {${2:type}} a ${3:description}
+ * @param {${4:type}} b ${5:description}
+ * @returns {${6:type}} ${7:description}
+ */

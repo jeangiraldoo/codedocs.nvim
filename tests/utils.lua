@@ -46,4 +46,18 @@ function Utils.for_style(func)
 	end
 end
 
+---@param path string
+---@return string[]
+function Utils.read_dir_names(path)
+	vim.validate {
+		path = { path, "string" },
+	}
+
+	return vim.iter(vim.fs.dir(path))
+		:map(function(name, type)
+			if type == "directory" then return name end
+		end)
+		:totable()
+end
+
 return Utils

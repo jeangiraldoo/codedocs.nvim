@@ -1,0 +1,8 @@
+class Foo {
+	static name: string = 'Codedocs'
+	public static value: number;
+
+	constructor() {
+		this.age = 100
+	}
+}

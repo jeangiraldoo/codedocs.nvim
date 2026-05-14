@@ -1,0 +1,3 @@
+local function foo()
+	return a + b
+end
