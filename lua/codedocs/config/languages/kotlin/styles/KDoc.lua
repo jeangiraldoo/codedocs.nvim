@@ -1,7 +1,6 @@
 return {
 	comment = {
 		relative_position = "empty_target_or_above",
-		indented = false,
 		blocks = {
 			{
 				name = "title",
@@ -13,7 +12,6 @@ return {
 	},
 	class = {
 		relative_position = "above",
-		indented = false,
 		blocks = {
 			{
 				name = "header",
@@ -45,7 +43,6 @@ return {
 	},
 	func = {
 		relative_position = "above",
-		indented = false,
 		blocks = {
 			{
 				name = "header",

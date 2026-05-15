@@ -133,13 +133,6 @@ local function validate_config(config)
 					}
 				end
 
-				---TODO: There's discrepancies with the usage of `indented`, there's also `indent`
-				-- vim.validate {
-				-- 	["config.languages." .. lang_name .. ".styles." .. style_name .. "." .. annotation_name .. ".indented"] = {
-				-- 		annotation_opts.indent,
-				-- 		"boolean",
-				-- 	},
-				-- }
 				for idx, block in ipairs(annotation_opts.blocks) do
 					local block_idx_path = annotation_path .. ".blocks(" .. idx .. ")"
 					vim.validate {
@@ -237,7 +230,7 @@ function Codedocs.build_annotation(lang_name, data)
 	local annotation_tbl = Codedocs.get_annotation_tbl(lang_name, data.style_name, data.target_name)
 
 	local Annotation = require "codedocs.annotation_builder"
-	local annotation = Annotation.new(annotation_tbl.indented, data.row + 1)
+	local annotation = Annotation.new(data.row + 1)
 
 	annotation:insert_blocks(annotation_tbl.blocks, data.items)
 

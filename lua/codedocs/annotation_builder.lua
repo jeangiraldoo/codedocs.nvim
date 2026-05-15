@@ -1,14 +1,13 @@
-local function compute_neovim_indentation()
-	if not vim.bo.expandtab then return "\t" end
-
-	local shiftwidth = vim.bo.shiftwidth
-	if shiftwidth == 0 then shiftwidth = vim.bo.tabstop end
-	return string.rep(" ", shiftwidth)
-end
-
 local Annotation = {
 	placeholders = {
-		["%%>"] = function(_, _, _) return compute_neovim_indentation() end,
+		["%%>"] = function(_, _, _)
+			if not vim.bo.expandtab then return "\t" end
+
+			local shiftwidth = vim.bo.shiftwidth
+			if shiftwidth == 0 then shiftwidth = vim.bo.tabstop end
+
+			return string.rep(" ", shiftwidth)
+		end,
 		["%%snippet_tabstop_idx"] = function(self, _, _)
 			local snippet_tabstop_idx_label = tostring(self._snippet_tabstop_idx_counter)
 
@@ -24,12 +23,11 @@ Annotation.item_placeholder = vim.tbl_deep_extend("force", vim.deepcopy(Annotati
 	["%%item_type"] = function(_, item) return item.type end,
 })
 
-function Annotation.new(indented, line_num)
+function Annotation.new(line_num)
 	local new_annotation = {
 		_lines = {},
 		_snippet_tabstop_idx_counter = 1,
 		line_num = line_num,
-		should_indent = indented,
 	}
 
 	return setmetatable(new_annotation, { __index = Annotation })
@@ -80,8 +78,6 @@ function Annotation:insert(line, item)
 	end)()
 
 	line = line_indent .. line
-
-	if self.should_indent then line = compute_neovim_indentation() .. line end
 
 	local placeholders = item and self.item_placeholder or self.placeholders
 

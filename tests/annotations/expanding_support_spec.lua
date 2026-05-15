@@ -9,7 +9,6 @@ describe("Add support for a new language", function()
 			name = "super_cobol",
 			opts = {
 				relative_position = "empty_target_or_above",
-				indented = false,
 				blocks = {
 					{
 						name = "title",
@@ -64,7 +63,6 @@ describe("Adding new target-less annotation", function()
 		name = "new_annotation",
 		opts = {
 			relative_position = "empty_target_or_above",
-			indented = false,
 			blocks = {
 				{
 					name = "title",
@@ -116,7 +114,6 @@ describe("Add new annotation with target", function()
 	local annotation = {
 		opts = {
 			relative_position = "empty_target_or_above",
-			indented = false,
 			blocks = {
 				{
 					name = "title",

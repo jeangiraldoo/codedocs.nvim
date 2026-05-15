@@ -293,11 +293,10 @@ by each function.
 
 #### Options
 
-| Option Name         | Expected Value Type                                 | Behavior                                          |
-| ------------------- | --------------------------------------------------- | ------------------------------------------------- |
-| `relative_position` | `"above"` \| `"below"` \| `"empty_target_or_above"` | Where to insert the annotation                    |
-| `indented`          | boolean                                             | Whether to indent the entire annotation one level |
-| `blocks`            | table (list)                                        | List of blocks forming the annotation             |
+| Option Name         | Expected Value Type                                 | Behavior                              |
+| ------------------- | --------------------------------------------------- | ------------------------------------- |
+| `relative_position` | `"above"` \| `"below"` \| `"empty_target_or_above"` | Where to insert the annotation        |
+| `blocks`            | table (list)                                        | List of blocks forming the annotation |
 
 Blocks are the core of an annotation, they determine what it ultimately looks
 like.

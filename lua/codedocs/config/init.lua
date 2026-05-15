@@ -45,7 +45,6 @@ local dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
 
 ---@class CodedocsAnnotationStyleOpts
 ---@field sections CodedocsSectionOpts[]
----@field indented boolean
 ---@field relative_position "above" | "below" | "empty_target_or_above"
 
 ---@class CodedocsLanguageConfig
