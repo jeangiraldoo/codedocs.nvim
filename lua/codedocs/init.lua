@@ -185,33 +185,12 @@ function Codedocs.setup(user_config)
 	validate_config(merged)
 end
 
-function Codedocs.get_annotation_data(lang_name, data)
-	vim.validate {
-		lang_name = { lang_name, "string" },
-		data = { data, { "table", "nil" } },
-	}
+local function get_requested_annotation_data(lang_name, requested_name)
+	local items = {}
+	local row = vim.api.nvim_win_get_cursor(0)[1] - 1
 
 	local lang_config = require("codedocs.config").languages[lang_name]
 	local extractor = require "codedocs.item_extractor"
-
-	local requested_name = data and data.annotation_name
-	local style_name = data and data.style_name or lang_config.default_style
-
-	-- Auto-detect annotation from cursor
-	if not requested_name then
-		local target_data = extractor.extract(lang_name)
-		if not target_data then return end
-
-		return {
-			items = target_data.items,
-			target_name = target_data.target_name,
-			row = target_data.row,
-			style_name = style_name,
-		}
-	end
-
-	local items = {}
-	local row = vim.api.nvim_win_get_cursor(0)[1] - 1
 
 	-- Existing target: attempt extraction
 	if lang_config.targets[requested_name] then
@@ -229,13 +208,26 @@ function Codedocs.get_annotation_data(lang_name, data)
 		items = items,
 		target_name = requested_name,
 		row = row,
-		style_name = style_name,
+	}
+end
+
+local function get_detected_annotation_data(lang_name)
+	local extractor = require "codedocs.item_extractor"
+
+	-- Auto-detect annotation from cursor
+	local target_data = extractor.extract(lang_name)
+	if not target_data then return end
+
+	return {
+		items = target_data.items,
+		target_name = target_data.target_name,
+		row = target_data.row,
 	}
 end
 
 ---@param lang_name string
----@param annotation_data { annotation_name: string, style_name: string? }?
----@return { lines: string[], row: number, relative_position: string }?
+---@param data { target_name: string, style_name: string, row: number, items: table }?
+---@return { lines: string[], relative_position: string }?
 function Codedocs.build_annotation(lang_name, data)
 	vim.validate {
 		lang_name = { lang_name, "string" },
@@ -244,7 +236,8 @@ function Codedocs.build_annotation(lang_name, data)
 
 	local annotation_tbl = Codedocs.get_annotation_tbl(lang_name, data.style_name, data.target_name)
 
-	local annotation = require("codedocs.annotation_builder").new(annotation_tbl.indented, data.row + 1)
+	local Annotation = require "codedocs.annotation_builder"
+	local annotation = Annotation.new(annotation_tbl.indented, data.row + 1)
 
 	annotation:insert_blocks(annotation_tbl.blocks, data.items)
 
@@ -256,6 +249,27 @@ function Codedocs.build_annotation(lang_name, data)
 		lines = lines,
 		relative_position = annotation_tbl.relative_position,
 	}
+end
+
+function Codedocs.get_annotation_data(lang_name, annotation_data)
+	vim.validate {
+		lang_name = { lang_name, "string" },
+		annotation_data = { annotation_data, { "table", "nil" } },
+	}
+
+	local lang_config = require("codedocs.config").languages[lang_name]
+	local user_requested_specific_annotation = annotation_data and annotation_data.annotation_name
+
+	local annot_data
+	if user_requested_specific_annotation then
+		annot_data = get_requested_annotation_data(lang_name, annotation_data.annotation_name)
+		annot_data.style_name = annotation_data.style_name or lang_config.default_style
+	else
+		annot_data = get_detected_annotation_data(lang_name)
+		annot_data.style_name = lang_config.default_style
+	end
+
+	return annot_data
 end
 
 ---@param annotation_data { annotation_name: string, style_name: string? }?
@@ -274,11 +288,12 @@ function Codedocs.generate(annotation_data)
 	local lang_name = _determine_lang_name()
 	Debug_logger.log("Language: " .. lang_name)
 
-	local annotation_data1 = Codedocs.get_annotation_data(lang_name, annotation_data)
-	local annotation_result = Codedocs.build_annotation(lang_name, annotation_data1)
+	local annot_data = Codedocs.get_annotation_data(lang_name, annotation_data)
+
+	local annotation_result = Codedocs.build_annotation(lang_name, annot_data)
 
 	if annotation_result and not vim.tbl_isempty(annotation_result.lines) then
-		_write_to_buffer(annotation_result.lines, annotation_data1.row, annotation_result.relative_position)
+		_write_to_buffer(annotation_result.lines, annot_data.row, annotation_result.relative_position)
 	end
 end
 
