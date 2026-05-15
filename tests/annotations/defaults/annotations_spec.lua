@@ -3,7 +3,6 @@ local Codedocs = require "codedocs"
 
 local IGNORE = {}
 
-package.path = package.path .. ";" .. debug.getinfo(1, "S").source:sub(2):match "(.*/)" .. "/tests"
 local DIR = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
 
 local LANGS_TO_TEST = vim.iter(require("codedocs").get_supported_langs())
