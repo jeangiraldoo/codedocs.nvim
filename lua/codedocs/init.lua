@@ -188,7 +188,7 @@ end
 function Codedocs.get_annotation_data(lang_name, data)
 	vim.validate {
 		lang_name = { lang_name, "string" },
-		data = { data, "table" },
+		data = { data, { "table", "nil" } },
 	}
 
 	local lang_config = require("codedocs.config").languages[lang_name]
@@ -266,7 +266,7 @@ function Codedocs.generate(annotation_data)
 
 	if annotation_data then
 		vim.validate {
-			annotation_name = { annotation_data.annotation_name, { "string", "nil" } },
+			annotation_name = { annotation_data.annotation_name, "string" },
 			style_name = { annotation_data.style_name, { "string", "nil" } },
 		}
 	end
