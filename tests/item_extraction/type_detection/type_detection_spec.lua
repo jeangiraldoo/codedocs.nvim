@@ -1,10 +1,8 @@
-package.path = package.path .. ";" .. debug.getinfo(1, "S").source:sub(2):match "(.*/)" .. "/tests"
-local DIR = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
-
 local Utils = require "tests.utils"
 local config = require "codedocs.config"
 local ItemExtractor = require "codedocs.item_extractor"
 
+local DIR = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
 local LANGS_TO_TEST = Utils.read_dir_names(DIR .. "/cases")
 
 local function create_datatype_tester(input, lang, metadata, target_case_name)

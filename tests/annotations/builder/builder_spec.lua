@@ -7,8 +7,6 @@
 ---Regarding the `items` option, since all item-based sections use the same `items` suboptions,
 ---and those options only affect their own section, it’s enough to test them in one section
 
-package.path = package.path .. ";" .. debug.getinfo(1, "S").source:sub(2):match "(.*/)" .. "/tests"
-
 local Utils = require "tests.utils"
 local annotation_builder = require "codedocs.annotation_builder"
 
