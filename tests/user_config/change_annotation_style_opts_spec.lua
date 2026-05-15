@@ -17,7 +17,7 @@ local BASE_MOCKED_OPTS = {
 				"green message appears",
 				"hand touches grass",
 			},
-			relative_position = "above",
+			placement = "above",
 			insert_at = 3,
 		},
 		blocks = {

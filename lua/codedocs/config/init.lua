@@ -45,7 +45,7 @@ local dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
 
 ---@class CodedocsAnnotationStyleOpts
 ---@field sections CodedocsSectionOpts[]
----@field relative_position "above" | "below" | "empty_target_or_above"
+---@field placement "above" | "below" | "current"
 
 ---@class CodedocsLanguageConfig
 ---@field default_style string? Default style name

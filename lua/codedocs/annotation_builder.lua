@@ -8,15 +8,21 @@ local Annotation = {
 
 			return string.rep(" ", shiftwidth)
 		end,
-		["%%snippet_tabstop_idx"] = function(self, _, _)
-			local snippet_tabstop_idx_label = tostring(self._snippet_tabstop_idx_counter)
+		["%%snip_idx"] = function(self, _, _)
+			local snip_idx_label = tostring(self._snip_idx_counter)
 
-			self._snippet_tabstop_idx_counter = self._snippet_tabstop_idx_counter + 1
+			self._snip_idx_counter = self._snip_idx_counter + 1
 
-			return snippet_tabstop_idx_label
+			return snip_idx_label
 		end,
 	},
 }
+
+---@deprecated
+Annotation.placeholders["%%snippet_tabstop_idx"] = function(self, _, _)
+	vim.notify_once("%snippet_tabstop_idx is deprecated; use %snip_idx instead", vim.log.levels.WARN)
+	return Annotation.placeholders["%%snip_idx"](self)
+end
 
 Annotation.item_placeholder = vim.tbl_deep_extend("force", vim.deepcopy(Annotation.placeholders), {
 	["%%item_name"] = function(_, item) return item.name end,
@@ -26,7 +32,7 @@ Annotation.item_placeholder = vim.tbl_deep_extend("force", vim.deepcopy(Annotati
 function Annotation.new(line_num)
 	local new_annotation = {
 		_lines = {},
-		_snippet_tabstop_idx_counter = 1,
+		_snip_idx_counter = 1,
 		line_num = line_num,
 	}
 

@@ -24,7 +24,7 @@ return {
 			},
 			indent = false,
 			layout = {
-				" * @the_type [%item_type] @the_name {%item_name} ${%snippet_tabstop_idx:description}",
+				" * @the_type [%item_type] @the_name {%item_name} ${%snip_idx:description}",
 			},
 		},
 	},

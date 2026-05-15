@@ -5,21 +5,26 @@ local Codedocs = {}
 --- Inserts an annotation relative to a target and moves the cursor to the annotation title
 ---@param annotation_lines string[]
 ---@param row number 0-based annotation-related positions
----@param relative_position "above" | "below" | "empty_target_or_above" Position relative to the target row
-local function _write_to_buffer(annotation_lines, row, relative_position)
+---@param placement "above" | "below" | "empty_target_or_above" | "current" Position relative to the target row
+local function _write_to_buffer(annotation_lines, row, placement)
 	vim.validate {
 		annotation_lines = { annotation_lines, "table" },
 		row = { row, "number" },
-		relative_position = { relative_position, "string" },
+		placement = { placement, "string" },
 	}
 
-	local should_insert_extra_line = (
-		relative_position == "empty_target_or_above" and vim.api.nvim_get_current_line() ~= ""
-	)
-		or relative_position == "above"
-		or relative_position == "below"
+	if placement == "empty_target_or_above" then
+		vim.notify_once("empty_target_or_above is deprecated; use 'current' instead", vim.log.levels.WARN)
+	end
 
-	local final_row_pos = relative_position == "below" and row + 1 or row
+	---@deprecate `empty_target_or_above`
+	local should_insert_extra_line = (
+		(placement == "empty_target_or_above" or placement == "current") and vim.api.nvim_get_current_line() ~= ""
+	)
+		or placement == "above"
+		or placement == "below"
+
+	local final_row_pos = placement == "below" and row + 1 or row
 
 	if should_insert_extra_line then vim.api.nvim_buf_set_lines(0, final_row_pos, final_row_pos, false, { "" }) end
 
@@ -110,8 +115,8 @@ local function validate_config(config)
 					},
 				}
 				vim.validate {
-					[annotation_path .. ".relative_position"] = {
-						annotation_opts.relative_position,
+					[annotation_path .. ".placement"] = {
+						annotation_opts.placement or annotation_opts.relative_position,
 						"string",
 					},
 				}
@@ -220,7 +225,7 @@ end
 
 ---@param lang_name string
 ---@param data { target_name: string, style_name: string, row: number, items: table }?
----@return { lines: string[], relative_position: string }?
+---@return { lines: string[], placement: string }?
 function Codedocs.build_annotation(lang_name, data)
 	vim.validate {
 		lang_name = { lang_name, "string" },
@@ -238,9 +243,13 @@ function Codedocs.build_annotation(lang_name, data)
 
 	Debug_logger.log("Annotation content", lines)
 
+	if annotation_tbl.relative_position then
+		vim.notify_once("'relative_position' is deprecated; use 'placement'", vim.log.levels.WARN)
+	end
+
 	return {
 		lines = lines,
-		relative_position = annotation_tbl.relative_position,
+		placement = annotation_tbl.placement or annotation_tbl.relative_position,
 	}
 end
 
@@ -286,7 +295,7 @@ function Codedocs.generate(annotation_data)
 	local annotation_result = Codedocs.build_annotation(lang_name, annot_data)
 
 	if annotation_result and not vim.tbl_isempty(annotation_result.lines) then
-		_write_to_buffer(annotation_result.lines, annot_data.row, annotation_result.relative_position)
+		_write_to_buffer(annotation_result.lines, annot_data.row, annotation_result.placement)
 	end
 end
 

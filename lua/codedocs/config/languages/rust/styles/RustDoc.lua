@@ -1,22 +1,22 @@
 return {
 	comment = {
-		relative_position = "empty_target_or_above",
+		placement = "current",
 		blocks = {
 			{
 				name = "title",
 				layout = {
-					"// ${%snippet_tabstop_idx:description}",
+					"// ${%snip_idx:description}",
 				},
 			},
 		},
 	},
 	func = {
-		relative_position = "above",
+		placement = "above",
 		blocks = {
 			{
 				name = "title",
 				layout = {
-					"/// ${%snippet_tabstop_idx:title}",
+					"/// ${%snip_idx:title}",
 				},
 				insert_gap_between = {
 					enabled = true,
@@ -29,7 +29,7 @@ return {
 				insert_gap_between = { enabled = true, text = "///" },
 				items = {
 					layout = {
-						"/// * `%item_name` - ${%snippet_tabstop_idx:description}",
+						"/// * `%item_name` - ${%snip_idx:description}",
 					},
 					insert_gap_between = {
 						text = "///",
@@ -45,7 +45,7 @@ return {
 				},
 				items = {
 					layout = {
-						"/// ${%snippet_tabstop_idx:description}",
+						"/// ${%snip_idx:description}",
 					},
 					insert_gap_between = {
 						text = "///",

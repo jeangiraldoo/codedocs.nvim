@@ -293,10 +293,10 @@ by each function.
 
 #### Options
 
-| Option Name         | Expected Value Type                                 | Behavior                              |
-| ------------------- | --------------------------------------------------- | ------------------------------------- |
-| `relative_position` | `"above"` \| `"below"` \| `"empty_target_or_above"` | Where to insert the annotation        |
-| `blocks`            | table (list)                                        | List of blocks forming the annotation |
+| Option Name | Expected Value Type                   | Behavior                              |
+| ----------- | ------------------------------------- | ------------------------------------- |
+| `placement` | `"above"` \| `"below"` \| `"current"` | Where to insert the annotation        |
+| `blocks`    | table (list)                          | List of blocks forming the annotation |
 
 Blocks are the core of an annotation, they determine what it ultimately looks
 like.
@@ -330,8 +330,8 @@ be explained below in detail.
 
 The following string placeholders are predefined:
 
-- `%snippet_tabstop_index`: Inserts a tabstop index for defining snippet tabstops
-  (e.g., `$%snippet_tabstop_index` or `${%snippet_tabstop_index:default label}`).
+- `%snip_idx`: Inserts a tabstop index for defining snippet tabstops
+  (e.g., `$%snip_idx` or `${%snip_idx:default label}`).
 - `%>`: Either a tab character or a number of spaces, based on your Neovim settings
 
 ###### `insert_gap_between` option
