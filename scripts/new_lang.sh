@@ -9,13 +9,13 @@ readonly STYLE_TEMPLATE='local lang_utils = require "codedocs.config.languages.u
 
 return {
 	comment = {
-		relative_position = "empty_target_or_above",
+		placement = "current",
 		indented = false,
 		blocks = {
 			lang_utils.new_section {
 				name = "title",
 				layout = {
-					"// ${%snippet_tabstop_idx:description}",
+					"// ${%snip_idx:description}",
 				},
 			},
 		},

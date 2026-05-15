@@ -1,44 +1,44 @@
 return {
 	comment = {
-		relative_position = "empty_target_or_above",
+		placement = "current",
 		blocks = {
 			{
 				name = "title",
 				layout = {
-					"# ${%snippet_tabstop_idx:description}",
+					"# ${%snip_idx:description}",
 				},
 			},
 		},
 	},
 	export = {
-		relative_position = "empty_target_or_above",
+		placement = "current",
 		blocks = {
 			{
 				name = "title",
 				layout = {
-					"@export ${%snippet_tabstop_idx:property}",
+					"@export ${%snip_idx:property}",
 				},
 			},
 		},
 	},
 	onready = {
-		relative_position = "empty_target_or_above",
+		placement = "current",
 		blocks = {
 			{
 				name = "title",
 				layout = {
-					"@onready ${%snippet_tabstop_idx:property}",
+					"@onready ${%snip_idx:property}",
 				},
 			},
 		},
 	},
 	warning_ignore = {
-		relative_position = "empty_target_or_above",
+		placement = "current",
 		blocks = {
 			{
 				name = "title",
 				layout = {
-					'@warning_ignore("${%snippet_tabstop_idx:warning}")',
+					'@warning_ignore("${%snip_idx:warning}")',
 				},
 			},
 		},

@@ -8,7 +8,7 @@ describe("Add support for a new language", function()
 		annotation = {
 			name = "super_cobol",
 			opts = {
-				relative_position = "empty_target_or_above",
+				placement = "current",
 				blocks = {
 					{
 						name = "title",
@@ -17,7 +17,7 @@ describe("Add support for a new language", function()
 							text = "",
 						},
 						layout = {
-							"---${%snippet_tabstop_idx:title}",
+							"---${%snip_idx:title}",
 							"---Second line",
 						},
 					},
@@ -62,7 +62,7 @@ describe("Adding new target-less annotation", function()
 	local annotation = {
 		name = "new_annotation",
 		opts = {
-			relative_position = "empty_target_or_above",
+			placement = "current",
 			blocks = {
 				{
 					name = "title",
@@ -71,7 +71,7 @@ describe("Adding new target-less annotation", function()
 						text = "",
 					},
 					layout = {
-						"---${%snippet_tabstop_idx:title}",
+						"---${%snip_idx:title}",
 						"---Second line",
 					},
 				},
@@ -113,7 +113,7 @@ describe("Add new annotation with target", function()
 
 	local annotation = {
 		opts = {
-			relative_position = "empty_target_or_above",
+			placement = "current",
 			blocks = {
 				{
 					name = "title",
@@ -128,7 +128,7 @@ describe("Add new annotation with target", function()
 				{
 					name = "someblock",
 					layout = {
-						"---${%snippet_tabstop_idx:block title}",
+						"---${%snip_idx:block title}",
 					},
 					insert_gap_between = {
 						enabled = false,

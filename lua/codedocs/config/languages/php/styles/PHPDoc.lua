@@ -1,35 +1,35 @@
 return {
 	comment = {
-		relative_position = "empty_target_or_above",
+		placement = "current",
 		blocks = {
 			{
 				name = "title",
 				layout = {
-					"// ${%snippet_tabstop_idx:description}",
+					"// ${%snip_idx:description}",
 				},
 			},
 		},
 	},
 	phptag = {
-		relative_position = "empty_target_or_above",
+		placement = "current",
 		blocks = {
 			{
 				name = "title",
 				layout = {
 					"<?php",
-					"${%snippet_tabstop_idx:code}",
+					"${%snip_idx:code}",
 				},
 			},
 		},
 	},
 	func = {
-		relative_position = "above",
+		placement = "above",
 		blocks = {
 			{
 				name = "header",
 				layout = {
 					"/**",
-					" * ${%snippet_tabstop_idx:title}",
+					" * ${%snip_idx:title}",
 				},
 				insert_gap_between = {
 					enabled = true,
@@ -41,7 +41,7 @@ return {
 				insert_gap_between = { text = " *" },
 				items = {
 					layout = {
-						" * @param ${%snippet_tabstop_idx:%item_type} \\$%item_name ${%snippet_tabstop_idx:description}",
+						" * @param ${%snip_idx:%item_type} \\$%item_name ${%snip_idx:description}",
 					},
 					insert_gap_between = {
 						text = " *",
@@ -53,7 +53,7 @@ return {
 				insert_gap_between = { text = " *" },
 				items = {
 					layout = {
-						" * @return ${%snippet_tabstop_idx:%item_type} ${%snippet_tabstop_idx:description}",
+						" * @return ${%snip_idx:%item_type} ${%snip_idx:description}",
 					},
 					insert_gap_between = {
 						text = " *",

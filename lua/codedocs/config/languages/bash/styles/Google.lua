@@ -1,34 +1,34 @@
 return {
 	comment = {
-		relative_position = "empty_target_or_above",
+		placement = "current",
 		blocks = {
 			{
 				name = "title",
 				layout = {
-					"# ${%snippet_tabstop_idx:description}",
+					"# ${%snip_idx:description}",
 				},
 			},
 		},
 	},
 	shebang = {
-		relative_position = "empty_target_or_above",
+		placement = "current",
 		blocks = {
 			{
 				name = "title",
 				layout = {
-					"#${%snippet_tabstop_idx:!/usr/bin/env bash}",
+					"#${%snip_idx:!/usr/bin/env bash}",
 				},
 			},
 		},
 	},
 	func = {
-		relative_position = "above",
+		placement = "above",
 		blocks = {
 			{
 				name = "header",
 				layout = {
 					"#######################################",
-					"# ${%snippet_tabstop_idx:title}",
+					"# ${%snip_idx:title}",
 				},
 			},
 			{
@@ -39,7 +39,7 @@ return {
 			{
 				name = "parameters",
 				layout = { "# Arguments:" },
-				items = { layout = { "#   ${%snippet_tabstop_idx:description}" } },
+				items = { layout = { "#   ${%snip_idx:description}" } },
 			},
 			{
 				name = "returns",
