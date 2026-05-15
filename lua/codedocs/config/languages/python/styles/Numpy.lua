@@ -1,7 +1,6 @@
 return {
 	comment = {
 		relative_position = "empty_target_or_above",
-		indented = false,
 		blocks = {
 			{
 				name = "title",
@@ -13,13 +12,12 @@ return {
 	},
 	class = {
 		relative_position = "below",
-		indented = true,
 		blocks = {
 			{
 				name = "header",
 				layout = {
-					'"""',
-					"${%snippet_tabstop_idx:title}",
+					'%>"""',
+					"%>${%snippet_tabstop_idx:title}",
 				},
 				insert_gap_between = {
 					enabled = true,
@@ -27,18 +25,18 @@ return {
 			},
 			{
 				name = "attributes",
-				layout = { "Attributes:", "___________" },
+				layout = { "%>Attributes:", "%>___________" },
 				items = {
 					layout = {
-						"%item_name : ${%snippet_tabstop_idx:%item_type}",
-						"	${%snippet_tabstop_idx:description}",
+						"%>%item_name : ${%snippet_tabstop_idx:%item_type}",
+						"%>	${%snippet_tabstop_idx:description}",
 					},
 				},
 			},
 			{
 				name = "footer",
 				layout = {
-					'"""',
+					'%>"""',
 				},
 				ignore_prev_gap = true,
 			},
@@ -46,13 +44,12 @@ return {
 	},
 	func = {
 		relative_position = "below",
-		indented = true,
 		blocks = {
 			{
 				name = "header",
 				layout = {
-					'"""',
-					"${%snippet_tabstop_idx:title}",
+					'%>"""',
+					"%>${%snippet_tabstop_idx:title}",
 				},
 				insert_gap_between = {
 					enabled = true,
@@ -60,30 +57,30 @@ return {
 			},
 			{
 				name = "parameters",
-				layout = { "Parameters", "----------" },
+				layout = { "%>Parameters", "%>----------" },
 				insert_gap_between = { enabled = true },
 				items = {
 					layout = {
-						"%item_name: ${%snippet_tabstop_idx:%item_type}",
-						"	${%snippet_tabstop_idx:description}",
+						"%>%item_name: ${%snippet_tabstop_idx:%item_type}",
+						"%>	${%snippet_tabstop_idx:description}",
 					},
 				},
 			},
 			{
 				name = "returns",
-				layout = { "Returns", "-------" },
+				layout = { "%>Returns", "%>-------" },
 				insert_gap_between = { enabled = true },
 				items = {
 					layout = {
-						"${%snippet_tabstop_idx:%item_type}",
-						"	${%snippet_tabstop_idx:description}",
+						"%>${%snippet_tabstop_idx:%item_type}",
+						"%>	${%snippet_tabstop_idx:description}",
 					},
 				},
 			},
 			{
 				name = "footer",
 				layout = {
-					'"""',
+					'%>"""',
 				},
 				ignore_prev_gap = true,
 			},

@@ -1,7 +1,6 @@
 return {
 	comment = {
 		relative_position = "empty_target_or_above",
-		indented = false,
 		blocks = {
 			{
 				name = "title",

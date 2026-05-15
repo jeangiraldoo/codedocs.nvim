@@ -1,7 +1,6 @@
 return {
 	comment = {
 		relative_position = "empty_target_or_above",
-		indent = false,
 		blocks = {
 			{
 				name = "title",
@@ -13,7 +12,6 @@ return {
 	},
 	phptag = {
 		relative_position = "empty_target_or_above",
-		indent = false,
 		blocks = {
 			{
 				name = "title",
@@ -26,7 +24,6 @@ return {
 	},
 	func = {
 		relative_position = "above",
-		indent = false,
 		blocks = {
 			{
 				name = "header",

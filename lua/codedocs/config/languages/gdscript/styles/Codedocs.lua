@@ -1,7 +1,6 @@
 return {
 	comment = {
 		relative_position = "empty_target_or_above",
-		indented = false,
 		blocks = {
 			{
 				name = "title",
@@ -13,7 +12,6 @@ return {
 	},
 	export = {
 		relative_position = "empty_target_or_above",
-		indented = false,
 		blocks = {
 			{
 				name = "title",
@@ -25,7 +23,6 @@ return {
 	},
 	onready = {
 		relative_position = "empty_target_or_above",
-		indented = false,
 		blocks = {
 			{
 				name = "title",
@@ -37,7 +34,6 @@ return {
 	},
 	warning_ignore = {
 		relative_position = "empty_target_or_above",
-		indented = false,
 		blocks = {
 			{
 				name = "title",
