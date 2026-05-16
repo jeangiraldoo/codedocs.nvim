@@ -18,13 +18,25 @@ return {
 				layout = {
 					"---${%snip_idx:title}",
 				},
-				insert_gap_between = {
-					text = "--",
+				gap_before = {
+					parameters = {
+						enabled = false,
+						text = "---",
+					},
+					returns = {
+						enabled = false,
+						text = "---",
+					},
 				},
 			},
 			{
 				name = "parameters",
-				insert_gap_between = { text = "---" },
+				gap_before = {
+					returns = {
+						enabled = false,
+						text = "---",
+					},
+				},
 				items = {
 					layout = {
 						"---@param %item_name ${%snip_idx:type} ${%snip_idx:description}",
@@ -36,7 +48,6 @@ return {
 			},
 			{
 				name = "returns",
-				insert_gap_between = { text = "---" },
 				items = {
 					layout = {
 						"---@return ${%snip_idx:type} ${%snip_idx:description}",

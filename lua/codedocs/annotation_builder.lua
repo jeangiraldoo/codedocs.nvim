@@ -95,26 +95,20 @@ function Annotation:insert(line, item)
 end
 
 function Annotation:insert_blocks(blocks, items)
-	local insert_gap = false
-	local last_created_block_idx = 1
-	for block_idx, block in ipairs(blocks) do
+	local gap_data
+
+	for _, block in ipairs(blocks) do
 		local is_item_based_block = type(block.items) == "table"
 
 		local block_items = items[block.name]
 
 		local at_least_one_block_item = block_items and #block_items > 0 and #block.items.layout > 0
 		if not is_item_based_block or at_least_one_block_item then
-			if block_idx > 1 and insert_gap and not block.ignore_prev_gap then
-				self:insert(blocks[last_created_block_idx].insert_gap_between.text)
-				insert_gap = false
+			if gap_data and gap_data[block.name] and gap_data[block.name].enabled then
+				self:insert(gap_data[block.name].text)
 			end
 			self:new_block(block, block_items)
-		end
-
-		insert_gap = insert_gap or block.insert_gap_between.enabled
-		if block.insert_gap_between.enabled then
-			insert_gap = block.insert_gap_between.enabled
-			last_created_block_idx = block_idx
+			gap_data = block.gap_before
 		end
 	end
 end

@@ -18,18 +18,25 @@ return {
 				layout = {
 					"// ${%snip_idx:title}",
 				},
-				insert_gap_between = {
-					text = "//",
+				gap_before = {
+					parameters = {
+						text = "//",
+						enabled = true,
+					},
 				},
 			},
 			{
 				name = "parameters",
-				insert_gap_between = { text = "//" },
+				gap_before = {
+					returns = {
+						enabled = false,
+						text = "//",
+					},
+				},
 				items = { insert_gap_between = { text = "//" } },
 			},
 			{
 				name = "returns",
-				insert_gap_between = { text = "//" },
 				items = { insert_gap_between = { text = "//" } },
 			},
 		},

@@ -19,12 +19,21 @@ return {
 					'%>"""',
 					"%>${%snip_idx:title}",
 				},
-				insert_gap_between = {
-					enabled = true,
+				gap_before = {
+					attributes = {
+						text = "",
+						enabled = true,
+					},
 				},
 			},
 			{
 				name = "attributes",
+				gap_before = {
+					footer = {
+						enabled = false,
+						text = "",
+					},
+				},
 				layout = { "%>Attributes:", "%>___________" },
 				items = {
 					layout = {
@@ -38,7 +47,6 @@ return {
 				layout = {
 					'%>"""',
 				},
-				ignore_prev_gap = true,
 			},
 		},
 	},
@@ -51,14 +59,26 @@ return {
 					'%>"""',
 					"%>${%snip_idx:title}",
 				},
-				insert_gap_between = {
-					enabled = true,
+				gap_before = {
+					parameters = {
+						enabled = true,
+						text = "",
+					},
+					returns = {
+						enabled = true,
+						text = "",
+					},
 				},
 			},
 			{
 				name = "parameters",
 				layout = { "%>Parameters", "%>----------" },
-				insert_gap_between = { enabled = true },
+				gap_before = {
+					returns = {
+						enabled = true,
+						text = "",
+					},
+				},
 				items = {
 					layout = {
 						"%>%item_name: ${%snip_idx:%item_type}",
@@ -69,7 +89,12 @@ return {
 			{
 				name = "returns",
 				layout = { "%>Returns", "%>-------" },
-				insert_gap_between = { enabled = true },
+				gap_before = {
+					footer = {
+						enabled = false,
+						text = "",
+					},
+				},
 				items = {
 					layout = {
 						"%>${%snip_idx:%item_type}",
@@ -82,7 +107,6 @@ return {
 				layout = {
 					'%>"""',
 				},
-				ignore_prev_gap = true,
 			},
 		},
 	},

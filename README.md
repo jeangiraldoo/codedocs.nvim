@@ -311,16 +311,14 @@ like.
 > To customize just one block, copy the default `blocks` list and modify the
 > specific block you want.
 
-| Option Name          | Expected Type | Behavior                                                     |
-| -------------------- | ------------- | ------------------------------------------------------------ |
-| `name`               | string        | The name of the block, useful for readability and for items  |
-| `layout`             | string[]      | List of lines that that make up the block                    |
-| `insert_gap_between` | table         | Sets up a gap in between the current block/item and the next |
-| `ignore_prev_gap`    | boolean       | Skips the gap defined by the previous block (if enabled)     |
-| `items`              | table?        | Sets up options for the block's items                        |
+| Option Name  | Expected Type | Behavior                                                                           |
+| ------------ | ------------- | ---------------------------------------------------------------------------------- |
+| `name`       | string        | The name of the block, useful for readability and for items                        |
+| `layout`     | string[]      | List of lines that that make up the block                                          |
+| `gap_before` | table         | Inserts a gap before the named block when it immediately follows the current block |
+| `items`      | table?        | Sets up options for the block's items                                              |
 
-All options with the exception of `ignore_prev_gap` have some caveats that will
-be explained below in detail.
+All options have some caveats that will be explained below in detail.
 
 ###### `layout` option
 
@@ -334,14 +332,25 @@ The following string placeholders are predefined:
   (e.g., `$%snip_idx` or `${%snip_idx:default label}`).
 - `%>`: Either a tab character or a number of spaces, based on your Neovim settings
 
-###### `insert_gap_between` option
+###### `gap_before` option
 
-The following suboptions are available:
+Each key in `gap_before` is a block name, and its value supports the following suboptions:
 
-| Name    | Expected Value Type | Behavior                                                 |
-| ------- | ------------------- | -------------------------------------------------------- |
-| enabled | `boolean`           | Whether a gap is inserted in between two blocks or items |
-| text    | `string`            | String used as the gap                                   |
+| Name      | Expected Value Type | Behavior                                           |
+| --------- | ------------------- | -------------------------------------------------- |
+| `enabled` | `boolean`           | Whether the gap is inserted before the named block |
+| `text`    | `string`            | The string used as the gap                         |
+
+For example, to insert a gap before the `parameters` block:
+
+```lua
+gap_before = {
+    parameters = {
+        enabled = true,
+        text = " *",
+    },
+},
+```
 
 ###### `name` and `items` option
 
@@ -380,8 +389,12 @@ local items = {
 If the annotation to be generated is also named `func` these items become available
 for use. Any block whose `name` matches a key in the items table, such as `parameters`
 or `returns` in the example, can access the corresponding items. This is done through
-the `items` option, which supports options like
-`insert_gap_between` and `layout`.
+the `items` option, which supports the following suboptions:
+
+| Name                 | Type                                  | Behavior                                            |
+| -------------------- | ------------------------------------- | --------------------------------------------------- |
+| `layout`             | `string[]`                            | Same as the block [`layout option`](#layout-option) |
+| `insert_gap_between` | `{ enabled: boolean, text: string  }` | Sets up a gap in between the current and next item  |
 
 In this context, the `layout` defines how each individual item is rendered, and
 its output is appended to the block’s own `layout`. Additionally, the default `layout`
