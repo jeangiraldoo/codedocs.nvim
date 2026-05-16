@@ -19,12 +19,21 @@ return {
 					'%>"""',
 					"%>${%snip_idx:title}",
 				},
-				insert_gap_between = {
-					enabled = true,
+				gap_before = {
+					attributes = {
+						text = "",
+						enabled = true,
+					},
 				},
 			},
 			{
 				name = "attributes",
+				gap_before = {
+					footer = {
+						text = "",
+						enabled = true,
+					},
+				},
 				items = {
 					layout = {
 						"%>:var %item_name: ${%snip_idx:description}",
@@ -37,7 +46,6 @@ return {
 				layout = {
 					'%>"""',
 				},
-				ignore_prev_gap = true,
 			},
 		},
 	},
@@ -50,12 +58,25 @@ return {
 					'%>"""',
 					"%>${%snip_idx:title}",
 				},
-				insert_gap_between = {
-					enabled = true,
+				gap_before = {
+					parameters = {
+						enabled = true,
+						text = "",
+					},
+					returns = {
+						enabled = true,
+						text = "",
+					},
 				},
 			},
 			{
 				name = "parameters",
+				gap_before = {
+					returns = {
+						enabled = false,
+						text = "",
+					},
+				},
 				items = {
 					layout = {
 						"%>:param %item_name: ${%snip_idx:description}",
@@ -65,6 +86,12 @@ return {
 			},
 			{
 				name = "returns",
+				gap_before = {
+					footer = {
+						enabled = false,
+						text = "",
+					},
+				},
 				items = {
 					layout = {
 						"%>:return: ${%snip_idx:description}",
@@ -77,7 +104,6 @@ return {
 				layout = {
 					'%>"""',
 				},
-				ignore_prev_gap = true,
 			},
 		},
 	},

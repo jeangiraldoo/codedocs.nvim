@@ -128,9 +128,9 @@ local function validate_config(config)
 						[block_idx_path .. ".insert_gap_between"] = { block.insert_gap_between, "table" },
 					}
 					vim.validate {
-						[block_idx_path .. ".insert_gap_between.enabled"] = {
-							block.insert_gap_between.enabled,
-							"boolean",
+						[block_idx_path .. ".insert_gap_between.before"] = {
+							block.insert_gap_between.before,
+							"table",
 						},
 					}
 					vim.validate {
@@ -148,13 +148,51 @@ local function validate_config(config)
 						[block_idx_path .. ".name"] = { block.name, "string" },
 					}
 
-					validate_block(block, block_idx_path)
+					vim.validate {
+						[block_idx_path .. ".layout"] = { block.layout, "table" },
+					}
+					vim.validate {
+						[block_idx_path .. ".insert_gap_between"] = { block.insert_gap_between, "table" },
+					}
+					vim.validate {
+						[block_idx_path .. ".insert_gap_between.before"] = {
+							block.insert_gap_between.before,
+							"table",
+						},
+					}
+					vim.validate {
+						[block_idx_path .. ".insert_gap_between.text"] = { block.insert_gap_between.text, "string" },
+					}
+
+					-- validate_block(block, block_idx_path)
 
 					if block.items then
 						vim.validate {
 							[block_idx_path .. " .items"] = { block.items, "table" },
 						}
-						validate_block(block.items, block_idx_path .. " .items")
+
+						vim.validate {
+							[block_idx_path .. ".items.layout"] = { block.items.layout, "table" },
+						}
+						vim.validate {
+							[block_idx_path .. ".items.insert_gap_between"] = {
+								block.items.insert_gap_between,
+								"table",
+							},
+						}
+						vim.validate {
+							[block_idx_path .. ".items.insert_gap_between.enabled"] = {
+								block.items.insert_gap_between.enabled,
+								"boolean",
+							},
+						}
+						vim.validate {
+							[block_idx_path .. ".items.insert_gap_between.text"] = {
+								block.items.insert_gap_between.text,
+								"string",
+							},
+						}
+						-- validate_block(block.items, block_idx_path .. " .items")
 					end
 				end
 			end

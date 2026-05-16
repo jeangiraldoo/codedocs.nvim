@@ -31,14 +31,25 @@ return {
 					"/**",
 					" * ${%snip_idx:title}",
 				},
-				insert_gap_between = {
-					enabled = true,
-					text = " *",
+				gap_before = {
+					parameters = {
+						enabled = true,
+						text = " *",
+					},
+					returns = {
+						enabled = true,
+						text = " *",
+					},
 				},
 			},
 			{
 				name = "parameters",
-				insert_gap_between = { text = " *" },
+				gap_before = {
+					returns = {
+						text = " *",
+						enabled = false,
+					},
+				},
 				items = {
 					layout = {
 						" * @param ${%snip_idx:%item_type} \\$%item_name ${%snip_idx:description}",
@@ -50,7 +61,12 @@ return {
 			},
 			{
 				name = "returns",
-				insert_gap_between = { text = " *" },
+				gap_before = {
+					footer = {
+						text = " *",
+						enabled = false,
+					},
+				},
 				items = {
 					layout = {
 						" * @return ${%snip_idx:%item_type} ${%snip_idx:description}",
@@ -64,10 +80,6 @@ return {
 				name = "footer",
 				layout = {
 					" */",
-				},
-				ignore_prev_gap = true,
-				insert_gap_between = {
-					text = " *",
 				},
 			},
 		},

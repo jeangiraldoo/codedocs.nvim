@@ -13,8 +13,8 @@ describe("Add support for a new language", function()
 					{
 						name = "title",
 						insert_gap_between = {
-							enabled = false,
 							text = "",
+							before = {},
 						},
 						layout = {
 							"---${%snip_idx:title}",
@@ -67,8 +67,8 @@ describe("Adding new target-less annotation", function()
 				{
 					name = "title",
 					insert_gap_between = {
-						enabled = false,
 						text = "",
+						before = {},
 					},
 					layout = {
 						"---${%snip_idx:title}",
@@ -121,8 +121,8 @@ describe("Add new annotation with target", function()
 						"---first line",
 					},
 					insert_gap_between = {
-						enabled = false,
 						text = "",
+						before = {},
 					},
 				},
 				{
@@ -131,8 +131,8 @@ describe("Add new annotation with target", function()
 						"---${%snip_idx:block title}",
 					},
 					insert_gap_between = {
-						enabled = false,
 						text = "",
+						before = {},
 					},
 					items = {
 						layout = {

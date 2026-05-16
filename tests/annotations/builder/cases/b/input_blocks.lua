@@ -5,17 +5,21 @@ return {
 			"/**",
 			" * ",
 		},
-		insert_gap_between = {
-			enabled = true,
-			text = " *",
+		gap_before = {
+			primary_section = {
+				enabled = true,
+				text = " *",
+			},
 		},
 	},
 	{
 		name = "primary_section",
 		layout = {},
-		insert_gap_between = {
-			enabled = true,
-			text = "--*",
+		gap_before = {
+			secondary_section = {
+				text = "--*",
+				enabled = true,
+			},
 		},
 		items = {
 			layout = {
@@ -40,10 +44,6 @@ return {
 	{
 		name = "secondary_section",
 		layout = {},
-		insert_gap_between = {
-			enabled = true,
-			text = "--* ",
-		},
 		items = {
 			insert_gap_between = {
 				enabled = false,
@@ -59,11 +59,6 @@ return {
 		name = "footer",
 		layout = {
 			" */",
-		},
-		ignore_prev_gap = true,
-		insert_gap_between = {
-			enabled = true,
-			text = " *",
 		},
 	},
 }
