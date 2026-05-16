@@ -232,6 +232,8 @@ function Codedocs.build_annotation(lang_name, data)
 		data = { data, "table" },
 	}
 
+	if lang_name == "python" and data.style_name == "Numpy" then data.style_name = "NumPy" end
+
 	local annotation_tbl = Codedocs.get_annotation_tbl(lang_name, data.style_name, data.target_name)
 
 	local Annotation = require "codedocs.annotation_builder"
