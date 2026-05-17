@@ -311,26 +311,21 @@ like.
 > To customize just one block, copy the default `blocks` list and modify the
 > specific block you want.
 
-| Option Name  | Expected Type | Behavior                                                                           |
-| ------------ | ------------- | ---------------------------------------------------------------------------------- |
-| `name`       | string        | The name of the block, useful for readability and for items                        |
-| `layout`     | string[]      | List of lines that that make up the block                                          |
-| `gap_before` | table         | Inserts a gap before the named block when it immediately follows the current block |
-| `items`      | table?        | Sets up options for the block's items                                              |
+| Option Name  | Type     | Behavior                                                                                           |
+| ------------ | -------- | -------------------------------------------------------------------------------------------------- |
+| `name`       | string   | Identifies the block; used for item group linking and `gap_before` keys                            |
+| `layout`     | string[] | Lines that that make up the block. See the available [layout placeholders](#layout-placeholders)   |
+| `gap_before` | table    | Inserts a gap before a block when it follows the current one. See [gap_before](#gap_before-option) |
+| `items`      | `table?` | Options for the block's items. See [`name` and `items`](#name-and-items-options)                   |
 
-All options have some caveats that will be explained below in detail.
+###### `layout` placeholders
 
-###### `layout` option
-
-> [!INFO]
-> The layout lines of all blocks are concatenated in block order to form the
-> final annotation.
-
-The following string placeholders are predefined:
-
-- `%snip_idx`: Inserts a tabstop index for defining snippet tabstops
-  (e.g., `$%snip_idx` or `${%snip_idx:default label}`).
-- `%>`: Either a tab character or a number of spaces, based on your Neovim settings
+| Placeholder  | Expands to                                                                      |
+| ------------ | ------------------------------------------------------------------------------- |
+| `%snip_idx`  | Tabstop index for snippets (e.g., `$%snip_idx` or `${%snip_idx:default label}`) |
+| `%>`         | Tab or spaces, based on your Neovim settings                                    |
+| `%item_name` | Item name (`items` layouts only)                                                |
+| `%item_type` | Item type (`items` layouts only)                                                |
 
 ###### `gap_before` option
 
@@ -352,62 +347,30 @@ gap_before = {
 },
 ```
 
-###### `name` and `items` option
+###### `name` and `items` options
 
-The `name` option serves two main purposes:
+The `name` option serves two purposes:
 
-1. It identifies the block, making its role easier to understand
-2. It links the block to a specific group of items extracted from a target
+1. Links the block to a specific group of items extracted from a target
+2. Used as a key in other blocks' `gap_before` tables
 
-The second purpose only applies to item-based blocks. When items are extracted
-from a target, they are grouped by block name. For a block to access those items,
-its `name` must match the corresponding group in the target.
+When items are extracted from a target, they are grouped by block name. For a block
+to access those items, its `name` must match the corresponding group in the target.
 
-For example, given a target called `func` with the following items table:
+The `items` option supports the following suboptions:
 
-```lua
-local items = {
-    parameters = {
-        {
-            name = "a",
-            type = "string"
-        },
-        {
-            name = "b",
-            type = "int"
-        }
-    },
-    returns = {
-        {
-            name = "",
-            type = "int"
-        }
-    }
-}
-```
+| Name         | Type       | Description                                                                          |
+| ------------ | ---------- | ------------------------------------------------------------------------------------ |
+| `layout`     | `string[]` | How each item is rendered; appended to the block's `layout`                          |
+| `gap_before` | `table`    | Keyed by block name; inserts a gap before that block when it follows the current one |
 
-If the annotation to be generated is also named `func` these items become available
-for use. Any block whose `name` matches a key in the items table, such as `parameters`
-or `returns` in the example, can access the corresponding items. This is done through
-the `items` option, which supports the following suboptions:
-
-| Name                 | Type                                  | Behavior                                            |
-| -------------------- | ------------------------------------- | --------------------------------------------------- |
-| `layout`             | `string[]`                            | Same as the block [`layout option`](#layout-option) |
-| `insert_gap_between` | `{ enabled: boolean, text: string  }` | Sets up a gap in between the current and next item  |
-
-In this context, the `layout` defines how each individual item is rendered, and
-its output is appended to the block’s own `layout`. Additionally, the default `layout`
-placeholders are expanded with the following ones:
-
-- `%item_name`
-- `%item_type`
-
-When used, they get replaced by the item's name and type respectively.
+For example, given a `func` target with `parameters` and `returns` item groups,
+a block named `parameters` will automatically have access to those items and can
+render them via `items.layout`.
 
 The following target blocks are available:
 
-| target  | blocks                           |
+| Target  | Blocks                           |
 | ------- | -------------------------------- |
 | `func`  | `title`, `parameters`, `returns` |
 | `class` | `title`, `attributes`            |
