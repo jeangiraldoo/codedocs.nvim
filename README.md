@@ -539,7 +539,7 @@ The following annotations are available in all languages and styles:
 | ---------- | ------------------------------------------------------- | ------------------------------------- |
 | bash       | \*[Google][Google bash]                                 | `func`, `shebang`                     |
 | c          | \*[Doxygen][Doxygen]                                    | `func`                                |
-| c++ (cpp)  | \*[Doxygen][Doxygen]                                    | `func`                                |
+| cpp        | \*[Doxygen][Doxygen]                                    | `func`                                |
 | go         | \*[Godoc][Godoc]                                        | `func`                                |
 | gdscript   | \*[Codedocs][GDScript]                                  | `export`, `onready`, `warning_ignore` |
 | html       | \*Codedocs                                              | Only global annotations               |
