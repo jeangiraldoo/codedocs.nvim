@@ -103,5 +103,6 @@ return {
 	end),
 	aliases = {
 		sh = "bash",
+		query = "treesitter",
 	},
 }

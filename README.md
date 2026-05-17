@@ -555,6 +555,7 @@ The following annotations are available in all languages and styles:
 | sql        | \*Codedocs                                              | Only global annotations               |
 | typescript | \*[TSDoc][TSDoc]                                        | `func`, `class`                       |
 | toml       | \*Codedocs                                              | Only global annotations               |
+| treesitter | \*Codedocs                                              | Only global annotations               |
 
 ## Roadmap
 
