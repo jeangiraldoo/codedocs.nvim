@@ -584,7 +584,7 @@ LANGUAGE-SPECIFIC ANNOTATIONS*codedocs-language-support-language-specific-annota
 
   c            Doxygen                                func
 
-  c++(cpp)     Doxygen                                func
+  cpp          Doxygen                                func
 
   go           Godoc                                  func
 
