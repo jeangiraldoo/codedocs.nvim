@@ -120,23 +120,6 @@ local function validate_config(config)
 						"string",
 					},
 				}
-				local function validate_block(block, block_idx_path)
-					vim.validate {
-						[block_idx_path .. ".layout"] = { block.layout, "table" },
-					}
-					vim.validate {
-						[block_idx_path .. ".insert_gap_between"] = { block.insert_gap_between, "table" },
-					}
-					vim.validate {
-						[block_idx_path .. ".insert_gap_between.before"] = {
-							block.insert_gap_between.before,
-							"table",
-						},
-					}
-					vim.validate {
-						[block_idx_path .. ".insert_gap_between.text"] = { block.insert_gap_between.text, "string" },
-					}
-				end
 
 				for idx, block in ipairs(annotation_opts.blocks) do
 					local block_idx_path = annotation_path .. ".blocks(" .. idx .. ")"
@@ -164,8 +147,6 @@ local function validate_config(config)
 						[block_idx_path .. ".insert_gap_between.text"] = { block.insert_gap_between.text, "string" },
 					}
 
-					-- validate_block(block, block_idx_path)
-
 					if block.items then
 						vim.validate {
 							[block_idx_path .. " .items"] = { block.items, "table" },
@@ -192,7 +173,6 @@ local function validate_config(config)
 								"string",
 							},
 						}
-						-- validate_block(block.items, block_idx_path .. " .items")
 					end
 				end
 			end
