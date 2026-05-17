@@ -211,14 +211,14 @@ require("codedocs").setup {
 > All annotations are expected to include all the options, using any of the valid
 > values, for the plugin to work properly
 
-An annotation is a regular Lua table that can interact with code items,
-and with some options (keys).
+An annotation is a Lua table that defines its structure through configuration
+options and can interact with code items; once evaluated, it produces text that
+is inserted into the buffer.
 
 #### Items
 
-An item is a unit of data that can be extracted from code structures such as functions,
-classes, and similar constructs. In the context of the plugin, a code structure
-from which items are extracted is referred to as a `target`.
+An item is a unit of data that can be extracted from a code structure (referred
+to as a `target`), such as a function or class.
 
 Ultimately, an item is a table with a `name` and `type` keys.
 
@@ -291,15 +291,12 @@ When the target is processed the result is a table where each key corresponds to
 one of the keys under `extractors`, and the values are the list of items returned
 by each function.
 
-#### Options
+#### Annotation options
 
 | Option Name | Expected Value Type                   | Behavior                              |
 | ----------- | ------------------------------------- | ------------------------------------- |
 | `placement` | `"above"` \| `"below"` \| `"current"` | Where to insert the annotation        |
 | `blocks`    | table (list)                          | List of blocks forming the annotation |
-
-Blocks are the core of an annotation, they determine what it ultimately looks
-like.
 
 ##### Blocks
 
@@ -310,6 +307,9 @@ like.
 >
 > To customize just one block, copy the default `blocks` list and modify the
 > specific block you want.
+
+Blocks are the core of an annotation, they determine what it ultimately looks
+like.
 
 | Option Name  | Type     | Behavior                                                                                           |
 | ------------ | -------- | -------------------------------------------------------------------------------------------------- |
