@@ -101,6 +101,35 @@ return {
 		acc[name] = base_lang_config
 		return acc
 	end),
+	annotation_builder = {
+		state = {
+			lines = {},
+			snip_idx_counter = 1,
+		},
+		placeholders = {
+			general = {
+				["%%>"] = function(_)
+					if not vim.bo.expandtab then return "\t" end
+
+					local shiftwidth = vim.bo.shiftwidth
+					if shiftwidth == 0 then shiftwidth = vim.bo.tabstop end
+
+					return string.rep(" ", shiftwidth)
+				end,
+				["%%snip_idx"] = function(state)
+					local snip_idx_label = tostring(state.snip_idx_counter)
+
+					state.snip_idx_counter = state.snip_idx_counter + 1
+
+					return snip_idx_label
+				end,
+			},
+			items = {
+				["%%item_name"] = function(_, item) return item.name end,
+				["%%item_type"] = function(_, item) return item.type end,
+			},
+		},
+	},
 	aliases = {
 		sh = "bash",
 		query = "treesitter",

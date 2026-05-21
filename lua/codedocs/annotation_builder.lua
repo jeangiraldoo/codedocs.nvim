@@ -1,45 +1,32 @@
 local Annotation = {
 	placeholders = {
-		["%%>"] = function(_, _, _)
-			if not vim.bo.expandtab then return "\t" end
-
-			local shiftwidth = vim.bo.shiftwidth
-			if shiftwidth == 0 then shiftwidth = vim.bo.tabstop end
-
-			return string.rep(" ", shiftwidth)
-		end,
-		["%%snip_idx"] = function(self, _, _)
-			local snip_idx_label = tostring(self._snip_idx_counter)
-
-			self._snip_idx_counter = self._snip_idx_counter + 1
-
-			return snip_idx_label
-		end,
+		general = {},
+		items = {},
 	},
 }
 
----@deprecated
-Annotation.placeholders["%%snippet_tabstop_idx"] = function(self, _, _)
-	vim.notify_once("%snippet_tabstop_idx is deprecated; use %snip_idx instead", vim.log.levels.WARN)
-	return Annotation.placeholders["%%snip_idx"](self)
-end
-
-Annotation.item_placeholder = vim.tbl_deep_extend("force", vim.deepcopy(Annotation.placeholders), {
-	["%%item_name"] = function(_, item) return item.name end,
-	["%%item_type"] = function(_, item) return item.type end,
-})
-
-function Annotation.new(line_num)
+function Annotation.new(line_num, opts)
 	local new_annotation = {
-		_lines = {},
-		_snip_idx_counter = 1,
 		line_num = line_num,
 	}
+
+	new_annotation = vim.tbl_deep_extend("force", new_annotation, vim.deepcopy(opts))
+
+	---@deprecated
+	new_annotation.placeholders.general["%%snippet_tabstop_idx"] = function(self, _, _)
+		vim.notify_once("%snippet_tabstop_idx is deprecated; use %snip_idx instead", vim.log.levels.WARN)
+		return new_annotation.placeholders.general["%%snip_idx"](self.state)
+	end
+	new_annotation.placeholders.items = vim.tbl_deep_extend(
+		"force",
+		new_annotation.placeholders.items,
+		vim.deepcopy(new_annotation.placeholders.general)
+	)
 
 	return setmetatable(new_annotation, { __index = Annotation })
 end
 
-function Annotation:get_lines() return self._lines end
+function Annotation:get_lines() return self.state.lines end
 
 function Annotation:extend(tbl)
 	for _, line in ipairs(tbl) do
@@ -65,7 +52,7 @@ end
 
 function Annotation:insert(line, item)
 	if line == "" then
-		table.insert(self._lines, line)
+		table.insert(self.state.lines, line)
 		return
 	end
 
@@ -85,13 +72,13 @@ function Annotation:insert(line, item)
 
 	line = line_indent .. line
 
-	local placeholders = item and self.item_placeholder or self.placeholders
+	local placeholders = item and self.placeholders.items or self.placeholders.general
 
 	for placeholder, handler in pairs(placeholders) do
-		line = line:gsub(placeholder, function() return handler(self, item) end)
+		line = line:gsub(placeholder, function() return handler(self.state, item) end)
 	end
 
-	table.insert(self._lines, line)
+	table.insert(self.state.lines, line)
 end
 
 function Annotation:insert_blocks(blocks, items)
