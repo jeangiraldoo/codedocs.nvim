@@ -181,6 +181,33 @@ require("codedocs").setup {
         --- This table is too big to be displayed here
         --- The path to the config file is `codedocs/config/init.lua`
     },
+    annotation_builder = { -- Options for the component that builds annotations
+        state = {
+            lines = {}, -- Starter annotation lines
+            snip_idx_counter = 1, -- Counter for the `snip_idx` placeholder
+        },
+        placeholders = { -- Defines the placeholders that can be used in annotation lines
+            general = { -- Placeholders available to any line, including items
+                ["%%>"] = function(_)
+                    if not vim.bo.expandtab then return "\t" end
+
+                    local shiftwidth = vim.bo.shiftwidth
+                    if shiftwidth == 0 then shiftwidth = vim.bo.tabstop end
+
+                    return string.rep(" ", shiftwidth)
+                end,
+                ["%%snip_idx"] = function(state)
+                    local snip_idx_label = tostring(state.snip_idx_counter)
+                    state.snip_idx_counter = state.snip_idx_counter + 1
+                    return snip_idx_label
+                end,
+            },
+            items = { -- Item-exclusive placeholders
+                ["%%item_name"] = function(_, item) return item.name end,
+                ["%%item_type"] = function(_, item) return item.type end,
+            },
+        },
+    },
     aliases = {
         sh = "bash"
     }
