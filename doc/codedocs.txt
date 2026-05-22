@@ -214,9 +214,6 @@ default options:
                 },
             },
         },
-        aliases = {
-            sh = "bash"
-        }
     }
 <
 
