@@ -15,4 +15,7 @@ return {
 	default_style = "JSDoc",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"javascript",
+	},
 }

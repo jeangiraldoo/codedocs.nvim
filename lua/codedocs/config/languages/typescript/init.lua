@@ -15,4 +15,7 @@ return {
 	default_style = "TSDoc",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"typescript",
+	},
 }

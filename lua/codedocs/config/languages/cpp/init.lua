@@ -14,4 +14,7 @@ return {
 	default_style = "Doxygen",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"cpp",
+	},
 }

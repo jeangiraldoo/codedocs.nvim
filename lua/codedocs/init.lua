@@ -38,8 +38,19 @@ local function _write_to_buffer(annotation_lines, row, placement)
 end
 
 local function _determine_lang_name()
-	local filetype = vim.bo.filetype
-	return require("codedocs.config").aliases[filetype] or filetype
+	if not Codedocs._filetypes_map then
+		local langs_config = require("codedocs.config").languages
+		local filetypes_map = {}
+		for lang_name, opts in pairs(langs_config) do
+			for _, filetype_name in ipairs(opts.filetypes) do
+				filetypes_map[filetype_name] = lang_name
+			end
+		end
+
+		Codedocs._filetypes_map = filetypes_map
+	end
+
+	return Codedocs._filetypes_map[vim.bo.filetype]
 end
 
 function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
@@ -80,9 +91,6 @@ Codedocs.get_target_identifiers = require("codedocs.item_extractor").get_target_
 local function validate_config(config)
 	vim.validate {
 		["config.debug"] = { config.debug, "boolean" },
-	}
-	vim.validate {
-		["config.aliases"] = { config.aliases, "table" },
 	}
 	vim.validate {
 		["config.languages"] = { config.languages, "table" },

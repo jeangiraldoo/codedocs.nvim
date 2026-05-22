@@ -14,4 +14,7 @@ return {
 	default_style = "Google",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"sh",
+	},
 }

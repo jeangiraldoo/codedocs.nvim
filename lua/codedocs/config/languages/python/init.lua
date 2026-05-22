@@ -17,4 +17,7 @@ return {
 	default_style = "reST",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"python",
+	},
 }

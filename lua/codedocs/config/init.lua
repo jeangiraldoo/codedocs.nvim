@@ -130,8 +130,4 @@ return {
 			},
 		},
 	},
-	aliases = {
-		sh = "bash",
-		query = "treesitter",
-	},
 }
