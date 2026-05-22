@@ -14,4 +14,7 @@ return {
 	default_style = "RustDoc",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"rust",
+	},
 }

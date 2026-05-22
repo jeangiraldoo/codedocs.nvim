@@ -15,4 +15,7 @@ return {
 	default_style = "JavaDoc",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"java",
+	},
 }

@@ -15,4 +15,7 @@ return {
 	default_style = "KDoc",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"kotlin",
+	},
 }

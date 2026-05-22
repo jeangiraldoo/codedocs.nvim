@@ -14,4 +14,7 @@ return {
 	default_style = "YARD",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"ruby",
+	},
 }

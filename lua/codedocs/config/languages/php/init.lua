@@ -14,4 +14,7 @@ return {
 	default_style = "PHPDoc",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"php",
+	},
 }

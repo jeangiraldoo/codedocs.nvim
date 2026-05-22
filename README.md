@@ -208,9 +208,6 @@ require("codedocs").setup {
             },
         },
     },
-    aliases = {
-        sh = "bash"
-    }
 }
 ```
 

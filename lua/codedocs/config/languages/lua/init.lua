@@ -15,4 +15,7 @@ return {
 	default_style = "EmmyLua",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"lua",
+	},
 }

@@ -14,4 +14,7 @@ return {
 	default_style = "Godoc",
 	styles = {},
 	targets = {},
+	filetypes = {
+		"go",
+	},
 }
