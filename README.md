@@ -181,73 +181,76 @@ require("codedocs").setup {
         path = (vim.fn.stdpath "log") .. "/codedocs.log",
     },
     languages = {
-        --- This table is too big to be displayed here
-        --- The path to the config file is `codedocs/config/init.lua`
+        --- The `languages` table is too big to be displayed here.
+        --- See the `languages` configuration section
     },
     annotation_builder = { -- Options for the component that builds annotations
         state = {
             lines = {}, -- Starter annotation lines
             snip_idx_counter = 1, -- Counter for the `snip_idx` placeholder
         },
-        placeholders = { -- Defines the placeholders that can be used in annotation lines
-            general = { -- Placeholders available to any line, including items
+        placeholders = { -- Placeholders for the annotation `layout` option
+            general = { -- Placeholders available to any `layout` line
                 ["%%>"] = function(_)
-                    if not vim.bo.expandtab then return "\t" end
-
-                    local shiftwidth = vim.bo.shiftwidth
-                    if shiftwidth == 0 then shiftwidth = vim.bo.tabstop end
-
-                    return string.rep(" ", shiftwidth)
+                    -- One level of indentation based on the Neovim settings
                 end,
                 ["%%snip_idx"] = function(state)
-                    local snip_idx_label = tostring(state.snip_idx_counter)
-                    state.snip_idx_counter = state.snip_idx_counter + 1
-                    return snip_idx_label
+                    -- Tabstop index for Neovim snippets
+                    -- Counter is increased by 1 after each use
                 end,
             },
             items = { -- Item-exclusive placeholders
-                ["%%item_name"] = function(_, item) return item.name end,
-                ["%%item_type"] = function(_, item) return item.type end,
+                ["%%item_name"] = function(_, item)
+                    -- Item name
+                end,
+                ["%%item_type"] = function(_, item)
+                    -- Item type
+                end,
             },
         },
     },
 }
 ```
 
-### Change a language's default style
+### Languages
 
-Default styles are defined using the `default_style` key. For example, let's set
-the default styles for Python and Lua:
+All language definitions share the same structure, so only the `javascript`
+configuration will be shown from here on. Other languages use the same fields with
+different values. See [language support](#language-support)
 
 ```lua
 require("codedocs").setup {
     languages = {
-        python = {
-            default_style =  "reST"
+        javascript = {
+            filetypes = { -- Neovim filetypes associated with this language
+                "javascript",
+            },
+            default_style = "JSDoc", -- Default style used when generating annotations
+
+            -- Annotation style definitions
+            styles = {
+                -- Style name
+                JSDoc = {
+                    --- See the `annotations` section below
+                    func = {}, -- `func` annotation
+                    class = {}, -- `class` annotation
+                    comment = {} -- `comment` annotation
+                },
+            },
+            targets = {
+                --- See the `targets` section below
+            },
         },
-        lua = {
-            default_style = "EmmyLua"
-        }
     },
 }
 ```
 
-### How annotations work
+#### Targets
 
-> [!CAUTION]
-> All annotations are expected to include all the options, using any of the valid
-> values, for the plugin to work properly
+A target is a code structure, such as a function or class, we extract units of
+data called `items` from.
 
-An annotation is a Lua table that defines its structure through configuration
-options and can interact with code items; once evaluated, it produces text that
-is inserted into the buffer.
-
-#### Items
-
-An item is a unit of data that can be extracted from a code structure (referred
-to as a `target`), such as a function or class.
-
-Ultimately, an item is a table with a `name` and `type` keys.
+Ultimately, an item is a table with a `name` and `type` fields.
 
 For example, the following function:
 
@@ -282,32 +285,32 @@ has the following items:
 Since the plugin relies on Treesitter for extraction, a target is identified by
 one or more Treesitter node types.
 
-For example, this is what the `targets` key of the default Lua configuration looks
-like:
+This is what the `targets` field looks like for `javascript`:
 
 ```lua
-local default_config = {
+require("codedocs").setup {
     languages = {
-        lua = {
-            default_style = "EmmyLua",
-            styles = {
-                --Style/annotation data
-            },
+        javascript = {
             targets = {
+                --- See the targets section below
                 func = {
-                    node_identifiers = { ---Determines what Treesitter node types identify the target
-                        "function_definition",
+                    -- Tree-sitter node types recognized as functions
+                    node_identifiers = {
+                        "method_definition",
                         "function_declaration",
+                        "arrow_function",
                     },
+
+                    -- Functions responsible for extracting items from the target
                     extractors = {
                         parameters = function()
-                            ---Some logic that eventually returns a list of items
+                            -- ...
                         end,
                         returns = function()
-                            ---Some logic that eventually returns a list of items
+                            -- ...
                         end
-                    }
-                }
+                    },
+                },
             }
         }
     }
@@ -318,12 +321,14 @@ When the target is processed the result is a table where each key corresponds to
 one of the keys under `extractors`, and the values are the list of items returned
 by each function.
 
-#### Annotation options
+#### Annotations
 
-| Option Name | Expected Value Type                   | Behavior                              |
-| ----------- | ------------------------------------- | ------------------------------------- |
-| `placement` | `"above"` \| `"below"` \| `"current"` | Where to insert the annotation        |
-| `blocks`    | table (list)                          | List of blocks forming the annotation |
+Annotations are defined as a table with specific options.
+
+| Option Name | Type   | Behavior                                                 |
+| ----------- | ------ | -------------------------------------------------------- |
+| `placement` | string | What line to place the annotation relative to the cursor |
+| `blocks`    | list   | List of blocks forming the annotation                    |
 
 ##### Blocks
 
@@ -338,23 +343,19 @@ by each function.
 Blocks are the core of an annotation, they determine what it ultimately looks
 like.
 
-| Option Name  | Type     | Behavior                                                                                           |
-| ------------ | -------- | -------------------------------------------------------------------------------------------------- |
-| `name`       | string   | Identifies the block; used for item group linking and `gap_before` keys                            |
-| `layout`     | string[] | Lines that that make up the block. See the available [layout placeholders](#layout-placeholders)   |
-| `gap_before` | table    | Inserts a gap before a block when it follows the current one. See [gap_before](#gap_before-option) |
-| `items`      | `table?` | Options for the block's items. See [`name` and `items`](#name-and-items-options)                   |
+| Option Name  | Type     | Description                                                      |
+| ------------ | -------- | ---------------------------------------------------------------- |
+| `name`       | string   | Block identifier used by `gap_before` and item groups            |
+| `layout`     | string[] | Block lines. Supports [layout placeholders](#configuration)      |
+| `gap_before` | table    | Inserts spacing before another block                             |
+| `items`      | `table?` | Defines item rendering and spacing. See [`items`](#items-option) |
 
-###### `layout` placeholders
+The `items` option supports the following suboptions:
 
-| Placeholder  | Expands to                                                                      |
-| ------------ | ------------------------------------------------------------------------------- |
-| `%snip_idx`  | Tabstop index for snippets (e.g., `$%snip_idx` or `${%snip_idx:default label}`) |
-| `%>`         | Tab or spaces, based on your Neovim settings                                    |
-| `%item_name` | Item name (`items` layouts only)                                                |
-| `%item_type` | Item type (`items` layouts only)                                                |
-
-###### `gap_before` option
+| Name                 | Expected Value Type                 | Behavior                                                                 |
+| -------------------- | ----------------------------------- | ------------------------------------------------------------------------ |
+| `layout`             | `string[]`                          | Same as the aforementioned `layout`, but with item-specific placeholders |
+| `insert_gap_between` | `{text: string, enabled = boolean}` | Wether to add a gap with specific text in between items                  |
 
 Each key in `gap_before` is a block name, and its value supports the following suboptions:
 
@@ -374,7 +375,7 @@ gap_before = {
 },
 ```
 
-###### `name` and `items` options
+###### `items` option
 
 The `name` option serves two purposes:
 
@@ -384,16 +385,9 @@ The `name` option serves two purposes:
 When items are extracted from a target, they are grouped by block name. For a block
 to access those items, its `name` must match the corresponding group in the target.
 
-The `items` option supports the following suboptions:
-
-| Name         | Type       | Description                                                                          |
-| ------------ | ---------- | ------------------------------------------------------------------------------------ |
-| `layout`     | `string[]` | How each item is rendered; appended to the block's `layout`                          |
-| `gap_before` | `table`    | Keyed by block name; inserts a gap before that block when it follows the current one |
-
 For example, given a `func` target with `parameters` and `returns` item groups,
 a block named `parameters` will automatically have access to those items and can
-render them via `items.layout`.
+render them via `items.layout`, with support for placeholders.
 
 The following target blocks are available:
 
@@ -402,7 +396,89 @@ The following target blocks are available:
 | `func`  | `title`, `parameters`, `returns` |
 | `class` | `title`, `attributes`            |
 
-### Customize an annotation
+##### Annotation example
+
+The following is the `func` annotation for the `JSDoc` style in `javascript`:
+
+```lua
+require("codedocs").setup {
+    languages = {
+        javascript = {
+            styles = {
+                JSDoc = {
+                    func = {
+                        placement = "current",
+                        blocks = {
+                            {
+                                name = "title",
+                                layout = {
+                                    "/**",
+                                    " * ${%snip_idx:description}",
+                                },
+                                gap_before = {
+                                    parameters = {
+                                        enabled = true,
+                                        text = " *",
+                                    },
+
+                                    returns = {
+                                        enabled = true,
+                                        text = " *",
+                                    },
+                                },
+                            },
+                            {
+                                name = "parameters",
+
+                                gap_before = {
+                                    returns = {
+                                        enabled = false,
+                                        text = " *",
+                                    },
+                                },
+                                items = {
+                                    layout = {
+                                        " * @param {${%snip_idx:type}} %item_name ${%snip_idx:description}",
+                                    },
+                                    insert_gap_between = {
+                                        text = " *",
+                                    },
+                                },
+                            },
+                            {
+                                name = "returns",
+
+                                gap_before = {
+                                    footer = {
+                                        enabled = false,
+                                        text = " *",
+                                    },
+                                },
+                                items = {
+                                    layout = {
+                                        " * @returns {${%snip_idx:type}} ${%snip_idx:description}",
+                                    },
+                                    insert_gap_between = {
+                                        text = " *",
+                                    },
+                                },
+                            },
+                            {
+                                name = "footer",
+                                layout = {
+                                    " */",
+                                },
+                            },
+                        },
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+### Annotation customization example
 
 You can customize almost (for now!) every aspect of an annotation. Whether you
 want to make a simple change, like modifying the characters wrapping the parameter
@@ -448,7 +524,7 @@ In this case, we:
 - Added a third kaomoji to wrap the left side of the return type.
 - Customized the titles for both the parameters and return blocks.
 
-The [How annotations work](#how-annotations-work) section covers everything you
+The [annotations](#annotations) section covers everything you
 need to know about annotations. Since all built-in annotations are implemented this
 way, you can customize them using the same principles.
 
@@ -493,7 +569,7 @@ require("codedocs").setup({
 ### Add a new language
 
 > [!IMPORTANT]
-> Check the [How annotations work](#how-annotations-work) section to understand
+> Check the [How annotations work](#annotations) section to understand
 > how annotations work, how they are defined, and their relationship with the
 > `targets` key.
 
@@ -522,7 +598,7 @@ require("codedocs").setup {
 ### Add a new annotation
 
 > [!IMPORTANT]
-> Check the [How annotations work](#how-annotations-work) section to see what
+> Check the [annotations](#annotations) section to see what
 > annotation options are available and how they work
 
 To add a new annotation for an existing language, simply add the annotation name
