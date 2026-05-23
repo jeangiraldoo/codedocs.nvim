@@ -1,4 +1,4 @@
-local Debug_logger = require "codedocs.utils.debug_logger"
+local Logger = require "codedocs.utils.logger"
 
 local Codedocs = {}
 
@@ -13,8 +13,12 @@ local function _write_to_buffer(annotation_lines, row, placement)
 		placement = { placement, "string" },
 	}
 
+	Logger.info("Target row: " .. row)
+	Logger.info("Placement: " .. placement)
+
 	if placement == "empty_target_or_above" then
 		vim.notify_once("empty_target_or_above is deprecated; use 'current' instead", vim.log.levels.WARN)
+		Logger.warn "empty_target_or_above is deprecated; use 'current' instead"
 	end
 
 	---@deprecate `empty_target_or_above`
@@ -90,8 +94,15 @@ Codedocs.get_target_identifiers = require("codedocs.item_extractor").get_target_
 
 local function validate_config(config)
 	vim.validate {
-		["config.debug"] = { config.debug, "boolean" },
+		["config.logging"] = { config.logging, "table" },
 	}
+	vim.validate {
+		["config.logging.path"] = { config.logging.path, "string" },
+	}
+	vim.validate {
+		["config.logging.level"] = { config.logging.level, "number" },
+	}
+
 	vim.validate {
 		["config.languages"] = { config.languages, "table" },
 	}
@@ -190,6 +201,9 @@ end
 
 ---@param user_config CodedocsConfig?
 function Codedocs.setup(user_config)
+	Logger.info "Setup called"
+	Logger.debug("Setup options: " .. vim.inspect(user_config))
+
 	vim.validate {
 		user_config = { user_config, "table" },
 	}
@@ -207,6 +221,7 @@ function Codedocs.setup(user_config)
 	end
 
 	validate_config(merged)
+	Logger.debug("Merged config options: " .. vim.inspect(merged))
 end
 
 local function get_requested_annotation_data(lang_name, requested_name)
@@ -270,10 +285,11 @@ function Codedocs.build_annotation(lang_name, data)
 
 	local lines = annotation:get_lines()
 
-	Debug_logger.log("Annotation content", lines)
+	Logger.info("Annotation content" .. vim.inspect(lines))
 
 	if annotation_tbl.relative_position then
 		vim.notify_once("'relative_position' is deprecated; use 'placement'", vim.log.levels.WARN)
+		Logger.warn "'relative_position' is deprecated; use 'placement'"
 	end
 
 	return {
@@ -305,6 +321,8 @@ end
 
 ---@param annotation_data { annotation_name: string, style_name: string? }?
 function Codedocs.generate(annotation_data)
+	Logger.info "Annotation generation started"
+
 	vim.validate {
 		annotation_data = { annotation_data, { "table", "nil" } },
 	}
@@ -314,17 +332,23 @@ function Codedocs.generate(annotation_data)
 			annotation_name = { annotation_data.annotation_name, "string" },
 			style_name = { annotation_data.style_name, { "string", "nil" } },
 		}
+
+		Logger.info("Passed data: " .. vim.inspect(annotation_data))
 	end
 
 	local lang_name = _determine_lang_name()
-	Debug_logger.log("Language: " .. lang_name)
+	Logger.info("Language: " .. lang_name)
 
 	local annot_data = Codedocs.get_annotation_data(lang_name, annotation_data)
+
+	Logger.info("Annotation used: " .. annot_data.target_name)
+	Logger.info("Detected items: " .. vim.inspect(annot_data.items))
 
 	local annotation_result = Codedocs.build_annotation(lang_name, annot_data)
 
 	if annotation_result and not vim.tbl_isempty(annotation_result.lines) then
 		_write_to_buffer(annotation_result.lines, annot_data.row, annotation_result.placement)
+		Logger.info "Annotation inserted"
 	end
 end
 
