@@ -15,9 +15,3 @@ brew install stylua
 
 display_step_title "\nInstalling Luacheck:\n"
 luarocks install luacheck
-
-display_step_title "\nInstalling Commitlint:\n"
-npm install -g @commitlint/cli @commitlint/config-conventional
-
-display_step_title "\nInstalling Markdownlint:\n"
-npm install -g markdownlint-cli
