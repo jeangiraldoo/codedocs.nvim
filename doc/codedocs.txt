@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                   For NVIM v0.10+    Last change: 22 May 2026
+                                   For NVIM v0.10+    Last change: 23 May 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -182,7 +182,10 @@ default options:
 
 >lua
     require("codedocs").setup {
-        debug = false,
+        logging = {
+            level = vim.log.levels.INFO,
+            path = (vim.fn.stdpath "log") .. "/codedocs.log",
+        },
         languages = {
             --- This table is too big to be displayed here
             --- The path to the config file is `codedocs/config/init.lua`
