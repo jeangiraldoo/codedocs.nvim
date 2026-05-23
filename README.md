@@ -91,33 +91,12 @@ use {
 }
 ```
 
-### [vim-plug][vim-plug]
-
-```vim
-Plug 'jeangiraldoo/codedocs.nvim'
-```
-
 ### [mini.deps][mini.deps]
 
 ```lua
 require("mini.deps").add({
     source = "jeangiraldoo/codedocs.nvim",
 })
-```
-
-### [minpac][minpac]
-
-```vim
-packadd minpac
-call minpac#add('jeangiraldoo/codedocs.nvim')
-```
-
-### [paq-nvim][paq-nvim]
-
-```lua
-require("paq") {
-    "jeangiraldoo/codedocs.nvim",
-}
 ```
 
 ## Usage
@@ -701,10 +680,7 @@ the same powerful features.
 [codedocs-milestones]: https://github.com/jeangiraldoo/codedocs.nvim/milestones
 [kaomojis]: https://kaomoji.ru/en/
 [luals]: https://luals.github.io/
-[paq-nvim]: https://github.com/savq/paq-nvim
-[minpac]: https://github.com/k-takata/minpac
 [mini.deps]: https://github.com/echasnovski/mini.deps
-[vim-plug]: https://github.com/junegunn/vim-plug
 [packer]: https://github.com/wbthomason/packer.nvim
 [lazy.nvim]: http://www.lazyvim.org/
 [vim.pack]: https://neovim.io/doc/user/pack.html#vim.pack
