@@ -27,7 +27,6 @@ Framework_
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [Motivation](#motivation)
-- [License](#license)
 
 ## Features
 
@@ -682,15 +681,6 @@ While I found a few plugins with similar functionality, none of them offered the
 level of customization and simplicity I was looking for. Sometimes, I feel that
 apps and plugins could be more intuitive and user-friendly while still providing
 the same powerful features.
-
-## License
-
-Codedocs is licensed under the MIT License. This means you are free to download,
-install, modify, share, and use the plugin for both personal and commercial
-purposes.
-
-The only requirement is that if you modify and redistribute the code, you must
-include the same LICENSE file found in this repository.
 
 [Doxygen]: https://www.doxygen.nl/manual/commands.html
 [GDScript]: https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#annotations
