@@ -79,7 +79,10 @@ end
 
 ---@type CodedocsConfig
 return {
-	debug = false,
+	logging = {
+		level = vim.log.levels.INFO,
+		path = (vim.fn.stdpath "log") .. "/codedocs.log",
+	},
 	---The `languages` table is created dynamically when the plugin first loads as there's a lot of languages;
 	---a literal `require` call per language is not pretty
 	languages = vim.iter(vim.fs.dir(vim.fs.joinpath(dir, "languages"))):fold({}, function(acc, name, type)

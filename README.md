@@ -176,7 +176,10 @@ default options:
 
 ```lua
 require("codedocs").setup {
-    debug = false,
+    logging = {
+        level = vim.log.levels.INFO,
+        path = (vim.fn.stdpath "log") .. "/codedocs.log",
+    },
     languages = {
         --- This table is too big to be displayed here
         --- The path to the config file is `codedocs/config/init.lua`

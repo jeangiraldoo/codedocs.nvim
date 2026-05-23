@@ -1,3 +1,5 @@
+local Logger = require "codedocs.utils.logger"
+
 local Item_extractor = {}
 
 local function remove_duplicate_items_by_name(items)
@@ -106,7 +108,10 @@ function Item_extractor.extract(lang_name)
 	}
 
 	if not vim.treesitter.get_parser(0, lang_name, { error = false }) then
-		vim.notify("Tree-sitter parser for " .. lang_name .. " is not installed", vim.log.levels.ERROR)
+		local error_msg = "Tree-sitter parser for " .. lang_name .. " is not installed"
+
+		vim.notify(error_msg, vim.log.levels.ERROR)
+		Logger.error(error_msg)
 		return
 	end
 
