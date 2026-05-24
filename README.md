@@ -27,6 +27,7 @@ Framework_
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [Motivation](#motivation)
+- [Comparison with alternatives](#comparison-with-alternatives)
 
 ## Features
 
@@ -661,6 +662,27 @@ level of customization and simplicity I was looking for. Sometimes, I feel that
 apps and plugins could be more intuitive and user-friendly while still providing
 the same powerful features.
 
+## Comparison with alternatives
+
+| Project              | Editor       | Language(s)     | Treesitter Usage                              |
+| -------------------- | ------------ | --------------- | --------------------------------------------- |
+| Codedocs             | Neovim       | Lua             | Optional (only required for code annotations) |
+| [Neogen][neogen]     | Neovim       | Lua             | Required                                      |
+| [vim-doge][vim-doge] | Neovim / Vim | Rust, Vimscript | Required                                      |
+
+All of the aforementioned plugins fulfill the same core goal: annotating code
+structures. The main differences are regarding how the plugins are configured,
+and functional differences such as:
+
+- Codedocs goes beyond annotating code as you can create annotations that aren't
+  tied to some code structure (like a function or class), which is why Treesitter
+  parsers aren't an absolute requirement.
+- Since Codedocs goes beyond annotating code structures, it supports more languages
+  and annotations per language.
+
+The other projects likely support features that Codedocs doesn't, and viceversa,
+so it's still a good idea to check them out as they are great projects too!
+
 [Doxygen]: https://www.doxygen.nl/manual/commands.html
 [GDScript]: https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#annotations
 [EmmyLua]: https://emmylua.github.io/annotation.html
@@ -686,3 +708,5 @@ the same powerful features.
 [vim.pack]: https://neovim.io/doc/user/pack.html#vim.pack
 [trunk-based-dev]: https://trunkbaseddevelopment.com
 [nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
+[Neogen]: https://github.com/danymat/neogen
+[vim-doge]: https://github.com/kkoomen/vim-doge
