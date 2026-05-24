@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                   For NVIM v0.10+    Last change: 23 May 2026
+                                   For NVIM v0.10+    Last change: 24 May 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -13,6 +13,7 @@
 - |codedocs-roadmap|
 - |codedocs-contributing|
 - |codedocs-motivation|
+- |codedocs-comparison-with-alternatives|
 
 
 ==============================================================================
@@ -717,8 +718,37 @@ the level of customization and simplicity I was looking for. Sometimes, I feel
 that apps and plugins could be more intuitive and user-friendly while still
 providing the same powerful features.
 
+
 ==============================================================================
-11. Links                                                     *codedocs-links*
+11. Comparison with alternatives       *codedocs-comparison-with-alternatives*
+
+  --------------------------------------------------------------------------
+  Project         Editor    Language(s)   Treesitter Usage
+  --------------- --------- ------------- ----------------------------------
+  Codedocs        Neovim    Lua           Optional (only required for code
+                                          annotations)
+
+  Neogen          Neovim    Lua           Required
+
+  vim-doge        Neovim /  Rust,         Required
+                  Vim       Vimscript     
+  --------------------------------------------------------------------------
+All of the aforementioned plugins fulfill the same core goal: annotating code
+structures. The main differences are regarding how the plugins are configured,
+and functional differences such as:
+
+- Codedocs goes beyond annotating code as you can create annotations that aren’t
+    tied to some code structure (like a function or class), which is why Treesitter
+    parsers aren’t an absolute requirement.
+- Since Codedocs goes beyond annotating code structures, it supports more languages
+    and annotations per language.
+
+The other projects likely support features that Codedocs doesn’t, and
+viceversa, so it’s still a good idea to check them out as they are great
+projects too!
+
+==============================================================================
+12. Links                                                     *codedocs-links*
 
 1. *Codedocs showcase*: ./.images/showcase.gif
 
