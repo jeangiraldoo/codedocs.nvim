@@ -199,23 +199,23 @@ require("codedocs").setup {
 
 ### Languages
 
-All language definitions share the same structure, so only the `javascript`
-configuration will be shown from here on. Other languages use the same fields
-with different values. See [language support](#language-support)
+All language definitions follow the same structure, so only the `python`
+configuration is shown below. Configurations for other languages use the same
+fields with different values. See [language support](#language-support).
 
 ```lua
 require("codedocs").setup {
     languages = {
-        javascript = {
+        python = {
             filetypes = { -- Neovim filetypes associated with this language
-                "javascript",
+                "python",
             },
-            default_style = "JSDoc", -- Default style used when generating annotations
+            default_style = "reST", -- Default style used when generating annotations
 
             -- Annotation style definitions
             styles = {
                 -- Style name
-                JSDoc = {
+                reST = {
                     --- See the `annotations` section below
                     func = {}, -- `func` annotation
                     class = {}, -- `class` annotation
@@ -270,20 +270,18 @@ has the following items:
 Since the plugin relies on Treesitter for extraction, a target is identified by
 one or more Treesitter node types.
 
-This is what the `targets` field looks like for `javascript`:
+This is what the `targets` field looks like for `python`:
 
 ```lua
 require("codedocs").setup {
     languages = {
-        javascript = {
+        python = {
             targets = {
                 --- See the targets section below
                 func = {
                     -- Tree-sitter node types recognized as functions
                     node_identifiers = {
-                        "method_definition",
-                        "function_declaration",
-                        "arrow_function",
+                        "function_definition",
                     },
 
                     -- Functions responsible for extracting items from the target
@@ -387,79 +385,72 @@ The following target blocks are available:
 
 ##### Annotation example
 
-The following is the `func` annotation for the `JSDoc` style in `javascript`:
+The following is the `func` annotation for the `reST` style in `python`:
 
 ```lua
 require("codedocs").setup {
     languages = {
-        javascript = {
+        python = {
             styles = {
-                JSDoc = {
+                reST = {
                     func = {
-                        placement = "current",
+                        placement = "below",
                         blocks = {
                             {
-                                name = "title",
+                                name = "header",
                                 layout = {
-                                    "/**",
-                                    " * ${%snip_idx:description}",
+                                    '%>"""',
+                                    "%>${%snip_idx:title}",
                                 },
                                 gap_before = {
                                     parameters = {
                                         enabled = true,
-                                        text = " *",
+                                        text = "",
                                     },
-
                                     returns = {
                                         enabled = true,
-                                        text = " *",
+                                        text = "",
                                     },
                                 },
                             },
                             {
                                 name = "parameters",
-
                                 gap_before = {
                                     returns = {
                                         enabled = false,
-                                        text = " *",
+                                        text = "",
                                     },
                                 },
                                 items = {
                                     layout = {
-                                        " * @param {${%snip_idx:type}} %item_name ${%snip_idx:description}",
-                                    },
-                                    insert_gap_between = {
-                                        text = " *",
+                                        "%>:param %item_name: ${%snip_idx:description}",
+                                        "%>:type %item_name: ${%snip_idx:%item_type}",
                                     },
                                 },
                             },
                             {
                                 name = "returns",
-
                                 gap_before = {
                                     footer = {
                                         enabled = false,
-                                        text = " *",
+                                        text = "",
                                     },
                                 },
                                 items = {
                                     layout = {
-                                        " * @returns {${%snip_idx:type}} ${%snip_idx:description}",
-                                    },
-                                    insert_gap_between = {
-                                        text = " *",
+                                        "%>:return: ${%snip_idx:description}",
+                                        "%>:rtype: ${%snip_idx:%item_type}",
                                     },
                                 },
                             },
                             {
                                 name = "footer",
                                 layout = {
-                                    " */",
+                                    '%>"""',
                                 },
                             },
                         },
-                    }
+                    },
                 }
             }
         }
