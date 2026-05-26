@@ -546,62 +546,6 @@ require("codedocs").setup({
 })
 ```
 
-### Add a new language
-
-> [!IMPORTANT] Check the [How annotations work](#annotations) section to
-> understand how annotations work, how they are defined, and their relationship
-> with the `targets` key.
-
-To add support for a new language, simply add a key under `languages` with the
-name of that language. For example, to add support for `Cobol` with a default
-style called `cobolito`:
-
-```lua
-require("codedocs").setup {
-    languages = {
-        cobol = {
-            default_style = "cobolito",
-            styles = {
-                cobolito = {
-                    --The annotations contained in the `cobolito` style should be defined  here
-                }
-            },
-            targets = {
-                --The target definitions
-            }
-        }
-    }
-}
-```
-
-### Add a new annotation
-
-> [!IMPORTANT] Check the [annotations](#annotations) section to see what
-> annotation options are available and how they work
-
-To add a new annotation for an existing language, simply add the annotation name
-as a key under the desired style. The value of that key should be a table
-containing the annotation options.
-
-For example, to add a new annotation called `deprecated` under the EmmyLua style
-in Lua:
-
-```lua
-require("codedocs").setup {
-    languages = {
-        lua = {
-            styles = {
-                EmmyLua = {
-                    deprecated = {
-                        --Annotation options go here
-                    }
-                }
-            }
-        }
-    }
-}
-```
-
 ## Language support
 
 <!-- prettier-ignore -->
