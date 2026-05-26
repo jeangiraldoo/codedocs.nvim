@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                   For NVIM v0.10+    Last change: 24 May 2026
+                                   For NVIM v0.10+    Last change: 26 May 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -21,7 +21,8 @@
 
 - Autodetects functions, classes, or other code targets under the cursor and
     generates the appropriate annotation.
-- Generates annotations beyond code, including in markup and other text-based filetypes
+- Generates annotations beyond code, including in markup and other text-based
+    filetypes
 - Supports multiple |codedocs-languages-and-styles|.
 - Easily customize existing annotations or add new ones.
 - All built-in annotations use Neovim’s built-in snippet engine.
@@ -146,8 +147,8 @@ module:
 
 The following functions are available:
 
-- `generate`: Triggers an annotation generation (it’s what `:Codedocs` uses under
-    the hood)
+- `generate`: Triggers an annotation generation (it’s what `:Codedocs` uses
+    under the hood)
 
 
 ==============================================================================
@@ -197,23 +198,23 @@ default options:
 
 LANGUAGES                                   *codedocs-configuration-languages*
 
-All language definitions share the same structure, so only the `javascript`
-configuration will be shown from here on. Other languages use the same fields
-with different values. See |codedocs-language-support|
+All language definitions follow the same structure, so only the `python`
+configuration is shown below. Configurations for other languages use the same
+fields with different values. See |codedocs-language-support|.
 
 >lua
     require("codedocs").setup {
         languages = {
-            javascript = {
+            python = {
                 filetypes = { -- Neovim filetypes associated with this language
-                    "javascript",
+                    "python",
                 },
-                default_style = "JSDoc", -- Default style used when generating annotations
+                default_style = "reST", -- Default style used when generating annotations
     
                 -- Annotation style definitions
                 styles = {
                     -- Style name
-                    JSDoc = {
+                    reST = {
                         --- See the `annotations` section below
                         func = {}, -- `func` annotation
                         class = {}, -- `class` annotation
@@ -269,20 +270,18 @@ has the following items:
 Since the plugin relies on Treesitter for extraction, a target is identified by
 one or more Treesitter node types.
 
-This is what the `targets` field looks like for `javascript`:
+This is what the `targets` field looks like for `python`:
 
 >lua
     require("codedocs").setup {
         languages = {
-            javascript = {
+            python = {
                 targets = {
                     --- See the targets section below
                     func = {
                         -- Tree-sitter node types recognized as functions
                         node_identifiers = {
-                            "method_definition",
-                            "function_declaration",
-                            "arrow_function",
+                            "function_definition",
                         },
     
                         -- Functions responsible for extracting items from the target
@@ -401,79 +400,72 @@ The following target blocks are available:
 
 ANNOTATION EXAMPLE
 
-The following is the `func` annotation for the `JSDoc` style in `javascript`:
+The following is the `func` annotation for the `reST` style in `python`:
 
 >lua
     require("codedocs").setup {
         languages = {
-            javascript = {
+            python = {
                 styles = {
-                    JSDoc = {
+                    reST = {
                         func = {
-                            placement = "current",
+                            placement = "below",
                             blocks = {
                                 {
-                                    name = "title",
+                                    name = "header",
                                     layout = {
-                                        "/**",
-                                        " * ${%snip_idx:description}",
+                                        '%>"""',
+                                        "%>${%snip_idx:title}",
                                     },
                                     gap_before = {
                                         parameters = {
                                             enabled = true,
-                                            text = " *",
+                                            text = "",
                                         },
-    
                                         returns = {
                                             enabled = true,
-                                            text = " *",
+                                            text = "",
                                         },
                                     },
                                 },
                                 {
                                     name = "parameters",
-    
                                     gap_before = {
                                         returns = {
                                             enabled = false,
-                                            text = " *",
+                                            text = "",
                                         },
                                     },
                                     items = {
                                         layout = {
-                                            " * @param {${%snip_idx:type}} %item_name ${%snip_idx:description}",
-                                        },
-                                        insert_gap_between = {
-                                            text = " *",
+                                            "%>:param %item_name: ${%snip_idx:description}",
+                                            "%>:type %item_name: ${%snip_idx:%item_type}",
                                         },
                                     },
                                 },
                                 {
                                     name = "returns",
-    
                                     gap_before = {
                                         footer = {
                                             enabled = false,
-                                            text = " *",
+                                            text = "",
                                         },
                                     },
                                     items = {
                                         layout = {
-                                            " * @returns {${%snip_idx:type}} ${%snip_idx:description}",
-                                        },
-                                        insert_gap_between = {
-                                            text = " *",
+                                            "%>:return: ${%snip_idx:description}",
+                                            "%>:rtype: ${%snip_idx:%item_type}",
                                         },
                                     },
                                 },
                                 {
                                     name = "footer",
                                     layout = {
-                                        " */",
+                                        '%>"""',
                                     },
                                 },
                             },
-                        }
+                        },
                     }
                 }
             }
@@ -572,64 +564,6 @@ need.
 <
 
 
-ADD A NEW LANGUAGE                 *codedocs-configuration-add-a-new-language*
-
-
-  [!IMPORTANT] Check the |codedocs-how-annotations-work| section to understand
-  how annotations work, how they are defined, and their relationship with the
-  `targets` key.
-To add support for a new language, simply add a key under `languages` with the
-name of that language. For example, to add support for `Cobol` with a default
-style called `cobolito`:
-
->lua
-    require("codedocs").setup {
-        languages = {
-            cobol = {
-                default_style = "cobolito",
-                styles = {
-                    cobolito = {
-                        --The annotations contained in the `cobolito` style should be defined  here
-                    }
-                },
-                targets = {
-                    --The target definitions
-                }
-            }
-        }
-    }
-<
-
-
-ADD A NEW ANNOTATION             *codedocs-configuration-add-a-new-annotation*
-
-
-  [!IMPORTANT] Check the |codedocs-annotations| section to see what annotation
-  options are available and how they work
-To add a new annotation for an existing language, simply add the annotation
-name as a key under the desired style. The value of that key should be a table
-containing the annotation options.
-
-For example, to add a new annotation called `deprecated` under the EmmyLua
-style in Lua:
-
->lua
-    require("codedocs").setup {
-        languages = {
-            lua = {
-                styles = {
-                    EmmyLua = {
-                        deprecated = {
-                            --Annotation options go here
-                        }
-                    }
-                }
-            }
-        }
-    }
-<
-
-
 ==============================================================================
 7. Language support                                *codedocs-language-support*
 
@@ -722,26 +656,26 @@ providing the same powerful features.
 ==============================================================================
 11. Comparison with alternatives       *codedocs-comparison-with-alternatives*
 
-  --------------------------------------------------------------------------
-  Project         Editor    Language(s)   Treesitter Usage
-  --------------- --------- ------------- ----------------------------------
-  Codedocs        Neovim    Lua           Optional (only required for code
-                                          annotations)
+  ------------------------------------------------------------------------
+  Project         Editor    Written in  Treesitter Usage
+  --------------- --------- ----------- ----------------------------------
+  Codedocs        Neovim    Lua         Optional (only required for code
+                                        annotations)
 
-  Neogen          Neovim    Lua           Required
+  Neogen          Neovim    Lua         Required
 
-  vim-doge        Neovim /  Rust,         Required
-                  Vim       Vimscript     
-  --------------------------------------------------------------------------
+  vim-doge        Neovim /  Rust,       Required
+                  Vim       Vimscript   
+  ------------------------------------------------------------------------
 All of the aforementioned plugins fulfill the same core goal: annotating code
 structures. The main differences are regarding how the plugins are configured,
 and functional differences such as:
 
 - Codedocs goes beyond annotating code as you can create annotations that aren’t
-    tied to some code structure (like a function or class), which is why Treesitter
-    parsers aren’t an absolute requirement.
-- Since Codedocs goes beyond annotating code structures, it supports more languages
-    and annotations per language.
+    tied to some code structure (like a function or class), which is why
+    Treesitter parsers aren’t an absolute requirement.
+- Since Codedocs goes beyond annotating code structures, it supports more
+    languages and annotations per language.
 
 The other projects likely support features that Codedocs doesn’t, and
 viceversa, so it’s still a good idea to check them out as they are great
