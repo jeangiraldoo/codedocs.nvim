@@ -608,7 +608,7 @@ the same powerful features.
 
 ## Comparison with alternatives
 
-| Project              | Editor       | Language(s)     | Treesitter Usage                              |
+| Project              | Editor       | Written in      | Treesitter Usage                              |
 | -------------------- | ------------ | --------------- | --------------------------------------------- |
 | Codedocs             | Neovim       | Lua             | Optional (only required for code annotations) |
 | [Neogen][neogen]     | Neovim       | Lua             | Required                                      |
