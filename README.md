@@ -9,8 +9,9 @@
 
 # codedocs.nvim
 
-_A simple, customizable, yet powerful Annotation
-Framework_
+<!-- markdownlint-disable-next-line -->
+
+_A simple, customizable, yet powerful Annotation Framework_
 
 </div>
 
@@ -33,7 +34,8 @@ Framework_
 
 - Autodetects functions, classes, or other code targets under the cursor and
   generates the appropriate annotation.
-- Generates annotations beyond code, including in markup and other text-based filetypes
+- Generates annotations beyond code, including in markup and other text-based
+  filetypes
 - Supports multiple [languages and styles](#language-support).
 - Easily customize existing annotations or add new ones.
 - All built-in annotations use Neovim's built-in snippet engine.
@@ -44,9 +46,9 @@ Framework_
 No requirements are needed if you’re only using annotations unrelated to code
 (such as comments) and aren’t using the autodetection feature.
 
-To use the full feature set, Codedocs relies on Treesitter for its core functionality.
-Neovim includes built-in Treesitter parsers for the following languages, so no
-additional setup is required:
+To use the full feature set, Codedocs relies on Treesitter for its core
+functionality. Neovim includes built-in Treesitter parsers for the following
+languages, so no additional setup is required:
 
 - Lua
 - C
@@ -58,10 +60,11 @@ parser. The simplest way to do this is with
 
 ## Installation
 
+<!-- prettier-ignore -->
 > [!WARNING]
-> Development is done using [Trunk Based Development][trunk-based-dev],
-> meaning all new changes are merged into `main`, making it the equivalent of `nightly`;
-> versions are done through Git tags.
+> Development is done using [Trunk Based
+> Development][trunk-based-dev], meaning all new changes are merged into `main`,
+> making it the equivalent of `nightly`; versions are done through Git tags.
 >
 > All changes are thoroughly tested before merging, but it is still recommended
 > to pin to a specific tag unless you wish to be constantly up to date.
@@ -104,20 +107,21 @@ require("mini.deps").add({
 
 ### Generate an annotation
 
-An annotation insertion can be triggered using the `:Codedocs` command. There are
-two ways to use the command:
+An annotation insertion can be triggered using the `:Codedocs` command. There
+are two ways to use the command:
 
-- **Without arguments**: The plugin attempts to detect the code target under
-  the cursor, determines the default style for the current file’s language, and
+- **Without arguments**: The plugin attempts to detect the code target under the
+  cursor, determines the default style for the current file’s language, and
   applies the corresponding annotation. If no target is recognized under the
-  cursor, an inline comment is inserted. By default, a matching annotation exists
-  for each target unless you’ve customized the configuration.
+  cursor, an inline comment is inserted. By default, a matching annotation
+  exists for each target unless you’ve customized the configuration.
 
-- **With an annotation name**: You can pass the name of any annotation definition
-  defined in the language’s default style. The plugin will generate and insert the
-  annotation using that definition.
+- **With an annotation name**: You can pass the name of any annotation
+  definition defined in the language’s default style. The plugin will generate
+  and insert the annotation using that definition.
 
-For a more convenient experience, you can bind the command to a keymap. For example:
+For a more convenient experience, you can bind the command to a keymap. For
+example:
 
 ```lua
 vim.keymap.set(
@@ -133,8 +137,10 @@ that any comment can be deleted by placing your cursor on it and pressing `dgc`.
 
 ### Lua API
 
+<!-- prettier-ignore -->
 > [!TIP]
-> You can check the function signatures using a LSP such as [LuaLS][luals]
+> You can check the function signatures using a LSP such as
+> [LuaLS][luals]
 
 A Lua API is provided in case you find any of the already existing functionality
 useful. The API can be accessed by requiring the `codedocs` module:
@@ -145,8 +151,8 @@ local Codedocs = require("codedocs")
 
 The following functions are available:
 
-- `generate`: Triggers an annotation generation (it's what `:Codedocs` uses under
-  the hood)
+- `generate`: Triggers an annotation generation (it's what `:Codedocs` uses
+  under the hood)
 
 ## Configuration
 
@@ -194,8 +200,8 @@ require("codedocs").setup {
 ### Languages
 
 All language definitions share the same structure, so only the `javascript`
-configuration will be shown from here on. Other languages use the same fields with
-different values. See [language support](#language-support)
+configuration will be shown from here on. Other languages use the same fields
+with different values. See [language support](#language-support)
 
 ```lua
 require("codedocs").setup {
@@ -297,8 +303,8 @@ require("codedocs").setup {
 ```
 
 When the target is processed the result is a table where each key corresponds to
-one of the keys under `extractors`, and the values are the list of items returned
-by each function.
+one of the keys under `extractors`, and the values are the list of items
+returned by each function.
 
 #### Annotations
 
@@ -311,10 +317,12 @@ Annotations are defined as a table with specific options.
 
 ##### Blocks
 
+<!-- prettier-ignore -->
 > [!IMPORTANT]
-> The `blocks` option is a list, so you cannot override a single block on its
-> own. Because your config is merged recursively with the defaults, any blocks
-> you do not explicitly include will be removed, even if they exist in the defaults.
+> The `blocks` option is a list, so you cannot override a single
+> block on its own. Because your config is merged recursively with the defaults,
+> any blocks you do not explicitly include will be removed, even if they exist
+> in the defaults.
 >
 > To customize just one block, copy the default `blocks` list and modify the
 > specific block you want.
@@ -336,7 +344,8 @@ The `items` option supports the following suboptions:
 | `layout`             | `string[]`                          | Same as the aforementioned `layout`, but with item-specific placeholders |
 | `insert_gap_between` | `{text: string, enabled = boolean}` | Wether to add a gap with specific text in between items                  |
 
-Each key in `gap_before` is a block name, and its value supports the following suboptions:
+Each key in `gap_before` is a block name, and its value supports the following
+suboptions:
 
 | Name      | Expected Value Type | Behavior                                           |
 | --------- | ------------------- | -------------------------------------------------- |
@@ -361,8 +370,9 @@ The `name` option serves two purposes:
 1. Links the block to a specific group of items extracted from a target
 2. Used as a key in other blocks' `gap_before` tables
 
-When items are extracted from a target, they are grouped by block name. For a block
-to access those items, its `name` must match the corresponding group in the target.
+When items are extracted from a target, they are grouped by block name. For a
+block to access those items, its `name` must match the corresponding group in
+the target.
 
 For example, given a `func` target with `parameters` and `returns` item groups,
 a block named `parameters` will automatically have access to those items and can
@@ -460,8 +470,8 @@ require("codedocs").setup {
 ### Annotation customization example
 
 You can customize almost (for now!) every aspect of an annotation. Whether you
-want to make a simple change, like modifying the characters wrapping the parameter
-type:
+want to make a simple change, like modifying the characters wrapping the
+parameter type:
 
 ```python
 def cool_function_with_type_hints(a: int, b: bool) -> str:
@@ -503,20 +513,20 @@ In this case, we:
 - Added a third kaomoji to wrap the left side of the return type.
 - Customized the titles for both the parameters and return blocks.
 
-The [annotations](#annotations) section covers everything you
-need to know about annotations. Since all built-in annotations are implemented this
-way, you can customize them using the same principles.
+The [annotations](#annotations) section covers everything you need to know about
+annotations. Since all built-in annotations are implemented this way, you can
+customize them using the same principles.
 
-With that in mind, suppose we want to make the following changes to the `func` annotation
-for Python's Google style:
+With that in mind, suppose we want to make the following changes to the `func`
+annotation for Python's Google style:
 
 - Add a gap in between parameters.
 - Add a gap in between blocks
 
-As mentioned earlier, the blocks option is a list, so you can’t override a single
-block in isolation; you have to redefine the entire list. That’s fine if you
-intend to change the whole annotation, but if you only need to adjust one block,
-it’s better to copy the annotation and modify only the blocks you need.
+As mentioned earlier, the blocks option is a list, so you can’t override a
+single block in isolation; you have to redefine the entire list. That’s fine if
+you intend to change the whole annotation, but if you only need to adjust one
+block, it’s better to copy the annotation and modify only the blocks you need.
 
 ```lua
 local original_blocks_list = require("codedocs.config").languages.python.styles.Google.func.blocks
@@ -547,14 +557,13 @@ require("codedocs").setup({
 
 ### Add a new language
 
-> [!IMPORTANT]
-> Check the [How annotations work](#annotations) section to understand
-> how annotations work, how they are defined, and their relationship with the
-> `targets` key.
+> [!IMPORTANT] Check the [How annotations work](#annotations) section to
+> understand how annotations work, how they are defined, and their relationship
+> with the `targets` key.
 
-To add support for a new language, simply add a key under `languages` with the name
-of that language. For example, to add support for `Cobol` with a default style called
-`cobolito`:
+To add support for a new language, simply add a key under `languages` with the
+name of that language. For example, to add support for `Cobol` with a default
+style called `cobolito`:
 
 ```lua
 require("codedocs").setup {
@@ -576,13 +585,12 @@ require("codedocs").setup {
 
 ### Add a new annotation
 
-> [!IMPORTANT]
-> Check the [annotations](#annotations) section to see what
+> [!IMPORTANT] Check the [annotations](#annotations) section to see what
 > annotation options are available and how they work
 
 To add a new annotation for an existing language, simply add the annotation name
-as a key under the desired style. The value of that key should be a table containing
-the annotation options.
+as a key under the desired style. The value of that key should be a table
+containing the annotation options.
 
 For example, to add a new annotation called `deprecated` under the EmmyLua style
 in Lua:
@@ -605,9 +613,11 @@ require("codedocs").setup {
 
 ## Language support
 
+<!-- prettier-ignore -->
 > [!NOTE]
-> The `Codedocs` style is not an official style. It exists to provide annotations
-> for languages without native styles or to offer a custom alternative.
+> The `Codedocs` style is not an official style. It exists to provide
+> annotations for languages without native styles or to offer a custom
+> alternative.
 
 ### Global annotations
 
@@ -642,8 +652,7 @@ The following annotations are available in all languages and styles:
 ## Roadmap
 
 You can see what's being worked on and which features are planned by checking
-the
-[GitHub Milestones][codedocs-milestones].
+the [GitHub Milestones][codedocs-milestones].
 
 ## Contributing
 
@@ -675,16 +684,17 @@ structures. The main differences are regarding how the plugins are configured,
 and functional differences such as:
 
 - Codedocs goes beyond annotating code as you can create annotations that aren't
-  tied to some code structure (like a function or class), which is why Treesitter
-  parsers aren't an absolute requirement.
-- Since Codedocs goes beyond annotating code structures, it supports more languages
-  and annotations per language.
+  tied to some code structure (like a function or class), which is why
+  Treesitter parsers aren't an absolute requirement.
+- Since Codedocs goes beyond annotating code structures, it supports more
+  languages and annotations per language.
 
 The other projects likely support features that Codedocs doesn't, and viceversa,
 so it's still a good idea to check them out as they are great projects too!
 
 [Doxygen]: https://www.doxygen.nl/manual/commands.html
-[GDScript]: https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#annotations
+[GDScript]:
+    https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#annotations
 [EmmyLua]: https://emmylua.github.io/annotation.html
 [YARD]: https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
 [PHPDoc]: https://docs.phpdoc.org/guide/references/phpdoc
@@ -698,7 +708,8 @@ so it's still a good idea to check them out as they are great projects too!
 [Numpy]: https://numpydoc.readthedocs.io/en/latest/format.html
 [reST]: https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html
 [RustDoc]: https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html
-[JavaDoc]: https://www.oracle.com/latam/technical-resources/articles/java/javadoc-tool.html
+[JavaDoc]:
+    https://www.oracle.com/latam/technical-resources/articles/java/javadoc-tool.html
 [codedocs-milestones]: https://github.com/jeangiraldoo/codedocs.nvim/milestones
 [kaomojis]: https://kaomoji.ru/en/
 [luals]: https://luals.github.io/

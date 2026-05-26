@@ -1,6 +1,8 @@
 MD033:
     allowed_elements: ["p", "a", "img"]
 
+MD036: false
+
 MD013:
     tables: false
     code_blocks: false
