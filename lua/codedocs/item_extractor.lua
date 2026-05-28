@@ -102,19 +102,7 @@ function Item_extractor.get_target_identifiers(lang_name)
 	return target_identifiers
 end
 
-function Item_extractor.extract(lang_name)
-	vim.validate {
-		lang_name = { lang_name, "string" },
-	}
-
-	if not vim.treesitter.get_parser(0, lang_name, { error = false }) then
-		local error_msg = "Tree-sitter parser for " .. lang_name .. " is not installed"
-
-		vim.notify(error_msg, vim.log.levels.ERROR)
-		Logger.error(error_msg)
-		return
-	end
-
+local function extract_ts(lang_name, targets_config)
 	vim.treesitter.get_parser(0):parse()
 	local node_at_cursor = vim.treesitter.get_node()
 
@@ -131,11 +119,65 @@ function Item_extractor.extract(lang_name)
 
 	local targets_config = require("codedocs.config").languages[lang_name].targets[target_data.name]
 
+	return targets_config
+end
+
+function Item_extractor.extract(lang_name, target_name)
+	vim.validate {
+		lang_name = { lang_name, "string" },
+	}
+
+	if not (target_name or vim.treesitter.get_parser(0, lang_name, { error = false })) then
+		local error_msg = "Tree-sitter parser for " .. lang_name .. " is not installed"
+
+		vim.notify(error_msg, vim.log.levels.ERROR)
+		Logger.error(error_msg)
+		return
+	end
+
+	local targets_config, target_data = {}, {}
+
+	if target_name then
+		targets_config = require("codedocs.config").languages[lang_name].targets[target_name]
+
+		if targets_config.node_identifiers and not vim.tbl_isempty(targets_config.node_identifiers) then
+			vim.treesitter.get_parser(0):parse()
+			local node_at_cursor = vim.treesitter.get_node()
+			target_data =
+				_get_supported_target_node_data(node_at_cursor, Item_extractor.get_target_identifiers(lang_name))
+
+			if not target_data then
+				return {
+					items = {},
+					target_name = "comment",
+					row = vim.api.nvim_win_get_cursor(0)[1] - 1,
+				}
+			end
+		end
+	else
+		vim.treesitter.get_parser(0):parse()
+		local node_at_cursor = vim.treesitter.get_node()
+
+		target_data = _get_supported_target_node_data(node_at_cursor, Item_extractor.get_target_identifiers(lang_name))
+
+		if not target_data then
+			return {
+				items = {},
+				target_name = "comment",
+				row = vim.api.nvim_win_get_cursor(0)[1] - 1,
+			}
+		end
+
+		targets_config = require("codedocs.config").languages[lang_name].targets[target_data.name]
+	end
+
+	local extractors, extractors_opts = targets_config.extractors, targets_config.opts
+
 	local items = {}
-	for extractor_name, item_extractor in pairs(targets_config.extractors) do
+	for extractor_name, item_extractor in pairs(extractors) do
 		local raw_items = item_extractor {
 			node = target_data.node,
-			opts = targets_config.opts,
+			opts = extractors_opts,
 			extract_ts_nodes = function(data) return extract_ts_nodes(data.node or target_data.node, data.query) end,
 			extract_items = function(data) return generic_query_parser(data.node or target_data.node, data.query) end,
 		} or {}
@@ -163,7 +205,7 @@ function Item_extractor.extract(lang_name)
 		items[extractor_name] = final_items
 	end
 
-	local target_pos = target_data.node:range()
+	local target_pos = target_data.node and target_data.node:range() or vim.api.nvim_win_get_cursor(0)[1] - 1
 
 	return { items = items, target_name = target_data.name, row = target_pos }
 end
