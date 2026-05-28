@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                   For NVIM v0.10+    Last change: 26 May 2026
+                                   For NVIM v0.10+    Last change: 28 May 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -8,7 +8,13 @@
 - |codedocs-requirements|
 - |codedocs-installation|
 - |codedocs-usage|
+    - |codedocs-generate-an-annotation|
+    - |codedocs-delete-an-annotation|
+    - |codedocs-lua-api|
 - |codedocs-configuration|
+    - |codedocs-languages|
+        - |codedocs-targets|
+        - |codedocs-annotations|
 - |codedocs-language-support|
 - |codedocs-roadmap|
 - |codedocs-contributing|
@@ -320,15 +326,17 @@ Annotations are defined as a table with specific options.
 
 BLOCKS
 
+Blocks define the structure and rendering of an annotation.
 
-  [!IMPORTANT] The `blocks` option is a list, so you cannot override a single
-  block on its own. Because your config is merged recursively with the defaults,
-  any blocks you do not explicitly include will be removed, even if they exist in
-  the defaults.
-  To customize just one block, copy the default `blocks` list and modify the
-  specific block you want.
-Blocks are the core of an annotation, they determine what it ultimately looks
-like.
+The `blocks` option is a list of block definitions. Each block is responsible
+for rendering a specific section, such as parameters, returns, attributes, etc.
+
+
+  [!IMPORTANT] `blocks` is a list, so overriding it replaces the default list
+  entirely.
+  To modify a single block, see |codedocs-customizing-blocks|.
+
+BLOCK OPTIONS
 
   ------------------------------------------------------------------------------
   Option Name  Type       Description
@@ -341,17 +349,23 @@ like.
 
   items        table?     Defines item rendering and spacing. See items
   ------------------------------------------------------------------------------
-The `items` option supports the following suboptions:
 
-  -------------------------------------------------------------------------------------------------
+ITEMS OPTION
+
+The `items` option controls how extracted items are rendered inside a block.
+
+  -------------------------------------------------------------------------------------------
   Name                 Expected Value Type                 Behavior
-  -------------------- ----------------------------------- ----------------------------------------
-  layout               string[]                            Same as the aforementioned layout, but
-                                                           with item-specific placeholders
+  -------------------- ----------------------------------- ----------------------------------
+  layout               string[]                            Same as layout, but with
+                                                           item-specific placeholders
 
-  insert_gap_between   {text: string, enabled = boolean}   Wether to add a gap with specific text
-                                                           in between items
-  -------------------------------------------------------------------------------------------------
+  insert_gap_between   {text: string, enabled = boolean}   Whether to insert a gap between
+                                                           items
+  -------------------------------------------------------------------------------------------
+
+GAP_BEFORE
+
 Each key in `gap_before` is a block name, and its value supports the following
 suboptions:
 
@@ -376,7 +390,7 @@ For example, to insert a gap before the `parameters` block:
 <
 
 
-ITEMS OPTION
+NAME OPTION
 
 The `name` option serves two purposes:
 
@@ -397,6 +411,46 @@ The following target blocks are available:
   -------- ----------------------------
   func     title, parameters, returns
   class    title, attributes
+A block named `parameters` automatically receives the extracted parameter items
+for rendering through `items.layout`.
+
+
+CUSTOMIZING BLOCKS
+
+Because `blocks` replaces the entire default list, modifying a single block
+requires copying the original list first.
+
+>lua
+    local original_blocks =
+        require("codedocs.config").languages.python.styles.Google.func.blocks
+    
+    local new_blocks = vim.deepcopy(original_blocks)
+    
+    -- Enable gaps between parameter items
+    new_blocks[2].items.insert_gap_between.enabled = true
+    
+    require("codedocs").setup({
+        languages = {
+            python = {
+                styles = {
+                    Google = {
+                        func = {
+                            blocks = new_blocks,
+                        },
+                    },
+                },
+            },
+        },
+    })
+<
+
+Printing the copied list with `vim.inspect()` can help identify which block you
+want to modify.
+
+>lua
+    print(vim.inspect(new_blocks))
+<
+
 
 ANNOTATION EXAMPLE
 
@@ -471,96 +525,6 @@ The following is the `func` annotation for the `reST` style in `python`:
             }
         }
     }
-<
-
-
-ANNOTATION CUSTOMIZATION EXAMPLE*codedocs-configuration-annotation-customization-example*
-
-You can customize almost (for now!) every aspect of an annotation. Whether you
-want to make a simple change, like modifying the characters wrapping the
-parameter type:
-
->python
-    def cool_function_with_type_hints(a: int, b: bool) -> str:
-        """
-        <title goes here>
-    
-        Args:
-            a <int>:
-            b <bool>:
-        Returns:
-            str:
-        """
-        self.sum = 1 + 1
-        return <value>
-<
-
-Or if you want to go all out with customization:
-
->python
-    def cool_function_with_type_hints(a: int, b: bool) -> str:
-            """
-            <title goes here>
-    
-            Some cool customized title!:
-                a (づ ◕‿◕ )づ int ⊂(´• ω •`⊂):
-    
-                b (づ ◕‿◕ )づ bool ⊂(´• ω •`⊂):
-            This is some return type...:
-                (￢_￢;) str:
-            """
-            self.sum = 1 + 1
-            return <value>
-<
-
-In this case, we:
-
-- Increased spacing between items in the parameters block.
-- Wrapped parameter types with two Kaomojis <https://kaomoji.ru/en/>.
-- Added a third kaomoji to wrap the left side of the return type.
-- Customized the titles for both the parameters and return blocks.
-
-The |codedocs-annotations| section covers everything you need to know about
-annotations. Since all built-in annotations are implemented this way, you can
-customize them using the same principles.
-
-With that in mind, suppose we want to make the following changes to the `func`
-annotation for Python’s Google style:
-
-- Add a gap in between parameters.
-- Add a gap in between blocks
-
-As mentioned earlier, the blocks option is a list, so you can’t override a
-single block in isolation; you have to redefine the entire list. That’s fine
-if you intend to change the whole annotation, but if you only need to adjust
-one block, it’s better to copy the annotation and modify only the blocks you
-need.
-
->lua
-    local original_blocks_list = require("codedocs.config").languages.python.styles.Google.func.blocks
-    local new_func_blocks = vim.deepcopy(original_blocks_list) -- We copy the original annotation blocks list
-    print(vim.inspect(new_func_blocks)) -- It's helpful to print the list to check what it looks like before modifying it
-    
-    local second_block = new_func_blocks[2] -- In this specific case the second block is the parameters one
-    second_block.items.insert_gap_between.enabled = true -- We enable the insertion of a gap in between items (parameters in this case)
-    
-    for _, block in ipairs(new_func_blocks) do -- We iterate over each block
-        block.insert_gap_between.enabled = true -- We enable the insertion of a gap in between the current block and the next
-    end
-    
-    require("codedocs").setup({
-        languages = {
-            python = {
-                styles = {
-                    Google = {
-                        func = { -- The func annotation key
-                            blocks = new_func_blocks -- We assign the new list which will replace the default one
-                        }
-                    },
-                },
-            },
-        }
-    })
 <
 
 
