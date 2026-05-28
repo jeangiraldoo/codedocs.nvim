@@ -233,7 +233,7 @@ local function get_requested_annotation_data(lang_name, requested_name)
 
 	-- Existing target: attempt extraction
 	if lang_config.targets[requested_name] then
-		local target_data = extractor.extract(lang_name)
+		local target_data = extractor.extract(lang_name, requested_name)
 
 		if target_data then
 			row = target_data.row
