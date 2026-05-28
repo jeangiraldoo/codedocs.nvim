@@ -1,6 +1,6 @@
 local Utils = require "tests.utils"
 local config = require "codedocs.config"
-local ItemExtractor = require "codedocs.item_extractor"
+local Codedocs = require "codedocs"
 
 local DIR = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
 local LANGS_TO_TEST = Utils.read_dir_names(DIR .. "/cases")
@@ -13,7 +13,7 @@ local function create_datatype_tester(input, lang, metadata, target_case_name)
 				:totable()
 
 			Utils.mock_buffer(lang, typed_template, metadata.cursor_pos)
-			local actual_item = ItemExtractor.extract(lang).items[target_case_name][1]
+			local actual_item = Codedocs.get_detected_annotation_data(lang).items[target_case_name][1]
 
 			assert.are.same(metadata.expected_item_name, actual_item.name)
 			assert.are.same(datatype, actual_item.type)
