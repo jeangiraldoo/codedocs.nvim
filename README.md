@@ -17,13 +17,19 @@ _A simple, customizable, yet powerful Annotation Framework_
 
 ![Codedocs showcase](./.images/showcase.gif)
 
-## 📖 Table of contents
+## Table of contents
 
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
+  - [Generate an annotation](#generate-an-annotation)
+  - [Delete an annotation](#delete-an-annotation)
+  - [Lua API](#lua-api)
 - [Configuration](#configuration)
+  - [Languages](#languages)
+    - [Targets](#targets)
+    - [Annotations](#annotations)
 - [Language support](#language-support)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
