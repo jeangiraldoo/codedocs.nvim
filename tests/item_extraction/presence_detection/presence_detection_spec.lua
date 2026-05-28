@@ -1,6 +1,6 @@
 local Utils = require "tests.utils"
 local config = require "codedocs.config"
-local ItemExtractor = require "codedocs.item_extractor"
+local Codedocs = require "codedocs"
 
 local DIR = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
 local LANGS_TO_TEST = Utils.read_dir_names(DIR .. "/cases")
@@ -16,7 +16,7 @@ local function create_subcase_tester(lang, target_name, target_case_name)
 
 			Utils.mock_buffer(lang, input, metadata.cursor_pos)
 
-			assert.are.same(metadata.expected_items, ItemExtractor.extract(lang).items)
+			assert.are.same(metadata.expected_items, Codedocs.get_detected_annotation_data(lang).items)
 		end)
 	end
 end
