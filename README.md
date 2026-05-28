@@ -315,18 +315,19 @@ Annotations are defined as a table with specific options.
 
 ##### Blocks
 
+Blocks define the structure and rendering of an annotation.
+
+The `blocks` option is a list of block definitions. Each block is responsible
+for rendering a specific section, such as parameters, returns, attributes, etc.
+
 <!-- prettier-ignore -->
 > [!IMPORTANT]
-> The `blocks` option is a list, so you cannot override a single
-> block on its own. Because your config is merged recursively with the defaults,
-> any blocks you do not explicitly include will be removed, even if they exist
-> in the defaults.
+> `blocks` is a list, so overriding it replaces the default list entirely.
 >
-> To customize just one block, copy the default `blocks` list and modify the
-> specific block you want.
+> To modify a single block, see
+> [Customizing blocks](#customizing-blocks).
 
-Blocks are the core of an annotation, they determine what it ultimately looks
-like.
+###### Block options
 
 | Option Name  | Type     | Description                                                      |
 | ------------ | -------- | ---------------------------------------------------------------- |
@@ -335,12 +336,16 @@ like.
 | `gap_before` | table    | Inserts spacing before another block                             |
 | `items`      | `table?` | Defines item rendering and spacing. See [`items`](#items-option) |
 
-The `items` option supports the following suboptions:
+###### `items` option
 
-| Name                 | Expected Value Type                 | Behavior                                                                 |
-| -------------------- | ----------------------------------- | ------------------------------------------------------------------------ |
-| `layout`             | `string[]`                          | Same as the aforementioned `layout`, but with item-specific placeholders |
-| `insert_gap_between` | `{text: string, enabled = boolean}` | Wether to add a gap with specific text in between items                  |
+The `items` option controls how extracted items are rendered inside a block.
+
+| Name                 | Expected Value Type                 | Behavior                                              |
+| -------------------- | ----------------------------------- | ----------------------------------------------------- |
+| `layout`             | `string[]`                          | Same as `layout`, but with item-specific placeholders |
+| `insert_gap_between` | `{text: string, enabled = boolean}` | Whether to insert a gap between items                 |
+
+###### `gap_before`
 
 Each key in `gap_before` is a block name, and its value supports the following
 suboptions:
@@ -361,7 +366,7 @@ gap_before = {
 },
 ```
 
-###### `items` option
+###### `name` option
 
 The `name` option serves two purposes:
 
@@ -382,6 +387,45 @@ The following target blocks are available:
 | ------- | -------------------------------- |
 | `func`  | `title`, `parameters`, `returns` |
 | `class` | `title`, `attributes`            |
+
+A block named `parameters` automatically receives the extracted parameter items
+for rendering through `items.layout`.
+
+###### Customizing blocks
+
+Because `blocks` replaces the entire default list, modifying a single block
+requires copying the original list first.
+
+```lua
+local original_blocks =
+    require("codedocs.config").languages.python.styles.Google.func.blocks
+
+local new_blocks = vim.deepcopy(original_blocks)
+
+-- Enable gaps between parameter items
+new_blocks[2].items.insert_gap_between.enabled = true
+
+require("codedocs").setup({
+    languages = {
+        python = {
+            styles = {
+                Google = {
+                    func = {
+                        blocks = new_blocks,
+                    },
+                },
+            },
+        },
+    },
+})
+```
+
+Printing the copied list with `vim.inspect()` can help identify which block you
+want to modify.
+
+```lua
+print(vim.inspect(new_blocks))
+```
 
 ##### Annotation example
 
@@ -456,94 +500,6 @@ require("codedocs").setup {
         }
     }
 }
-```
-
-### Annotation customization example
-
-You can customize almost (for now!) every aspect of an annotation. Whether you
-want to make a simple change, like modifying the characters wrapping the
-parameter type:
-
-```python
-def cool_function_with_type_hints(a: int, b: bool) -> str:
-    """
-    <title goes here>
-
-    Args:
-        a <int>:
-        b <bool>:
-    Returns:
-        str:
-    """
-    self.sum = 1 + 1
-    return <value>
-```
-
-Or if you want to go all out with customization:
-
-```python
-def cool_function_with_type_hints(a: int, b: bool) -> str:
-        """
-        <title goes here>
-
-        Some cool customized title!:
-            a (づ ◕‿◕ )づ int ⊂(´• ω •`⊂):
-
-            b (づ ◕‿◕ )づ bool ⊂(´• ω •`⊂):
-        This is some return type...:
-            (￢_￢;) str:
-        """
-        self.sum = 1 + 1
-        return <value>
-```
-
-In this case, we:
-
-- Increased spacing between items in the parameters block.
-- Wrapped parameter types with two [Kaomojis][kaomojis].
-- Added a third kaomoji to wrap the left side of the return type.
-- Customized the titles for both the parameters and return blocks.
-
-The [annotations](#annotations) section covers everything you need to know about
-annotations. Since all built-in annotations are implemented this way, you can
-customize them using the same principles.
-
-With that in mind, suppose we want to make the following changes to the `func`
-annotation for Python's Google style:
-
-- Add a gap in between parameters.
-- Add a gap in between blocks
-
-As mentioned earlier, the blocks option is a list, so you can’t override a
-single block in isolation; you have to redefine the entire list. That’s fine if
-you intend to change the whole annotation, but if you only need to adjust one
-block, it’s better to copy the annotation and modify only the blocks you need.
-
-```lua
-local original_blocks_list = require("codedocs.config").languages.python.styles.Google.func.blocks
-local new_func_blocks = vim.deepcopy(original_blocks_list) -- We copy the original annotation blocks list
-print(vim.inspect(new_func_blocks)) -- It's helpful to print the list to check what it looks like before modifying it
-
-local second_block = new_func_blocks[2] -- In this specific case the second block is the parameters one
-second_block.items.insert_gap_between.enabled = true -- We enable the insertion of a gap in between items (parameters in this case)
-
-for _, block in ipairs(new_func_blocks) do -- We iterate over each block
-    block.insert_gap_between.enabled = true -- We enable the insertion of a gap in between the current block and the next
-end
-
-require("codedocs").setup({
-    languages = {
-        python = {
-            styles = {
-                Google = {
-                    func = { -- The func annotation key
-                        blocks = new_func_blocks -- We assign the new list which will replace the default one
-                    }
-                },
-            },
-        },
-    }
-})
 ```
 
 ## Language support
@@ -629,7 +585,7 @@ so it's still a good idea to check them out as they are great projects too!
 
 [Doxygen]: https://www.doxygen.nl/manual/commands.html
 [GDScript]:
-    https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#annotations
+  https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#annotations
 [EmmyLua]: https://emmylua.github.io/annotation.html
 [YARD]: https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
 [PHPDoc]: https://docs.phpdoc.org/guide/references/phpdoc
@@ -644,9 +600,8 @@ so it's still a good idea to check them out as they are great projects too!
 [reST]: https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html
 [RustDoc]: https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html
 [JavaDoc]:
-    https://www.oracle.com/latam/technical-resources/articles/java/javadoc-tool.html
+  https://www.oracle.com/latam/technical-resources/articles/java/javadoc-tool.html
 [codedocs-milestones]: https://github.com/jeangiraldoo/codedocs.nvim/milestones
-[kaomojis]: https://kaomoji.ru/en/
 [luals]: https://luals.github.io/
 [mini.deps]: https://github.com/echasnovski/mini.deps
 [packer]: https://github.com/wbthomason/packer.nvim
