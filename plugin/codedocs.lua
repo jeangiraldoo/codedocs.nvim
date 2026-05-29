@@ -22,7 +22,7 @@ vim.api.nvim_set_keymap(
 
 vim.api.nvim_create_user_command("Codedocs", function(opts)
 	local choice = opts.fargs[1]
-	if choice and not vim.tbl_contains(require("codedocs").get_annotation_list(), choice) then
+	if choice and not vim.tbl_contains(require("codedocs").get_annot_list(), choice) then
 		vim.notify("Invalid option: " .. (choice or "nil"), vim.log.levels.ERROR)
 		return
 	end
@@ -30,9 +30,6 @@ vim.api.nvim_create_user_command("Codedocs", function(opts)
 end, {
 	nargs = "?",
 	complete = function(arglead)
-		return vim.tbl_filter(
-			function(opt) return opt:find(arglead) == 1 end,
-			require("codedocs").get_annotation_list()
-		)
+		return vim.tbl_filter(function(opt) return opt:find(arglead) == 1 end, require("codedocs").get_annot_list())
 	end,
 })

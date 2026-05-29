@@ -51,28 +51,28 @@ end
 
 function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
 
-function Codedocs.get_annotation_list()
+function Codedocs.get_annot_list()
 	local lang = _determine_lang_name()
 	local lang_stuff = require("codedocs.config").languages[lang]
-	local annotation_names = vim.tbl_keys(lang_stuff.styles[lang_stuff.default_style].annots)
-	return annotation_names
+	local annot_names = vim.tbl_keys(lang_stuff.styles[lang_stuff.default_style].annots)
+	return annot_names
 end
 
 ---Returns an existing annotation table from the configuration table
 ---Equivalent to `require("codedocs.config").languages[[lang_name]].styles[[style_name]].annots[[annotation_name]]
 ---@param lang_name string
 ---@param style_name string
----@param annotation_name string
+---@param annot_name string
 ---@return CodedocsAnnotationStyleOpts annotation_tbl
-function Codedocs.get_annotation_tbl(lang_name, style_name, annotation_name)
+function Codedocs.get_annot_tbl(lang_name, style_name, annot_name)
 	vim.validate {
 		lang_name = { lang_name, "string" },
 		style_name = { style_name, "string" },
-		annotation_name = { annotation_name, "string" },
+		annot_name = { annot_name, "string" },
 	}
 
-	local annotation_tbl = require("codedocs.config").languages[lang_name].styles[style_name].annots[annotation_name]
-	return annotation_tbl
+	local annot_tbl = require("codedocs.config").languages[lang_name].styles[style_name].annots[annot_name]
+	return annot_tbl
 end
 
 ---@return string[] supported_styles List of style names
@@ -130,8 +130,8 @@ local function validate_config(config)
 		}
 
 		for style_name, style_opts in pairs(opts.styles) do
-			for annotation_name, annotation_opts in pairs(style_opts.annots) do
-				local annotation_path = lang_path .. (".styles.%s.%s"):format(style_name, annotation_name)
+			for annot_name, annotation_opts in pairs(style_opts.annots) do
+				local annotation_path = lang_path .. (".styles.%s.%s"):format(style_name, annot_name)
 
 				vim.validate {
 					[annotation_path] = {
@@ -243,7 +243,7 @@ local function _get_supported_target_node_data(ts_node, target_identifiers)
 	return _get_supported_target_node_data(ts_node:parent(), target_identifiers)
 end
 
-function Codedocs.get_requested_annotation_data(lang_name, requested_name)
+function Codedocs.get_requested_annot_data(lang_name, requested_name)
 	local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
 
 	local lang_config = require("codedocs.config").languages[lang_name]
@@ -297,7 +297,7 @@ function Codedocs.get_requested_annotation_data(lang_name, requested_name)
 	}
 end
 
-function Codedocs.get_detected_annotation_data(lang_name)
+function Codedocs.get_detected_annot_data(lang_name)
 	local extractor = require "codedocs.item_extractor"
 
 	if not vim.treesitter.get_parser(0, lang_name, { error = false }) then
@@ -316,10 +316,7 @@ function Codedocs.get_detected_annotation_data(lang_name)
 	local lang_config = require("codedocs.config").languages[lang_name]
 
 	if not ttarget_data then
-		return Codedocs.get_requested_annotation_data(
-			lang_name,
-			lang_config.styles[lang_config.default_style].default_annot
-		)
+		return Codedocs.get_requested_annot_data(lang_name, lang_config.styles[lang_config.default_style].default_annot)
 	end
 
 	local targets_config = lang_config.targets[ttarget_data.name]
@@ -337,80 +334,80 @@ end
 ---@param lang_name string
 ---@param data { target_name: string, style_name: string, row: number, items: table }?
 ---@return { lines: string[], placement: string }?
-function Codedocs.build_annotation(lang_name, data)
+function Codedocs.build_annot(lang_name, data)
 	vim.validate {
 		lang_name = { lang_name, "string" },
 		data = { data, "table" },
 	}
 
-	local annotation_tbl = Codedocs.get_annotation_tbl(lang_name, data.style_name, data.target_name)
-	local opts = require("codedocs.config").annotation_builder
+	local annot_tbl = Codedocs.get_annot_tbl(lang_name, data.style_name, data.target_name)
+	local opts = require("codedocs.config").annot_builder
 
-	local Annotation = require "codedocs.annotation_builder"
-	local annotation = Annotation.new(data.row + 1, opts)
+	local Annot_builder = require "codedocs.annot_builder"
+	local annot = Annot_builder.new(data.row + 1, opts)
 
-	annotation:insert_blocks(annotation_tbl.blocks, data.items)
+	annot:insert_blocks(annot_tbl.blocks, data.items)
 
-	local lines = annotation:get_lines()
+	local lines = annot:get_lines()
 
 	Logger.info("Annotation content" .. vim.inspect(lines))
 
 	return {
 		lines = lines,
-		placement = annotation_tbl.placement or annotation_tbl.relative_position,
+		placement = annot_tbl.placement,
 	}
 end
 
-function Codedocs.get_annotation_data(lang_name, annotation_data)
+function Codedocs.get_annot_data(lang_name, annotation_data)
 	vim.validate {
 		lang_name = { lang_name, "string" },
 		annotation_data = { annotation_data, { "table", "nil" } },
 	}
 
 	local lang_config = require("codedocs.config").languages[lang_name]
-	local user_requested_specific_annotation = annotation_data and annotation_data.annotation_name
+	local user_requested_specific_annotation = annotation_data and annotation_data.annot_name
 
 	local annot_data
 	if user_requested_specific_annotation then
-		annot_data = Codedocs.get_requested_annotation_data(lang_name, annotation_data.annotation_name) or {}
+		annot_data = Codedocs.get_requested_annot_data(lang_name, annotation_data.annot_name) or {}
 		annot_data.style_name = annotation_data.style_name or lang_config.default_style
 	else
-		annot_data = Codedocs.get_detected_annotation_data(lang_name) or {}
+		annot_data = Codedocs.get_detected_annot_data(lang_name) or {}
 		annot_data.style_name = lang_config.default_style
 	end
 
 	return annot_data
 end
 
----@param annotation_data { annotation_name: string, style_name: string? }?
-function Codedocs.generate(annotation_data)
+---@param annot_data { annot_name: string, style_name: string? }?
+function Codedocs.generate(annot_data)
 	Logger.info "Annotation generation started"
 
 	vim.validate {
-		annotation_data = { annotation_data, { "table", "nil" } },
+		annotation_data = { annot_data, { "table", "nil" } },
 	}
 
-	if annotation_data then
+	if annot_data then
 		vim.validate {
-			annotation_name = { annotation_data.annotation_name, "string" },
-			style_name = { annotation_data.style_name, { "string", "nil" } },
+			annot_name = { annot_data.annot_name, "string" },
+			style_name = { annot_data.style_name, { "string", "nil" } },
 		}
 
-		Logger.info("Passed data: " .. vim.inspect(annotation_data))
+		Logger.info("Passed data: " .. vim.inspect(annot_data))
 	end
 
 	local lang_name = _determine_lang_name()
 	Logger.info("Language: " .. lang_name)
 
-	local annot_data = Codedocs.get_annotation_data(lang_name, annotation_data)
+	local annot_data1 = Codedocs.get_annot_data(lang_name, annot_data)
 
-	Logger.info("Annotation used: " .. annot_data.target_name)
-	Logger.info("Detected items: " .. vim.inspect(annot_data.items))
+	Logger.info("Annotation used: " .. annot_data1.target_name)
+	Logger.info("Detected items: " .. vim.inspect(annot_data1.items))
 
-	local annotation_result = Codedocs.build_annotation(lang_name, annot_data)
+	local annotation_result = Codedocs.build_annot(lang_name, annot_data1)
 
 	if annotation_result and not vim.tbl_isempty(annotation_result.lines) then
-		_write_to_buffer(annotation_result.lines, annot_data.row, annotation_result.placement)
+		_write_to_buffer(annotation_result.lines, annot_data1.row, annotation_result.placement)
 		Logger.info "Annotation inserted"
 	end
 end

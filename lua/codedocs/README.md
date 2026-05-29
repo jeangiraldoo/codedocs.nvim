@@ -1,12 +1,11 @@
 # Technical documentation
 
-Welcome! This document provides an overview of the Codedocs codebase to
-help you contribute to the project, understand how it works internally,
-and to help me get back on track when I inevitably forget how things are wired
-together.
+Welcome! This document provides an overview of the Codedocs codebase to help you
+contribute to the project, understand how it works internally, and to help me
+get back on track when I inevitably forget how things are wired together.
 
-In the context of this plugin, a "target" refers to any language construct
-such as functions, methods, classes, or variables.
+In the context of this plugin, a "target" refers to any language construct such
+as functions, methods, classes, or variables.
 
 ## Table of contents
 
@@ -37,7 +36,7 @@ root
 │   └── codedocs.lua # General plugin setup
 └── lua
 │   └── codedocs
-│       ├── annotation_builder.lua # Uses item data and language styles to build an annotation
+│       ├── annot_builder.lua # Uses item data and language styles to build an annotation
 │       ├── config
 │       │   ├── init.lua # Default configuration
 │       │   └── languages
@@ -54,8 +53,8 @@ root
 ## Logic flow
 
 The following diagram provides a visual representation of the logic flow that
-takes place each time docstring generation is triggered, whether through a Codedocs
-command or a keymap.
+takes place each time docstring generation is triggered, whether through a
+Codedocs command or a keymap.
 
 ```mermaid
 flowchart TB
@@ -80,11 +79,12 @@ flowchart TB
 
 ### Dynamic creation
 
-Unlike other plugins, the configuration table is built dynamically when the plugin
-first loads. This is done because many languages are supported, each language
-defines many annotation styles, and each style includes a number of individual
-annotations. Additionally, most languages implement a set of code targets.
+Unlike other plugins, the configuration table is built dynamically when the
+plugin first loads. This is done because many languages are supported, each
+language defines many annotation styles, and each style includes a number of
+individual annotations. Additionally, most languages implement a set of code
+targets.
 
-Creating the table as-is directly in the source code was prone to errors in early
-versions because it required a lot of `require` statements, which is why the
-dynamic approach was chosen.
+Creating the table as-is directly in the source code was prone to errors in
+early versions because it required a lot of `require` statements, which is why
+the dynamic approach was chosen.

@@ -174,7 +174,7 @@ require("codedocs").setup {
         --- The `languages` table is too big to be displayed here.
         --- See the `languages` configuration section
     },
-    annotation_builder = { -- Options for the component that builds annotations
+    annot_builder = { -- Options for the component that builds annotations
         state = {
             lines = {}, -- Starter annotation lines
             snip_idx_counter = 1, -- Counter for the `snip_idx` placeholder
