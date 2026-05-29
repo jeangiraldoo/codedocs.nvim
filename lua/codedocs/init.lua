@@ -321,15 +321,16 @@ function Codedocs.get_detected_annotation_data(lang_name)
 
 	local ttarget_data = _get_supported_target_node_data(node_at_cursor, Codedocs.get_target_identifiers(lang_name))
 
+	local lang_config = require("codedocs.config").languages[lang_name]
+
 	if not ttarget_data then
-		return {
-			items = {},
-			target_name = "comment",
-			row = vim.api.nvim_win_get_cursor(0)[1] - 1,
-		}
+		return Codedocs.get_requested_annotation_data(
+			lang_name,
+			lang_config.styles[lang_config.default_style].default_annot
+		)
 	end
 
-	local targets_config = require("codedocs.config").languages[lang_name].targets[ttarget_data.name]
+	local targets_config = lang_config.targets[ttarget_data.name]
 	local target_data = extractor.finish(ttarget_data, targets_config)
 
 	if not target_data then return end
