@@ -1,5 +1,5 @@
 local Utils = require "tests.utils"
-local config = require "codedocs.config"
+local config = require("codedocs.config").opts
 local Codedocs = require "codedocs"
 
 local DIR = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")

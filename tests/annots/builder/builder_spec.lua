@@ -35,7 +35,7 @@ describe("Annotation builder - ", function()
 			local blocks = require("tests.annots.builder.cases." .. case_name .. ".input_blocks")
 			local expected_output = vim.fn.readfile(DIR .. "/cases/" .. case_name .. "/output")
 
-			local opts = require("codedocs.config").annot_builder
+			local opts = require("codedocs.config").opts.annot_builder
 			local annot = annot_builder.new(nil, opts)
 			annot:insert_blocks(blocks, MOCKED_ITEMS)
 

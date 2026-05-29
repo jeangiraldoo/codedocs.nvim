@@ -35,7 +35,7 @@ local function test_case(lang, style_name, annot_name, case_name)
 end
 
 describe("Default style annotations", function()
-	local langs_config = require("codedocs.config").languages
+	local langs_config = require("codedocs.config").opts.languages
 
 	for _, lang in ipairs(LANGS_TO_TEST) do
 		for style_name, annots in pairs(langs_config[lang].styles) do

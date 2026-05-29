@@ -1,5 +1,114 @@
 local dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
 
+local Config = {}
+
+local function validate_config(config)
+	vim.validate {
+		["config.logging"] = { config.logging, "table" },
+	}
+	vim.validate {
+		["config.logging.path"] = { config.logging.path, "string" },
+	}
+	vim.validate {
+		["config.logging.level"] = { config.logging.level, "number" },
+	}
+
+	vim.validate {
+		["config.languages"] = { config.languages, "table" },
+	}
+
+	for lang_name, opts in pairs(config.languages) do
+		local lang_path = ("config.languages.%s"):format(lang_name)
+		vim.validate {
+			[lang_path] = { opts, "table" },
+		}
+
+		vim.validate {
+			[lang_path .. ".default_style"] = { opts.default_style, "string" },
+		}
+		vim.validate {
+			[lang_path .. ".styles"] = { opts.styles, "table" },
+		}
+		vim.validate {
+			[lang_path .. ".targets"] = { opts.targets, "table" },
+		}
+
+		for style_name, style_opts in pairs(opts.styles) do
+			for annot_name, annotation_opts in pairs(style_opts.annots) do
+				local annotation_path = lang_path .. (".styles.%s.%s"):format(style_name, annot_name)
+
+				vim.validate {
+					[annotation_path] = {
+						annotation_opts,
+						"table",
+					},
+				}
+				vim.validate {
+					[annotation_path .. ".placement"] = {
+						annotation_opts.placement or annotation_opts.relative_position,
+						"string",
+					},
+				}
+
+				for idx, block in ipairs(annotation_opts.blocks) do
+					local block_idx_path = annotation_path .. ".blocks(" .. idx .. ")"
+					vim.validate {
+						[block_idx_path] = { block, "table" },
+					}
+
+					vim.validate {
+						[block_idx_path .. ".name"] = { block.name, "string" },
+					}
+
+					vim.validate {
+						[block_idx_path .. ".layout"] = { block.layout, "table" },
+					}
+					vim.validate {
+						[block_idx_path .. ".insert_gap_between"] = { block.insert_gap_between, "table" },
+					}
+					vim.validate {
+						[block_idx_path .. ".insert_gap_between.before"] = {
+							block.insert_gap_between.before,
+							"table",
+						},
+					}
+					vim.validate {
+						[block_idx_path .. ".insert_gap_between.text"] = { block.insert_gap_between.text, "string" },
+					}
+
+					if block.items then
+						vim.validate {
+							[block_idx_path .. " .items"] = { block.items, "table" },
+						}
+
+						vim.validate {
+							[block_idx_path .. ".items.layout"] = { block.items.layout, "table" },
+						}
+						vim.validate {
+							[block_idx_path .. ".items.insert_gap_between"] = {
+								block.items.insert_gap_between,
+								"table",
+							},
+						}
+						vim.validate {
+							[block_idx_path .. ".items.insert_gap_between.enabled"] = {
+								block.items.insert_gap_between.enabled,
+								"boolean",
+							},
+						}
+						vim.validate {
+							[block_idx_path .. ".items.insert_gap_between.text"] = {
+								block.items.insert_gap_between.text,
+								"string",
+							},
+						}
+					end
+				end
+			end
+		end
+	end
+end
+
 ---@alias CodedocsSupportedLanguages
 ---| "lua"
 ---| "python"
@@ -78,7 +187,7 @@ local function _build_dir_tbl(lang_name, subdir_name)
 end
 
 ---@type CodedocsConfig
-return {
+Config.opts = {
 	logging = {
 		level = vim.log.levels.INFO,
 		path = (vim.fn.stdpath "log") .. "/codedocs.log",
@@ -134,3 +243,25 @@ return {
 		},
 	},
 }
+
+function Config.setup(user_config)
+	vim.validate {
+		user_config = { user_config, "table" },
+	}
+
+	if not user_config then return end
+
+	local opts = Config.opts
+	local merged = vim.tbl_deep_extend("force", opts, user_config)
+
+	for k in pairs(opts) do
+		opts[k] = nil
+	end
+	for k, v in pairs(merged) do
+		opts[k] = v
+	end
+
+	validate_config(merged)
+end
+
+return Config

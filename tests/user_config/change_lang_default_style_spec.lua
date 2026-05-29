@@ -1,5 +1,5 @@
 local Utils = require "tests.utils"
-local config = require "codedocs.config"
+local config = require("codedocs.config").opts
 
 Utils.for_style(function(lang_name, style_name)
 	insulate("Setting default style (" .. lang_name .. "):", function()
