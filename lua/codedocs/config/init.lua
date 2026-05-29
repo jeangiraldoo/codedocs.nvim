@@ -104,7 +104,7 @@ return {
 		acc[name] = base_lang_config
 		return acc
 	end),
-	annotation_builder = {
+	annot_builder = {
 		state = {
 			lines = {},
 			snip_idx_counter = 1,

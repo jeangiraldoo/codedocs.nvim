@@ -49,11 +49,11 @@ describe("Add support for a new language", function()
 		Util.mock_buffer("cobol", { "" }, { row = 1, col = 1 })
 
 		it(("%s - %s (without items)"):format(data.lang_name, data.style_name), function()
-			local annotation_data1 = Codedocs.get_annotation_data(
+			local annot_data1 = Codedocs.get_annot_data(
 				data.lang_name,
-				{ style_name = data.style_name, annotation_name = data.annotation.name }
+				{ style_name = data.style_name, annot_name = data.annotation.name }
 			)
-			local annotation_result = Codedocs.build_annotation("cobol", annotation_data1)
+			local annotation_result = Codedocs.build_annot("cobol", annot_data1)
 
 			assert.are.same(data.annotation.expected_lines, annotation_result.lines)
 		end)
@@ -102,8 +102,8 @@ describe("Adding new target-less annotation", function()
 
 		it(lang_name .. " - " .. style_name .. "(without items)", function()
 			local annotation_data =
-				Codedocs.get_annotation_data(lang_name, { style_name = style_name, annotation_name = annotation.name })
-			local annotation_result = Codedocs.build_annotation(lang_name, annotation_data)
+				Codedocs.get_annot_data(lang_name, { style_name = style_name, annot_name = annotation.name })
+			local annotation_result = Codedocs.build_annot(lang_name, annotation_data)
 
 			assert.are.same(annotation.expected_lines, annotation_result.lines)
 		end)
@@ -202,10 +202,10 @@ describe("Add new annotation with target", function()
 			"end",
 		}, { row = 1, col = 1 })
 
-		local annotation_data1 = Codedocs.get_annotation_data("lua", { annotation_name = target.name })
-		local annotation_result = Codedocs.build_annotation("lua", annotation_data1)
-		local annotation_lines = annotation_result.lines
+		local annot_data1 = Codedocs.get_annot_data("lua", { annot_name = target.name })
+		local annot_result = Codedocs.build_annot("lua", annot_data1)
+		local annot_lines = annot_result.lines
 
-		assert.are.same(annotation.expected_lines, annotation_lines)
+		assert.are.same(annotation.expected_lines, annot_lines)
 	end)
 end)

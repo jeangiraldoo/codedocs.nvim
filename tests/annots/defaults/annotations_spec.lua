@@ -9,9 +9,9 @@ local LANGS_TO_TEST = vim.iter(require("codedocs").get_supported_langs())
 	:filter(function(v) return not vim.list_contains(IGNORE, v) end)
 	:totable()
 
-local function test_case(lang, style_name, annotation_name, case_name)
-	it(("%s - %s/%s (%s) "):format(lang, style_name, annotation_name, case_name), function()
-		local rel_path = ("cases/%s/%s/%s/"):format(lang, annotation_name, case_name)
+local function test_case(lang, style_name, annot_name, case_name)
+	it(("%s - %s/%s (%s) "):format(lang, style_name, annot_name, case_name), function()
+		local rel_path = ("cases/%s/%s/%s/"):format(lang, annot_name, case_name)
 		local base_path = vim.fs.joinpath(DIR, rel_path)
 
 		local lua_rel_path = rel_path:gsub("/", ".")
@@ -24,13 +24,13 @@ local function test_case(lang, style_name, annotation_name, case_name)
 
 		test_utils.mock_buffer(lang, input, { row = metadata.cursor.row, col = metadata.cursor.col or 1 })
 
-		local annotation_data = Codedocs.get_annotation_data(lang, {
+		local annot_data = Codedocs.get_annot_data(lang, {
 			style_name = style_name,
-			annotation_name = annotation_name,
+			annot_name = annot_name,
 		})
-		local annotation_result = Codedocs.build_annotation(lang, annotation_data)
+		local annot_result = Codedocs.build_annot(lang, annot_data)
 
-		assert.are.same(expected_output, annotation_result.lines)
+		assert.are.same(expected_output, annot_result.lines)
 	end)
 end
 
@@ -38,13 +38,12 @@ describe("Default style annotations", function()
 	local langs_config = require("codedocs.config").languages
 
 	for _, lang in ipairs(LANGS_TO_TEST) do
-		for style_name, annotations in pairs(langs_config[lang].styles) do
-			for annotation_name, _ in pairs(annotations) do
-				local annotation_case_names =
-					test_utils.read_dir_names(DIR .. ("/cases/%s/%s/"):format(lang, annotation_name))
+		for style_name, annots in pairs(langs_config[lang].styles) do
+			for annot_name, _ in pairs(annots) do
+				local annot_case_names = test_utils.read_dir_names(DIR .. ("/cases/%s/%s/"):format(lang, annot_name))
 
-				for _, case_name in ipairs(annotation_case_names) do
-					test_case(lang, style_name, annotation_name, case_name)
+				for _, case_name in ipairs(annot_case_names) do
+					test_case(lang, style_name, annot_name, case_name)
 				end
 			end
 		end
