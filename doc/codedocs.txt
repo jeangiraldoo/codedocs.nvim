@@ -423,8 +423,8 @@ Because `blocks` replaces the entire default list, modifying a single block
 requires copying the original list first.
 
 >lua
-    local original_blocks =
-        require("codedocs.config").languages.python.styles.Google.func.blocks
+    local config_opts = require("codedocs.config").opts
+    local original_blocks = config_opts.languages.python.styles.Google.func.blocks
     
     local new_blocks = vim.deepcopy(original_blocks)
     
