@@ -1,4 +1,5 @@
 return {
+	default_annot = "comment",
 	annots = {
 		comment = {
 			placement = "current",

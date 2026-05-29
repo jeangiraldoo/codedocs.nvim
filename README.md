@@ -221,6 +221,7 @@ require("codedocs").setup {
             styles = {
                 -- Style name
                 reST = {
+                    default_annot = "comment",
                     annots = { --- See the `annotations` section below
                         func = {}, -- `func` annotation
                         class = {}, -- `class` annotation
