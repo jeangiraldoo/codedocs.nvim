@@ -221,10 +221,11 @@ require("codedocs").setup {
             styles = {
                 -- Style name
                 reST = {
-                    --- See the `annotations` section below
-                    func = {}, -- `func` annotation
-                    class = {}, -- `class` annotation
-                    comment = {} -- `comment` annotation
+                    annots = { --- See the `annotations` section below
+                        func = {}, -- `func` annotation
+                        class = {}, -- `class` annotation
+                        comment = {} -- `comment` annotation
+                    }
                 },
             },
             targets = {

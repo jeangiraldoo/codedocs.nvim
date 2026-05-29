@@ -82,7 +82,9 @@ describe("Customizing style options", function()
 								[lang_name] = {
 									styles = {
 										[style_name] = {
-											[target_name] = original_mocked_user_opts,
+											annots = {
+												[target_name] = original_mocked_user_opts,
+											},
 										},
 									},
 								},

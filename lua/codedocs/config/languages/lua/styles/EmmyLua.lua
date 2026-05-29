@@ -1,59 +1,61 @@
 return {
-	comment = {
-		placement = "current",
-		blocks = {
-			{
-				name = "title",
-				layout = {
-					"---${%snip_idx:description}",
+	annots = {
+		comment = {
+			placement = "current",
+			blocks = {
+				{
+					name = "title",
+					layout = {
+						"---${%snip_idx:description}",
+					},
 				},
 			},
 		},
-	},
-	func = {
-		placement = "above",
-		blocks = {
-			{
-				name = "title",
-				layout = {
-					"---${%snip_idx:title}",
-				},
-				gap_before = {
-					parameters = {
-						enabled = false,
-						text = "---",
-					},
-					returns = {
-						enabled = false,
-						text = "---",
-					},
-				},
-			},
-			{
-				name = "parameters",
-				gap_before = {
-					returns = {
-						enabled = false,
-						text = "---",
-					},
-				},
-				items = {
+		func = {
+			placement = "above",
+			blocks = {
+				{
+					name = "title",
 					layout = {
-						"---@param %item_name ${%snip_idx:type} ${%snip_idx:description}",
+						"---${%snip_idx:title}",
 					},
-					insert_gap_between = {
-						text = "---",
+					gap_before = {
+						parameters = {
+							enabled = false,
+							text = "---",
+						},
+						returns = {
+							enabled = false,
+							text = "---",
+						},
 					},
 				},
-			},
-			{
-				name = "returns",
-				items = {
-					layout = {
-						"---@return ${%snip_idx:type} ${%snip_idx:description}",
+				{
+					name = "parameters",
+					gap_before = {
+						returns = {
+							enabled = false,
+							text = "---",
+						},
 					},
-					insert_gap_between = {
-						text = "---",
+					items = {
+						layout = {
+							"---@param %item_name ${%snip_idx:type} ${%snip_idx:description}",
+						},
+						insert_gap_between = {
+							text = "---",
+						},
+					},
+				},
+				{
+					name = "returns",
+					items = {
+						layout = {
+							"---@return ${%snip_idx:type} ${%snip_idx:description}",
+						},
+						insert_gap_between = {
+							text = "---",
+						},
 					},
 				},
 			},

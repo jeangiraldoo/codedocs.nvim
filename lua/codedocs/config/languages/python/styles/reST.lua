@@ -1,108 +1,110 @@
 return {
-	comment = {
-		placement = "current",
-		blocks = {
-			{
-				name = "title",
-				layout = {
-					"# ${%snip_idx:description}",
+	annots = {
+		comment = {
+			placement = "current",
+			blocks = {
+				{
+					name = "title",
+					layout = {
+						"# ${%snip_idx:description}",
+					},
 				},
 			},
 		},
-	},
-	class = {
-		placement = "below",
-		blocks = {
-			{
-				name = "header",
-				layout = {
-					'%>"""',
-					"%>${%snip_idx:title}",
-				},
-				gap_before = {
-					attributes = {
-						text = "",
-						enabled = true,
-					},
-				},
-			},
-			{
-				name = "attributes",
-				gap_before = {
-					footer = {
-						text = "",
-						enabled = true,
-					},
-				},
-				items = {
+		class = {
+			placement = "below",
+			blocks = {
+				{
+					name = "header",
 					layout = {
-						"%>:var %item_name: ${%snip_idx:description}",
-						"%>:vartype %item_name: ${%snip_idx:%item_type}",
+						'%>"""',
+						"%>${%snip_idx:title}",
+					},
+					gap_before = {
+						attributes = {
+							text = "",
+							enabled = true,
+						},
 					},
 				},
-			},
-			{
-				name = "footer",
-				layout = {
-					'%>"""',
+				{
+					name = "attributes",
+					gap_before = {
+						footer = {
+							text = "",
+							enabled = true,
+						},
+					},
+					items = {
+						layout = {
+							"%>:var %item_name: ${%snip_idx:description}",
+							"%>:vartype %item_name: ${%snip_idx:%item_type}",
+						},
+					},
+				},
+				{
+					name = "footer",
+					layout = {
+						'%>"""',
+					},
 				},
 			},
 		},
-	},
-	func = {
-		placement = "below",
-		blocks = {
-			{
-				name = "header",
-				layout = {
-					'%>"""',
-					"%>${%snip_idx:title}",
-				},
-				gap_before = {
-					parameters = {
-						enabled = true,
-						text = "",
-					},
-					returns = {
-						enabled = true,
-						text = "",
-					},
-				},
-			},
-			{
-				name = "parameters",
-				gap_before = {
-					returns = {
-						enabled = false,
-						text = "",
-					},
-				},
-				items = {
+		func = {
+			placement = "below",
+			blocks = {
+				{
+					name = "header",
 					layout = {
-						"%>:param %item_name: ${%snip_idx:description}",
-						"%>:type %item_name: ${%snip_idx:%item_type}",
+						'%>"""',
+						"%>${%snip_idx:title}",
+					},
+					gap_before = {
+						parameters = {
+							enabled = true,
+							text = "",
+						},
+						returns = {
+							enabled = true,
+							text = "",
+						},
 					},
 				},
-			},
-			{
-				name = "returns",
-				gap_before = {
-					footer = {
-						enabled = false,
-						text = "",
+				{
+					name = "parameters",
+					gap_before = {
+						returns = {
+							enabled = false,
+							text = "",
+						},
+					},
+					items = {
+						layout = {
+							"%>:param %item_name: ${%snip_idx:description}",
+							"%>:type %item_name: ${%snip_idx:%item_type}",
+						},
 					},
 				},
-				items = {
+				{
+					name = "returns",
+					gap_before = {
+						footer = {
+							enabled = false,
+							text = "",
+						},
+					},
+					items = {
+						layout = {
+							"%>:return: ${%snip_idx:description}",
+							"%>:rtype: ${%snip_idx:%item_type}",
+						},
+					},
+				},
+				{
+					name = "footer",
 					layout = {
-						"%>:return: ${%snip_idx:description}",
-						"%>:rtype: ${%snip_idx:%item_type}",
+						'%>"""',
 					},
-				},
-			},
-			{
-				name = "footer",
-				layout = {
-					'%>"""',
 				},
 			},
 		},

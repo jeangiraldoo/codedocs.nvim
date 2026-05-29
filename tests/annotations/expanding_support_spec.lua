@@ -37,7 +37,9 @@ describe("Add support for a new language", function()
 					default_style = data.style_name,
 					styles = {
 						[data.style_name] = {
-							[data.annotation.name] = data.annotation.opts,
+							annots = {
+								[data.annotation.name] = data.annotation.opts,
+							},
 						},
 					},
 					targets = {},
@@ -89,7 +91,9 @@ describe("Adding new target-less annotation", function()
 				[lang_name] = {
 					styles = {
 						[style_name] = {
-							[annotation.name] = annotation.opts,
+							annots = {
+								[annotation.name] = annotation.opts,
+							},
 						},
 					},
 				},
@@ -182,7 +186,11 @@ describe("Add new annotation with target", function()
 			languages = {
 				lua = {
 					styles = {
-						EmmyLua = { [target.name] = annotation.opts },
+						EmmyLua = {
+							annots = {
+								[target.name] = annotation.opts,
+							},
+						},
 					},
 					targets = { [target.name] = target.opts },
 				},
