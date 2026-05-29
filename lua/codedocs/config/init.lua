@@ -93,8 +93,8 @@ return {
 
 		base_lang_config.styles = _build_dir_tbl(name, "styles")
 
-		for _, annotations in pairs(base_lang_config.styles) do
-			for _, annotation_opts in pairs(annotations) do
+		for _, style_opts in pairs(base_lang_config.styles) do
+			for _, annotation_opts in pairs(style_opts.annots) do
 				annotation_opts.blocks = lang_utils.new_blocks_list(annotation_opts.blocks)
 			end
 		end

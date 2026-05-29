@@ -1,11 +1,13 @@
 return {
-	comment = {
-		placement = "current",
-		blocks = {
-			{
-				name = "title",
-				layout = {
-					"; ${%snip_idx:description}",
+	annots = {
+		comment = {
+			placement = "current",
+			blocks = {
+				{
+					name = "title",
+					layout = {
+						"; ${%snip_idx:description}",
+					},
 				},
 			},
 		},

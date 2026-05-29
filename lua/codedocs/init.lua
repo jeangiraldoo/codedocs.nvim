@@ -62,12 +62,12 @@ function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.co
 function Codedocs.get_annotation_list()
 	local lang = _determine_lang_name()
 	local lang_stuff = require("codedocs.config").languages[lang]
-	local annotation_names = vim.tbl_keys(lang_stuff.styles[lang_stuff.default_style])
+	local annotation_names = vim.tbl_keys(lang_stuff.styles[lang_stuff.default_style].annots)
 	return annotation_names
 end
 
 ---Returns an existing annotation table from the configuration table
----Equivalent to `require("codedocs.config").languages[[lang_name]].styles[[style_name]][[annotation_name]]
+---Equivalent to `require("codedocs.config").languages[[lang_name]].styles[[style_name]].annots[[annotation_name]]
 ---@param lang_name string
 ---@param style_name string
 ---@param annotation_name string
@@ -79,7 +79,7 @@ function Codedocs.get_annotation_tbl(lang_name, style_name, annotation_name)
 		annotation_name = { annotation_name, "string" },
 	}
 
-	local annotation_tbl = require("codedocs.config").languages[lang_name].styles[style_name][annotation_name]
+	local annotation_tbl = require("codedocs.config").languages[lang_name].styles[style_name].annots[annotation_name]
 	return annotation_tbl
 end
 
@@ -137,8 +137,8 @@ local function validate_config(config)
 			[lang_path .. ".targets"] = { opts.targets, "table" },
 		}
 
-		for style_name, annotations in pairs(opts.styles) do
-			for annotation_name, annotation_opts in pairs(annotations) do
+		for style_name, style_opts in pairs(opts.styles) do
+			for annotation_name, annotation_opts in pairs(style_opts.annots) do
 				local annotation_path = lang_path .. (".styles.%s.%s"):format(style_name, annotation_name)
 
 				vim.validate {
