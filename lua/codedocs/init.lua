@@ -5,7 +5,7 @@ local Codedocs = {}
 --- Inserts an annotation relative to a target and moves the cursor to the annotation title
 ---@param annotation_lines string[]
 ---@param row number 0-based annotation-related positions
----@param placement "above" | "below" | "empty_target_or_above" | "current" Position relative to the target row
+---@param placement "above" | "below" | "current" Position relative to the target row
 local function _write_to_buffer(annotation_lines, row, placement)
 	vim.validate {
 		annotation_lines = { annotation_lines, "table" },
@@ -16,15 +16,7 @@ local function _write_to_buffer(annotation_lines, row, placement)
 	Logger.info("Target row: " .. row)
 	Logger.info("Placement: " .. placement)
 
-	if placement == "empty_target_or_above" then
-		vim.notify_once("empty_target_or_above is deprecated; use 'current' instead", vim.log.levels.WARN)
-		Logger.warn "empty_target_or_above is deprecated; use 'current' instead"
-	end
-
-	---@deprecate `empty_target_or_above`
-	local should_insert_extra_line = (
-		(placement == "empty_target_or_above" or placement == "current") and vim.api.nvim_get_current_line() ~= ""
-	)
+	local should_insert_extra_line = ((placement == "current") and vim.api.nvim_get_current_line() ~= "")
 		or placement == "above"
 		or placement == "below"
 
@@ -351,8 +343,6 @@ function Codedocs.build_annotation(lang_name, data)
 		data = { data, "table" },
 	}
 
-	if lang_name == "python" and data.style_name == "Numpy" then data.style_name = "NumPy" end
-
 	local annotation_tbl = Codedocs.get_annotation_tbl(lang_name, data.style_name, data.target_name)
 	local opts = require("codedocs.config").annotation_builder
 
@@ -364,11 +354,6 @@ function Codedocs.build_annotation(lang_name, data)
 	local lines = annotation:get_lines()
 
 	Logger.info("Annotation content" .. vim.inspect(lines))
-
-	if annotation_tbl.relative_position then
-		vim.notify_once("'relative_position' is deprecated; use 'placement'", vim.log.levels.WARN)
-		Logger.warn "'relative_position' is deprecated; use 'placement'"
-	end
 
 	return {
 		lines = lines,

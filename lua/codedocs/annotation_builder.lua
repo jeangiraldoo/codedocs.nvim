@@ -12,11 +12,6 @@ function Annotation.new(line_num, opts)
 
 	new_annotation = vim.tbl_deep_extend("force", new_annotation, vim.deepcopy(opts))
 
-	---@deprecated
-	new_annotation.placeholders.general["%%snippet_tabstop_idx"] = function(self, _, _)
-		vim.notify_once("%snippet_tabstop_idx is deprecated; use %snip_idx instead", vim.log.levels.WARN)
-		return new_annotation.placeholders.general["%%snip_idx"](self.state)
-	end
 	new_annotation.placeholders.items = vim.tbl_deep_extend(
 		"force",
 		new_annotation.placeholders.items,
