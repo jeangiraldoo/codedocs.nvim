@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                   For NVIM v0.10+    Last change: 28 May 2026
+                                   For NVIM v0.10+    Last change: 29 May 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -221,10 +221,12 @@ fields with different values. See |codedocs-language-support|.
                 styles = {
                     -- Style name
                     reST = {
-                        --- See the `annotations` section below
-                        func = {}, -- `func` annotation
-                        class = {}, -- `class` annotation
-                        comment = {} -- `comment` annotation
+                        default_annot = "comment",
+                        annots = { --- See the `annotations` section below
+                            func = {}, -- `func` annotation
+                            class = {}, -- `class` annotation
+                            comment = {} -- `comment` annotation
+                        }
                     },
                 },
                 targets = {
