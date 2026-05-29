@@ -35,7 +35,7 @@ end
 
 local function _determine_lang_name()
 	if not Codedocs._filetypes_map then
-		local langs_config = require("codedocs.config").languages
+		local langs_config = require("codedocs.config").opts.languages
 		local filetypes_map = {}
 		for lang_name, opts in pairs(langs_config) do
 			for _, filetype_name in ipairs(opts.filetypes) do
@@ -49,17 +49,17 @@ local function _determine_lang_name()
 	return Codedocs._filetypes_map[vim.bo.filetype]
 end
 
-function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").languages) end
+function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").opts.languages) end
 
 function Codedocs.get_annot_list()
 	local lang = _determine_lang_name()
-	local lang_stuff = require("codedocs.config").languages[lang]
+	local lang_stuff = require("codedocs.config").opts.languages[lang]
 	local annot_names = vim.tbl_keys(lang_stuff.styles[lang_stuff.default_style].annots)
 	return annot_names
 end
 
 ---Returns an existing annotation table from the configuration table
----Equivalent to `require("codedocs.config").languages[[lang_name]].styles[[style_name]].annots[[annotation_name]]
+---Equivalent to `require("codedocs.config").opts.languages[[lang_name]].styles[[style_name]].annots[[annotation_name]]
 ---@param lang_name string
 ---@param style_name string
 ---@param annot_name string
@@ -71,19 +71,19 @@ function Codedocs.get_annot_tbl(lang_name, style_name, annot_name)
 		annot_name = { annot_name, "string" },
 	}
 
-	local annot_tbl = require("codedocs.config").languages[lang_name].styles[style_name].annots[annot_name]
+	local annot_tbl = require("codedocs.config").opts.languages[lang_name].styles[style_name].annots[annot_name]
 	return annot_tbl
 end
 
 ---@return string[] supported_styles List of style names
 function Codedocs.get_supported_styles(lang_name)
-	local supported_styles = vim.tbl_keys(require("codedocs.config").languages[lang_name].styles)
+	local supported_styles = vim.tbl_keys(require("codedocs.config").opts.languages[lang_name].styles)
 	table.sort(supported_styles)
 	return supported_styles
 end
 
 function Codedocs.get_target_identifiers(lang_name)
-	local targets_data = require("codedocs.config").languages[lang_name].targets
+	local targets_data = require("codedocs.config").opts.languages[lang_name].targets
 
 	if targets_data._identifiers then return targets_data._identifiers end
 
@@ -98,136 +98,15 @@ function Codedocs.get_target_identifiers(lang_name)
 	return target_identifiers
 end
 
-local function validate_config(config)
-	vim.validate {
-		["config.logging"] = { config.logging, "table" },
-	}
-	vim.validate {
-		["config.logging.path"] = { config.logging.path, "string" },
-	}
-	vim.validate {
-		["config.logging.level"] = { config.logging.level, "number" },
-	}
-
-	vim.validate {
-		["config.languages"] = { config.languages, "table" },
-	}
-
-	for lang_name, opts in pairs(config.languages) do
-		local lang_path = ("config.languages.%s"):format(lang_name)
-		vim.validate {
-			[lang_path] = { opts, "table" },
-		}
-
-		vim.validate {
-			[lang_path .. ".default_style"] = { opts.default_style, "string" },
-		}
-		vim.validate {
-			[lang_path .. ".styles"] = { opts.styles, "table" },
-		}
-		vim.validate {
-			[lang_path .. ".targets"] = { opts.targets, "table" },
-		}
-
-		for style_name, style_opts in pairs(opts.styles) do
-			for annot_name, annotation_opts in pairs(style_opts.annots) do
-				local annotation_path = lang_path .. (".styles.%s.%s"):format(style_name, annot_name)
-
-				vim.validate {
-					[annotation_path] = {
-						annotation_opts,
-						"table",
-					},
-				}
-				vim.validate {
-					[annotation_path .. ".placement"] = {
-						annotation_opts.placement or annotation_opts.relative_position,
-						"string",
-					},
-				}
-
-				for idx, block in ipairs(annotation_opts.blocks) do
-					local block_idx_path = annotation_path .. ".blocks(" .. idx .. ")"
-					vim.validate {
-						[block_idx_path] = { block, "table" },
-					}
-
-					vim.validate {
-						[block_idx_path .. ".name"] = { block.name, "string" },
-					}
-
-					vim.validate {
-						[block_idx_path .. ".layout"] = { block.layout, "table" },
-					}
-					vim.validate {
-						[block_idx_path .. ".insert_gap_between"] = { block.insert_gap_between, "table" },
-					}
-					vim.validate {
-						[block_idx_path .. ".insert_gap_between.before"] = {
-							block.insert_gap_between.before,
-							"table",
-						},
-					}
-					vim.validate {
-						[block_idx_path .. ".insert_gap_between.text"] = { block.insert_gap_between.text, "string" },
-					}
-
-					if block.items then
-						vim.validate {
-							[block_idx_path .. " .items"] = { block.items, "table" },
-						}
-
-						vim.validate {
-							[block_idx_path .. ".items.layout"] = { block.items.layout, "table" },
-						}
-						vim.validate {
-							[block_idx_path .. ".items.insert_gap_between"] = {
-								block.items.insert_gap_between,
-								"table",
-							},
-						}
-						vim.validate {
-							[block_idx_path .. ".items.insert_gap_between.enabled"] = {
-								block.items.insert_gap_between.enabled,
-								"boolean",
-							},
-						}
-						vim.validate {
-							[block_idx_path .. ".items.insert_gap_between.text"] = {
-								block.items.insert_gap_between.text,
-								"string",
-							},
-						}
-					end
-				end
-			end
-		end
-	end
-end
-
 ---@param user_config CodedocsConfig?
 function Codedocs.setup(user_config)
 	Logger.info "Setup called"
 	Logger.debug("Setup options: " .. vim.inspect(user_config))
 
-	vim.validate {
-		user_config = { user_config, "table" },
-	}
+	local Config = require "codedocs.config"
+	Config.setup(user_config)
 
-	if not user_config then return end
-
-	local config = require "codedocs.config"
-	local merged = vim.tbl_deep_extend("force", config, user_config)
-
-	for k in pairs(config) do
-		config[k] = nil
-	end
-	for k, v in pairs(merged) do
-		config[k] = v
-	end
-
-	validate_config(merged)
-	Logger.debug("Merged config options: " .. vim.inspect(merged))
+	Logger.debug("Merged config options: " .. vim.inspect(Config.opts))
 end
 
 ---@param ts_node TSNode Treesitter node to traverse upwards from
@@ -246,7 +125,7 @@ end
 function Codedocs.get_requested_annot_data(lang_name, requested_name)
 	local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
 
-	local lang_config = require("codedocs.config").languages[lang_name]
+	local lang_config = require("codedocs.config").opts.languages[lang_name]
 
 	--- Returned when no annotation targets are available, or when using
 	--- Treesitter and no matching node is found under the cursor.
@@ -260,7 +139,7 @@ function Codedocs.get_requested_annot_data(lang_name, requested_name)
 
 	local extractor = require "codedocs.item_extractor"
 
-	local targets_config = require("codedocs.config").languages[lang_name].targets[requested_name]
+	local targets_config = require("codedocs.config").opts.languages[lang_name].targets[requested_name]
 
 	if not targets_config.node_identifiers or vim.tbl_isempty(targets_config.node_identifiers) then
 		local data = extractor.finish({}, targets_config)
@@ -313,7 +192,7 @@ function Codedocs.get_detected_annot_data(lang_name)
 
 	local ttarget_data = _get_supported_target_node_data(node_at_cursor, Codedocs.get_target_identifiers(lang_name))
 
-	local lang_config = require("codedocs.config").languages[lang_name]
+	local lang_config = require("codedocs.config").opts.languages[lang_name]
 
 	if not ttarget_data then
 		return Codedocs.get_requested_annot_data(lang_name, lang_config.styles[lang_config.default_style].default_annot)
@@ -341,7 +220,7 @@ function Codedocs.build_annot(lang_name, data)
 	}
 
 	local annot_tbl = Codedocs.get_annot_tbl(lang_name, data.style_name, data.target_name)
-	local opts = require("codedocs.config").annot_builder
+	local opts = require("codedocs.config").opts.annot_builder
 
 	local Annot_builder = require "codedocs.annot_builder"
 	local annot = Annot_builder.new(data.row + 1, opts)
@@ -364,7 +243,7 @@ function Codedocs.get_annot_data(lang_name, annotation_data)
 		annotation_data = { annotation_data, { "table", "nil" } },
 	}
 
-	local lang_config = require("codedocs.config").languages[lang_name]
+	local lang_config = require("codedocs.config").opts.languages[lang_name]
 	local user_requested_specific_annotation = annotation_data and annotation_data.annot_name
 
 	local annot_data

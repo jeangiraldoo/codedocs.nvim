@@ -16,7 +16,7 @@ local function _log(msg, level)
 		level = { level, "number" },
 	}
 
-	local config = require("codedocs.config").logging
+	local config = require("codedocs.config").opts.logging
 	if level < config.level then return end
 
 	local path = vim.fs.normalize(config.path)
