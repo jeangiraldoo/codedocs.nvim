@@ -1,5 +1,5 @@
 return {
 	cursor = {
-		row = 1,
+		row = 2,
 	},
 }
