@@ -16,7 +16,7 @@ local function create_subcase_tester(lang, target_name, target_case_name)
 
 			Utils.mock_buffer(lang, input, metadata.cursor_pos)
 
-			assert.are.same(metadata.expected_items, Codedocs.get_detected_annot_data(lang).items)
+			assert.are.same(metadata.expected_items, Codedocs.get_detected_target_data(lang).items)
 		end)
 	end
 end

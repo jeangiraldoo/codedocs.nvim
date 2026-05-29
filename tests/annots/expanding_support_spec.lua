@@ -49,14 +49,7 @@ describe("Add support for a new language", function()
 		Util.mock_buffer("cobol", { "" }, { row = 1, col = 1 })
 
 		it(("%s - %s (without items)"):format(data.lang_name, data.style_name), function()
-			local annot_data1 = Codedocs.get_annot_data(
-				data.lang_name,
-				{ style_name = data.style_name, annot_name = data.annotation.name }
-			)
-
-			local opts = require("codedocs.config").opts.annot_builder
-			local annot_tbl = Codedocs.get_annot_tbl(data.lang_name, annot_data1.style_name, data.annotation.name)
-			local annot_lines = Codedocs.build_annot_lns(annot_tbl.blocks, opts, annot_data1.row, annot_data1.items)
+			local annot_lines = Codedocs.prepare_annotation(data.lang_name, { annot_name = data.annotation.name }).lines
 
 			assert.are.same(data.annotation.expected_lines, annot_lines)
 		end)
@@ -104,12 +97,7 @@ describe("Adding new target-less annotation", function()
 		}
 
 		it(lang_name .. " - " .. style_name .. "(without items)", function()
-			local annot_data1 = Codedocs.get_annot_data(lang_name, { annot_name = annotation.name })
-
-			local opts = require("codedocs.config").opts.annot_builder
-			local annot_tbl = Codedocs.get_annot_tbl(lang_name, annot_data1.style_name, annotation.name)
-			local annot_lines = Codedocs.build_annot_lns(annot_tbl.blocks, opts, annot_data1.row, annot_data1.items)
-
+			local annot_lines = Codedocs.prepare_annotation(lang_name, { annot_name = annotation.name }).lines
 			assert.are.same(annotation.expected_lines, annot_lines)
 		end)
 	end)
@@ -207,12 +195,8 @@ describe("Add new annotation with target", function()
 			"end",
 		}, { row = 1, col = 1 })
 
-		local annot_data1 = Codedocs.get_annot_data("lua", { annot_name = target.name })
+		local lines = Codedocs.prepare_annotation("lua", { annot_name = target.name }).lines
 
-		local opts = require("codedocs.config").opts.annot_builder
-		local annot_tbl = Codedocs.get_annot_tbl("lua", annot_data1.style_name, target.name)
-		local annot_lines = Codedocs.build_annot_lns(annot_tbl.blocks, opts, annot_data1.row, annot_data1.items)
-
-		assert.are.same(annotation.expected_lines, annot_lines)
+		assert.are.same(annotation.expected_lines, lines)
 	end)
 end)

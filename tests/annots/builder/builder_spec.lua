@@ -37,7 +37,7 @@ describe("Annotation builder - ", function()
 			local expected_output = vim.fn.readfile(DIR .. "/cases/" .. case_name .. "/output")
 
 			local opts = require("codedocs.config").opts.annot_builder
-			local lines = Codedocs.build_annot_lns(blocks, opts, 1, MOCKED_ITEMS)
+			local lines = Codedocs.build_annot_lines(blocks, opts, 1, MOCKED_ITEMS)
 
 			assert.are.same(expected_output, lines)
 		end)
