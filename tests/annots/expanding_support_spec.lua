@@ -53,9 +53,12 @@ describe("Add support for a new language", function()
 				data.lang_name,
 				{ style_name = data.style_name, annot_name = data.annotation.name }
 			)
-			local annotation_result = Codedocs.build_annot("cobol", annot_data1)
 
-			assert.are.same(data.annotation.expected_lines, annotation_result.lines)
+			local opts = require("codedocs.config").opts.annot_builder
+			local annot_tbl = Codedocs.get_annot_tbl(data.lang_name, annot_data1.style_name, data.annotation.name)
+			local annot_lines = Codedocs.build_annot_lns(annot_tbl.blocks, opts, annot_data1.row, annot_data1.items)
+
+			assert.are.same(data.annotation.expected_lines, annot_lines)
 		end)
 	end)
 end)
@@ -101,11 +104,13 @@ describe("Adding new target-less annotation", function()
 		}
 
 		it(lang_name .. " - " .. style_name .. "(without items)", function()
-			local annotation_data =
-				Codedocs.get_annot_data(lang_name, { style_name = style_name, annot_name = annotation.name })
-			local annotation_result = Codedocs.build_annot(lang_name, annotation_data)
+			local annot_data1 = Codedocs.get_annot_data(lang_name, { annot_name = annotation.name })
 
-			assert.are.same(annotation.expected_lines, annotation_result.lines)
+			local opts = require("codedocs.config").opts.annot_builder
+			local annot_tbl = Codedocs.get_annot_tbl(lang_name, annot_data1.style_name, annotation.name)
+			local annot_lines = Codedocs.build_annot_lns(annot_tbl.blocks, opts, annot_data1.row, annot_data1.items)
+
+			assert.are.same(annotation.expected_lines, annot_lines)
 		end)
 	end)
 end)
@@ -203,8 +208,10 @@ describe("Add new annotation with target", function()
 		}, { row = 1, col = 1 })
 
 		local annot_data1 = Codedocs.get_annot_data("lua", { annot_name = target.name })
-		local annot_result = Codedocs.build_annot("lua", annot_data1)
-		local annot_lines = annot_result.lines
+
+		local opts = require("codedocs.config").opts.annot_builder
+		local annot_tbl = Codedocs.get_annot_tbl("lua", annot_data1.style_name, target.name)
+		local annot_lines = Codedocs.build_annot_lns(annot_tbl.blocks, opts, annot_data1.row, annot_data1.items)
 
 		assert.are.same(annotation.expected_lines, annot_lines)
 	end)

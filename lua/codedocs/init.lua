@@ -2,6 +2,93 @@ local Logger = require "codedocs.utils.logger"
 
 local Codedocs = {}
 
+local function _get_line_indent(row)
+	local cols = vim.fn.indent(row + 1)
+	if cols == -1 then return "" end
+
+	if vim.bo.expandtab then return string.rep(" ", cols) end
+
+	local tabstop = vim.bo.tabstop
+	local tabs = math.floor(cols / tabstop)
+	local spaces = cols % tabstop
+
+	return string.rep("\t", tabs) .. string.rep(" ", spaces)
+end
+
+function Codedocs.build_annot_lns(blocks, opts, row, items)
+	local state = {
+		placeholders = {
+			general = {},
+			items = {},
+		},
+		lines = {},
+	}
+
+	local new_state = vim.tbl_deep_extend("force", state, vim.deepcopy(opts))
+
+	new_state.placeholders.items =
+		vim.tbl_deep_extend("force", new_state.placeholders.items, vim.deepcopy(new_state.placeholders.general))
+
+	local line_indent = _get_line_indent(row)
+
+	local function insert(line, item)
+		if line == "" then
+			table.insert(new_state.lines, line)
+			return
+		end
+
+		line = line_indent .. line
+
+		local placeholders = item and new_state.placeholders.items or new_state.placeholders.general
+
+		for placeholder, handler in pairs(placeholders) do
+			line = line:gsub(placeholder, function() return handler(new_state.state, item) end)
+		end
+
+		table.insert(new_state.lines, line)
+	end
+
+	local function new_block(block_opts, block_items)
+		for _, layout_line in ipairs(block_opts.layout) do
+			insert(layout_line)
+		end
+
+		if not block_items then return end
+
+		for item_idx, item in ipairs(block_items) do
+			for _, line in ipairs(block_opts.items.layout) do
+				insert(line, item)
+
+				local is_last_item = block_items[item_idx + 1] == nil
+				if block_opts.items.insert_gap_between.enabled and not is_last_item then
+					insert(block_opts.items.insert_gap_between.text, item)
+				end
+			end
+		end
+	end
+
+	local gap_data
+
+	for _, block in ipairs(blocks) do
+		local is_item_based_block = type(block.items) == "table"
+
+		local block_items = items[block.name]
+
+		local at_least_one_block_item = block_items and #block_items > 0 and #block.items.layout > 0
+
+		if not is_item_based_block or at_least_one_block_item then
+			if gap_data and gap_data[block.name] and gap_data[block.name].enabled then
+				insert(gap_data[block.name].text)
+			end
+
+			new_block(block, block_items)
+			gap_data = block.gap_before
+		end
+	end
+
+	return new_state.lines
+end
+
 --- Inserts an annotation relative to a target and moves the cursor to the annotation title
 ---@param annotation_lines string[]
 ---@param row number 0-based annotation-related positions
@@ -210,33 +297,6 @@ function Codedocs.get_detected_annot_data(lang_name)
 	}
 end
 
----@param lang_name string
----@param data { target_name: string, style_name: string, row: number, items: table }?
----@return { lines: string[], placement: string }?
-function Codedocs.build_annot(lang_name, data)
-	vim.validate {
-		lang_name = { lang_name, "string" },
-		data = { data, "table" },
-	}
-
-	local annot_tbl = Codedocs.get_annot_tbl(lang_name, data.style_name, data.target_name)
-	local opts = require("codedocs.config").opts.annot_builder
-
-	local Annot_builder = require "codedocs.annot_builder"
-	local annot = Annot_builder.new(data.row + 1, opts)
-
-	annot:insert_blocks(annot_tbl.blocks, data.items)
-
-	local lines = annot:get_lines()
-
-	Logger.info("Annotation content" .. vim.inspect(lines))
-
-	return {
-		lines = lines,
-		placement = annot_tbl.placement,
-	}
-end
-
 function Codedocs.get_annot_data(lang_name, annotation_data)
 	vim.validate {
 		lang_name = { lang_name, "string" },
@@ -283,10 +343,15 @@ function Codedocs.generate(annot_data)
 	Logger.info("Annotation used: " .. annot_data1.target_name)
 	Logger.info("Detected items: " .. vim.inspect(annot_data1.items))
 
-	local annotation_result = Codedocs.build_annot(lang_name, annot_data1)
+	local annot_tbl = Codedocs.get_annot_tbl(lang_name, annot_data1.style_name, annot_data1.target_name)
+	local opts = require("codedocs.config").opts.annot_builder
 
-	if annotation_result and not vim.tbl_isempty(annotation_result.lines) then
-		_write_to_buffer(annotation_result.lines, annot_data1.row, annotation_result.placement)
+	local lines = Codedocs.build_annot_lns(annot_tbl.blocks, opts, annot_data1.row, annot_data1.items)
+
+	Logger.info("Annotation content" .. vim.inspect(lines))
+
+	if lines and not vim.tbl_isempty(lines) then
+		_write_to_buffer(lines, annot_data1.row, annot_tbl.placement)
 		Logger.info "Annotation inserted"
 	end
 end

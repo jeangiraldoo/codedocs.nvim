@@ -8,7 +8,8 @@
 ---and those options only affect their own section, it’s enough to test them in one section
 
 local Utils = require "tests.utils"
-local annot_builder = require "codedocs.annot_builder"
+local Codedocs = require "codedocs"
+-- local annot_builder = require "codedocs.annot_builder"
 
 local DIR = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
 
@@ -36,10 +37,7 @@ describe("Annotation builder - ", function()
 			local expected_output = vim.fn.readfile(DIR .. "/cases/" .. case_name .. "/output")
 
 			local opts = require("codedocs.config").opts.annot_builder
-			local annot = annot_builder.new(nil, opts)
-			annot:insert_blocks(blocks, MOCKED_ITEMS)
-
-			local lines = annot:get_lines()
+			local lines = Codedocs.build_annot_lns(blocks, opts, 1, MOCKED_ITEMS)
 
 			assert.are.same(expected_output, lines)
 		end)
