@@ -13,7 +13,7 @@ local function create_datatype_tester(input, lang, metadata, target_case_name)
 				:totable()
 
 			Utils.mock_buffer(lang, typed_template, metadata.cursor_pos)
-			local actual_item = Codedocs.get_detected_annot_data(lang).items[target_case_name][1]
+			local actual_item = Codedocs.get_detected_target_data(lang).items[target_case_name][1]
 
 			assert.are.same(metadata.expected_item_name, actual_item.name)
 			assert.are.same(datatype, actual_item.type)

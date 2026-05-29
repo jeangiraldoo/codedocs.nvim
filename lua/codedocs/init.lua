@@ -15,7 +15,7 @@ local function _get_line_indent(row)
 	return string.rep("\t", tabs) .. string.rep(" ", spaces)
 end
 
-function Codedocs.build_annot_lns(blocks, opts, row, items)
+function Codedocs.build_annot_lines(blocks, opts, row, items)
 	local state = {
 		placeholders = {
 			general = {},
@@ -196,20 +196,36 @@ function Codedocs.setup(user_config)
 	Logger.debug("Merged config options: " .. vim.inspect(Config.opts))
 end
 
----@param ts_node TSNode Treesitter node to traverse upwards from
----@param target_identifiers table<string, string> Treesitter node types to check for
+---@param lang_name string
 ---@return { name: string, node: TSNode } | nil
-local function _get_supported_target_node_data(ts_node, target_identifiers)
-	if not ts_node then return end
+local function get_ts_target_data(lang_name)
+	local lang_ts_parser = vim.treesitter.get_parser(0, lang_name, { error = false })
 
-	local target_name = target_identifiers[ts_node:type()]
+	if not lang_ts_parser then
+		local error_msg = "Tree-sitter parser for " .. lang_name .. " is not installed"
 
-	if target_name then return { name = target_name, node = ts_node } end
+		vim.notify(error_msg, vim.log.levels.ERROR)
+		Logger.error(error_msg)
+		return
+	end
 
-	return _get_supported_target_node_data(ts_node:parent(), target_identifiers)
+	lang_ts_parser:parse()
+	local node_at_cursor = vim.treesitter.get_node()
+
+	local function _extract_data(ts_node, target_identifiers)
+		if not ts_node then return end
+
+		local target_name = target_identifiers[ts_node:type()]
+
+		if target_name then return { name = target_name, node = ts_node } end
+
+		return _extract_data(ts_node:parent(), target_identifiers)
+	end
+
+	return _extract_data(node_at_cursor, Codedocs.get_target_identifiers(lang_name))
 end
 
-function Codedocs.get_requested_annot_data(lang_name, requested_name)
+function Codedocs.get_requested_target_data(lang_name, requested_name)
 	local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
 
 	local lang_config = require("codedocs.config").opts.languages[lang_name]
@@ -238,22 +254,11 @@ function Codedocs.get_requested_annot_data(lang_name, requested_name)
 		}
 	end
 
-	if not vim.treesitter.get_parser(0, lang_name, { error = false }) then
-		local error_msg = "Tree-sitter parser for " .. lang_name .. " is not installed"
+	local ts_target_data = get_ts_target_data(lang_name)
 
-		vim.notify(error_msg, vim.log.levels.ERROR)
-		Logger.error(error_msg)
-		return
-	end
+	if not ts_target_data then return EMPTY_TARGET_RESULT end
 
-	vim.treesitter.get_parser(0):parse()
-	local node_at_cursor = vim.treesitter.get_node()
-
-	local ttarget_data = _get_supported_target_node_data(node_at_cursor, Codedocs.get_target_identifiers(lang_name))
-
-	if not ttarget_data then return EMPTY_TARGET_RESULT end
-
-	local target_data = extractor.finish(ttarget_data, targets_config)
+	local target_data = extractor.finish(ts_target_data, targets_config)
 
 	return {
 		-- Ignore extracted items if cursor target differs
@@ -263,59 +268,63 @@ function Codedocs.get_requested_annot_data(lang_name, requested_name)
 	}
 end
 
-function Codedocs.get_detected_annot_data(lang_name)
+function Codedocs.get_detected_target_data(lang_name)
 	local extractor = require "codedocs.item_extractor"
-
-	if not vim.treesitter.get_parser(0, lang_name, { error = false }) then
-		local error_msg = "Tree-sitter parser for " .. lang_name .. " is not installed"
-
-		vim.notify(error_msg, vim.log.levels.ERROR)
-		Logger.error(error_msg)
-		return
-	end
-
-	vim.treesitter.get_parser(0):parse()
-	local node_at_cursor = vim.treesitter.get_node()
-
-	local ttarget_data = _get_supported_target_node_data(node_at_cursor, Codedocs.get_target_identifiers(lang_name))
+	local ts_target_data = get_ts_target_data(lang_name)
 
 	local lang_config = require("codedocs.config").opts.languages[lang_name]
 
-	if not ttarget_data then
-		return Codedocs.get_requested_annot_data(lang_name, lang_config.styles[lang_config.default_style].default_annot)
+	if not ts_target_data then
+		return Codedocs.get_requested_target_data(
+			lang_name,
+			lang_config.styles[lang_config.default_style].default_annot
+		)
 	end
 
-	local targets_config = lang_config.targets[ttarget_data.name]
-	local target_data = extractor.finish(ttarget_data, targets_config)
+	local targets_config = lang_config.targets[ts_target_data.name]
+	local target_data = extractor.finish(ts_target_data, targets_config)
 
-	if not target_data then return end
-
-	return {
-		items = target_data.items,
-		target_name = target_data.target_name,
-		row = target_data.row,
-	}
+	return target_data
 end
 
-function Codedocs.get_annot_data(lang_name, annotation_data)
+function Codedocs.get_target_data(lang_name, annotation_data)
 	vim.validate {
 		lang_name = { lang_name, "string" },
 		annotation_data = { annotation_data, { "table", "nil" } },
 	}
 
-	local lang_config = require("codedocs.config").opts.languages[lang_name]
 	local user_requested_specific_annotation = annotation_data and annotation_data.annot_name
 
-	local annot_data
 	if user_requested_specific_annotation then
-		annot_data = Codedocs.get_requested_annot_data(lang_name, annotation_data.annot_name) or {}
-		annot_data.style_name = annotation_data.style_name or lang_config.default_style
-	else
-		annot_data = Codedocs.get_detected_annot_data(lang_name) or {}
-		annot_data.style_name = lang_config.default_style
+		return Codedocs.get_requested_target_data(lang_name, annotation_data.annot_name) or {}
 	end
 
-	return annot_data
+	return Codedocs.get_detected_target_data(lang_name) or {}
+end
+
+function Codedocs.prepare_annotation(lang_name, annot_data)
+	local target_data = Codedocs.get_target_data(lang_name, annot_data)
+
+	local lang_config = require("codedocs.config").opts.languages[lang_name]
+	local style_name = annot_data and annot_data.style_name or lang_config.default_style
+
+	local annot_tbl = Codedocs.get_annot_tbl(lang_name, style_name, target_data.target_name)
+
+	local lines = Codedocs.build_annot_lines(
+		annot_tbl.blocks,
+		require("codedocs.config").opts.annot_builder,
+		target_data.row,
+		target_data.items
+	)
+
+	return {
+		row = target_data.row,
+		target_name = target_data.target_name,
+		style_name = style_name,
+		items = target_data.items,
+		placement = annot_tbl.placement,
+		lines = lines,
+	}
 end
 
 ---@param annot_data { annot_name: string, style_name: string? }?
@@ -338,20 +347,12 @@ function Codedocs.generate(annot_data)
 	local lang_name = _determine_lang_name()
 	Logger.info("Language: " .. lang_name)
 
-	local annot_data1 = Codedocs.get_annot_data(lang_name, annot_data)
+	local annot = Codedocs.prepare_annotation(lang_name, annot_data)
 
-	Logger.info("Annotation used: " .. annot_data1.target_name)
-	Logger.info("Detected items: " .. vim.inspect(annot_data1.items))
+	Logger.info("Annotation content" .. vim.inspect(annot.lines))
 
-	local annot_tbl = Codedocs.get_annot_tbl(lang_name, annot_data1.style_name, annot_data1.target_name)
-	local opts = require("codedocs.config").opts.annot_builder
-
-	local lines = Codedocs.build_annot_lns(annot_tbl.blocks, opts, annot_data1.row, annot_data1.items)
-
-	Logger.info("Annotation content" .. vim.inspect(lines))
-
-	if lines and not vim.tbl_isempty(lines) then
-		_write_to_buffer(lines, annot_data1.row, annot_tbl.placement)
+	if not vim.tbl_isempty(annot.lines) then
+		_write_to_buffer(annot.lines, annot.row, annot.placement)
 		Logger.info "Annotation inserted"
 	end
 end
