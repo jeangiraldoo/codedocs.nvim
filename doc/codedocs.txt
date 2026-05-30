@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                   For NVIM v0.10+    Last change: 29 May 2026
+                                   For NVIM v0.10+    Last change: 30 May 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -20,6 +20,7 @@
 - |codedocs-contributing|
 - |codedocs-motivation|
 - |codedocs-comparison-with-alternatives|
+- |codedocs-support|
 
 
 ==============================================================================
@@ -647,8 +648,16 @@ The other projects likely support features that Codedocs doesn’t, and
 viceversa, so it’s still a good idea to check them out as they are great
 projects too!
 
+
 ==============================================================================
-12. Links                                                     *codedocs-links*
+12. Support                                                 *codedocs-support*
+
+You can support me by starring the plugin and by donating
+<https://github.com/sponsors/jeangiraldoo>. It motivates me to spend more time
+improving Codedocs and working on new open-source projects!
+
+==============================================================================
+13. Links                                                     *codedocs-links*
 
 1. *Codedocs showcase*: ./.images/showcase.gif
 
