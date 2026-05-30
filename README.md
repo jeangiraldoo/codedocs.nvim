@@ -34,6 +34,7 @@ _A simple, customizable, yet powerful Annotation Framework_
 - [Contributing](#contributing)
 - [Motivation](#motivation)
 - [Comparison with alternatives](#comparison-with-alternatives)
+- [Support](#support)
 
 ## Features
 
@@ -590,6 +591,12 @@ and functional differences such as:
 The other projects likely support features that Codedocs doesn't, and viceversa,
 so it's still a good idea to check them out as they are great projects too!
 
+## Support
+
+You can support me by starring ⭐ the plugin and by [donating][sponsor-page]. It
+motivates me to spend more time improving Codedocs and working on new
+open-source projects!
+
 [Doxygen]: https://www.doxygen.nl/manual/commands.html
 [GDScript]:
   https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#annotations
@@ -618,3 +625,4 @@ so it's still a good idea to check them out as they are great projects too!
 [nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [Neogen]: https://github.com/danymat/neogen
 [vim-doge]: https://github.com/kkoomen/vim-doge
+[sponsor-page]: https://github.com/sponsors/jeangiraldoo
