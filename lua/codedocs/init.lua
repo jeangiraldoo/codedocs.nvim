@@ -1,4 +1,5 @@
 local Logger = require "codedocs.utils.logger"
+local Item_extractor = require "codedocs.item_extractor"
 
 local Codedocs = {}
 
@@ -169,21 +170,7 @@ function Codedocs.get_supported_styles(lang_name)
 	return supported_styles
 end
 
-function Codedocs.get_target_identifiers(lang_name)
-	local targets_data = require("codedocs.config").opts.languages[lang_name].targets
-
-	if targets_data._identifiers then return targets_data._identifiers end
-
-	local target_identifiers = {}
-	for target_name, target_data in pairs(targets_data) do
-		for _, node_identifier in ipairs(target_data.node_identifiers) do
-			target_identifiers[node_identifier] = target_name
-		end
-	end
-
-	targets_data._identifiers = target_identifiers
-	return target_identifiers
-end
+Codedocs.get_target_identifiers = Item_extractor.get_target_identifiers
 
 ---@param user_config CodedocsConfig?
 function Codedocs.setup(user_config)
@@ -196,96 +183,8 @@ function Codedocs.setup(user_config)
 	Logger.debug("Merged config options: " .. vim.inspect(Config.opts))
 end
 
----@param lang_name string
----@return { name: string, node: TSNode } | nil
-local function get_ts_target_data(lang_name)
-	local lang_ts_parser = vim.treesitter.get_parser(0, lang_name, { error = false })
-
-	if not lang_ts_parser then
-		local error_msg = "Tree-sitter parser for " .. lang_name .. " is not installed"
-
-		vim.notify(error_msg, vim.log.levels.ERROR)
-		Logger.error(error_msg)
-		return
-	end
-
-	lang_ts_parser:parse()
-	local node_at_cursor = vim.treesitter.get_node()
-
-	local function _extract_data(ts_node, target_identifiers)
-		if not ts_node then return end
-
-		local target_name = target_identifiers[ts_node:type()]
-
-		if target_name then return { name = target_name, node = ts_node } end
-
-		return _extract_data(ts_node:parent(), target_identifiers)
-	end
-
-	return _extract_data(node_at_cursor, Codedocs.get_target_identifiers(lang_name))
-end
-
-function Codedocs.get_requested_target_data(lang_name, requested_name)
-	local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
-
-	local lang_config = require("codedocs.config").opts.languages[lang_name]
-
-	--- Returned when no annotation targets are available, or when using
-	--- Treesitter and no matching node is found under the cursor.
-	local EMPTY_TARGET_RESULT = {
-		items = {},
-		target_name = requested_name,
-		row = cursor_row,
-	}
-
-	if not lang_config.targets[requested_name] then return EMPTY_TARGET_RESULT end
-
-	local extractor = require "codedocs.item_extractor"
-
-	local targets_config = require("codedocs.config").opts.languages[lang_name].targets[requested_name]
-
-	if not targets_config.node_identifiers or vim.tbl_isempty(targets_config.node_identifiers) then
-		local data = extractor.finish({}, targets_config)
-
-		return {
-			row = data.row,
-			items = data.items,
-			target_name = requested_name,
-		}
-	end
-
-	local ts_target_data = get_ts_target_data(lang_name)
-
-	if not ts_target_data then return EMPTY_TARGET_RESULT end
-
-	local target_data = extractor.finish(ts_target_data, targets_config)
-
-	return {
-		-- Ignore extracted items if cursor target differs
-		items = (target_data and target_data.target_name == requested_name) and target_data.items or {},
-		target_name = requested_name,
-		row = target_data.row,
-	}
-end
-
-function Codedocs.get_detected_target_data(lang_name)
-	local extractor = require "codedocs.item_extractor"
-	local ts_target_data = get_ts_target_data(lang_name)
-
-	local lang_config = require("codedocs.config").opts.languages[lang_name]
-
-	if not ts_target_data then
-		return Codedocs.get_requested_target_data(
-			lang_name,
-			lang_config.styles[lang_config.default_style].default_annot
-		)
-	end
-
-	local targets_config = lang_config.targets[ts_target_data.name]
-	local target_data = extractor.finish(ts_target_data, targets_config)
-
-	return target_data
-end
+Codedocs.get_requested_target_data = Item_extractor.get_requested_target_data
+Codedocs.get_detected_target_data = Item_extractor.get_detected_target_data
 
 function Codedocs.get_target_data(lang_name, annotation_data)
 	vim.validate {
@@ -296,10 +195,10 @@ function Codedocs.get_target_data(lang_name, annotation_data)
 	local user_requested_specific_annotation = annotation_data and annotation_data.annot_name
 
 	if user_requested_specific_annotation then
-		return Codedocs.get_requested_target_data(lang_name, annotation_data.annot_name) or {}
+		return Item_extractor.get_requested_target_data(lang_name, annotation_data.annot_name) or {}
 	end
 
-	return Codedocs.get_detected_target_data(lang_name) or {}
+	return Item_extractor.get_detected_target_data(lang_name) or {}
 end
 
 function Codedocs.prepare_annotation(lang_name, annot_data)

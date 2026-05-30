@@ -71,10 +71,9 @@ local function generic_query_parser(ts_node, query_obj)
 	return items
 end
 
-function Item_extractor.finish(target_data, targets_config)
-	local extractors, extractors_opts = targets_config.extractors, targets_config.opts
-
+local function _extract_items(extractors, extractors_opts, target_data)
 	local items = {}
+
 	for extractor_name, item_extractor in pairs(extractors) do
 		local raw_items = item_extractor {
 			node = target_data.node,
@@ -106,9 +105,117 @@ function Item_extractor.finish(target_data, targets_config)
 		items[extractor_name] = final_items
 	end
 
-	local target_pos = target_data.node and target_data.node:range() or vim.api.nvim_win_get_cursor(0)[1] - 1
+	return items
+end
 
-	return { items = items, target_name = target_data.name, row = target_pos }
+function Item_extractor.get_target_identifiers(lang_name)
+	local targets_data = require("codedocs.config").opts.languages[lang_name].targets
+
+	if targets_data._identifiers then return targets_data._identifiers end
+
+	local target_identifiers = {}
+	for target_name, target_data in pairs(targets_data) do
+		for _, node_identifier in ipairs(target_data.node_identifiers) do
+			target_identifiers[node_identifier] = target_name
+		end
+	end
+
+	targets_data._identifiers = target_identifiers
+	return target_identifiers
+end
+
+---@param lang_name string
+---@return { name: string, node: TSNode } | nil
+local function get_ts_target_data(lang_name)
+	vim.validate {
+		lang_name = { lang_name, "string" },
+	}
+	local lang_ts_parser = vim.treesitter.get_parser(0, lang_name, { error = false })
+
+	if not lang_ts_parser then
+		local error_msg = "Tree-sitter parser for " .. lang_name .. " is not installed"
+
+		vim.notify(error_msg, vim.log.levels.ERROR)
+		-- Logger.error(error_msg)
+		return
+	end
+
+	lang_ts_parser:parse()
+	local node_at_cursor = vim.treesitter.get_node()
+
+	local function _extract_data(ts_node, target_identifiers)
+		if not ts_node then return end
+
+		local target_name = target_identifiers[ts_node:type()]
+
+		if target_name then return { name = target_name, node = ts_node } end
+
+		return _extract_data(ts_node:parent(), target_identifiers)
+	end
+
+	return _extract_data(node_at_cursor, Item_extractor.get_target_identifiers(lang_name))
+end
+
+function Item_extractor.get_requested_target_data(lang_name, requested_name)
+	local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
+
+	local lang_config = require("codedocs.config").opts.languages[lang_name]
+
+	--- Returned when no annotation targets are available, or when using
+	--- Treesitter and no matching node is found under the cursor.
+	local EMPTY_TARGET_RESULT = {
+		items = {},
+		target_name = requested_name,
+		row = cursor_row,
+	}
+
+	if not lang_config.targets[requested_name] then return EMPTY_TARGET_RESULT end
+
+	local targets_config = require("codedocs.config").opts.languages[lang_name].targets[requested_name]
+
+	if not targets_config.node_identifiers or vim.tbl_isempty(targets_config.node_identifiers) then
+		local items = _extract_items(targets_config.extractors, targets_config.opts, {})
+
+		return {
+			row = vim.api.nvim_win_get_cursor(0)[1] - 1,
+			items = items,
+			target_name = requested_name,
+		}
+	end
+
+	local ts_target_data = get_ts_target_data(lang_name)
+
+	if not ts_target_data then return EMPTY_TARGET_RESULT end
+
+	local items = _extract_items(targets_config.extractors, targets_config.opts, ts_target_data)
+
+	return {
+		-- Ignore extracted items if cursor target differs
+		row = ts_target_data.node and ts_target_data.node:range() or vim.api.nvim_win_get_cursor(0)[1] - 1,
+		items = (ts_target_data and ts_target_data.name == requested_name) and items or {},
+		target_name = requested_name,
+	}
+end
+
+function Item_extractor.get_detected_target_data(lang_name)
+	local ts_target_data = get_ts_target_data(lang_name)
+
+	local lang_config = require("codedocs.config").opts.languages[lang_name]
+
+	if not ts_target_data then
+		return Item_extractor.get_requested_target_data(
+			lang_name,
+			lang_config.styles[lang_config.default_style].default_annot
+		)
+	end
+
+	local targets_config = lang_config.targets[ts_target_data.name]
+
+	return {
+		items = _extract_items(targets_config.extractors, targets_config.opts, ts_target_data),
+		target_name = ts_target_data.name,
+		row = ts_target_data.node and ts_target_data.node:range() or vim.api.nvim_win_get_cursor(0)[1] - 1,
+	}
 end
 
 return Item_extractor
