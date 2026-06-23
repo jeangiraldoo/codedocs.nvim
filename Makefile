@@ -13,5 +13,6 @@ new-lang:
 
 test:
 	busted tests
+	busted lua
 
 all-checks: quality-checks tests
