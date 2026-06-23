@@ -1,5 +1,5 @@
 local M = {}
 
-M.foo = function(a, b)
+M.foo = f<CURSOR>unction(a, b)
 	return a + b
 end

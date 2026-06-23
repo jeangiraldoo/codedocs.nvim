@@ -1,4 +1,4 @@
-class Foo {
+<CURSOR>class Foo {
 	static name: string = 'Codedocs'
 	public static value: number;
 

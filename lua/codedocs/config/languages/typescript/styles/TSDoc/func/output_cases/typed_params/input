@@ -1,2 +1,2 @@
-function foo(a: number, b: number) {
+<CURSOR>function foo(a: number, b: number) {
 }

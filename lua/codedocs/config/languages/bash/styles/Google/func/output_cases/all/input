@@ -5,7 +5,7 @@ local house=1
 local age=1
 local name=1
 
-foo() {
+<CURSOR>foo() {
 	if [[ -d "${dir}/${SESSION_ID}" ]]; then
 		echo "$1"
 		echo "$2"

@@ -1,2 +1,2 @@
-def foo(a, b):
+<CURSOR>def foo(a, b):
 	a + b

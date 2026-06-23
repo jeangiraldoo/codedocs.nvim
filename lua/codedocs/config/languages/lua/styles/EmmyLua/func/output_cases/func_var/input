@@ -1,3 +1,3 @@
-local foo = function(a, b)
+local foo = f<CURSOR>unction(a, b)
 	return a + b
 end

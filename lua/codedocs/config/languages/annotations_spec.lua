@@ -1,5 +1,6 @@
 local test_utils = require "tests.utils"
 local Codedocs = require "codedocs"
+local Test_utils = require "codedocs.utils.tests"
 
 local IGNORE = {}
 
@@ -15,14 +16,12 @@ local function test_case(lang, style_name, annot_name, case_name)
 		local rel_path = ("%s/styles/%s/%s/output_cases/%s"):format(lang, style_name, annot_name, case_name)
 		local base_path = vim.fs.joinpath(DIR, rel_path)
 
-		local lua_rel_path = rel_path:gsub("/", ".")
-
 		local input = vim.fn.readfile(vim.fs.joinpath(base_path, "input"))
 		local expected_output = vim.fn.readfile(vim.fs.joinpath(base_path, "output"))
 
-		local metadata = require("codedocs.config.languages." .. lua_rel_path .. ".metadata")
+		local cursor, actual_input = Test_utils.parse_golden_file(input)
 
-		test_utils.mock_buffer(lang, input, { row = metadata.cursor.row, col = metadata.cursor.col or 1 })
+		test_utils.mock_buffer(lang, actual_input, { row = cursor.row, col = cursor.col or 1 })
 
 		local annot = Codedocs.prepare_annotation(lang, { style_name = style_name, annot_name = annot_name })
 

@@ -1,3 +1,3 @@
-func foo(a int, b int) int {
+<CURSOR>func foo(a int, b int) int {
 	return a + b
 }
