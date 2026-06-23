@@ -1,4 +1,4 @@
 <?php
-function foo(int $a, $b, int $c): int {
+<CURSOR>function foo(int $a, $b, int $c): int {
 	return $a + $b;
 }

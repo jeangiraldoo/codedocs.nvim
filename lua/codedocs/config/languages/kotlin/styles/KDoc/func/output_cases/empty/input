@@ -1,19 +1,2 @@
-fun foo() {
+<CURSOR>fun foo() {
 }
-		{
-			structure = {
-				"fun foo(a: int , b: int): int {",
-				"	return a + b",
-				"}",
-			},
-			cursor_pos = 1,
-			expected_annotation = {
-				KDoc = {
-					"/**",
-					" * ${1:title}",
-					" *",
-					" * @param a ${2:description}",
-					" * @param b ${3:description}",
-					" * @return ${4:description}",
-					" */",
-				},

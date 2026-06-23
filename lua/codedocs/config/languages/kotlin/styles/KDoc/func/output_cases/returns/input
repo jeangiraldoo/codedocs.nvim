@@ -1,2 +1,2 @@
-fun foo(): int {
+<CURSOR>fun foo(): int {
 }

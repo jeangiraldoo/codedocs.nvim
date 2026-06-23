@@ -1,4 +1,4 @@
-public class Foo {
+<CURSOR>public class Foo {
 	private int name;
 	public static int value;
 	public int foo(int a, int b) {

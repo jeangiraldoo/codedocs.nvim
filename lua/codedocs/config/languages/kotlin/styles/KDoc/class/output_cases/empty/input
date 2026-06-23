@@ -1,4 +1,4 @@
-class Foo {
+<CURSOR>class Foo {
 	private var name: Int = 0
 
 	companion object {

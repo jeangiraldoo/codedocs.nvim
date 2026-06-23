@@ -1,2 +1,2 @@
-fn foo() -> i32 {
+<CURSOR>fn foo() -> i32 {
 }
