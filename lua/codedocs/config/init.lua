@@ -200,7 +200,31 @@ Config.opts = {
 		local lang_utils = require "codedocs.config.languages.utils"
 		local base_lang_config = require("codedocs.config.languages." .. name)
 
-		base_lang_config.styles = _build_dir_tbl(name, "styles")
+		base_lang_config.styles = (function()
+			local lang_path = vim.fs.joinpath(dir, "languages", name, "styles")
+
+			return vim.iter(vim.fs.dir(lang_path)):fold({}, function(accc, item_name, item_type)
+				if item_type == "directory" then
+					accc[item_name] = require(("codedocs.config.languages.%s.%s.%s"):format(name, "styles", item_name))
+					accc[item_name].annots = vim.iter(vim.fs.dir(lang_path .. "/" .. item_name))
+						:fold({}, function(annots, annot_name, file_type)
+							if file_type == "directory" then
+								annots[annot_name] = require(
+									("codedocs.config.languages.%s.%s.%s.%s"):format(
+										name,
+										"styles",
+										item_name,
+										annot_name
+									)
+								)
+							end
+							return annots
+						end)
+				end
+
+				return accc
+			end)
+		end)()
 
 		for _, style_opts in pairs(base_lang_config.styles) do
 			for _, annotation_opts in pairs(style_opts.annots) do
