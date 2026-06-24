@@ -1,0 +1,2 @@
+func foo(a int, b int, c int) {
+}

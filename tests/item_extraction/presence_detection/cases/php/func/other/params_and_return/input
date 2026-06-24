@@ -1,5 +1,0 @@
-<?php
-function add(int $a, int $b, int $c): int {
-	return $a;
-}
-?>

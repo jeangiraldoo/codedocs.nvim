@@ -232,7 +232,16 @@ Config.opts = {
 			end
 		end
 
-		base_lang_config.targets = _build_dir_tbl(name, "targets")
+		local lang_path = vim.fs.joinpath(dir, "languages", name)
+		base_lang_config.targets = vim.iter(vim.fs.dir(vim.fs.joinpath(lang_path, "targets")))
+			:fold({}, function(targets, item_name, item_type)
+				if item_type == "directory" then
+					targets[item_name] =
+						require(("codedocs.config.languages.%s.%s.%s"):format(name, "targets", item_name))
+				end
+
+				return targets
+			end)
 
 		acc[name] = base_lang_config
 		return acc
