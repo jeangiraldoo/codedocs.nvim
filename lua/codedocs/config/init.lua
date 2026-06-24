@@ -208,6 +208,10 @@ Config.opts = {
 
 		base_lang_config.targets = build_dir_tbl("languages." .. name .. ".targets")
 
+		for target_name, tbl in pairs(base_lang_config.targets) do
+			tbl.extractors = build_dir_tbl("languages." .. name .. ".targets." .. target_name)
+		end
+
 		acc[name] = base_lang_config
 		return acc
 	end),
