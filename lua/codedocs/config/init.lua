@@ -164,23 +164,17 @@ end
 ---@field aliases table<string, CodedocsSupportedLanguages>? Aliases for filetypes -> supported languages
 ---@field languages CodedocsLanguagesConfigs? Languages configuration
 
----@param lang_name string
----@param subdir_name string
----@return table<string, table>
-local function _build_dir_tbl(lang_name, subdir_name)
-	vim.validate {
-		lang_name = { lang_name, "string" },
-		subdir_name = { subdir_name, "string" },
-	}
+local function build_dir_tbl(rel_lua_path)
+	local path = rel_lua_path:gsub("%.", "/")
 
-	local lang_path = vim.fs.joinpath(dir, "languages", lang_name, subdir_name)
+	local fs_path = vim.fs.joinpath(dir, path)
 
-	return vim.iter(vim.fs.dir(lang_path)):fold({}, function(acc, item_name, item_type)
-		if item_type == "file" then
-			local file_name = item_name:gsub("%.lua$", "")
+	return vim.iter(vim.fs.dir(fs_path)):fold({}, function(acc, item_name, item_type)
+		if item_type ~= "directory" then return acc end
 
-			acc[file_name] = require(("codedocs.config.languages.%s.%s.%s"):format(lang_name, subdir_name, file_name))
-		end
+		local dir_tbl = require(("codedocs.config.%s.%s"):format(rel_lua_path, item_name))
+
+		acc[item_name] = dir_tbl
 
 		return acc
 	end)
@@ -200,31 +194,11 @@ Config.opts = {
 		local lang_utils = require "codedocs.config.languages.utils"
 		local base_lang_config = require("codedocs.config.languages." .. name)
 
-		base_lang_config.styles = (function()
-			local lang_path = vim.fs.joinpath(dir, "languages", name, "styles")
+		base_lang_config.styles = build_dir_tbl("languages." .. name .. ".styles")
 
-			return vim.iter(vim.fs.dir(lang_path)):fold({}, function(accc, item_name, item_type)
-				if item_type == "directory" then
-					accc[item_name] = require(("codedocs.config.languages.%s.%s.%s"):format(name, "styles", item_name))
-					accc[item_name].annots = vim.iter(vim.fs.dir(lang_path .. "/" .. item_name))
-						:fold({}, function(annots, annot_name, file_type)
-							if file_type == "directory" then
-								annots[annot_name] = require(
-									("codedocs.config.languages.%s.%s.%s.%s"):format(
-										name,
-										"styles",
-										item_name,
-										annot_name
-									)
-								)
-							end
-							return annots
-						end)
-				end
-
-				return accc
-			end)
-		end)()
+		for item_name, tbl in pairs(base_lang_config.styles) do
+			tbl.annots = build_dir_tbl("languages." .. name .. ".styles." .. item_name)
+		end
 
 		for _, style_opts in pairs(base_lang_config.styles) do
 			for _, annotation_opts in pairs(style_opts.annots) do
@@ -232,16 +206,7 @@ Config.opts = {
 			end
 		end
 
-		local lang_path = vim.fs.joinpath(dir, "languages", name)
-		base_lang_config.targets = vim.iter(vim.fs.dir(vim.fs.joinpath(lang_path, "targets")))
-			:fold({}, function(targets, item_name, item_type)
-				if item_type == "directory" then
-					targets[item_name] =
-						require(("codedocs.config.languages.%s.%s.%s"):format(name, "targets", item_name))
-				end
-
-				return targets
-			end)
+		base_lang_config.targets = build_dir_tbl("languages." .. name .. ".targets")
 
 		acc[name] = base_lang_config
 		return acc
