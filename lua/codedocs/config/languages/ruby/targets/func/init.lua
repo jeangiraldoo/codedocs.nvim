@@ -3,5 +3,4 @@ return {
 		"method",
 	},
 	extractors = {},
-	opts = {},
 }

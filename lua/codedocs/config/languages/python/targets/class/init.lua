@@ -3,10 +3,4 @@ return {
 		"class_definition",
 	},
 	extractors = {},
-	opts = {
-		attributes = {
-			static = true,
-			instance = "constructor",
-		},
-	},
 }

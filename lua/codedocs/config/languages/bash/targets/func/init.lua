@@ -3,5 +3,4 @@ return {
 		"function_definition",
 	},
 	extractors = {},
-	opts = {},
 }
