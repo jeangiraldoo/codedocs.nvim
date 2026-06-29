@@ -3,5 +3,4 @@ return {
 		"method_declaration",
 	},
 	extractors = {},
-	opts = {},
 }

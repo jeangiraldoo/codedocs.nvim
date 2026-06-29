@@ -5,5 +5,4 @@ return {
 		"arrow_function",
 	},
 	extractors = {},
-	opts = {},
 }
