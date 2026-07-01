@@ -1,6 +1,7 @@
 return {
 	{
 		name = "header",
+		item_names = {},
 		layout = {
 			"---",
 			"--* ",
@@ -14,6 +15,7 @@ return {
 	},
 	{
 		name = "primary_section",
+		item_names = { "primary_section" },
 		layout = {},
 		insert_gap_between = {
 			text = " *",
@@ -39,6 +41,7 @@ return {
 	},
 	{
 		name = "secondary_section",
+		item_names = { "secondary_section" },
 		layout = {},
 		insert_gap_between = {
 			text = " * ",
@@ -65,6 +68,7 @@ return {
 	},
 	{
 		name = "footer",
+		item_names = {},
 		layout = {
 			" ]-",
 		},

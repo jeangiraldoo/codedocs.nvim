@@ -1,6 +1,12 @@
 return {
 	cursor_pos = { row = 1, col = 1 },
 	expected_items = {
-		attributes = {},
+		instance_attributes = {
+			{
+				name = "a",
+				type = "String",
+			},
+		},
+		static_attributes = {},
 	},
 }

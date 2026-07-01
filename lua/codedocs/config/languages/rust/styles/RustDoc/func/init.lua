@@ -2,7 +2,8 @@ return {
 	placement = "above",
 	blocks = {
 		{
-			name = "title",
+			name = "header",
+			item_names = {},
 			layout = {
 				"/// ${%snip_idx:title}",
 			},
@@ -19,6 +20,7 @@ return {
 		},
 		{
 			name = "parameters",
+			item_names = { "parameters" },
 			layout = { "/// # Arguments", "///" },
 			gap_before = {
 				returns = {
@@ -37,6 +39,7 @@ return {
 		},
 		{
 			name = "returns",
+			item_names = { "returns" },
 			layout = { "/// # Returns", "///" },
 			items = {
 				layout = {

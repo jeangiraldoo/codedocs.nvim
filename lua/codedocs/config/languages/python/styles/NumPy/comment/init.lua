@@ -2,7 +2,8 @@ return {
 	placement = "current",
 	blocks = {
 		{
-			name = "title",
+			name = "header",
+			item_names = {},
 			layout = {
 				"# ${%snip_idx:description}",
 			},

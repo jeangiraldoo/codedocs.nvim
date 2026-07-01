@@ -3,6 +3,7 @@ return {
 	blocks = {
 		{
 			name = "title",
+			item_names = {},
 			layout = {
 				"// ${%snip_idx:title}",
 			},
@@ -15,6 +16,7 @@ return {
 		},
 		{
 			name = "parameters",
+			item_names = { "parameters" },
 			gap_before = {
 				returns = {
 					enabled = false,
@@ -25,6 +27,7 @@ return {
 		},
 		{
 			name = "returns",
+			item_names = { "returns" },
 			items = { insert_gap_between = { text = "//" } },
 		},
 	},

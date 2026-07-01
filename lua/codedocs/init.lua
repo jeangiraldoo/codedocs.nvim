@@ -73,7 +73,10 @@ function Codedocs.build_annot_lines(blocks, opts, row, items)
 	for _, block in ipairs(blocks) do
 		local is_item_based_block = type(block.items) == "table"
 
-		local block_items = items[block.name]
+		local block_items = {}
+		for _, items_name_to_use in ipairs(block.item_names) do
+			if items[items_name_to_use] then vim.list_extend(block_items, items[items_name_to_use]) end
+		end
 
 		local at_least_one_block_item = block_items and #block_items > 0 and #block.items.layout > 0
 
