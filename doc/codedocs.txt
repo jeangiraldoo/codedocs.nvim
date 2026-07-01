@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                   For NVIM v0.10+    Last change: 30 May 2026
+                                  For NVIM v0.10+    Last change: 01 July 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -344,7 +344,9 @@ BLOCK OPTIONS
   ------------------------------------------------------------------------------
   Option Name  Type       Description
   ------------ ---------- ------------------------------------------------------
-  name         string     Block identifier used by gap_before and item groups
+  name         string     Block identifier used by gap_before
+
+  item_names   string[]   Defines what items are to be used in a block
 
   layout       string[]   Block lines. Supports layout placeholders
 
@@ -393,29 +395,16 @@ For example, to insert a gap before the `parameters` block:
 <
 
 
-NAME OPTION
+ITEM_NAMES OPTION
 
-The `name` option serves two purposes:
-
-1. Links the block to a specific group of items extracted from a target
-2. Used as a key in other blocks’ `gap_before` tables
-
-When items are extracted from a target, they are grouped by block name. For a
-block to access those items, its `name` must match the corresponding group in
-the target.
+When items are extracted from a target, they are grouped by name. For a block
+to access those items, the group name for said items must be in the
+`item_names` list.
 
 For example, given a `func` target with `parameters` and `returns` item groups,
-a block named `parameters` will automatically have access to those items and
-can render them via `items.layout`, with support for placeholders.
-
-The following target blocks are available:
-
-  Target   Blocks
-  -------- ----------------------------
-  func     title, parameters, returns
-  class    title, attributes
-A block named `parameters` automatically receives the extracted parameter items
-for rendering through `items.layout`.
+a block with "parameters" inside the `item_names` list will automatically have
+access to those items and can render them via `items.layout`, with support for
+placeholders.
 
 
 CUSTOMIZING BLOCKS
