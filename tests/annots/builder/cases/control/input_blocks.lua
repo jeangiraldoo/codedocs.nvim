@@ -1,6 +1,7 @@
 return {
 	{
-		name = "title",
+		name = "header",
+		item_names = {},
 		layout = {
 			"/**",
 			" * ",
@@ -14,6 +15,7 @@ return {
 	},
 	{
 		name = "primary_section",
+		item_names = { "primary_section" },
 		layout = {},
 		gap_before = {
 			secondary_section = {
@@ -33,6 +35,7 @@ return {
 	},
 	{
 		name = "secondary_section",
+		item_names = { "secondary_section" },
 		layout = {},
 		gap_before = {
 			footer = {
@@ -52,6 +55,7 @@ return {
 	},
 	{
 		name = "footer",
+		item_names = {},
 		layout = {
 			" */",
 		},

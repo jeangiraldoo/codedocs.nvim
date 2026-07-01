@@ -339,7 +339,8 @@ for rendering a specific section, such as parameters, returns, attributes, etc.
 
 | Option Name  | Type     | Description                                                      |
 | ------------ | -------- | ---------------------------------------------------------------- |
-| `name`       | string   | Block identifier used by `gap_before` and item groups            |
+| `name`       | string   | Block identifier used by `gap_before`                            |
+| `item_names` | string[] | Defines what items are to be used in a block                     |
 | `layout`     | string[] | Block lines. Supports [layout placeholders](#configuration)      |
 | `gap_before` | table    | Inserts spacing before another block                             |
 | `items`      | `table?` | Defines item rendering and spacing. See [`items`](#items-option) |
@@ -374,30 +375,16 @@ gap_before = {
 },
 ```
 
-###### `name` option
+###### `item_names` option
 
-The `name` option serves two purposes:
-
-1. Links the block to a specific group of items extracted from a target
-2. Used as a key in other blocks' `gap_before` tables
-
-When items are extracted from a target, they are grouped by block name. For a
-block to access those items, its `name` must match the corresponding group in
-the target.
+When items are extracted from a target, they are grouped by name. For a block to
+access those items, the group name for said items must be in the `item_names`
+list.
 
 For example, given a `func` target with `parameters` and `returns` item groups,
-a block named `parameters` will automatically have access to those items and can
-render them via `items.layout`, with support for placeholders.
-
-The following target blocks are available:
-
-| Target  | Blocks                           |
-| ------- | -------------------------------- |
-| `func`  | `title`, `parameters`, `returns` |
-| `class` | `title`, `attributes`            |
-
-A block named `parameters` automatically receives the extracted parameter items
-for rendering through `items.layout`.
+a block with "parameters" inside the `item_names` list will automatically have
+access to those items and can render them via `items.layout`, with support for
+placeholders.
 
 ###### Customizing blocks
 

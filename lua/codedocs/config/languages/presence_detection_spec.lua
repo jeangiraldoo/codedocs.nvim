@@ -34,7 +34,6 @@ local function create_subcase_tester(lang, extractor_name, target_name)
 			local target_case_lua_path = target_case_path:gsub("/", ".")
 
 			local input = vim.fn.readfile(vim.fs.joinpath(target_case_path, "input"))
-			print(vim.inspect(input))
 			local metadata = require(target_case_lua_path .. ".metadata")
 
 			Utils.mock_buffer(lang, input, metadata.cursor_pos)

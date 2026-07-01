@@ -3,6 +3,7 @@ return {
 	blocks = {
 		{
 			name = "header",
+			item_names = {},
 			layout = {
 				"/**",
 				" * ${%snip_idx:title}",
@@ -16,6 +17,7 @@ return {
 		},
 		{
 			name = "attributes",
+			item_names = { "attributes" },
 			gap_before = {
 				footer = {
 					enabled = false,
@@ -26,6 +28,7 @@ return {
 		},
 		{
 			name = "footer",
+			item_names = {},
 			layout = {
 				" */",
 			},

@@ -41,6 +41,7 @@ describe_customization("Adding new target-less annotation", function()
 			blocks = {
 				{
 					name = "title",
+					item_names = {},
 					insert_gap_between = {
 						text = "",
 						before = {},
@@ -91,6 +92,7 @@ describe_customization("Add new annotation with target", function()
 			blocks = {
 				{
 					name = "title",
+					item_names = {},
 					layout = {
 						"---first line",
 					},
@@ -101,6 +103,7 @@ describe_customization("Add new annotation with target", function()
 				},
 				{
 					name = "someblock",
+					item_names = { "someblock" },
 					layout = {
 						"---${%snip_idx:block title}",
 					},
@@ -294,6 +297,7 @@ describe_customization("Add support for a new language", function()
 				blocks = {
 					{
 						name = "title",
+						item_names = {},
 						insert_gap_between = {
 							text = "",
 							before = {},
