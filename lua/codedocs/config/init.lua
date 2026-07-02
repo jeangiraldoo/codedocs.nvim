@@ -63,45 +63,65 @@ local function validate_config(config)
 					vim.validate {
 						[block_idx_path .. ".layout"] = { block.layout, "table" },
 					}
-					vim.validate {
-						[block_idx_path .. ".insert_gap_between"] = { block.insert_gap_between, "table" },
-					}
-					vim.validate {
-						[block_idx_path .. ".insert_gap_between.before"] = {
-							block.insert_gap_between.before,
-							"table",
-						},
-					}
-					vim.validate {
-						[block_idx_path .. ".insert_gap_between.text"] = { block.insert_gap_between.text, "string" },
-					}
 
 					if block.items then
 						vim.validate {
 							[block_idx_path .. " .items"] = { block.items, "table" },
 						}
 
-						vim.validate {
-							[block_idx_path .. ".items.layout"] = { block.items.layout, "table" },
-						}
-						vim.validate {
-							[block_idx_path .. ".items.insert_gap_between"] = {
-								block.items.insert_gap_between,
-								"table",
-							},
-						}
-						vim.validate {
-							[block_idx_path .. ".items.insert_gap_between.enabled"] = {
-								block.items.insert_gap_between.enabled,
-								"boolean",
-							},
-						}
-						vim.validate {
-							[block_idx_path .. ".items.insert_gap_between.text"] = {
-								block.items.insert_gap_between.text,
-								"string",
-							},
-						}
+						for item_block_idx, item_block in ipairs(block.items) do
+							vim.validate {
+								[block_idx_path .. ".items[" .. item_block_idx .. "].name"] = {
+									item_block.name,
+									"string",
+								},
+							}
+							vim.validate {
+								[block_idx_path .. ".items[" .. item_block_idx .. "].layout"] = {
+									item_block.layout,
+									"table",
+								},
+							}
+							vim.validate {
+								[block_idx_path .. "items[" .. item_block_idx .. "].insert_gap_between"] = {
+									item_block.insert_gap_between,
+									"table",
+								},
+							}
+							vim.validate {
+								[block_idx_path .. ".items[" .. item_block_idx .. "].insert_gap_between.enabled"] = {
+									item_block.insert_gap_between.enabled,
+									"boolean",
+								},
+							}
+							vim.validate {
+								[block_idx_path .. ".items[" .. item_block_idx .. "].insert_gap_between.text"] = {
+									item_block.insert_gap_between.text,
+									"string",
+								},
+							}
+							vim.validate {
+								[block_idx_path .. ".items[" .. item_block_idx .. "].gap_before"] = {
+									item_block.gap_before,
+									"table",
+								},
+							}
+
+							for block_name, gap_opts in ipairs(item_block.gap_before) do
+								vim.validate {
+									[block_idx_path .. ".items[" .. item_block_idx .. "].gap_before[" .. block_name .. "].enabled"] = {
+										gap_opts.enabled,
+										"boolean",
+									},
+								}
+								vim.validate {
+									[block_idx_path .. ".items[" .. item_block_idx .. "].gap_before[" .. block_name .. "].text"] = {
+										gap_opts.text,
+										"string",
+									},
+								}
+							end
+						end
 					end
 				end
 			end

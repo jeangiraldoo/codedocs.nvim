@@ -3,94 +3,11 @@ local Item_extractor = require "codedocs.item_extractor"
 
 local Codedocs = {}
 
-local function _get_line_indent(row)
-	local cols = vim.fn.indent(row + 1)
-	if cols == -1 then return "" end
-
-	if vim.bo.expandtab then return string.rep(" ", cols) end
-
-	local tabstop = vim.bo.tabstop
-	local tabs = math.floor(cols / tabstop)
-	local spaces = cols % tabstop
-
-	return string.rep("\t", tabs) .. string.rep(" ", spaces)
-end
-
 function Codedocs.build_annot_lines(blocks, opts, row, items)
-	local state = {
-		placeholders = {
-			general = {},
-			items = {},
-		},
-		lines = {},
-	}
+	local annot = require("codedocs.annotation_builder").new(items, opts, row)
+	local lines = annot:build(blocks)
 
-	local new_state = vim.tbl_deep_extend("force", state, vim.deepcopy(opts))
-
-	new_state.placeholders.items =
-		vim.tbl_deep_extend("force", new_state.placeholders.items, vim.deepcopy(new_state.placeholders.general))
-
-	local line_indent = _get_line_indent(row)
-
-	local function insert(line, item)
-		if line == "" then
-			table.insert(new_state.lines, line)
-			return
-		end
-
-		line = line_indent .. line
-
-		local placeholders = item and new_state.placeholders.items or new_state.placeholders.general
-
-		for placeholder, handler in pairs(placeholders) do
-			line = line:gsub(placeholder, function() return handler(new_state.state, item) end)
-		end
-
-		table.insert(new_state.lines, line)
-	end
-
-	local function new_block(block_opts, block_items)
-		for _, layout_line in ipairs(block_opts.layout) do
-			insert(layout_line)
-		end
-
-		if not block_items then return end
-
-		for item_idx, item in ipairs(block_items) do
-			for _, line in ipairs(block_opts.items.layout) do
-				insert(line, item)
-
-				local is_last_item = block_items[item_idx + 1] == nil
-				if block_opts.items.insert_gap_between.enabled and not is_last_item then
-					insert(block_opts.items.insert_gap_between.text, item)
-				end
-			end
-		end
-	end
-
-	local gap_data
-
-	for _, block in ipairs(blocks) do
-		local is_item_based_block = type(block.items) == "table"
-
-		local block_items = {}
-		for _, items_name_to_use in ipairs(block.item_names) do
-			if items[items_name_to_use] then vim.list_extend(block_items, items[items_name_to_use]) end
-		end
-
-		local at_least_one_block_item = block_items and #block_items > 0 and #block.items.layout > 0
-
-		if not is_item_based_block or at_least_one_block_item then
-			if gap_data and gap_data[block.name] and gap_data[block.name].enabled then
-				insert(gap_data[block.name].text)
-			end
-
-			new_block(block, block_items)
-			gap_data = block.gap_before
-		end
-	end
-
-	return new_state.lines
+	return lines
 end
 
 --- Inserts an annotation relative to a target and moves the cursor to the annotation title

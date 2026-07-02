@@ -29,6 +29,9 @@ _A simple, customizable, yet powerful Annotation Framework_
   - [Languages](#languages)
     - [Targets](#targets)
     - [Annotations](#annotations)
+      - [Blocks](#blocks)
+        - [General blocks](#general-blocks)
+        - [Item blocks](#item-blocks)
 - [Language support](#language-support)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
@@ -323,38 +326,36 @@ Annotations are defined as a table with specific options.
 
 ##### Blocks
 
-Blocks define the structure and rendering of an annotation.
-
-The `blocks` option is a list of block definitions. Each block is responsible
-for rendering a specific section, such as parameters, returns, attributes, etc.
-
 <!-- prettier-ignore -->
 > [!IMPORTANT]
-> `blocks` is a list, so overriding it replaces the default list entirely.
+> Overriding a list of blocks replaces the default list entirely.
 >
-> To modify a single block, see
-> [Customizing blocks](#customizing-blocks).
+> To modify a single block, see [Customizing blocks](#customizing-blocks).
 
-###### Block options
+Blocks are the fundamental building blocks of an annotation. Each block defines
+how a portion of the annotation is rendered, including its layout, formatting,
+and any associated behavior.
 
-| Option Name  | Type     | Description                                                      |
-| ------------ | -------- | ---------------------------------------------------------------- |
-| `name`       | string   | Block identifier used by `gap_before`                            |
-| `item_names` | string[] | Defines what items are to be used in a block                     |
-| `layout`     | string[] | Block lines. Supports [layout placeholders](#configuration)      |
-| `gap_before` | table    | Inserts spacing before another block                             |
-| `items`      | `table?` | Defines item rendering and spacing. See [`items`](#items-option) |
+There are two types of blocks: general blocks and item blocks. Item blocks are
+an extension of general blocks, adding a small set of item-specific features.
 
-###### `items` option
+<!-- prettier-ignore -->
+###### General blocks
 
-The `items` option controls how extracted items are rendered inside a block.
+All blocks support the following options:
 
-| Name                 | Expected Value Type                 | Behavior                                              |
-| -------------------- | ----------------------------------- | ----------------------------------------------------- |
-| `layout`             | `string[]`                          | Same as `layout`, but with item-specific placeholders |
-| `insert_gap_between` | `{text: string, enabled = boolean}` | Whether to insert a gap between items                 |
+| Option Name  | Type                                                      | Description                                                             |
+| ------------ | --------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `name`       | string                                                    | Block identifier used by other options                                  |
+| `layout`     | string[]                                                  | Block lines. Supports [layout placeholders](#configuration)             |
+| `gap_before` | `{ [block_name] = { enabled = boolean, text = string } }` | Maps block `name` values to the gap inserted before the matching block. |
+| `items`      | `table?`                                                  | List of item blocks                                                     |
 
-###### `gap_before`
+The `layout` option supports the following placeholders:
+
+- `%snip_idx`: Tabstop index for Neovim snippets. The counter is increased by 1
+  after each use
+- `%%>`: One level of indentation based on your Neovim settings
 
 Each key in `gap_before` is a block name, and its value supports the following
 suboptions:
@@ -375,16 +376,30 @@ gap_before = {
 },
 ```
 
-###### `item_names` option
+###### Item blocks
 
-When items are extracted from a target, they are grouped by name. For a block to
-access those items, the group name for said items must be in the `item_names`
-list.
+Item blocks are defined in a list under the `items` key of a general block.
+
+When items are extracted from a target, they are grouped by name. For an item
+block to access those items, the group name for said items must be the same as
+the name of the block.
 
 For example, given a `func` target with `parameters` and `returns` item groups,
-a block with "parameters" inside the `item_names` list will automatically have
-access to those items and can render them via `items.layout`, with support for
+a block named "parameters" will automatically have access to the `parameter`
+items and can define how they render via the `layout` option, with support for
 placeholders.
+
+When used in an item block, the `layout` option supports the following
+additional placeholders, in addition to the general placeholders:
+
+- `%item_name`: The item's name.
+- `%item_type`: The item's type.
+
+Lastly, item blocks have the following exclusive options:
+
+| Name                 | Expected Value Type                 | Behavior                              |
+| -------------------- | ----------------------------------- | ------------------------------------- |
+| `insert_gap_between` | `{text: string, enabled = boolean}` | Whether to insert a gap between items |
 
 ###### Customizing blocks
 
@@ -461,9 +476,17 @@ require("codedocs").setup {
                                     },
                                 },
                                 items = {
-                                    layout = {
-                                        "%>:param %item_name: ${%snip_idx:description}",
-                                        "%>:type %item_name: ${%snip_idx:%item_type}",
+                                    {
+                                        name = "parameters",
+                                        layout = {
+                                            "%>:param %item_name: ${%snip_idx:description}",
+                                            "%>:type %item_name: ${%snip_idx:%item_type}",
+                                        },
+                                        insert_gap_between = {
+                                            enabled = false,
+                                            text = "",
+                                        },
+                                        gap_before = {},
                                     },
                                 },
                             },
@@ -476,9 +499,17 @@ require("codedocs").setup {
                                     },
                                 },
                                 items = {
-                                    layout = {
-                                        "%>:return: ${%snip_idx:description}",
-                                        "%>:rtype: ${%snip_idx:%item_type}",
+                                    {
+                                        name = "returns",
+                                        layout = {
+                                            "%>:return: ${%snip_idx:description}",
+                                            "%>:rtype: ${%snip_idx:%item_type}",
+                                        },
+                                        insert_gap_between = {
+                                            enabled = false,
+                                            text = "",
+                                        },
+                                        gap_before = {},
                                     },
                                 },
                             },
