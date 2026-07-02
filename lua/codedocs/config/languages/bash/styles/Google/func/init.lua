@@ -3,7 +3,6 @@ return {
 	blocks = {
 		{
 			name = "header",
-			item_names = {},
 			layout = {
 				"#######################################",
 				"# ${%snip_idx:title}",
@@ -11,25 +10,51 @@ return {
 		},
 		{
 			name = "globals",
-			item_names = { "globals" },
 			layout = { "# Globals:" },
-			items = { layout = { "#   %item_name" } },
+			items = {
+				{
+					name = "globals",
+					layout = { "#   %item_name" },
+					insert_gap_between = {
+						enabled = false,
+						text = " #",
+					},
+					gap_before = {},
+				},
+			},
 		},
 		{
 			name = "parameters",
-			item_names = { "parameters" },
 			layout = { "# Arguments:" },
-			items = { layout = { "#   ${%snip_idx:description}" } },
+			items = {
+				{
+					name = "parameters",
+					layout = { "#   ${%snip_idx:description}" },
+					insert_gap_between = {
+						enabled = false,
+						text = " #",
+					},
+					gap_before = {},
+				},
+			},
 		},
 		{
 			name = "returns",
-			item_names = { "returns" },
 			layout = { "Returns:" },
-			items = { layout = { "%item_type:" } },
+			items = {
+				{
+					name = "returns",
+					layout = { "%item_type:" },
+					insert_gap_between = {
+						enabled = false,
+						text = " #",
+					},
+					gap_before = {},
+				},
+			},
 		},
 		{
 			name = "footer",
-			item_names = {},
 			layout = {
 				"#######################################",
 			},

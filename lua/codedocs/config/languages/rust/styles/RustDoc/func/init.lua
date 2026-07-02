@@ -3,7 +3,6 @@ return {
 	blocks = {
 		{
 			name = "header",
-			item_names = {},
 			layout = {
 				"/// ${%snip_idx:title}",
 			},
@@ -20,7 +19,6 @@ return {
 		},
 		{
 			name = "parameters",
-			item_names = { "parameters" },
 			layout = { "/// # Arguments", "///" },
 			gap_before = {
 				returns = {
@@ -29,24 +27,39 @@ return {
 				},
 			},
 			items = {
-				layout = {
-					"/// * `%item_name` - ${%snip_idx:description}",
-				},
-				insert_gap_between = {
-					text = "///",
+				{
+					name = "parameters",
+					layout = {
+						"/// * `%item_name` - ${%snip_idx:description}",
+					},
+					insert_gap_between = {
+						enabled = false,
+						text = "///",
+					},
+					gap_before = {
+						text = "///",
+						enabled = false,
+					},
 				},
 			},
 		},
 		{
 			name = "returns",
-			item_names = { "returns" },
 			layout = { "/// # Returns", "///" },
 			items = {
-				layout = {
-					"/// ${%snip_idx:description}",
-				},
-				insert_gap_between = {
-					text = "///",
+				{
+					name = "returns",
+					layout = {
+						"/// ${%snip_idx:description}",
+					},
+					insert_gap_between = {
+						enabled = false,
+						text = "///",
+					},
+					gap_before = {
+						enabled = false,
+						text = "///",
+					},
 				},
 			},
 		},

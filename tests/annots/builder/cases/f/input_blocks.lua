@@ -1,7 +1,6 @@
 return {
 	{
 		name = "header",
-		item_names = {},
 		layout = {
 			"/**",
 			" * ",
@@ -15,43 +14,46 @@ return {
 	},
 	{
 		name = "primary_section",
-		item_names = { "primary_section" },
 		layout = {},
 		gap_before = {
 			text = " *",
 			enabled = false,
 		},
 		items = {
-			insert_gap_between = {
-				enabled = false,
-				text = " * ",
-			},
-			layout = {
-				" * @the_type [%item_type] @the_name {%item_name} ${%snip_idx:description}",
+			{
+				name = "primary_section",
+				layout = {
+					" * @the_type [%item_type] @the_name {%item_name} ${%snip_idx:description}",
+				},
+				gap_before = {
+					enabled = false,
+					text = " * ",
+				},
 			},
 		},
 	},
 	{
 		name = "secondary_section",
-		item_names = { "secondary_section" },
 		layout = {},
 		gap_before = {
 			text = " * ",
 			enabled = false,
 		},
 		items = {
-			insert_gap_between = {
-				enabled = false,
-				text = " * ",
-			},
-			layout = {
-				" * @secondary_item %item_name",
+			{
+				name = "secondary_section",
+				layout = {
+					" * @secondary_item %item_name",
+				},
+				gap_before = {
+					enabled = false,
+					text = " * ",
+				},
 			},
 		},
 	},
 	{
 		name = "footer",
-		item_names = {},
 		layout = {
 			" */",
 		},

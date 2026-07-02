@@ -41,7 +41,6 @@ describe_customization("Adding new target-less annotation", function()
 			blocks = {
 				{
 					name = "title",
-					item_names = {},
 					insert_gap_between = {
 						text = "",
 						before = {},
@@ -92,32 +91,28 @@ describe_customization("Add new annotation with target", function()
 			blocks = {
 				{
 					name = "title",
-					item_names = {},
 					layout = {
 						"---first line",
 					},
-					insert_gap_between = {
-						text = "",
-						before = {},
-					},
+					gap_before = {},
 				},
 				{
 					name = "someblock",
-					item_names = { "someblock" },
 					layout = {
 						"---${%snip_idx:block title}",
 					},
-					insert_gap_between = {
-						text = "",
-						before = {},
-					},
+					gap_before = {},
 					items = {
-						layout = {
-							"%item_name | %item_type",
-						},
-						insert_gap_between = {
-							enabled = false,
-							text = "",
+						{
+							name = "someblock",
+							layout = {
+								"%item_name | %item_type",
+							},
+							insert_gap_between = {
+								enabled = false,
+								text = "",
+							},
+							gap_before = {},
 						},
 					},
 				},
@@ -224,7 +219,7 @@ local BASE_MOCKED_OPTS = {
 			layout = {
 				"some layout %item_name",
 			},
-			indent = true,
+			gap_before = {},
 		},
 	},
 }
@@ -297,7 +292,6 @@ describe_customization("Add support for a new language", function()
 				blocks = {
 					{
 						name = "title",
-						item_names = {},
 						insert_gap_between = {
 							text = "",
 							before = {},
@@ -306,6 +300,7 @@ describe_customization("Add support for a new language", function()
 							"---${%snip_idx:title}",
 							"---Second line",
 						},
+						gap_before = {},
 					},
 				},
 			},

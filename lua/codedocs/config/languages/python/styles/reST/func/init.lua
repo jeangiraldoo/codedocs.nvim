@@ -3,7 +3,6 @@ return {
 	blocks = {
 		{
 			name = "header",
-			item_names = {},
 			layout = {
 				'%>"""',
 				"%>${%snip_idx:title}",
@@ -21,7 +20,6 @@ return {
 		},
 		{
 			name = "parameters",
-			item_names = { "parameters" },
 			gap_before = {
 				returns = {
 					enabled = false,
@@ -29,15 +27,22 @@ return {
 				},
 			},
 			items = {
-				layout = {
-					"%>:param %item_name: ${%snip_idx:description}",
-					"%>:type %item_name: ${%snip_idx:%item_type}",
+				{
+					name = "parameters",
+					layout = {
+						"%>:param %item_name: ${%snip_idx:description}",
+						"%>:type %item_name: ${%snip_idx:%item_type}",
+					},
+					insert_gap_between = {
+						enabled = false,
+						text = "",
+					},
+					gap_before = {},
 				},
 			},
 		},
 		{
 			name = "returns",
-			item_names = { "returns" },
 			gap_before = {
 				footer = {
 					enabled = false,
@@ -45,15 +50,22 @@ return {
 				},
 			},
 			items = {
-				layout = {
-					"%>:return: ${%snip_idx:description}",
-					"%>:rtype: ${%snip_idx:%item_type}",
+				{
+					name = "returns",
+					layout = {
+						"%>:return: ${%snip_idx:description}",
+						"%>:rtype: ${%snip_idx:%item_type}",
+					},
+					insert_gap_between = {
+						enabled = false,
+						text = "",
+					},
+					gap_before = {},
 				},
 			},
 		},
 		{
 			name = "footer",
-			item_names = {},
 			layout = {
 				'%>"""',
 			},

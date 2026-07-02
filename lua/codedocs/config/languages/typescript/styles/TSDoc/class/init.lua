@@ -3,7 +3,6 @@ return {
 	blocks = {
 		{
 			name = "header",
-			item_names = {},
 			layout = {
 				"/**",
 				" * ${%snip_idx:title}",
@@ -17,7 +16,6 @@ return {
 		},
 		{
 			name = "attributes",
-			item_names = { "attributes" },
 			gap_before = {
 				footer = {
 					text = " *",
@@ -25,14 +23,22 @@ return {
 				},
 			},
 			items = {
-				insert_gap_between = {
-					text = " *",
+				{
+					name = "attributes",
+					layout = {},
+					insert_gap_between = {
+						enabled = false,
+						text = " *",
+					},
+					gap_before = {
+						enabled = false,
+						text = " *",
+					},
 				},
 			},
 		},
 		{
 			name = "footer",
-			item_names = {},
 			layout = {
 				" */",
 			},
