@@ -10,7 +10,7 @@ function Query_loader.load(language, target_name, extractor_name, query_name)
 	if query_cache[cache_key] then return query_cache[cache_key] end
 
 	local query_path = dir
-		.. "/config/languages/"
+		.. "/../config/languages/"
 		.. language
 		.. "/targets/"
 		.. target_name

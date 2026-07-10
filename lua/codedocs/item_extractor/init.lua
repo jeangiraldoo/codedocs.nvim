@@ -76,7 +76,7 @@ local function _extract_items(extractors, target_data, language_name, target_nam
 
 	for extractor_name, item_extractor in pairs(extractors) do
 		local function load_query(query_name)
-			local Query_loader = require "codedocs.query_loader"
+			local Query_loader = require "codedocs.item_extractor.query_loader"
 			return Query_loader.load(language_name, target_name, extractor_name, query_name)
 		end
 
