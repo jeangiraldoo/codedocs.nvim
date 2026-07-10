@@ -71,18 +71,17 @@ local function generic_query_parser(ts_node, query_obj)
 	return items
 end
 
-local function _extract_items(extractors, extractors_opts, target_data, language_name, target_name)
+local function _extract_items(extractors, target_data, language_name, target_name)
 	local items = {}
 
 	for extractor_name, item_extractor in pairs(extractors) do
 		local function load_query(query_name)
-			local Query_loader = require("codedocs.query_loader")
+			local Query_loader = require "codedocs.query_loader"
 			return Query_loader.load(language_name, target_name, extractor_name, query_name)
 		end
 
 		local raw_items = item_extractor {
 			node = target_data.node,
-			opts = extractors_opts,
 			load_query = load_query,
 			extract_ts_nodes = function(data) return extract_ts_nodes(data.node or target_data.node, data.query) end,
 			extract_items = function(data) return generic_query_parser(data.node or target_data.node, data.query) end,
@@ -180,7 +179,7 @@ function Item_extractor.get_requested_target_data(lang_name, requested_name)
 	local targets_config = require("codedocs.config").opts.languages[lang_name].targets[requested_name]
 
 	if not targets_config.node_identifiers or vim.tbl_isempty(targets_config.node_identifiers) then
-		local items = _extract_items(targets_config.extractors, targets_config.opts, {}, lang_name, requested_name)
+		local items = _extract_items(targets_config.extractors, {}, lang_name, requested_name)
 
 		return {
 			row = vim.api.nvim_win_get_cursor(0)[1] - 1,
@@ -193,7 +192,7 @@ function Item_extractor.get_requested_target_data(lang_name, requested_name)
 
 	if not ts_target_data then return EMPTY_TARGET_RESULT end
 
-	local items = _extract_items(targets_config.extractors, targets_config.opts, ts_target_data, lang_name, requested_name)
+	local items = _extract_items(targets_config.extractors, ts_target_data, lang_name, requested_name)
 
 	return {
 		-- Ignore extracted items if cursor target differs
@@ -218,7 +217,7 @@ function Item_extractor.get_detected_target_data(lang_name)
 	local targets_config = lang_config.targets[ts_target_data.name]
 
 	return {
-		items = _extract_items(targets_config.extractors, targets_config.opts, ts_target_data, lang_name, ts_target_data.name),
+		items = _extract_items(targets_config.extractors, ts_target_data, lang_name, ts_target_data.name),
 		target_name = ts_target_data.name,
 		row = ts_target_data.node and ts_target_data.node:range() or vim.api.nvim_win_get_cursor(0)[1] - 1,
 	}
