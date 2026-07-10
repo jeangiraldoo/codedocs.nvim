@@ -29,9 +29,8 @@ _A simple, customizable, yet powerful Annotation Framework_
   - [Languages](#languages)
     - [Targets](#targets)
     - [Annotations](#annotations)
-      - [Blocks](#blocks)
-        - [General blocks](#general-blocks)
-        - [Item blocks](#item-blocks)
+      - [General blocks](#general-blocks)
+      - [Item blocks](#item-blocks)
 - [Language support](#language-support)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
@@ -317,20 +316,18 @@ returned by each function.
 
 #### Annotations
 
+<!-- prettier-ignore -->
+> [!IMPORTANT]
+> Overriding a list of blocks replaces the default list entirely.
+>
+> To modify a single block, see [Customizing blocks](#customizing-blocks).
+
 Annotations are defined as a table with specific options.
 
 | Option Name | Type   | Behavior                                                 |
 | ----------- | ------ | -------------------------------------------------------- |
 | `placement` | string | What line to place the annotation relative to the cursor |
 | `blocks`    | list   | List of blocks forming the annotation                    |
-
-##### Blocks
-
-<!-- prettier-ignore -->
-> [!IMPORTANT]
-> Overriding a list of blocks replaces the default list entirely.
->
-> To modify a single block, see [Customizing blocks](#customizing-blocks).
 
 Blocks are the fundamental building blocks of an annotation. Each block defines
 how a portion of the annotation is rendered, including its layout, formatting,
@@ -340,7 +337,7 @@ There are two types of blocks: general blocks and item blocks. Item blocks are
 an extension of general blocks, adding a small set of item-specific features.
 
 <!-- prettier-ignore -->
-###### General blocks
+##### General blocks
 
 All blocks support the following options:
 
@@ -376,7 +373,7 @@ gap_before = {
 },
 ```
 
-###### Item blocks
+##### Item blocks
 
 Item blocks are defined in a list under the `items` key of a general block.
 
@@ -401,7 +398,7 @@ Lastly, item blocks have the following exclusive options:
 | -------------------- | ----------------------------------- | ------------------------------------- |
 | `insert_gap_between` | `{text: string, enabled = boolean}` | Whether to insert a gap between items |
 
-###### Customizing blocks
+##### Customizing blocks
 
 Because `blocks` replaces the entire default list, modifying a single block
 requires copying the original list first.
