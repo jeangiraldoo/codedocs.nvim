@@ -1,5 +1,3 @@
-local dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
-
 local Config = {}
 
 ---@alias CodedocsSupportedLanguages
@@ -57,21 +55,8 @@ local Config = {}
 ---@field aliases table<string, CodedocsSupportedLanguages>? Aliases for filetypes -> supported languages
 ---@field languages CodedocsLanguagesConfigs? Languages configuration
 
-local function build_dir_tbl(rel_lua_path)
-	local path = rel_lua_path:gsub("%.", "/")
-
-	local fs_path = vim.fs.joinpath(dir, path)
-
-	return vim.iter(vim.fs.dir(fs_path)):fold({}, function(acc, item_name, item_type)
-		if item_type ~= "directory" then return acc end
-
-		local dir_tbl = require(("codedocs.config.%s.%s"):format(rel_lua_path, item_name))
-
-		acc[item_name] = dir_tbl
-
-		return acc
-	end)
-end
+local dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
+local DETECTED_LANGS = vim.fs.dir(vim.fs.joinpath(dir, "languages"))
 
 ---@type CodedocsConfig
 Config.opts = {
@@ -81,29 +66,42 @@ Config.opts = {
 	},
 	---The `languages` table is created dynamically when the plugin first loads as there's a lot of languages;
 	---a literal `require` call per language is not pretty
-	languages = vim.iter(vim.fs.dir(vim.fs.joinpath(dir, "languages"))):fold({}, function(acc, name, type)
+	languages = vim.iter(DETECTED_LANGS):fold({}, function(acc, name, type)
 		if type ~= "directory" then return acc end
 
+		local lang_path = "codedocs.config.languages." .. name
+		local styles_path = lang_path .. ".styles"
+		local targets_path = lang_path .. ".targets"
+
+		local base_lang_config = require(lang_path)
 		local lang_utils = require "codedocs.config.languages.utils"
-		local base_lang_config = require("codedocs.config.languages." .. name)
+		local build_dir_tbl = require("codedocs.utils.general").build_dir_tbl
 
-		base_lang_config.styles = build_dir_tbl("languages." .. name .. ".styles")
+		base_lang_config.styles = (function()
+			local styles = build_dir_tbl(styles_path)
 
-		for item_name, tbl in pairs(base_lang_config.styles) do
-			tbl.annots = build_dir_tbl("languages." .. name .. ".styles." .. item_name)
-		end
-
-		for _, style_opts in pairs(base_lang_config.styles) do
-			for _, annotation_opts in pairs(style_opts.annots) do
-				annotation_opts.blocks = lang_utils.new_blocks_list(annotation_opts.blocks)
+			for item_name, tbl in pairs(styles) do
+				tbl.annots = build_dir_tbl(styles_path .. "." .. item_name)
 			end
-		end
 
-		base_lang_config.targets = build_dir_tbl("languages." .. name .. ".targets")
+			for _, style_opts in pairs(styles) do
+				for _, annotation_opts in pairs(style_opts.annots) do
+					annotation_opts.blocks = lang_utils.new_blocks_list(annotation_opts.blocks)
+				end
+			end
 
-		for target_name, tbl in pairs(base_lang_config.targets) do
-			tbl.extractors = build_dir_tbl("languages." .. name .. ".targets." .. target_name)
-		end
+			return styles
+		end)()
+
+		base_lang_config.targets = (function()
+			local targets = build_dir_tbl(targets_path)
+
+			for target_name, tbl in pairs(targets) do
+				tbl.extractors = build_dir_tbl(targets_path .. "." .. target_name)
+			end
+
+			return targets
+		end)()
 
 		acc[name] = base_lang_config
 		return acc
