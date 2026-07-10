@@ -1,6 +1,6 @@
 return function(target_data)
 	local raw_items = target_data.extract_items {
-		query = vim.treesitter.query.get("go", "codedocs_func_params"),
+		query = target_data.load_query("parameters"),
 	}
 
 	local final_items = {}
