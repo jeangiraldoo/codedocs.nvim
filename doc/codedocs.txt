@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                  For NVIM v0.10+    Last change: 04 July 2026
+                                  For NVIM v0.10+    Last change: 10 July 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -15,9 +15,8 @@
     - |codedocs-languages|
         - |codedocs-targets|
         - |codedocs-annotations|
-            - |codedocs-blocks|
-                - |codedocs-general-blocks|
-                - |codedocs-item-blocks|
+            - |codedocs-general-blocks|
+            - |codedocs-item-blocks|
 - |codedocs-language-support|
 - |codedocs-roadmap|
 - |codedocs-contributing|
@@ -319,6 +318,9 @@ returned by each function.
 
 ANNOTATIONS ~
 
+
+  [!IMPORTANT] Overriding a list of blocks replaces the default list entirely.
+  To modify a single block, see |codedocs-customizing-blocks|.
 Annotations are defined as a table with specific options.
 
   ---------------------------------------------------------------------------
@@ -329,12 +331,6 @@ Annotations are defined as a table with specific options.
 
   blocks      list     List of blocks forming the annotation
   ---------------------------------------------------------------------------
-
-BLOCKS
-
-
-  [!IMPORTANT] Overriding a list of blocks replaces the default list entirely.
-  To modify a single block, see |codedocs-customizing-blocks|.
 Blocks are the fundamental building blocks of an annotation. Each block defines
 how a portion of the annotation is rendered, including its layout, formatting,
 and any associated behavior.
