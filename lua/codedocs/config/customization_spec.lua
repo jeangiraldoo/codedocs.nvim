@@ -268,8 +268,6 @@ describe_customization("Customizing style options", function()
 						local expected_final_style =
 							vim.tbl_deep_extend("keep", vim.deepcopy(original_mocked_user_opts), original_style)
 
-						if not expected_final_style then print(vim.inspect(expected_final_style)) end
-
 						assert.are.same(
 							expected_final_style,
 							Codedocs.get_annot_tbl(lang_name, style_name, target_name)

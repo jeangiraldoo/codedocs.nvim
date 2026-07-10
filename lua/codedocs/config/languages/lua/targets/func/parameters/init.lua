@@ -1,5 +1,5 @@
 return function(target_data)
-	local t = vim.treesitter.query.get("lua", "codedocs-func-params")
+	local t = target_data.load_query("parameters")
 	return target_data.extract_items {
 		query = t,
 	}

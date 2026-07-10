@@ -3,11 +3,11 @@ return function(target_data)
 
 	local global_variables = target_data.extract_items {
 		node = root_node,
-		query = vim.treesitter.query.get("bash", "codedocs_global_vars"),
+		query = target_data.load_query("global_vars"),
 	}
 
 	local variable_expansions_in_function = target_data.extract_items {
-		query = vim.treesitter.query.get("bash", "codedocs_func_var_expansions"),
+		query = target_data.load_query("func_var_expansions"),
 	}
 
 	local globals_referenced = vim.iter(global_variables)
