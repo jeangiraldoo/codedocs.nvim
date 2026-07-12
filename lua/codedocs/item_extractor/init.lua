@@ -56,16 +56,7 @@ local function generic_query_parser(ts_node, query_obj)
 			end
 		end
 
-		local exists = false
-
-		for _, v in ipairs(items) do
-			if vim.deep_equal(v, new_item) then
-				exists = true
-				break
-			end
-		end
-
-		if vim.tbl_count(new_item) > 0 and not exists then table.insert(items, new_item) end
+		if vim.tbl_count(new_item) > 0 then table.insert(items, new_item) end
 	end
 
 	return items
