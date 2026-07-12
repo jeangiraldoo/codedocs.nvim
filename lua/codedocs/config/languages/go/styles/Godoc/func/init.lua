@@ -39,6 +39,7 @@ return {
 		},
 		{
 			name = "returns",
+			layout = {},
 			items = {
 				{
 					name = "returns",

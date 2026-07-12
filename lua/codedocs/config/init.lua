@@ -74,7 +74,6 @@ Config.opts = {
 		local targets_path = lang_path .. ".targets"
 
 		local base_lang_config = require(lang_path)
-		local lang_utils = require "codedocs.config.languages.utils"
 		local build_dir_tbl = require("codedocs.utils.general").build_dir_tbl
 
 		base_lang_config.styles = (function()
@@ -83,13 +82,6 @@ Config.opts = {
 			for item_name, tbl in pairs(styles) do
 				tbl.annots = build_dir_tbl(styles_path .. "." .. item_name)
 			end
-
-			for _, style_opts in pairs(styles) do
-				for _, annotation_opts in pairs(style_opts.annots) do
-					annotation_opts.blocks = lang_utils.new_blocks_list(annotation_opts.blocks)
-				end
-			end
-
 			return styles
 		end)()
 

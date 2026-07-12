@@ -20,6 +20,7 @@ return {
 		},
 		{
 			name = "parameters",
+			layout = {},
 			gap_before = {
 				returns = {
 					enabled = false,
@@ -43,6 +44,7 @@ return {
 		},
 		{
 			name = "returns",
+			layout = {},
 			gap_before = {
 				footer = {
 					enabled = false,
