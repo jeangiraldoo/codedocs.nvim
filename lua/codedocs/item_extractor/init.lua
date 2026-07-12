@@ -1,3 +1,5 @@
+local TS_utils = require "codedocs.item_extractor.ts"
+
 local Item_extractor = {}
 
 local function remove_duplicate_items_by_name(items)
@@ -23,12 +25,24 @@ local function _extract_items(extractors, target_data, language_name, target_nam
 			return Query_loader.load(language_name, target_name, extractor_name, query_name)
 		end
 
-		local raw_items = item_extractor {
-			node = target_data.node,
-			load_query = load_query,
-			extract_ts_nodes = function(data) return extract_ts_nodes(data.node or target_data.node, data.query) end,
-			extract_items = function(data) return generic_query_parser(data.node or target_data.node, data.query) end,
-		} or {}
+		local raw_items
+		if type(item_extractor) == "function" then
+			raw_items = item_extractor {
+				node = target_data.node,
+				load_query = load_query,
+				extract_ts_nodes = function(data)
+					return TS_utils.extract_ts_nodes(data.node or target_data.node, data.query)
+				end,
+				extract_items = function(data)
+					return TS_utils.generic_query_parser(data.node or target_data.node, data.query)
+				end,
+			} or {}
+		elseif type(item_extractor) == "table" and type(item_extractor._ts_query_name) == "string" then
+			local query = load_query(item_extractor._ts_query_name)
+			raw_items = TS_utils.generic_query_parser(target_data.node, query)
+		else
+			raw_items = {}
+		end
 
 		local dedup_items = vim.fn.has "nvim-0.12" == 1 ---TODO: remove when the minimum supported version is 0.12
 				and vim.iter(raw_items):unique(function(item) return item.name end):totable()
