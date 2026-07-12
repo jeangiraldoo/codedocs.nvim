@@ -46,7 +46,7 @@ end
 ---Builds a list with the names of the targets a language supports
 ---@return string[] supported_target_names
 function Test_utils.get_supported_targets(lang_name)
-	local target_identifiers = require("codedocs").get_target_identifiers(lang_name)
+	local target_identifiers = require("codedocs.item_extractor").get_target_identifiers(lang_name)
 
 	local values = vim.tbl_values(target_identifiers)
 	table.sort(values)

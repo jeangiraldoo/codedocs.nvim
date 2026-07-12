@@ -90,8 +90,6 @@ function Codedocs.get_supported_styles(lang_name)
 	return supported_styles
 end
 
-Codedocs.get_target_identifiers = Item_extractor.get_target_identifiers
-
 ---@param user_config CodedocsConfig?
 function Codedocs.setup(user_config)
 	Logger.info "Setup called"
@@ -102,9 +100,6 @@ function Codedocs.setup(user_config)
 
 	Logger.debug("Merged config options: " .. vim.inspect(Config.opts))
 end
-
-Codedocs.get_requested_target_data = Item_extractor.get_requested_target_data
-Codedocs.get_detected_target_data = Item_extractor.get_detected_target_data
 
 function Codedocs.get_target_data(lang_name, annotation_data)
 	vim.validate {

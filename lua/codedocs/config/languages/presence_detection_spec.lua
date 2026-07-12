@@ -38,7 +38,8 @@ local function create_subcase_tester(lang, extractor_name, target_name)
 
 			Utils.mock_buffer(lang, input, metadata.cursor_pos)
 
-			assert.are.same(metadata.expected_items, Codedocs.get_detected_target_data(lang).items)
+			local actual_items = Codedocs.get_target_data(lang).items
+			assert.are.same(metadata.expected_items, actual_items)
 		end)
 	end
 end
