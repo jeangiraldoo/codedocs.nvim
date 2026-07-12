@@ -1,125 +1,79 @@
+local Utils = require "codedocs.utils.general"
+
 local Annot_builder = {}
-Annot_builder.__index = Annot_builder
 
-function Annot_builder.new(items, builder_config, row)
-	local obj = {
-		placeholders = {
-			general = {},
-			items = {},
-		},
-		state = {
-			lines = {},
-			snip_idx_counter = 1,
-		},
-		items = items,
-		line_indent = (function()
-			local cols = vim.fn.indent(row + 1)
-			if cols == -1 then return "" end
+Annot_builder.builder = require "codedocs.annotation_builder.builder"
 
-			if vim.bo.expandtab then return string.rep(" ", cols) end
+function Annot_builder.build_annot_lines(blocks, opts, row, items)
+	local annot = require("codedocs.annotation_builder").builder.new(items, opts, row)
+	local lines = annot:build(blocks)
 
-			local tabstop = vim.bo.tabstop
-			local tabs = math.floor(cols / tabstop)
-			local spaces = cols % tabstop
+	return lines
+end
 
-			return string.rep("\t", tabs) .. string.rep(" ", spaces)
-		end)(),
+-- local function _determine_lang_name()
+-- 	if not Codedocs._filetypes_map then
+-- 		local langs_config = require("codedocs.config").opts.languages
+-- 		local filetypes_map = {}
+-- 		for lang_name, opts in pairs(langs_config) do
+-- 			for _, filetype_name in ipairs(opts.filetypes) do
+-- 				filetypes_map[filetype_name] = lang_name
+-- 			end
+-- 		end
+--
+-- 		Codedocs._filetypes_map = filetypes_map
+-- 	end
+--
+-- 	return Codedocs._filetypes_map[vim.bo.filetype]
+-- end
+
+function Annot_builder.get_annot_list()
+	local lang = Utils._determine_lang_name()
+	local lang_stuff = require("codedocs.config").opts.languages[lang]
+	local annot_names = vim.tbl_keys(lang_stuff.styles[lang_stuff.default_style].annots)
+	return annot_names
+end
+
+---Returns an existing annotation table from the configuration table
+---Equivalent to `require("codedocs.config").opts.languages[[lang_name]].styles[[style_name]].annots[[annotation_name]]
+---@param lang_name string
+---@param style_name string
+---@param annot_name string
+---@return CodedocsAnnotationStyleOpts annotation_tbl
+function Annot_builder.get_annot_tbl(lang_name, style_name, annot_name)
+	vim.validate {
+		lang_name = { lang_name, "string" },
+		style_name = { style_name, "string" },
+		annot_name = { annot_name, "string" },
 	}
-	obj = vim.tbl_deep_extend("force", obj, vim.deepcopy(builder_config))
 
-	setmetatable(obj, Annot_builder)
-	return obj
+	local annot_tbl = require("codedocs.config").opts.languages[lang_name].styles[style_name].annots[annot_name]
+	return annot_tbl
 end
 
-function Annot_builder:apply_general_placeholder(str)
-	for placeholder, handler in pairs(self.placeholders.general) do
-		str = str:gsub(placeholder, function() return handler(self.state) end)
-	end
+function Annot_builder.prepare_annotation(lang_name, annot_data, target_data)
+	-- local target_data = Codedocs.get_target_data(lang_name, annot_data)
 
-	return str
-end
+	local lang_config = require("codedocs.config").opts.languages[lang_name]
+	local style_name = annot_data and annot_data.style_name or lang_config.default_style
 
-function Annot_builder:apply_item_placeholder(str, item)
-	for placeholder, handler in pairs(self.placeholders.items) do
-		str = str:gsub(placeholder, function() return handler(self.state, item) end)
-		str = self:apply_general_placeholder(str)
-	end
+	local annot_tbl = Annot_builder.get_annot_tbl(lang_name, style_name, target_data.target_name)
 
-	return str
-end
+	local lines = Annot_builder.build_annot_lines(
+		annot_tbl.blocks,
+		require("codedocs.config").opts.annot_builder,
+		target_data.row,
+		target_data.items
+	)
 
-function Annot_builder:build_items_group_lines(group_items, layout, gap)
-	if #group_items == 0 then return {} end
-
-	local group_lines = {}
-
-	for idx, item in ipairs(group_items) do
-		for _, layout_line in ipairs(layout) do
-			table.insert(group_lines, self:apply_item_placeholder(layout_line, item))
-
-			if idx < #group_items and gap and gap.enabled then
-				table.insert(group_lines, self:apply_general_placeholder(gap.text))
-			end
-		end
-	end
-
-	return group_lines
-end
-
-function Annot_builder:block(blocks, is_item)
-	local content = {}
-
-	local gap_data
-	for _, block in ipairs(blocks) do
-		local block_lines = {}
-		if is_item then
-			local block_items = self.items[block.name]
-			if block_items then
-				block_lines = self:build_items_group_lines(block_items, block.layout, block.insert_gap_between)
-			end
-		elseif block.items and not vim.tbl_isempty(block.items) then
-			block_lines = {}
-			local items_lines = self:block(block.items, true)
-
-			-- emit this block's own layout
-			if not vim.tbl_isempty(items_lines) then
-				for _, ln in ipairs(block.layout or {}) do
-					table.insert(block_lines, self:apply_general_placeholder(ln))
-				end
-				vim.list_extend(block_lines, items_lines)
-			end
-		else
-			for _, ln in ipairs(block.layout) do
-				table.insert(block_lines, self:apply_general_placeholder(ln))
-			end
-		end
-
-		if
-			-- idx < #blocks
-			#block_lines > 0
-			and gap_data
-			and gap_data[block.name]
-			and gap_data[block.name].enabled
-		then
-			table.insert(content, gap_data[block.name].text)
-		end
-
-		vim.list_extend(content, block_lines)
-
-		if #block_lines > 0 then gap_data = block.gap_before end
-	end
-
-	if vim.tbl_isempty(content) then return {} end
-
-	return content
-end
-
-function Annot_builder:build(blocks)
-	local block_lines = self:block(blocks, false)
-
-	vim.list_extend(self.state.lines, block_lines)
-
-	return self.state.lines
+	return {
+		row = target_data.row,
+		target_name = target_data.target_name,
+		style_name = style_name,
+		items = target_data.items,
+		placement = annot_tbl.placement,
+		lines = lines,
+	}
 end
 
 return Annot_builder

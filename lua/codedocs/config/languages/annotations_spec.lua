@@ -23,7 +23,12 @@ local function test_case(lang, style_name, annot_name, case_name)
 
 		Test_utils.mock_buffer(lang, actual_input, { row = cursor.row, col = cursor.col or 1 })
 
-		local annot = Codedocs.prepare_annotation(lang, { style_name = style_name, annot_name = annot_name })
+		local target_data = Codedocs.get_target_data(lang, { style_name = style_name, annot_name = annot_name })
+		local annot = require("codedocs.annotation_builder").prepare_annotation(
+			lang,
+			{ style_name = style_name, annot_name = annot_name },
+			target_data
+		)
 
 		assert.are.same(expected_output, annot.lines)
 	end)

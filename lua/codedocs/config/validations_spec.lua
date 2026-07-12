@@ -9,7 +9,7 @@ utils.for_style(function(lang_name, style_name)
 	for _, target_name in ipairs(supported_targets) do
 		describe(lang_name .. " (" .. target_name .. ") /", function()
 			it(style_name, function()
-				local style = Codedocs.get_annot_tbl(lang_name, style_name, target_name)
+				local style = require("codedocs.annotation_builder").get_annot_tbl(lang_name, style_name, target_name)
 				assert.is_not_nil(style)
 			end)
 		end)
