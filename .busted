@@ -7,6 +7,5 @@ return {
 	},
 	default = {
 		output = "utfTerminal",
-		helper = "tests/init.lua",
 	},
 }

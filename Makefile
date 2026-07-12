@@ -12,7 +12,6 @@ new-lang:
 	$(SCRIPTS_DIR)/new_lang.sh
 
 test:
-	busted tests
 	busted lua
 
 all-checks: quality-checks tests

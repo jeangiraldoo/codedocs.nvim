@@ -1,4 +1,4 @@
-local Utils = require "tests.utils"
+local Utils = require "codedocs.utils.tests"
 local config = require("codedocs.config").opts
 local Codedocs = require "codedocs"
 

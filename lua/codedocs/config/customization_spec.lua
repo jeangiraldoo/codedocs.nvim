@@ -1,4 +1,4 @@
-local Utils = require "tests.utils"
+local Utils = require "codedocs.utils.tests"
 local Codedocs = require "codedocs"
 
 local function describe_customization(title, callback)
