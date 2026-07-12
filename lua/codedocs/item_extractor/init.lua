@@ -87,25 +87,17 @@ local function _extract_items(extractors, target_data, language_name, target_nam
 			extract_items = function(data) return generic_query_parser(data.node or target_data.node, data.query) end,
 		} or {}
 
-		local final_items
-		if vim.fn.has "nvim-0.12" == 1 then
-			final_items = vim.iter(raw_items)
-				:unique(function(item) return item.name end)
-				:map(function(item)
-					if not item.name then item.name = "" end
-					if not item.type then item.type = "" end
-					return item
-				end)
-				:totable()
-		else ---TODO: remove when the minimum supported version is 0.12
-			if #raw_items > 1 then raw_items = remove_duplicate_items_by_name(raw_items) end
+		local dedup_items = vim.fn.has "nvim-0.12" == 1 ---TODO: remove when the minimum supported version is 0.12
+				and vim.iter(raw_items):unique(function(item) return item.name end):totable()
+			or remove_duplicate_items_by_name(raw_items)
 
-			final_items = vim.tbl_map(function(item)
+		local final_items = vim.iter(dedup_items)
+			:map(function(item)
 				if not item.name then item.name = "" end
 				if not item.type then item.type = "" end
 				return item
-			end, raw_items)
-		end
+			end)
+			:totable()
 
 		items[extractor_name] = final_items
 	end
@@ -125,7 +117,6 @@ local function get_ts_target_data(lang_name)
 		local error_msg = "Tree-sitter parser for " .. lang_name .. " is not installed"
 
 		vim.notify(error_msg, vim.log.levels.ERROR)
-		-- Logger.error(error_msg)
 		return
 	end
 
