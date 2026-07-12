@@ -148,7 +148,7 @@ function Item_extractor.get_requested_target_data(lang_name, requested_name)
 		local items = _extract_items(targets_config.extractors, {}, lang_name, requested_name)
 
 		return {
-			row = vim.api.nvim_win_get_cursor(0)[1] - 1,
+			row = cursor_row,
 			items = items,
 			target_name = requested_name,
 		}
@@ -162,7 +162,7 @@ function Item_extractor.get_requested_target_data(lang_name, requested_name)
 
 	return {
 		-- Ignore extracted items if cursor target differs
-		row = ts_target_data.node and ts_target_data.node:range() or vim.api.nvim_win_get_cursor(0)[1] - 1,
+		row = ts_target_data.node and ts_target_data.node:range() or cursor_row,
 		items = (ts_target_data and ts_target_data.name == requested_name) and items or {},
 		target_name = requested_name,
 	}
