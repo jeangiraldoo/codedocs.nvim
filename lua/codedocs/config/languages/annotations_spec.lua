@@ -1,4 +1,4 @@
-local test_utils = require "tests.utils"
+-- local test_utils = require "tests.utils"
 local Codedocs = require "codedocs"
 local Test_utils = require "codedocs.utils.tests"
 
@@ -21,7 +21,7 @@ local function test_case(lang, style_name, annot_name, case_name)
 
 		local cursor, actual_input = Test_utils.parse_golden_file(input)
 
-		test_utils.mock_buffer(lang, actual_input, { row = cursor.row, col = cursor.col or 1 })
+		Test_utils.mock_buffer(lang, actual_input, { row = cursor.row, col = cursor.col or 1 })
 
 		local annot = Codedocs.prepare_annotation(lang, { style_name = style_name, annot_name = annot_name })
 
@@ -35,7 +35,7 @@ describe("Default style annotations", function()
 	for _, lang in ipairs(LANGS_TO_TEST) do
 		for style_name, style_opts in pairs(langs_config[lang].styles) do
 			for annot_name, _ in pairs(style_opts.annots) do
-				local annot_case_names = test_utils.read_dir_names(
+				local annot_case_names = Test_utils.read_dir_names(
 					DIR .. ("/%s/styles/%s/%s/output_cases"):format(lang, style_name, annot_name)
 				)
 

@@ -1,7 +1,7 @@
 --- Verifies that, for each language, under each style, there's an annotation that corresponds
 --- to each defined code target
 
-local utils = require "tests.utils"
+local utils = require "codedocs.utils.tests"
 local Codedocs = require "codedocs"
 
 utils.for_style(function(lang_name, style_name)

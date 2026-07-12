@@ -7,9 +7,8 @@
 ---Regarding the `items` option, since all item-based sections use the same `items` suboptions,
 ---and those options only affect their own section, it’s enough to test them in one section
 
-local Utils = require "tests.utils"
+local Utils = require "codedocs.utils.tests"
 local Codedocs = require "codedocs"
--- local annot_builder = require "codedocs.annot_builder"
 
 local DIR = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
 
@@ -33,7 +32,7 @@ describe("Annotation builder - ", function()
 
 	for _, case_name in ipairs(cases) do
 		it("Case #" .. case_name, function()
-			local blocks = require("tests.annots.builder.cases." .. case_name .. ".input_blocks")
+			local blocks = require("codedocs.annotation_builder.cases." .. case_name .. ".input_blocks")
 			local expected_output = vim.fn.readfile(DIR .. "/cases/" .. case_name .. "/output")
 
 			local opts = require("codedocs.config").opts.annot_builder
