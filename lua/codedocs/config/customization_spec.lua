@@ -74,7 +74,12 @@ describe_customization("Adding new target-less annotation", function()
 		}
 
 		it(lang_name .. " - " .. style_name .. "(without items)", function()
-			local annot_lines = Codedocs.prepare_annotation(lang_name, { annot_name = annotation.name }).lines
+			local target_data = Codedocs.get_target_data(lang_name, { annot_name = annotation.name })
+			local annot_lines = require("codedocs.annotation_builder").prepare_annotation(
+				lang_name,
+				{ annot_name = annotation.name },
+				target_data
+			).lines
 			assert.are.same(annotation.expected_lines, annot_lines)
 		end)
 	end)
@@ -170,7 +175,12 @@ describe_customization("Add new annotation with target", function()
 			"end",
 		}, { row = 1, col = 1 })
 
-		local lines = Codedocs.prepare_annotation("lua", { annot_name = target.name, style_name = "EmmyLua" }).lines
+		local target_data = Codedocs.get_target_data("lua", { annot_name = target.name, style_name = "EmmyLua" })
+		local lines = require("codedocs.annotation_builder").prepare_annotation(
+			"lua",
+			{ annot_name = target.name, style_name = "EmmyLua" },
+			target_data
+		).lines
 
 		assert.are.same(annotation.expected_lines, lines)
 	end)
@@ -248,7 +258,9 @@ describe_customization("Customizing style options", function()
 			describe("[" .. lang_name .. "/" .. target_name .. "]:", function()
 				for _, style_name in ipairs(Codedocs.get_supported_styles(lang_name)) do
 					it(style_name .. " style", function()
-						local original_style = vim.deepcopy(Codedocs.get_annot_tbl(lang_name, style_name, target_name))
+						local original_style = vim.deepcopy(
+							require("codedocs.annotation_builder").get_annot_tbl(lang_name, style_name, target_name)
+						)
 						local original_mocked_user_opts = MOCKED_USER_STRUCT_OPTS[target_name]
 
 						Codedocs.setup {
@@ -270,7 +282,7 @@ describe_customization("Customizing style options", function()
 
 						assert.are.same(
 							expected_final_style,
-							Codedocs.get_annot_tbl(lang_name, style_name, target_name)
+							require("codedocs.annotation_builder").get_annot_tbl(lang_name, style_name, target_name)
 						)
 					end)
 				end
@@ -328,7 +340,12 @@ describe_customization("Add support for a new language", function()
 			}
 			Utils.mock_buffer("cobol", { "" }, { row = 1, col = 1 })
 
-			local annot_lines = Codedocs.prepare_annotation(data.lang_name, { annot_name = data.annotation.name }).lines
+			local target_data = Codedocs.get_target_data(data.lang_name, { annot_name = data.annotation.name })
+			local annot_lines = require("codedocs.annotation_builder").prepare_annotation(
+				data.lang_name,
+				{ annot_name = data.annotation.name },
+				target_data
+			).lines
 
 			assert.are.same(data.annotation.expected_lines, annot_lines)
 		end)
