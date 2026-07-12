@@ -46,7 +46,7 @@ end
 ---Builds a list with the names of the targets a language supports
 ---@return string[] supported_target_names
 function Test_utils.get_supported_targets(lang_name)
-	local target_identifiers = require("codedocs.item_extractor").get_target_identifiers(lang_name)
+	local target_identifiers = require("codedocs.config").get_target_identifiers(lang_name)
 
 	local values = vim.tbl_values(target_identifiers)
 	table.sort(values)
@@ -57,8 +57,8 @@ function Test_utils.get_supported_targets(lang_name)
 end
 
 function Test_utils.for_style(func)
-	for _, lang_name in ipairs(Codedocs.get_supported_langs()) do
-		for _, style_name in ipairs(Codedocs.get_supported_styles(lang_name)) do
+	for _, lang_name in ipairs(require("codedocs.config").get_supported_langs()) do
+		for _, style_name in ipairs(require("codedocs.config").get_supported_styles(lang_name)) do
 			func(lang_name, style_name)
 		end
 	end

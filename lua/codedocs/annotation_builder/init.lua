@@ -11,22 +11,6 @@ function Annot_builder.build_annot_lines(blocks, opts, row, items)
 	return lines
 end
 
--- local function _determine_lang_name()
--- 	if not Codedocs._filetypes_map then
--- 		local langs_config = require("codedocs.config").opts.languages
--- 		local filetypes_map = {}
--- 		for lang_name, opts in pairs(langs_config) do
--- 			for _, filetype_name in ipairs(opts.filetypes) do
--- 				filetypes_map[filetype_name] = lang_name
--- 			end
--- 		end
---
--- 		Codedocs._filetypes_map = filetypes_map
--- 	end
---
--- 	return Codedocs._filetypes_map[vim.bo.filetype]
--- end
-
 function Annot_builder.get_annot_list()
 	local lang = Utils._determine_lang_name()
 	local lang_stuff = require("codedocs.config").opts.languages[lang]

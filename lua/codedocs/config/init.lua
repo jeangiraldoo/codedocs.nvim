@@ -149,4 +149,29 @@ function Config.setup(user_config)
 	require("codedocs.config.validations").all(merged)
 end
 
+function Config.get_supported_langs() return vim.tbl_keys(Config.opts.languages) end
+
+---@return string[] supported_styles List of style names
+function Config.get_supported_styles(lang_name)
+	local supported_styles = vim.tbl_keys(Config.opts.languages[lang_name].styles)
+	table.sort(supported_styles)
+	return supported_styles
+end
+
+function Config.get_target_identifiers(lang_name)
+	local targets_data = require("codedocs.config").opts.languages[lang_name].targets
+
+	if targets_data._identifiers then return targets_data._identifiers end
+
+	local target_identifiers = {}
+	for target_name, target_data in pairs(targets_data) do
+		for _, node_identifier in ipairs(target_data.node_identifiers) do
+			target_identifiers[node_identifier] = target_name
+		end
+	end
+
+	targets_data._identifiers = target_identifiers
+	return target_identifiers
+end
+
 return Config

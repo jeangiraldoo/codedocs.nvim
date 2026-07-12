@@ -7,7 +7,7 @@ local IGNORE = {}
 local source = debug.getinfo(1, "S").source:sub(2)
 local DIR = vim.fn.resolve(vim.fn.fnamemodify(source, ":p:h"))
 
-local LANGS_TO_TEST = vim.iter(require("codedocs").get_supported_langs())
+local LANGS_TO_TEST = vim.iter(require("codedocs.config").get_supported_langs())
 	:filter(function(v) return not vim.list_contains(IGNORE, v) end)
 	:totable()
 

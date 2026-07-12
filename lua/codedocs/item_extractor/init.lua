@@ -113,22 +113,6 @@ local function _extract_items(extractors, target_data, language_name, target_nam
 	return items
 end
 
-function Item_extractor.get_target_identifiers(lang_name)
-	local targets_data = require("codedocs.config").opts.languages[lang_name].targets
-
-	if targets_data._identifiers then return targets_data._identifiers end
-
-	local target_identifiers = {}
-	for target_name, target_data in pairs(targets_data) do
-		for _, node_identifier in ipairs(target_data.node_identifiers) do
-			target_identifiers[node_identifier] = target_name
-		end
-	end
-
-	targets_data._identifiers = target_identifiers
-	return target_identifiers
-end
-
 ---@param lang_name string
 ---@return { name: string, node: TSNode } | nil
 local function get_ts_target_data(lang_name)
@@ -158,7 +142,7 @@ local function get_ts_target_data(lang_name)
 		return _extract_data(ts_node:parent(), target_identifiers)
 	end
 
-	return _extract_data(node_at_cursor, Item_extractor.get_target_identifiers(lang_name))
+	return _extract_data(node_at_cursor, require("codedocs.config").get_target_identifiers(lang_name))
 end
 
 function Item_extractor.get_requested_target_data(lang_name, requested_name)
