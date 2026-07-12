@@ -19,6 +19,7 @@ return {
 		},
 		{
 			name = "parameters",
+			layout = {},
 			gap_before = {
 				returns = {
 					enabled = false,
@@ -44,6 +45,7 @@ return {
 		},
 		{
 			name = "returns",
+			layout = {},
 			items = {
 				{
 					name = "returns",

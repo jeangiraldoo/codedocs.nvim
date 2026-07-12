@@ -5,14 +5,12 @@
 
 readonly LANGS_DIR_PATH=../lua/codedocs/config/languages
 readonly DEFAULT_ANNOTATION_TEST_PATH=../tests/annotations/defaults/test_cases/
-readonly STYLE_TEMPLATE='local lang_utils = require "codedocs.config.languages.utils"
-
-return {
+readonly STYLE_TEMPLATE='return {
 	comment = {
 		placement = "current",
 		indented = false,
 		blocks = {
-			lang_utils.new_section {
+			{
 				name = "title",
 				layout = {
 					"// ${%snip_idx:description}",

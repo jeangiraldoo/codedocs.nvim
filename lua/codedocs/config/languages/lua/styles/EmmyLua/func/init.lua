@@ -19,6 +19,7 @@ return {
 		},
 		{
 			name = "parameters",
+			layout = {},
 			gap_before = {
 				returns = {
 					enabled = false,

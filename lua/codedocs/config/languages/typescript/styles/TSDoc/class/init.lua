@@ -16,6 +16,7 @@ return {
 		},
 		{
 			name = "attributes",
+			layout = {},
 			gap_before = {
 				footer = {
 					text = " *",
@@ -25,6 +26,7 @@ return {
 			items = {
 				{
 					name = "attributes",
+			layout = {},
 					layout = {},
 					insert_gap_between = {
 						enabled = false,
