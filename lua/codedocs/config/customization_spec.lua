@@ -253,10 +253,10 @@ local MOCKED_USER_STRUCT_OPTS = vim.iter({
 end)
 
 describe_customization("Customizing style options", function()
-	for _, lang_name in ipairs(Codedocs.get_supported_langs()) do
+	for _, lang_name in ipairs(require("codedocs.config").get_supported_langs()) do
 		for _, target_name in ipairs(Utils.get_supported_targets(lang_name)) do
 			describe("[" .. lang_name .. "/" .. target_name .. "]:", function()
-				for _, style_name in ipairs(Codedocs.get_supported_styles(lang_name)) do
+				for _, style_name in ipairs(require("codedocs.config").get_supported_styles(lang_name)) do
 					it(style_name .. " style", function()
 						local original_style = vim.deepcopy(
 							require("codedocs.annotation_builder").get_annot_tbl(lang_name, style_name, target_name)

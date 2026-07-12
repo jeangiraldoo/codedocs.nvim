@@ -34,15 +34,6 @@ local function _write_to_buffer(annotation_lines, row, placement)
 	vim.snippet.expand(lines)
 end
 
-function Codedocs.get_supported_langs() return vim.tbl_keys(require("codedocs.config").opts.languages) end
-
----@return string[] supported_styles List of style names
-function Codedocs.get_supported_styles(lang_name)
-	local supported_styles = vim.tbl_keys(require("codedocs.config").opts.languages[lang_name].styles)
-	table.sort(supported_styles)
-	return supported_styles
-end
-
 ---@param user_config CodedocsConfig?
 function Codedocs.setup(user_config)
 	Logger.info "Setup called"
