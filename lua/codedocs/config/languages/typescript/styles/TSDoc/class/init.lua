@@ -26,7 +26,7 @@ return {
 			items = {
 				{
 					name = "attributes",
-			layout = {},
+					layout = {},
 					layout = {},
 					insert_gap_between = {
 						enabled = false,

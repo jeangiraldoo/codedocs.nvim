@@ -1,7 +1,7 @@
 return {
 	treesitter = function(target_data)
 		local raw_items = target_data.extract_items {
-			query = target_data.load_query("parameters"),
+			query = target_data.load_query "parameters",
 		}
 
 		local final_items = {}
