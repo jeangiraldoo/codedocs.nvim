@@ -2,18 +2,32 @@ local TS_utils = require "codedocs.item_extractor.ts"
 
 local Item_extractor = {}
 
-local function remove_duplicate_items_by_name(items)
-	local seen = {}
-	local deduplicated_list = {}
+local function _dedup_items(items)
+	local dedup_items
+	if vim.fn.has "nvim-0.12" == 1 then
+		dedup_items = vim.iter(items):unique(function(item) return item.name end):totable()
+	else ---TODO: remove when the minimum supported version is 0.12
+		local seen = {}
+		dedup_items = {}
 
-	for _, item in ipairs(items) do
-		if not seen[item.name] then
-			seen[item.name] = true
-			table.insert(deduplicated_list, item)
+		for _, item in ipairs(items) do
+			local key = item.name or ""
+			if not seen[key] then
+				seen[key] = true
+				table.insert(dedup_items, item)
+			end
 		end
 	end
 
-	return deduplicated_list
+	local final_items = vim.iter(dedup_items)
+		:map(function(item)
+			if not item.name then item.name = "" end
+			if not item.type then item.type = "" end
+			return item
+		end)
+		:totable()
+
+	return final_items
 end
 
 local function _get_detection_context(lang_name, detect_type)
@@ -51,19 +65,7 @@ local function _extract_items(extractors, target_data, detect_type)
 			raw_items = {}
 		end
 
-		local dedup_items = vim.fn.has "nvim-0.12" == 1 ---TODO: remove when the minimum supported version is 0.12
-				and vim.iter(raw_items):unique(function(item) return item.name end):totable()
-			or remove_duplicate_items_by_name(raw_items)
-
-		local final_items = vim.iter(dedup_items)
-			:map(function(item)
-				if not item.name then item.name = "" end
-				if not item.type then item.type = "" end
-				return item
-			end)
-			:totable()
-
-		items[extractor_name] = final_items
+		items[extractor_name] = _dedup_items(raw_items)
 	end
 
 	return items
