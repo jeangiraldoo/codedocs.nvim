@@ -40,33 +40,27 @@ local function _get_detection_context(lang_name, detect_type)
 end
 
 local function _extract_items(extractors, target_data, detect_type)
-	local items = {}
-
-	for extractor_name, extractor_versions in pairs(extractors) do
-		local raw_items
-
-		if type(extractor_versions) == "table" then
-			local extractor = extractor_versions[detect_type]
-			if not extractor then
-				vim.notify("No extractor for detection type: " .. tostring(detect_type), vim.log.levels.WARN)
-				raw_items = {}
-			elseif type(extractor) == "function" then
-				target_data.extractor_name = extractor_name
-				raw_items = extractor(target_data) or {}
-			elseif type(extractor) == "table" and type(extractor._ts_query_name) == "string" then
-				target_data.extractor_name = extractor_name
-				local query = target_data.load_query(extractor._ts_query_name)
-				target_data.query = query
-				raw_items = target_data.extract_items(target_data)
-			else
-				raw_items = {}
-			end
+	local items = vim.iter(extractors):fold({}, function(acc, extractor_name, extractor_versions)
+		local extractor = extractor_versions[detect_type]
+		if not extractor then
+			vim.notify("No extractor for detection type: " .. tostring(detect_type), vim.log.levels.WARN)
+			acc[extractor_name] = {}
 		else
-			raw_items = {}
+			target_data.extractor_name = extractor_name
+			if type(extractor) == "function" then
+				acc[extractor_name] = _dedup_items(extractor(target_data) or {})
+			elseif type(extractor) == "table" and type(extractor._ts_query_name) == "string" then
+				acc[extractor_name] = _dedup_items(target_data.extract_items {
+					node = target_data.node,
+					query = target_data.load_query(extractor._ts_query_name),
+				})
+			else
+				acc[extractor_name] = {}
+			end
 		end
 
-		items[extractor_name] = _dedup_items(raw_items)
-	end
+		return acc
+	end)
 
 	return items
 end
@@ -84,17 +78,8 @@ function Item_extractor.get_requested_target_data(lang_name, requested_name)
 		row = cursor_row,
 	}
 
-	if not lang_config.targets[requested_name] then return EMPTY_TARGET_RESULT end
-
 	local targets_config = lang_config.targets[requested_name]
-
-	if not targets_config.detection then
-		return {
-			row = cursor_row,
-			items = {},
-			target_name = requested_name,
-		}
-	end
+	if not targets_config or not targets_config.detection then return EMPTY_TARGET_RESULT end
 
 	local target_data = _get_detection_context(lang_name, targets_config.detection.type)
 
@@ -110,10 +95,15 @@ function Item_extractor.get_requested_target_data(lang_name, requested_name)
 end
 
 function Item_extractor.get_detected_target_data(lang_name)
-	local target_data = _get_detection_context(lang_name, "treesitter")
+	local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
 	local lang_config = require("codedocs.config").opts.languages[lang_name]
+	local target_data = _get_detection_context(lang_name, "treesitter")
 
-	if not target_data then
+	local has_detection = target_data
+		and lang_config.targets[target_data.name]
+		and lang_config.targets[target_data.name].detection
+
+	if not has_detection then
 		return Item_extractor.get_requested_target_data(
 			lang_name,
 			lang_config.styles[lang_config.default_style].default_annot
@@ -121,17 +111,11 @@ function Item_extractor.get_detected_target_data(lang_name)
 	end
 
 	local targets_config = lang_config.targets[target_data.name]
-	if not targets_config or not targets_config.detection then
-		return Item_extractor.get_requested_target_data(
-			lang_name,
-			lang_config.styles[lang_config.default_style].default_annot
-		)
-	end
 
 	return {
 		items = _extract_items(targets_config.extractors, target_data, targets_config.detection.type),
 		target_name = target_data.name,
-		row = target_data.node and target_data.node:range() or vim.api.nvim_win_get_cursor(0)[1] - 1,
+		row = target_data.node and target_data.node:range() or cursor_row,
 	}
 end
 
