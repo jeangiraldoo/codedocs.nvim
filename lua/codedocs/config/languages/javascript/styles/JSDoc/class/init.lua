@@ -26,7 +26,7 @@ return {
 			items = {
 				{
 					name = "attributes",
-			layout = {},
+					layout = {},
 					layout = {
 						" * @property {%item_type} %item_name ${%snip_idx:description}",
 					},

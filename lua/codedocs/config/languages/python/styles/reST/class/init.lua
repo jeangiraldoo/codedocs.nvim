@@ -26,7 +26,7 @@ return {
 			items = {
 				{
 					name = "attributes",
-			layout = {},
+					layout = {},
 					layout = {
 						"%>:var %item_name: ${%snip_idx:description}",
 						"%>:vartype %item_name: ${%snip_idx:%item_type}",
