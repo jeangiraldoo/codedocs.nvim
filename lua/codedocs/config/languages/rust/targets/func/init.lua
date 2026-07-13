@@ -1,6 +1,4 @@
 return {
-	node_identifiers = {
-		"function_item",
-	},
+	detection = { type = "treesitter", node_identifiers = { "function_item" } },
 	extractors = {},
 }

@@ -22,7 +22,7 @@ function Utils.build_dir_tbl(lua_path)
 	return tbl
 end
 
-local _filetypes_map = {}
+local _filetypes_map
 
 function Utils._determine_lang_name()
 	if not _filetypes_map then

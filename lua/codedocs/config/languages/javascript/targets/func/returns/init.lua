@@ -1,1 +1,1 @@
-return { _ts_query_name = "returns" }
+return { treesitter = { _ts_query_name = "returns" } }
