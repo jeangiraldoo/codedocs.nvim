@@ -50,7 +50,7 @@ function TS_utils.generic_query_parser(ts_node, query_obj)
 
 	local items = {}
 
-	for _, match, metadata in query_obj:iter_matches(ts_node, 0) do
+	for _, match, _ in query_obj:iter_matches(ts_node, 0) do
 		local new_item = {}
 
 		for id, capture_node in pairs(match) do
@@ -59,9 +59,7 @@ function TS_utils.generic_query_parser(ts_node, query_obj)
 			for _, match_capture_node in ipairs(nodes) do
 				local capture_name = query_capture_tags[id]
 
-				local node_text = metadata.parse_as_blank ~= "true"
-						and vim.treesitter.get_node_text(match_capture_node, 0)
-					or ""
+				local node_text = vim.treesitter.get_node_text(match_capture_node, 0)
 
 				if capture_name == "item_name" then new_item.name = node_text end
 
