@@ -1,7 +1,7 @@
 return {
-	node_identifiers = {
+	detection = { type = "treesitter", node_identifiers = {
 		"function_definition",
 		"method_declaration",
-	},
+	} },
 	extractors = {},
 }

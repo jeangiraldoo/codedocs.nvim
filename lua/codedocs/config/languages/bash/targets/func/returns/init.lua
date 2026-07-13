@@ -1,1 +1,1 @@
-return function(_) return {} end
+return { treesitter = function(_) return {} end }

@@ -16,30 +16,37 @@ local function remove_duplicate_items_by_name(items)
 	return deduplicated_list
 end
 
-local function _extract_items(extractors, target_data, language_name, target_name)
+local function _get_detection_context(lang_name, detect_type)
+	if detect_type == "treesitter" then
+		local target_data = TS_utils.get_ts_target_data(lang_name)
+		if not target_data then return end
+
+		return target_data
+	end
+end
+
+local function _extract_items(extractors, target_data, detect_type)
 	local items = {}
 
-	for extractor_name, item_extractor in pairs(extractors) do
-		local function load_query(query_name)
-			local Query_loader = require "codedocs.item_extractor.query_loader"
-			return Query_loader.load(language_name, target_name, extractor_name, query_name)
-		end
-
+	for extractor_name, extractor_versions in pairs(extractors) do
 		local raw_items
-		if type(item_extractor) == "function" then
-			raw_items = item_extractor {
-				node = target_data.node,
-				load_query = load_query,
-				extract_ts_nodes = function(data)
-					return TS_utils.extract_ts_nodes(data.node or target_data.node, data.query)
-				end,
-				extract_items = function(data)
-					return TS_utils.generic_query_parser(data.node or target_data.node, data.query)
-				end,
-			} or {}
-		elseif type(item_extractor) == "table" and type(item_extractor._ts_query_name) == "string" then
-			local query = load_query(item_extractor._ts_query_name)
-			raw_items = TS_utils.generic_query_parser(target_data.node, query)
+
+		if type(extractor_versions) == "table" then
+			local extractor = extractor_versions[detect_type]
+			if not extractor then
+				vim.notify("No extractor for detection type: " .. tostring(detect_type), vim.log.levels.WARN)
+				raw_items = {}
+			elseif type(extractor) == "function" then
+				target_data.extractor_name = extractor_name
+				raw_items = extractor(target_data) or {}
+			elseif type(extractor) == "table" and type(extractor._ts_query_name) == "string" then
+				target_data.extractor_name = extractor_name
+				local query = target_data.load_query(extractor._ts_query_name)
+				target_data.query = query
+				raw_items = target_data.extract_items(target_data)
+			else
+				raw_items = {}
+			end
 		else
 			raw_items = {}
 		end
@@ -77,50 +84,52 @@ function Item_extractor.get_requested_target_data(lang_name, requested_name)
 
 	if not lang_config.targets[requested_name] then return EMPTY_TARGET_RESULT end
 
-	local targets_config = require("codedocs.config").opts.languages[lang_name].targets[requested_name]
+	local targets_config = lang_config.targets[requested_name]
 
-	if not targets_config.node_identifiers or vim.tbl_isempty(targets_config.node_identifiers) then
-		local items = _extract_items(targets_config.extractors, {}, lang_name, requested_name)
-
+	if not targets_config.detection then
 		return {
 			row = cursor_row,
-			items = items,
+			items = {},
 			target_name = requested_name,
 		}
 	end
 
-	local ts_target_data = TS_utils.get_ts_target_data(lang_name)
+	local target_data = _get_detection_context(lang_name, targets_config.detection.type)
 
-	if not ts_target_data then return EMPTY_TARGET_RESULT end
+	if not target_data then return EMPTY_TARGET_RESULT end
 
-	local items = _extract_items(targets_config.extractors, ts_target_data, lang_name, requested_name)
+	local items = _extract_items(targets_config.extractors, target_data, targets_config.detection.type)
 
 	return {
-		-- Ignore extracted items if cursor target differs
-		row = ts_target_data.node and ts_target_data.node:range() or cursor_row,
-		items = (ts_target_data and ts_target_data.name == requested_name) and items or {},
+		row = target_data.node and target_data.node:range() or cursor_row,
+		items = (target_data.name == requested_name) and items or {},
 		target_name = requested_name,
 	}
 end
 
 function Item_extractor.get_detected_target_data(lang_name)
-	local ts_target_data = TS_utils.get_ts_target_data(lang_name)
-
+	local target_data = _get_detection_context(lang_name, "treesitter")
 	local lang_config = require("codedocs.config").opts.languages[lang_name]
 
-	if not ts_target_data then
+	if not target_data then
 		return Item_extractor.get_requested_target_data(
 			lang_name,
 			lang_config.styles[lang_config.default_style].default_annot
 		)
 	end
 
-	local targets_config = lang_config.targets[ts_target_data.name]
+	local targets_config = lang_config.targets[target_data.name]
+	if not targets_config or not targets_config.detection then
+		return Item_extractor.get_requested_target_data(
+			lang_name,
+			lang_config.styles[lang_config.default_style].default_annot
+		)
+	end
 
 	return {
-		items = _extract_items(targets_config.extractors, ts_target_data, lang_name, ts_target_data.name),
-		target_name = ts_target_data.name,
-		row = ts_target_data.node and ts_target_data.node:range() or vim.api.nvim_win_get_cursor(0)[1] - 1,
+		items = _extract_items(targets_config.extractors, target_data, targets_config.detection.type),
+		target_name = target_data.name,
+		row = target_data.node and target_data.node:range() or vim.api.nvim_win_get_cursor(0)[1] - 1,
 	}
 end
 

@@ -289,10 +289,11 @@ require("codedocs").setup {
             targets = {
                 --- See the targets section below
                 func = {
-                    -- Tree-sitter node types recognized as functions
-                    node_identifiers = {
-                        "function_definition",
-                    },
+                    detection = {
+                        type = "treesitter", -- Detection type to use. By default only "treesitter", you can define your own types
+                        node_identifiers = { -- Tree-sitter node types recognized as functions
+                            "function_definition",
+                    }   },
 
                     -- Functions responsible for extracting items from the target
                     extractors = {

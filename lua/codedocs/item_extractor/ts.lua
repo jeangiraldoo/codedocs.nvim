@@ -23,7 +23,19 @@ function TS_utils.get_ts_target_data(lang_name)
 
 		local target_name = target_identifiers[ts_node:type()]
 
-		if target_name then return { name = target_name, node = ts_node } end
+		if target_name then
+			local context = {
+				name = target_name,
+				node = ts_node,
+				extract_ts_nodes = function(data) return TS_utils.extract_ts_nodes(data.node or ts_node, data.query) end,
+				extract_items = function(data) return TS_utils.generic_query_parser(data.node or ts_node, data.query) end,
+			}
+			context.load_query = function(query_name)
+				local Query_loader = require "codedocs.item_extractor.query_loader"
+				return Query_loader.load(lang_name, target_name, context.extractor_name, query_name)
+			end
+			return context
+		end
 
 		return _extract_data(ts_node:parent(), target_identifiers)
 	end
