@@ -1,2 +1,0 @@
-fn foo(a: String, b: String, c: String) {
-}
