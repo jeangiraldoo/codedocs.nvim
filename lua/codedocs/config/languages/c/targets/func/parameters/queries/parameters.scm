@@ -9,8 +9,6 @@
 						(type_identifier))
 					(type_identifier)
 				] @item_type
-				[
-					(identifier)
-					(pointer_declarator
-						(identifier))
-				] @item_name))))
+				; Anything under `declarator` field is considered to be the name
+				; Postprocessing is necessary for pointers
+				declarator: (_) @item_name))))

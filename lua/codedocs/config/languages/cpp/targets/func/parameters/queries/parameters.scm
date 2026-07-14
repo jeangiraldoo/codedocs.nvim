@@ -11,13 +11,9 @@
 						(sized_type_specifier)
 						(type_identifier)
 					] @item_type
-					[
-						(identifier)
-						(pointer_declarator
-							(identifier))
-						(reference_declarator
-							(identifier))
-					] @item_name)
+					; Anything under the `declarator` field is considered to be the name.
+					; Postprocessing is necessary for pointers
+					declarator: (_) @item_name)
 				(optional_parameter_declaration
 					type: [
 						(primitive_type)
@@ -27,11 +23,7 @@
 						(sized_type_specifier)
 						(type_identifier)
 					] @item_type
-					[
-						(identifier)
-						(pointer_declarator
-							(identifier))
-						(reference_declarator
-							(identifier))
-					] @item_name)
+					; Anything under the `declarator` field is considered to be the name.
+					; Postprocessing is necessary for pointers
+					declarator: (_) @item_name)
 			])))
