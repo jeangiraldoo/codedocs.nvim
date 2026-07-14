@@ -1,2 +1,0 @@
-def foo(a: string = "hello world", b: string = "hola mundo", c: string = "python"):
-	pass
