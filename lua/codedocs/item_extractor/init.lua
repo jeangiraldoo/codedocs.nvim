@@ -42,21 +42,25 @@ end
 local function _extract_items(extractors, target_data, detect_type)
 	local items = vim.iter(extractors):fold({}, function(acc, extractor_name, extractor_versions)
 		local extractor = extractor_versions[detect_type]
-		if not extractor then
+
+		if not extractor or type(extractor) ~= "table" then
 			vim.notify("No extractor for detection type: " .. tostring(detect_type), vim.log.levels.WARN)
 			acc[extractor_name] = {}
+
+			return acc
+		end
+
+		target_data.extractor_name = extractor_name
+
+		if type(extractor._ts_query_name) == "string" then
+			acc[extractor_name] = _dedup_items(target_data.extract_items {
+				node = target_data.node,
+				query = target_data.load_query(extractor._ts_query_name),
+			})
+		elseif type(extractor.handler) == "function" then
+			acc[extractor_name] = _dedup_items(extractor.handler(target_data) or {})
 		else
-			target_data.extractor_name = extractor_name
-			if type(extractor) == "function" then
-				acc[extractor_name] = _dedup_items(extractor(target_data) or {})
-			elseif type(extractor) == "table" and type(extractor._ts_query_name) == "string" then
-				acc[extractor_name] = _dedup_items(target_data.extract_items {
-					node = target_data.node,
-					query = target_data.load_query(extractor._ts_query_name),
-				})
-			else
-				acc[extractor_name] = {}
-			end
+			acc[extractor_name] = {}
 		end
 
 		return acc

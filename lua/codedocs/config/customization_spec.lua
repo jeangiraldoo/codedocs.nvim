@@ -137,18 +137,20 @@ describe_customization("Add new annotation with target", function()
 			detection = { type = "treesitter", node_identifiers = { "if_statement" } },
 			extractors = {
 				someblock = {
-					treesitter = function()
-						return {
-							{
-								name = "apollo",
-								type = "first",
-							},
-							{
-								name = "artemis",
-								type = "second",
-							},
-						}
-					end,
+					treesitter = {
+						handler = function()
+							return {
+								{
+									name = "apollo",
+									type = "first",
+								},
+								{
+									name = "artemis",
+									type = "second",
+								},
+							}
+						end,
+					},
 				},
 			},
 		},
