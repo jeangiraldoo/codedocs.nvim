@@ -1,4 +1,4 @@
-local dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
+local fs_utils = require "codedocs.utils.fs"
 
 local TS_utils = {}
 local query_cache = {}
@@ -8,16 +8,15 @@ local function _load_query(language, target_name, extractor_name, query_name)
 
 	if query_cache[cache_key] then return query_cache[cache_key] end
 
-	local query_path = dir
-		.. "/../config/languages/"
-		.. language
-		.. "/targets/"
-		.. target_name
-		.. "/"
-		.. extractor_name
-		.. "/treesitter/queries/"
-		.. query_name
-		.. ".scm"
+	local query_path = vim.fs.joinpath(
+		fs_utils.PATHS.ABS.LANGUAGES,
+		language,
+		"targets",
+		target_name,
+		extractor_name,
+		"treesitter/queries",
+		query_name .. ".scm"
+	)
 
 	if vim.fn.filereadable(query_path) ~= 1 then
 		vim.notify("Could not find query file: " .. query_path, vim.log.levels.ERROR)

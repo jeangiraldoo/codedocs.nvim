@@ -7,10 +7,9 @@
 ---Regarding the `items` option, since all item-based sections use the same `items` suboptions,
 ---and those options only affect their own section, it’s enough to test them in one section
 
-local Utils = require "codedocs.utils.tests"
-local Codedocs = require "codedocs"
+local fs_utils = require "codedocs.utils.fs"
 
-local DIR = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
+local curr_file_abs_path = fs_utils.get_module_abs_path()
 
 local MOCKED_ITEMS = {
 	primary_section = {
@@ -28,12 +27,13 @@ local MOCKED_ITEMS = {
 }
 
 describe("Annotation builder - ", function()
-	local cases = Utils.read_dir_names(DIR .. "/cases")
+	local cases = fs_utils.read_dir_names(vim.fs.joinpath(curr_file_abs_path, "cases"))
 
 	for _, case_name in ipairs(cases) do
 		it("Case #" .. case_name, function()
-			local blocks = require("codedocs.annotation_builder.cases." .. case_name .. ".input_blocks")
-			local expected_output = vim.fn.readfile(DIR .. "/cases/" .. case_name .. "/output")
+			local blocks =
+				require(fs_utils.joinmodule { "codedocs.annotation_builder.cases", case_name, "input_blocks" })
+			local expected_output = vim.fn.readfile(vim.fs.joinpath(curr_file_abs_path, "cases", case_name, "output"))
 
 			local opts = require("codedocs.config").opts.annot_builder
 			local lines = require("codedocs.annotation_builder").build_annot_lines(blocks, opts, 1, MOCKED_ITEMS)

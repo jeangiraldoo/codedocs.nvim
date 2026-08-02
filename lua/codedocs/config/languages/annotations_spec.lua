@@ -1,6 +1,7 @@
 -- local test_utils = require "tests.utils"
 local Codedocs = require "codedocs"
 local Test_utils = require "codedocs.utils.tests"
+local fs_utils = require "codedocs.utils.fs"
 
 local IGNORE = {}
 
@@ -40,8 +41,9 @@ describe("Default style annotations", function()
 	for _, lang in ipairs(LANGS_TO_TEST) do
 		for style_name, style_opts in pairs(langs_config[lang].styles) do
 			for annot_name, _ in pairs(style_opts.annots) do
-				local annot_case_names = Test_utils.read_dir_names(
-					DIR .. ("/%s/styles/%s/%s/output_cases"):format(lang, style_name, annot_name)
+				local annot_case_names = fs_utils.read_dir_names(
+					"codedocs/config/languages"
+						.. ("/%s/styles/%s/%s/output_cases"):format(lang, style_name, annot_name)
 				)
 
 				for _, case_name in ipairs(annot_case_names) do
