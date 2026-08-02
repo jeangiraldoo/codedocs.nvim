@@ -1,5 +1,7 @@
 local Config = {}
 
+local fs_utils = require "codedocs.utils.fs"
+
 ---@alias CodedocsSupportedLanguages
 ---| "lua"
 ---| "python"
@@ -54,48 +56,40 @@ local Config = {}
 ---@field debug boolean? Wether or not to enable debug mode
 ---@field aliases table<string, CodedocsSupportedLanguages>? Aliases for filetypes -> supported languages
 ---@field languages CodedocsLanguagesConfigs? Languages configuration
-
-local dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
-local DETECTED_LANGS = vim.fs.dir(vim.fs.joinpath(dir, "languages"))
-
 ---@type CodedocsConfig
 Config.opts = {
 	logging = {
 		level = vim.log.levels.INFO,
-		path = (vim.fn.stdpath "log") .. "/codedocs.log",
+		path = vim.fs.joinpath(vim.fn.stdpath "log", "codedocs.log"),
 	},
 	---The `languages` table is created dynamically when the plugin first loads as there's a lot of languages;
 	---a literal `require` call per language is not pretty
-	languages = vim.iter(DETECTED_LANGS):fold({}, function(acc, name, type)
-		if type ~= "directory" then return acc end
-
-		local lang_path = "codedocs.config.languages." .. name
-		local styles_path = lang_path .. ".styles"
-		local targets_path = lang_path .. ".targets"
-
+	-- languages = vim.iter(fs_utils.read_dir_names(vim.fs.joinpath(fs_utils.ABS_PATHS.CONFIG, "languages")))
+	languages = vim.iter(fs_utils.read_dir_names(fs_utils.PATHS.REL.LANGUAGES)):fold({}, function(acc, name)
+		local lang_path = fs_utils.joinmodule { fs_utils.path_to_module(fs_utils.PATHS.REL.LANGUAGES), name }
 		local base_lang_config = require(lang_path)
-		local build_dir_tbl = require("codedocs.utils.general").build_dir_tbl
 
 		base_lang_config.styles = (function()
-			local styles = build_dir_tbl(styles_path)
+			local styles_path = fs_utils.joinmodule { lang_path, "styles" }
+			local styles = fs_utils.build_dir_tbl(styles_path)
 
 			for item_name, tbl in pairs(styles) do
-				tbl.annots = build_dir_tbl(styles_path .. "." .. item_name)
+				tbl.annots = fs_utils.build_dir_tbl(styles_path .. "." .. item_name)
 			end
 			return styles
 		end)()
 
 		base_lang_config.targets = (function()
-			local targets = build_dir_tbl(targets_path)
+			local targets_path = fs_utils.joinmodule { lang_path, "targets" }
+			local targets = fs_utils.build_dir_tbl(targets_path)
 
 			for target_name, tbl in pairs(targets) do
-				local extractors_path = targets_path .. "." .. target_name
-				local fs_path = vim.fs.joinpath(dir, "..", "..", (extractors_path:gsub("%.", "/")))
+				local extractors_path = fs_utils.joinmodule { targets_path, target_name }
+				local fs_path = fs_utils.module_to_path(extractors_path)
 
-				tbl.extractors = vim.iter(vim.fs.dir(fs_path)):fold({}, function(extractors, item_name, item_type)
-					if item_type ~= "directory" then return extractors end
-
-					local ok, ts_extractor = pcall(require, extractors_path .. "." .. item_name .. ".treesitter")
+				tbl.extractors = vim.iter(fs_utils.read_dir_names(fs_path)):fold({}, function(extractors, item_name)
+					local ok, ts_extractor =
+						pcall(require, fs_utils.joinmodule { extractors_path, item_name, "treesitter" })
 					if ok then extractors[item_name] = { treesitter = ts_extractor } end
 
 					return extractors

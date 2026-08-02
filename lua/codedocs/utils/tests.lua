@@ -1,5 +1,3 @@
-local Codedocs = require "codedocs"
-
 local Test_utils = {}
 
 function Test_utils.parse_golden_file(lines)
@@ -62,20 +60,6 @@ function Test_utils.for_style(func)
 			func(lang_name, style_name)
 		end
 	end
-end
-
----@param path string
----@return string[]
-function Test_utils.read_dir_names(path)
-	vim.validate {
-		path = { path, "string" },
-	}
-
-	return vim.iter(vim.fs.dir(path))
-		:map(function(name, type)
-			if type == "directory" then return name end
-		end)
-		:totable()
 end
 
 return Test_utils

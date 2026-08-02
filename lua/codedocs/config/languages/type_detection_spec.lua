@@ -1,8 +1,8 @@
 local Utils = require "codedocs.utils.tests"
+local fs_utils = require "codedocs.utils.fs"
 local config = require("codedocs.config").opts
 local Codedocs = require "codedocs"
 
-local DIR = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
 local LANGS_TO_TEST = {
 	"c",
 	"cpp",
@@ -37,19 +37,22 @@ describe("Typed item extraction", function()
 		local lang_targets = config.languages[lang].targets
 
 		for target_name, _ in pairs(lang_targets) do
-			local path = DIR .. "/" .. lang .. "/targets/" .. target_name
-			local extractor_names = Utils.read_dir_names(path)
+			local target_path = vim.fs.joinpath("codedocs/config/languages", lang, "targets", target_name)
 
-			for _, extractor_name in ipairs(extractor_names) do
-				local type_cases_path = path .. "/" .. extractor_name .. "/extraction_cases/type_detection/"
-				local target_subcases = Utils.read_dir_names(type_cases_path)
+			fs_utils.for_each_dir(target_path, function(extractor_name)
+				local type_cases_path = vim.fs.joinpath(target_path, extractor_name, "extraction_cases/type_detection/")
 
-				for _, case_name in ipairs(target_subcases) do
+				fs_utils.for_each_dir(type_cases_path, function(case_name)
 					local target_case_path = vim.fs.joinpath(type_cases_path, case_name)
-					local target_case_lua_path = target_case_path:gsub("/", ".")
 
-					local input = vim.fn.readfile(vim.fs.joinpath(target_case_path, "input"))
-					local metadata = require(target_case_lua_path .. ".metadata")
+					local input_file_path = vim.fs.joinpath(target_case_path, "input")
+					local input = fs_utils.readfile(input_file_path)
+
+					local metadata_module_path = fs_utils.joinmodule {
+						fs_utils.path_to_module(target_case_path),
+						"metadata",
+					}
+					local metadata = require(metadata_module_path)
 
 					local test_datatype = create_datatype_tester(input, lang, metadata, extractor_name)
 					for _, standalone_datatype in ipairs(metadata.types_to_test) do
@@ -60,8 +63,8 @@ describe("Typed item extraction", function()
 							test_datatype(typed_collection)
 						end
 					end
-				end
-			end
+				end)
+			end)
 		end
 	end
 end)

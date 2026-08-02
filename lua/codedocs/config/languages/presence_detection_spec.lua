@@ -1,4 +1,5 @@
 local Utils = require "codedocs.utils.tests"
+local fs_utils = require "codedocs.utils.fs"
 local config = require("codedocs.config").opts
 local Codedocs = require "codedocs"
 
@@ -49,22 +50,20 @@ describe("Typed item extraction", function()
 		local lang_targets = config.languages[lang].targets
 
 		for target_name, _ in pairs(lang_targets) do
-			local path = DIR .. "/" .. lang .. "/targets/" .. target_name
-			local extractor_names = Utils.read_dir_names(path)
+			local path = vim.fs.joinpath("codedocs/config/languages", lang, "targets", target_name)
 
-			for _, extractor_name in ipairs(extractor_names) do
-				local target_subcases =
-					Utils.read_dir_names(path .. "/" .. extractor_name .. "/extraction_cases/item_detection/")
+			fs_utils.for_each_dir(path, function(extractor_name)
+				local target_cases_path = vim.fs.joinpath(path, extractor_name, "extraction_cases/item_detection")
 
-				for _, target_case_name in ipairs(target_subcases) do
+				fs_utils.for_each_dir(target_cases_path, function(target_case_name)
 					local subcase_tester = create_subcase_tester(lang, extractor_name, target_name)
 
 					describe(
 						lang .. " - " .. target_name .. " - " .. target_case_name,
 						function() subcase_tester(target_case_name) end
 					)
-				end
-			end
+				end)
+			end)
 		end
 	end
 end)
