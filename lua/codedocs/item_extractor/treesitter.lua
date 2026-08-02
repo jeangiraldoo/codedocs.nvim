@@ -1,4 +1,42 @@
+local dir = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":h")
+
 local TS_utils = {}
+local query_cache = {}
+
+local function _load_query(language, target_name, extractor_name, query_name)
+	local cache_key = language .. ":" .. target_name .. ":" .. extractor_name .. ":" .. query_name
+
+	if query_cache[cache_key] then return query_cache[cache_key] end
+
+	local query_path = dir
+		.. "/../config/languages/"
+		.. language
+		.. "/targets/"
+		.. target_name
+		.. "/"
+		.. extractor_name
+		.. "/treesitter/queries/"
+		.. query_name
+		.. ".scm"
+
+	if vim.fn.filereadable(query_path) ~= 1 then
+		vim.notify("Could not find query file: " .. query_path, vim.log.levels.ERROR)
+		return nil
+	end
+
+	local content = vim.fn.readfile(query_path)
+	local query_string = table.concat(content, "\n")
+
+	local ok, query = pcall(vim.treesitter.query.parse, language, query_string)
+
+	if not ok then
+		vim.notify("Failed to parse query from " .. query_path .. ": " .. tostring(query), vim.log.levels.ERROR)
+		return nil
+	end
+
+	query_cache[cache_key] = query
+	return query
+end
 
 ---@param lang_name string
 ---@return { name: string, node: TSNode } | nil
@@ -31,8 +69,7 @@ function TS_utils.get_ts_target_data(lang_name)
 				extract_items = function(data) return TS_utils.generic_query_parser(data.node or ts_node, data.query) end,
 			}
 			context.load_query = function(query_name)
-				local Query_loader = require "codedocs.item_extractor.query_loader"
-				return Query_loader.load(lang_name, target_name, context.extractor_name, query_name)
+				return _load_query(lang_name, target_name, context.extractor_name, query_name)
 			end
 			return context
 		end
