@@ -1,4 +1,4 @@
-local TS_utils = require "codedocs.item_extractor.ts"
+local TS_utils = require "codedocs.item_extractor.treesitter"
 
 local Item_extractor = {}
 
