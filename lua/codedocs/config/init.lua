@@ -89,7 +89,17 @@ Config.opts = {
 			local targets = build_dir_tbl(targets_path)
 
 			for target_name, tbl in pairs(targets) do
-				tbl.extractors = build_dir_tbl(targets_path .. "." .. target_name)
+				local extractors_path = targets_path .. "." .. target_name
+				local fs_path = vim.fs.joinpath(dir, "..", "..", (extractors_path:gsub("%.", "/")))
+
+				tbl.extractors = vim.iter(vim.fs.dir(fs_path)):fold({}, function(extractors, item_name, item_type)
+					if item_type ~= "directory" then return extractors end
+
+					local ok, ts_extractor = pcall(require, extractors_path .. "." .. item_name .. ".treesitter")
+					if ok then extractors[item_name] = { treesitter = ts_extractor } end
+
+					return extractors
+				end)
 			end
 
 			return targets
