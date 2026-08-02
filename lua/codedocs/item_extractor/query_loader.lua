@@ -16,7 +16,7 @@ function Query_loader.load(language, target_name, extractor_name, query_name)
 		.. target_name
 		.. "/"
 		.. extractor_name
-		.. "/queries/"
+		.. "/treesitter/queries/"
 		.. query_name
 		.. ".scm"
 
