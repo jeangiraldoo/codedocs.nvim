@@ -2,6 +2,13 @@ local Config = {}
 
 local fs_utils = require "codedocs.utils.fs"
 
+---Detection providers handle finding annotation targets in a language's syntax.
+---Each provider exposes `detect(lang_name)` and `build_identifiers(targets_data)`.
+---Users can register extra providers via `setup { detection_providers = {...} }`.
+local detection_providers = {
+	treesitter = require "codedocs.item_extractor.treesitter",
+}
+
 ---@alias CodedocsSupportedLanguages
 ---| "lua"
 ---| "python"
@@ -52,9 +59,14 @@ local fs_utils = require "codedocs.utils.fs"
 ---@field default_style string? Default style name
 ---@field styles table<string, table<string, CodedocsAnnotationStyleOpts>>
 
+---@class CodedocsDetectionProvider
+---@field detect fun(lang_name: string): string?, number?, table? Detects the target under the cursor
+---@field build_identifiers fun(targets_data: table): table<string, string> Maps identifiers to target names
+
 ---@class CodedocsConfig
 ---@field debug boolean? Wether or not to enable debug mode
 ---@field aliases table<string, CodedocsSupportedLanguages>? Aliases for filetypes -> supported languages
+---@field detection_providers table<string, CodedocsDetectionProvider>? Detection providers registry
 ---@field languages CodedocsLanguagesConfigs? Languages configuration
 ---@type CodedocsConfig
 Config.opts = {
@@ -62,6 +74,8 @@ Config.opts = {
 		level = vim.log.levels.INFO,
 		path = vim.fs.joinpath(vim.fn.stdpath "log", "codedocs.log"),
 	},
+	detection_providers = detection_providers,
+
 	---The `languages` table is created dynamically when the plugin first loads as there's a lot of languages;
 	---a literal `require` call per language is not pretty
 	-- languages = vim.iter(fs_utils.read_dir_names(vim.fs.joinpath(fs_utils.ABS_PATHS.CONFIG, "languages")))
@@ -88,9 +102,14 @@ Config.opts = {
 				local fs_path = fs_utils.module_to_path(extractors_path)
 
 				tbl.extractors = vim.iter(fs_utils.read_dir_names(fs_path)):fold({}, function(extractors, item_name)
-					local ok, ts_extractor =
-						pcall(require, fs_utils.joinmodule { extractors_path, item_name, "treesitter" })
-					if ok then extractors[item_name] = { treesitter = ts_extractor } end
+					for provider_name in pairs(detection_providers) do
+						local ok, provider_extractor =
+							pcall(require, fs_utils.joinmodule { extractors_path, item_name, provider_name })
+						if ok then
+							extractors[item_name] = extractors[item_name] or {}
+							extractors[item_name][provider_name] = provider_extractor
+						end
+					end
 
 					return extractors
 				end)
@@ -163,19 +182,16 @@ function Config.get_supported_styles(lang_name)
 end
 
 function Config.get_target_identifiers(lang_name)
-	local targets_data = require("codedocs.config").opts.languages[lang_name].targets
+	local lang_config = Config.opts.languages[lang_name]
+	local provider = Config.opts.detection_providers[lang_config.detection_provider]
 
+	if not provider then return {} end
+
+	local targets_data = lang_config.targets
 	if targets_data._identifiers then return targets_data._identifiers end
 
-	local target_identifiers = {}
-	for target_name, target_data in pairs(targets_data) do
-		for _, node_identifier in ipairs(target_data.detection_opts.node_identifiers) do
-			target_identifiers[node_identifier] = target_name
-		end
-	end
-
-	targets_data._identifiers = target_identifiers
-	return target_identifiers
+	targets_data._identifiers = provider.build_identifiers(targets_data)
+	return targets_data._identifiers
 end
 
 return Config

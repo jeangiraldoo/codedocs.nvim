@@ -32,6 +32,16 @@ function Validate.languages(languages_opts)
 		vim.validate {
 			[lang_path .. ".targets"] = { opts.targets, "table" },
 		}
+		vim.validate {
+			[lang_path .. ".detection_provider"] = { opts.detection_provider, { "string", "nil" } },
+		}
+
+		if opts.detection_provider then
+			local providers = require("codedocs.config").opts.detection_providers
+			if not providers[opts.detection_provider] then
+				error(("Unknown detection provider %q for %s"):format(opts.detection_provider, lang_path), 0)
+			end
+		end
 
 		for style_name, style_opts in pairs(opts.styles) do
 			for annot_name, annotation_opts in pairs(style_opts.annots) do

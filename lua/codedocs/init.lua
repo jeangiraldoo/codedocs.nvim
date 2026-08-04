@@ -1,5 +1,4 @@
 local Logger = require "codedocs.utils.logger"
-local Item_extractor = require "codedocs.item_extractor"
 
 local Codedocs = {}
 
@@ -51,15 +50,16 @@ function Codedocs.get_target_data(lang_name, annotation_data)
 		annotation_data = { annotation_data, { "table", "nil" } },
 	}
 
-	local TS_utils = require "codedocs.item_extractor.treesitter"
+	local Config = require "codedocs.config"
 
-	local lang_config = require("codedocs.config").opts.languages[lang_name]
+	local lang_config = Config.opts.languages[lang_name]
 
 	local user_requested_specific_annotation = annotation_data and annotation_data.annot_name
 
 	local target_name, row, target_opts
-	if lang_config.detection_provider == "treesitter" then
-		target_name, row, target_opts = TS_utils.detect_target(lang_name)
+	local provider = Config.opts.detection_providers[lang_config.detection_provider]
+	if provider then
+		target_name, row, target_opts = provider.detect(lang_name)
 	end
 
 	-- An explicit request is always honored, even when no target is detected
