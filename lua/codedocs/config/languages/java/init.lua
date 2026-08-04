@@ -15,6 +15,7 @@ return {
 	default_style = "JavaDoc",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"java",
 	},

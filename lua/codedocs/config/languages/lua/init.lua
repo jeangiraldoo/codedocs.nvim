@@ -15,6 +15,7 @@ return {
 	default_style = "EmmyLua",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"lua",
 	},

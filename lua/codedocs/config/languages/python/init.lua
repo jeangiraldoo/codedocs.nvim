@@ -17,6 +17,7 @@ return {
 	default_style = "reST",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"python",
 	},

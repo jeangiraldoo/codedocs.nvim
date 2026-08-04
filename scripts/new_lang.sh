@@ -22,8 +22,10 @@ readonly STYLE_TEMPLATE='return {
 readonly TARGET_TEMPLATE='local extractors = {}
 
 return {
-	detection = { type = "treesitter", node_identifiers = {
-	} },
+	detection_opts = {
+		node_identifiers = {
+		},
+	},
 	extractors = extractors,
 	opts = {},
 }'

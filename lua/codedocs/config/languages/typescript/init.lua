@@ -15,6 +15,7 @@ return {
 	default_style = "TSDoc",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"typescript",
 	},

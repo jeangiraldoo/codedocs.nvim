@@ -15,6 +15,7 @@ return {
 	default_style = "KDoc",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"kotlin",
 	},

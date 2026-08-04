@@ -15,6 +15,7 @@ return {
 	default_style = "JSDoc",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"javascript",
 	},

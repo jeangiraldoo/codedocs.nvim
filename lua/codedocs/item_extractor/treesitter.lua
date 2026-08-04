@@ -39,7 +39,7 @@ end
 
 ---@param lang_name string
 ---@return { name: string, node: TSNode } | nil
-function TS_utils.get_ts_target_data(lang_name)
+function TS_utils.detect_target(lang_name)
 	vim.validate {
 		lang_name = { lang_name, "string" },
 	}
@@ -61,16 +61,16 @@ function TS_utils.get_ts_target_data(lang_name)
 		local target_name = target_identifiers[ts_node:type()]
 
 		if target_name then
-			local context = {
-				name = target_name,
+			local opts = {
+
 				node = ts_node,
 				extract_ts_nodes = function(data) return TS_utils.extract_ts_nodes(data.node or ts_node, data.query) end,
 				extract_items = function(data) return TS_utils.generic_query_parser(data.node or ts_node, data.query) end,
 			}
-			context.load_query = function(query_name)
-				return _load_query(lang_name, target_name, context.extractor_name, query_name)
+			opts.load_query = function(query_name)
+				return _load_query(lang_name, target_name, opts.extractor_name, query_name)
 			end
-			return context
+			return target_name, ts_node:range(), opts
 		end
 
 		return _extract_data(ts_node:parent(), target_identifiers)

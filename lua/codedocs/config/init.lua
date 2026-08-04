@@ -169,7 +169,7 @@ function Config.get_target_identifiers(lang_name)
 
 	local target_identifiers = {}
 	for target_name, target_data in pairs(targets_data) do
-		for _, node_identifier in ipairs(target_data.detection.node_identifiers) do
+		for _, node_identifier in ipairs(target_data.detection_opts.node_identifiers) do
 			target_identifiers[node_identifier] = target_name
 		end
 	end

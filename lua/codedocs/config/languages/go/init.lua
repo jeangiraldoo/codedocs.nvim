@@ -14,6 +14,7 @@ return {
 	default_style = "Godoc",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"go",
 	},

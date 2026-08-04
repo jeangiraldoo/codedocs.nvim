@@ -1,7 +1,3 @@
-local TS_utils = require "codedocs.item_extractor.treesitter"
-
-local Item_extractor = {}
-
 local function _dedup_items(items)
 	local dedup_items
 	if vim.fn.has "nvim-0.12" == 1 then
@@ -30,21 +26,12 @@ local function _dedup_items(items)
 	return final_items
 end
 
-local function _get_detection_context(lang_name, detect_type)
-	if detect_type == "treesitter" then
-		local target_data = TS_utils.get_ts_target_data(lang_name)
-		if not target_data then return end
-
-		return target_data
-	end
-end
-
-local function _extract_items(extractors, target_data, detect_type)
+return function(extractors, target_data, detect_provider)
 	local items = vim.iter(extractors):fold({}, function(acc, extractor_name, extractor_versions)
-		local extractor = extractor_versions[detect_type]
+		local extractor = extractor_versions[detect_provider]
 
 		if not extractor or type(extractor) ~= "table" then
-			vim.notify("No extractor for detection type: " .. tostring(detect_type), vim.log.levels.WARN)
+			vim.notify("No extractor for detection provider: " .. tostring(detect_provider), vim.log.levels.WARN)
 			acc[extractor_name] = {}
 
 			return acc
@@ -68,59 +55,3 @@ local function _extract_items(extractors, target_data, detect_type)
 
 	return items
 end
-
-function Item_extractor.get_requested_target_data(lang_name, requested_name)
-	local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
-
-	local lang_config = require("codedocs.config").opts.languages[lang_name]
-
-	--- Returned when no annotation targets are available, or when using
-	--- Treesitter and no matching node is found under the cursor.
-	local EMPTY_TARGET_RESULT = {
-		items = {},
-		target_name = requested_name,
-		row = cursor_row,
-	}
-
-	local targets_config = lang_config.targets[requested_name]
-	if not targets_config or not targets_config.detection then return EMPTY_TARGET_RESULT end
-
-	local target_data = _get_detection_context(lang_name, targets_config.detection.type)
-
-	if not target_data then return EMPTY_TARGET_RESULT end
-
-	local items = _extract_items(targets_config.extractors, target_data, targets_config.detection.type)
-
-	return {
-		row = target_data.node and target_data.node:range() or cursor_row,
-		items = (target_data.name == requested_name) and items or {},
-		target_name = requested_name,
-	}
-end
-
-function Item_extractor.get_detected_target_data(lang_name)
-	local cursor_row = vim.api.nvim_win_get_cursor(0)[1] - 1
-	local lang_config = require("codedocs.config").opts.languages[lang_name]
-	local target_data = _get_detection_context(lang_name, "treesitter")
-
-	local has_detection = target_data
-		and lang_config.targets[target_data.name]
-		and lang_config.targets[target_data.name].detection
-
-	if not has_detection then
-		return Item_extractor.get_requested_target_data(
-			lang_name,
-			lang_config.styles[lang_config.default_style].default_annot
-		)
-	end
-
-	local targets_config = lang_config.targets[target_data.name]
-
-	return {
-		items = _extract_items(targets_config.extractors, target_data, targets_config.detection.type),
-		target_name = target_data.name,
-		row = target_data.node and target_data.node:range() or cursor_row,
-	}
-end
-
-return Item_extractor

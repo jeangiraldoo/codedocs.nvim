@@ -14,6 +14,7 @@ return {
 	default_style = "PHPDoc",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"php",
 	},
