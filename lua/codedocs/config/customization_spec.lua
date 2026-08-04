@@ -190,6 +190,49 @@ describe_customization("Add new annotation with target", function()
 	end)
 end)
 
+describe_customization("Custom detection provider", function()
+	local custom_provider = {
+		detect = function()
+			if vim.api.nvim_get_current_line():match "^func " then
+				return "func", vim.api.nvim_win_get_cursor(0)[1] - 1, {}
+			end
+		end,
+		build_identifiers = function() return {} end,
+	}
+
+	it("Lua - custom provider is used for detection", function()
+		require("codedocs").setup {
+			detection_providers = {
+				custom_provider = custom_provider,
+			},
+			languages = {
+				lua = {
+					detection_provider = "custom_provider",
+				},
+			},
+		}
+
+		Utils.mock_buffer("lua", { "func foo()", "end" }, { row = 1, col = 1 })
+
+		local target_data = Codedocs.get_target_data "lua"
+		assert.equals("func", target_data.target_name)
+	end)
+
+	it("Unknown detection provider raises an error", function()
+		assert.has_error(
+			function()
+				require("codedocs").setup {
+					languages = {
+						lua = {
+							detection_provider = "nonexistent",
+						},
+					},
+				}
+			end
+		)
+	end)
+end)
+
 ---The goal of this test suite is to verify that style options for all language target sections are customizable
 ---
 ---This test is very important since customization is not something that I can directly notice is broken while
