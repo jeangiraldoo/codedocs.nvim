@@ -134,7 +134,9 @@ describe_customization("Add new annotation with target", function()
 	local target = {
 		name = "if_statement",
 		opts = {
-			detection = { type = "treesitter", node_identifiers = { "if_statement" } },
+			detection_opts = {
+				node_identifiers = { "if_statement" },
+			},
 			extractors = {
 				someblock = {
 					treesitter = {

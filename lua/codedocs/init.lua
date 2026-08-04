@@ -51,13 +51,43 @@ function Codedocs.get_target_data(lang_name, annotation_data)
 		annotation_data = { annotation_data, { "table", "nil" } },
 	}
 
+	local TS_utils = require "codedocs.item_extractor.treesitter"
+
+	local lang_config = require("codedocs.config").opts.languages[lang_name]
+
 	local user_requested_specific_annotation = annotation_data and annotation_data.annot_name
 
-	if user_requested_specific_annotation then
-		return Item_extractor.get_requested_target_data(lang_name, annotation_data.annot_name) or {}
+	local target_name, row, target_opts
+	if lang_config.detection_provider == "treesitter" then
+		target_name, row, target_opts = TS_utils.detect_target(lang_name)
 	end
 
-	return Item_extractor.get_detected_target_data(lang_name) or {}
+	-- An explicit request is always honored, even when no target is detected
+	if user_requested_specific_annotation and target_name ~= user_requested_specific_annotation then
+		return {
+			items = {},
+			target_name = user_requested_specific_annotation,
+			row = vim.api.nvim_win_get_cursor(0)[1] - 1,
+		}
+	end
+
+	if not target_name then
+		return {
+			target_name = lang_config.styles[lang_config.default_style].default_annot,
+			items = {},
+			row = vim.api.nvim_win_get_cursor(0)[1] - 1,
+		}
+	end
+
+	local targets_config = lang_config.targets[target_name]
+
+	local items = require "codedocs.item_extractor"(
+		targets_config.extractors,
+		target_opts,
+		lang_config.detection_provider
+	) or {}
+
+	return { row = row, target_name = target_name, items = items }
 end
 
 ---@param annot_data { annot_name: string, style_name: string? }?

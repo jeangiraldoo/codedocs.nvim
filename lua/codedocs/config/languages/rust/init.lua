@@ -14,6 +14,7 @@ return {
 	default_style = "RustDoc",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"rust",
 	},

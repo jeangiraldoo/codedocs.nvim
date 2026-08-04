@@ -14,6 +14,7 @@ return {
 	default_style = "YARD",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"ruby",
 	},

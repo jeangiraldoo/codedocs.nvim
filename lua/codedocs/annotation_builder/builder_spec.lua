@@ -28,7 +28,6 @@ local MOCKED_ITEMS = {
 
 describe("Annotation builder - ", function()
 	local cases = fs_utils.read_dir_names(vim.fs.joinpath(curr_file_abs_path, "cases"))
-
 	for _, case_name in ipairs(cases) do
 		it("Case #" .. case_name, function()
 			local blocks =

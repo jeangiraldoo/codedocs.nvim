@@ -286,11 +286,11 @@ This is what the `targets` field looks like for `python`:
 require("codedocs").setup {
     languages = {
         python = {
+            detection_provider = "treesitter", -- Detection provider to use. By default only "treesitter", you can define your own
             targets = {
                 --- See the targets section below
                 func = {
-                    detection = {
-                        type = "treesitter", -- Detection type to use. By default only "treesitter", you can define your own types
+                    detection_opts = {
                         node_identifiers = { -- Tree-sitter node types recognized as functions
                             "function_definition",
                     }   },

@@ -1,4 +1,6 @@
 return {
-	detection = { type = "treesitter", node_identifiers = { "class_declaration" } },
+	detection_opts = {
+		node_identifiers = { "class_declaration" },
+	},
 	extractors = {},
 }

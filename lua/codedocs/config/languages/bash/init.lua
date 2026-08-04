@@ -14,6 +14,7 @@ return {
 	default_style = "Google",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"sh",
 	},

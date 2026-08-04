@@ -14,6 +14,7 @@ return {
 	default_style = "Doxygen",
 	styles = {},
 	targets = {},
+	detection_provider = "treesitter",
 	filetypes = {
 		"cpp",
 	},
