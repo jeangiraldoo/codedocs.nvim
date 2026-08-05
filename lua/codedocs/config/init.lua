@@ -5,9 +5,7 @@ local fs_utils = require "codedocs.utils.fs"
 ---Detection providers handle finding annotation targets in a language's syntax.
 ---Each provider exposes `detect(lang_name)` and `build_identifiers(targets_data)`.
 ---Users can register extra providers via `setup { detection_providers = {...} }`.
-local detection_providers = {
-	treesitter = require "codedocs.item_extractor.treesitter",
-}
+local detection_providers = fs_utils.build_dir_tbl "codedocs.item_extractor.providers"
 
 ---@alias CodedocsSupportedLanguages
 ---| "lua"
