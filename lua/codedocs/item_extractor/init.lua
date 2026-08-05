@@ -40,10 +40,9 @@ return function(extractors, target_data, detect_provider)
 		target_data.extractor_name = extractor_name
 
 		if type(extractor._ts_query_name) == "string" then
-			acc[extractor_name] = _dedup_items(target_data.extract_items {
-				node = target_data.node,
-				query = target_data.load_query(extractor._ts_query_name),
-			})
+			acc[extractor_name] = _dedup_items(
+				target_data.extract_items(target_data.node, target_data.load_query(extractor._ts_query_name))
+			)
 		elseif type(extractor.handler) == "function" then
 			acc[extractor_name] = _dedup_items(extractor.handler(target_data) or {})
 		else

@@ -78,7 +78,6 @@ Config.opts = {
 
 	---The `languages` table is created dynamically when the plugin first loads as there's a lot of languages;
 	---a literal `require` call per language is not pretty
-	-- languages = vim.iter(fs_utils.read_dir_names(vim.fs.joinpath(fs_utils.ABS_PATHS.CONFIG, "languages")))
 	languages = vim.iter(fs_utils.read_dir_names(fs_utils.PATHS.REL.LANGUAGES)):fold({}, function(acc, name)
 		local lang_path = fs_utils.joinmodule { fs_utils.path_to_module(fs_utils.PATHS.REL.LANGUAGES), name }
 		local base_lang_config = require(lang_path)
