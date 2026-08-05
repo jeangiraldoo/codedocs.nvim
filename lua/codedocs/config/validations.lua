@@ -37,7 +37,7 @@ function Validate.languages(languages_opts)
 		}
 
 		if opts.detection_provider then
-			local providers = require("codedocs.config").opts.detection_providers
+			local providers = require("codedocs.config").opts.item_extractor.detection_providers
 			if not providers[opts.detection_provider] then
 				error(("Unknown detection provider %q for %s"):format(opts.detection_provider, lang_path), 0)
 			end
