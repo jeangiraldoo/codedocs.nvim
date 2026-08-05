@@ -4,7 +4,7 @@ local fs_utils = require "codedocs.utils.fs"
 
 ---Detection providers handle finding annotation targets in a language's syntax.
 ---Each provider exposes `detect(lang_name)` and `build_identifiers(targets_data)`.
----Users can register extra providers via `setup { detection_providers = {...} }`.
+---Users can register extra providers via `setup { item_extractor = { detection_providers = {...} } }`.
 local detection_providers = fs_utils.build_dir_tbl "codedocs.item_extractor.providers"
 
 ---@alias CodedocsSupportedLanguages
@@ -61,10 +61,13 @@ local detection_providers = fs_utils.build_dir_tbl "codedocs.item_extractor.prov
 ---@field detect fun(lang_name: string): string?, number?, table? Detects the target under the cursor
 ---@field build_identifiers fun(targets_data: table): table<string, string> Maps identifiers to target names
 
+---@class CodedocsItemExtractorConfig
+---@field detection_providers table<string, CodedocsDetectionProvider>? Detection providers registry
+
 ---@class CodedocsConfig
 ---@field debug boolean? Wether or not to enable debug mode
 ---@field aliases table<string, CodedocsSupportedLanguages>? Aliases for filetypes -> supported languages
----@field detection_providers table<string, CodedocsDetectionProvider>? Detection providers registry
+---@field item_extractor CodedocsItemExtractorConfig? Extraction configuration
 ---@field languages CodedocsLanguagesConfigs? Languages configuration
 ---@type CodedocsConfig
 Config.opts = {
@@ -72,7 +75,6 @@ Config.opts = {
 		level = vim.log.levels.INFO,
 		path = vim.fs.joinpath(vim.fn.stdpath "log", "codedocs.log"),
 	},
-	detection_providers = detection_providers,
 
 	---The `languages` table is created dynamically when the plugin first loads as there's a lot of languages;
 	---a literal `require` call per language is not pretty
@@ -118,6 +120,9 @@ Config.opts = {
 		acc[name] = base_lang_config
 		return acc
 	end),
+	item_extractor = {
+		detection_providers = detection_providers,
+	},
 	annot_builder = {
 		state = {
 			lines = {},
@@ -180,7 +185,7 @@ end
 
 function Config.get_target_identifiers(lang_name)
 	local lang_config = Config.opts.languages[lang_name]
-	local provider = Config.opts.detection_providers[lang_config.detection_provider]
+	local provider = Config.opts.item_extractor.detection_providers[lang_config.detection_provider]
 
 	if not provider then return {} end
 

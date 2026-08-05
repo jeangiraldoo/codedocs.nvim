@@ -202,8 +202,10 @@ describe_customization("Custom detection provider", function()
 
 	it("Lua - custom provider is used for detection", function()
 		require("codedocs").setup {
-			detection_providers = {
-				custom_provider = custom_provider,
+			item_extractor = {
+				detection_providers = {
+					custom_provider = custom_provider,
+				},
 			},
 			languages = {
 				lua = {

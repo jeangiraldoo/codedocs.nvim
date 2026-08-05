@@ -57,7 +57,7 @@ function Codedocs.get_target_data(lang_name, annotation_data)
 	local user_requested_specific_annotation = annotation_data and annotation_data.annot_name
 
 	local target_name, row, target_opts
-	local provider = Config.opts.detection_providers[lang_config.detection_provider]
+	local provider = Config.opts.item_extractor.detection_providers[lang_config.detection_provider]
 	if provider then
 		target_name, row, target_opts = provider.detect(lang_name)
 	end
