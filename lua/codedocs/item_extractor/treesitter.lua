@@ -37,6 +37,52 @@ local function _load_query(language, target_name, extractor_name, query_name)
 	return query
 end
 
+local function _extract_ts_nodes(node, query_obj)
+	local node_matches = query_obj:iter_matches(node, 0)
+
+	local target_nodes = {}
+	for _, match, _ in node_matches do
+		for _, capture_node in pairs(match) do
+			local nodes = type(capture_node) == "table" and capture_node or { capture_node }
+			for _, ts_capture_node in ipairs(nodes) do
+				table.insert(target_nodes, ts_capture_node)
+			end
+		end
+	end
+
+	return target_nodes
+end
+
+local function _generic_query_parser(node, query_obj)
+	if not query_obj then return {} end
+
+	local query_capture_tags = query_obj.captures
+
+	local items = {}
+
+	for _, match, _ in query_obj:iter_matches(node, 0) do
+		local new_item = {}
+
+		for id, capture_node in pairs(match) do
+			local nodes = type(capture_node) == "table" and capture_node or { capture_node }
+
+			for _, match_capture_node in ipairs(nodes) do
+				local capture_name = query_capture_tags[id]
+
+				local node_text = vim.treesitter.get_node_text(match_capture_node, 0)
+
+				if capture_name == "item_name" then new_item.name = node_text end
+
+				if capture_name == "item_type" then new_item.type = node_text end
+			end
+		end
+
+		if vim.tbl_count(new_item) > 0 then table.insert(items, new_item) end
+	end
+
+	return items
+end
+
 local function _extract_data(ts_node, lang_name, target_identifiers)
 	if not ts_node then return end
 
@@ -45,53 +91,8 @@ local function _extract_data(ts_node, lang_name, target_identifiers)
 	if target_name then
 		local opts = {
 			node = ts_node,
-			extract_ts_nodes = function(data)
-				local node = data.node or ts_node
-				local node_matches = data.query:iter_matches(node, 0)
-
-				local target_nodes = {}
-				for _, match, _ in node_matches do
-					for _, capture_node in pairs(match) do
-						local nodes = type(capture_node) == "table" and capture_node or { capture_node }
-						for _, ts_capture_node in ipairs(nodes) do
-							table.insert(target_nodes, ts_capture_node)
-						end
-					end
-				end
-
-				return target_nodes
-			end,
-			extract_items = function(data)
-				local node = data.node or ts_node
-
-				if not data.query then return {} end
-
-				local query_capture_tags = data.query.captures
-
-				local items = {}
-
-				for _, match, _ in data.query:iter_matches(node, 0) do
-					local new_item = {}
-
-					for id, capture_node in pairs(match) do
-						local nodes = type(capture_node) == "table" and capture_node or { capture_node }
-
-						for _, match_capture_node in ipairs(nodes) do
-							local capture_name = query_capture_tags[id]
-
-							local node_text = vim.treesitter.get_node_text(match_capture_node, 0)
-
-							if capture_name == "item_name" then new_item.name = node_text end
-
-							if capture_name == "item_type" then new_item.type = node_text end
-						end
-					end
-
-					if vim.tbl_count(new_item) > 0 then table.insert(items, new_item) end
-				end
-
-				return items
-			end,
+			extract_ts_nodes = _extract_ts_nodes,
+			extract_items = _generic_query_parser,
 		}
 
 		opts.load_query = function(query_name)
