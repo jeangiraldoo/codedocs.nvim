@@ -4,8 +4,7 @@ return {
 		{
 			name = "header",
 			layout = {
-				'%>"""',
-				"%>${%snip_idx:title}",
+				'%>"""${%snip_idx:title}',
 			},
 			gap_before = {
 				parameters = {
