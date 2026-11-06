@@ -1,10 +1,11 @@
 return {
-	handler = function(target_data)
-		local items = target_data.extract_items(target_data.node, target_data.load_query "returns")
+	handler = function(detection, extractor_name, provider)
+		local items = provider.extract_items(detection.node, provider.load_query(detection, extractor_name, "returns"))
 
 		if #items > 0 then return items end
 
-		local alt_items = target_data.extract_items(target_data.node, target_data.load_query "returns_alt")
+		local alt_items =
+			provider.extract_items(detection.node, provider.load_query(detection, extractor_name, "returns_alt"))
 		for _, item in ipairs(alt_items) do
 			item.type = ""
 		end

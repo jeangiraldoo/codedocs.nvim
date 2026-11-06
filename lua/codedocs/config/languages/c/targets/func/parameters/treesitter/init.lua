@@ -1,6 +1,7 @@
 return {
-	handler = function(target_data)
-		local items = target_data.extract_items(target_data.node, target_data.load_query "parameters")
+	handler = function(detection, extractor_name, provider)
+		local items =
+			provider.extract_items(detection.node, provider.load_query(detection, extractor_name, "parameters"))
 		return vim.iter(items)
 			:map(function(item)
 				local prefix = item.name:match "^([%*]+)"

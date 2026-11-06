@@ -56,14 +56,14 @@ function Codedocs.get_target_data(lang_name, annotation_data)
 
 	local user_requested_specific_annotation = annotation_data and annotation_data.annot_name
 
-	local target_name, row, target_opts
 	local provider = Config.opts.item_extractor.detection_providers[lang_config.detection_provider]
-	if provider then
-		target_name, row, target_opts = provider.detect(lang_name)
-	end
+	local detection = provider and provider.detect(lang_name)
 
 	-- An explicit request is always honored, even when no target is detected
-	if user_requested_specific_annotation and target_name ~= user_requested_specific_annotation then
+	if
+		user_requested_specific_annotation
+		and (not detection or detection.target_name ~= user_requested_specific_annotation)
+	then
 		return {
 			items = {},
 			target_name = user_requested_specific_annotation,
@@ -71,7 +71,7 @@ function Codedocs.get_target_data(lang_name, annotation_data)
 		}
 	end
 
-	if not target_name then
+	if not detection then
 		return {
 			target_name = lang_config.styles[lang_config.default_style].default_annot,
 			items = {},
@@ -79,15 +79,16 @@ function Codedocs.get_target_data(lang_name, annotation_data)
 		}
 	end
 
-	local targets_config = lang_config.targets[target_name]
+	local targets_config = lang_config.targets[detection.target_name]
 
 	local items = require "codedocs.item_extractor"(
 		targets_config.extractors,
-		target_opts,
-		lang_config.detection_provider
+		detection,
+		lang_config.detection_provider,
+		provider
 	) or {}
 
-	return { row = row, target_name = target_name, items = items }
+	return { row = detection.row, target_name = detection.target_name, items = items }
 end
 
 ---@param annot_data { annot_name: string, style_name: string? }?

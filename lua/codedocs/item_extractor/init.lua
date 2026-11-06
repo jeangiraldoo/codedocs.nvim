@@ -26,28 +26,32 @@ local function _dedup_items(items)
 	return final_items
 end
 
-return function(extractors, target_data, detect_provider)
+---@param extractors table
+---@param detection CodedocsDetectionResult
+---@param provider_name string
+---@param provider CodedocsDetectionProvider
+return function(extractors, detection, provider_name, provider)
 	local items = vim.iter(extractors):fold({}, function(acc, extractor_name, extractor_versions)
-		local extractor = extractor_versions[detect_provider]
+		local extractor = extractor_versions[provider_name]
 
 		if not extractor or type(extractor) ~= "table" then
-			vim.notify("No extractor for detection provider: " .. tostring(detect_provider), vim.log.levels.WARN)
+			vim.notify("No extractor for detection provider: " .. tostring(provider_name), vim.log.levels.WARN)
 			acc[extractor_name] = {}
 
 			return acc
 		end
 
-		target_data.extractor_name = extractor_name
-
-		if type(extractor._ts_query_name) == "string" then
-			acc[extractor_name] = _dedup_items(
-				target_data.extract_items(target_data.node, target_data.load_query(extractor._ts_query_name))
+		if type(provider.extract) ~= "function" then
+			vim.notify(
+				"Detection provider " .. tostring(provider_name) .. " does not implement extract()",
+				vim.log.levels.WARN
 			)
-		elseif type(extractor.handler) == "function" then
-			acc[extractor_name] = _dedup_items(extractor.handler(target_data) or {})
-		else
 			acc[extractor_name] = {}
+
+			return acc
 		end
+
+		acc[extractor_name] = _dedup_items(provider.extract(detection, extractor, extractor_name) or {})
 
 		return acc
 	end)

@@ -3,7 +3,13 @@ local fs_utils = require "codedocs.utils.fs"
 local Treesitter_provider = {}
 local query_cache = {}
 
-local function _load_query(language, target_name, extractor_name, query_name)
+---@param detection CodedocsDetectionResult
+---@param extractor_name string
+---@param query_name string
+---@return userdata?
+function Treesitter_provider.load_query(detection, extractor_name, query_name)
+	local language = detection.lang_name
+	local target_name = detection.target_name
 	local cache_key = language .. ":" .. target_name .. ":" .. extractor_name .. ":" .. query_name
 
 	if query_cache[cache_key] then return query_cache[cache_key] end
@@ -37,7 +43,10 @@ local function _load_query(language, target_name, extractor_name, query_name)
 	return query
 end
 
-local function _extract_ts_nodes(node, query_obj)
+---@param node TSNode
+---@param query_obj userdata
+---@return TSNode[]
+function Treesitter_provider.extract_nodes(node, query_obj)
 	local node_matches = query_obj:iter_matches(node, 0)
 
 	local target_nodes = {}
@@ -53,7 +62,65 @@ local function _extract_ts_nodes(node, query_obj)
 	return target_nodes
 end
 
-local function _generic_query_parser(node, query_obj)
+---@param node TSNode?
+---@param target_identifiers table<string, string>
+---@return CodedocsDetectionResult?
+local function traverse_parents(node, target_identifiers)
+	while node do
+		local target_name = target_identifiers[node:type()]
+
+		if target_name then
+			local row = node:range()
+
+			return {
+				target_name = target_name,
+				node = node,
+				row = row,
+			}
+		end
+
+		node = node:parent()
+	end
+end
+
+---@param lang_name string
+---@return TSNode | nil
+local function _get_node_at_cursor(lang_name)
+	local lang_ts_parser = vim.treesitter.get_parser(0, lang_name, { error = false })
+
+	if not lang_ts_parser then
+		local error_msg = "Tree-sitter parser for " .. lang_name .. " is not installed"
+
+		vim.notify(error_msg, vim.log.levels.ERROR)
+		return
+	end
+
+	lang_ts_parser:parse()
+	return vim.treesitter.get_node()
+end
+
+---@param lang_name string
+---@return CodedocsDetectionResult?
+function Treesitter_provider.detect(lang_name)
+	vim.validate {
+		lang_name = { lang_name, "string" },
+	}
+
+	local node_at_cursor = _get_node_at_cursor(lang_name)
+	if not node_at_cursor then return end
+
+	local target_identifiers = require("codedocs.config").get_target_identifiers(lang_name)
+	local detection = traverse_parents(node_at_cursor, target_identifiers)
+	if not detection then return end
+
+	detection.lang_name = lang_name
+	return detection
+end
+
+---@param node TSNode
+---@param query_obj userdata
+---@return table[]
+function Treesitter_provider.extract_items(node, query_obj)
 	if not query_obj then return {} end
 
 	local query_capture_tags = query_obj.captures
@@ -83,49 +150,22 @@ local function _generic_query_parser(node, query_obj)
 	return items
 end
 
-local function _extract_data(ts_node, lang_name, target_identifiers)
-	if not ts_node then return end
+---@param detection CodedocsDetectionResult
+---@param extractor table
+---@param extractor_name string
+---@return table[]
+function Treesitter_provider.extract(detection, extractor, extractor_name)
+	if type(extractor._ts_query_name) == "string" then
+		local query_obj = Treesitter_provider.load_query(detection, extractor_name, extractor._ts_query_name)
 
-	local target_name = target_identifiers[ts_node:type()]
-
-	if target_name then
-		local opts = {
-			node = ts_node,
-			extract_ts_nodes = _extract_ts_nodes,
-			extract_items = _generic_query_parser,
-		}
-
-		opts.load_query = function(query_name)
-			return _load_query(lang_name, target_name, opts.extractor_name, query_name)
-		end
-
-		return target_name, ts_node:range(), opts
+		return Treesitter_provider.extract_items(detection.node, query_obj)
 	end
 
-	return _extract_data(ts_node:parent(), lang_name, target_identifiers)
-end
-
----@param lang_name string
----@return string? target_name
----@return number? row
----@return table? target_opts
-function Treesitter_provider.detect(lang_name)
-	vim.validate {
-		lang_name = { lang_name, "string" },
-	}
-	local lang_ts_parser = vim.treesitter.get_parser(0, lang_name, { error = false })
-
-	if not lang_ts_parser then
-		local error_msg = "Tree-sitter parser for " .. lang_name .. " is not installed"
-
-		vim.notify(error_msg, vim.log.levels.ERROR)
-		return
+	if type(extractor.handler) == "function" then
+		return extractor.handler(detection, extractor_name, Treesitter_provider) or {}
 	end
 
-	lang_ts_parser:parse()
-	local node_at_cursor = vim.treesitter.get_node()
-
-	return _extract_data(node_at_cursor, lang_name, require("codedocs.config").get_target_identifiers(lang_name))
+	return {}
 end
 
 ---Builds a map of tree-sitter node type -> target name for a set of targets

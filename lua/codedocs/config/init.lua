@@ -3,7 +3,7 @@ local Config = {}
 local fs_utils = require "codedocs.utils.fs"
 
 ---Detection providers handle finding annotation targets in a language's syntax.
----Each provider exposes `detect(lang_name)` and `build_identifiers(targets_data)`.
+---Each provider exposes `detect(lang_name)`, `build_identifiers(targets_data)`, and optionally `extract(...)`.
 ---Users can register extra providers via `setup { item_extractor = { detection_providers = {...} } }`.
 local detection_providers = fs_utils.build_dir_tbl "codedocs.item_extractor.providers"
 
@@ -57,9 +57,16 @@ local detection_providers = fs_utils.build_dir_tbl "codedocs.item_extractor.prov
 ---@field default_style string? Default style name
 ---@field styles table<string, table<string, CodedocsAnnotationStyleOpts>>
 
+---@class CodedocsDetectionResult
+---@field lang_name string
+---@field target_name string
+---@field node TSNode?
+---@field row number
+
 ---@class CodedocsDetectionProvider
----@field detect fun(lang_name: string): string?, number?, table? Detects the target under the cursor
+---@field detect fun(lang_name: string): CodedocsDetectionResult? Detects the target under the cursor
 ---@field build_identifiers fun(targets_data: table): table<string, string> Maps identifiers to target names
+---@field extract? fun(detection: CodedocsDetectionResult, extractor: table, extractor_name: string): table[]?
 
 ---@class CodedocsItemExtractorConfig
 ---@field detection_providers table<string, CodedocsDetectionProvider>? Detection providers registry

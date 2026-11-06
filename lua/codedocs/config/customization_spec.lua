@@ -194,7 +194,11 @@ describe_customization("Custom detection provider", function()
 	local custom_provider = {
 		detect = function()
 			if vim.api.nvim_get_current_line():match "^func " then
-				return "func", vim.api.nvim_win_get_cursor(0)[1] - 1, {}
+				return {
+					lang_name = "lua",
+					target_name = "func",
+					row = vim.api.nvim_win_get_cursor(0)[1] - 1,
+				}
 			end
 		end,
 		build_identifiers = function() return {} end,

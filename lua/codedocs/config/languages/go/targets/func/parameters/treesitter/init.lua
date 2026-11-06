@@ -1,6 +1,7 @@
 return {
-	handler = function(target_data)
-		local raw_items = target_data.extract_items(target_data.node, target_data.load_query "parameters")
+	handler = function(detection, extractor_name, provider)
+		local raw_items =
+			provider.extract_items(detection.node, provider.load_query(detection, extractor_name, "parameters"))
 
 		local final_items = {}
 		local standby = {}
