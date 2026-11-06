@@ -51,31 +51,39 @@ function Codedocs.get_target_data(lang_name, annotation_data)
 	}
 
 	local Config = require "codedocs.config"
-
 	local lang_config = Config.opts.languages[lang_name]
+
+	local FALLBACKS = {
+		row = vim.api.nvim_win_get_cursor(0)[1] - 1,
+		target_name = lang_config.styles[lang_config.default_style].default_annot,
+	}
 
 	local user_requested_specific_annotation = annotation_data and annotation_data.annot_name
 
 	local provider = Config.opts.item_extractor.detection_providers[lang_config.detection_provider]
-	local detection = provider and provider.detect(lang_name)
-
-	-- An explicit request is always honored, even when no target is detected
-	if
-		user_requested_specific_annotation
-		and (not detection or detection.target_name ~= user_requested_specific_annotation)
-	then
+	if not provider then
 		return {
 			items = {},
-			target_name = user_requested_specific_annotation,
-			row = vim.api.nvim_win_get_cursor(0)[1] - 1,
+			target_name = user_requested_specific_annotation or FALLBACKS.target_name,
+			row = FALLBACKS.row,
 		}
 	end
 
+	local detection = provider.detect(lang_name)
 	if not detection then
 		return {
-			target_name = lang_config.styles[lang_config.default_style].default_annot,
 			items = {},
-			row = vim.api.nvim_win_get_cursor(0)[1] - 1,
+			target_name = user_requested_specific_annotation or FALLBACKS.target_name,
+			row = FALLBACKS.row,
+		}
+	end
+
+	-- A requested annotation wins over a different detected target
+	if user_requested_specific_annotation and detection.target_name ~= user_requested_specific_annotation then
+		return {
+			items = {},
+			target_name = user_requested_specific_annotation,
+			row = FALLBACKS.row,
 		}
 	end
 
