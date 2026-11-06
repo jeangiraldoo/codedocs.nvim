@@ -1,5 +1,5 @@
 *codedocs.txt*
-                                  For NVIM v0.10+    Last change: 13 July 2026
+                              For NVIM v0.10+    Last change: 06 November 2026
 
 ==============================================================================
 1. Table of contents                              *codedocs-table-of-contents*
@@ -8,15 +8,15 @@
 - |codedocs-requirements|
 - |codedocs-installation|
 - |codedocs-usage|
-    - |codedocs-generate-an-annotation|
-    - |codedocs-delete-an-annotation|
-    - |codedocs-lua-api|
+    - |codedocs-usage-generate-an-annotation|
+    - |codedocs-usage-delete-an-annotation|
+    - |codedocs-usage-lua-api|
 - |codedocs-configuration|
-    - |codedocs-languages|
-        - |codedocs-targets|
-        - |codedocs-annotations|
-            - |codedocs-general-blocks|
-            - |codedocs-item-blocks|
+    - |codedocs-configuration-languages|
+        - Targets
+        - Annotations
+            - General blocks
+            - Item blocks
 - |codedocs-language-support|
 - |codedocs-roadmap|
 - |codedocs-contributing|
@@ -32,7 +32,7 @@
     generates the appropriate annotation.
 - Generates annotations beyond code, including in markup and other text-based
     filetypes
-- Supports multiple |codedocs-languages-and-styles|.
+- Supports multiple languages and styles |codedocs-language-support|.
 - Easily customize existing annotations or add new ones.
 - All built-in annotations use Neovim’s built-in snippet engine.
 - Works out-of-the-box.
@@ -219,7 +219,7 @@ fields with different values. See |codedocs-language-support|.
                     "python",
                 },
                 default_style = "reST", -- Default style used when generating annotations
-    
+
                 -- Annotation style definitions
                 styles = {
                     -- Style name
@@ -287,15 +287,15 @@ This is what the `targets` field looks like for `python`:
     require("codedocs").setup {
         languages = {
             python = {
+                detection_provider = "treesitter", -- Detection provider to use. By default only "treesitter", you can define your own
                 targets = {
                     --- See the targets section below
                     func = {
-                        detection = {
-                            type = "treesitter", -- Detection type to use. By default only "treesitter", you can define your own types
+                        detection_opts = {
                             node_identifiers = { -- Tree-sitter node types recognized as functions
                                 "function_definition",
                         }   },
-    
+
                         -- Functions responsible for extracting items from the target
                         extractors = {
                             parameters = function()
@@ -321,7 +321,7 @@ ANNOTATIONS ~
 
 
   [!IMPORTANT] Overriding a list of blocks replaces the default list entirely.
-  To modify a single block, see |codedocs-customizing-blocks|.
+  To modify a single block, see Customizing blocks.
 Annotations are defined as a table with specific options.
 
   ---------------------------------------------------------------------------
@@ -369,7 +369,7 @@ suboptions:
 
   -------------------------------------------------------------------------
   Name      Expected Value    Behavior
-            Type              
+            Type
   --------- ----------------- ---------------------------------------------
   enabled   boolean           Whether the gap is inserted before the named
                               block
@@ -425,12 +425,12 @@ requires copying the original list first.
 >lua
     local config_opts = require("codedocs.config").opts
     local original_blocks = config_opts.languages.python.styles.Google.func.blocks
-    
+
     local new_blocks = vim.deepcopy(original_blocks)
-    
+
     -- Enable gaps between parameter items
     new_blocks[2].items.insert_gap_between.enabled = true
-    
+
     require("codedocs").setup({
         languages = {
             python = {
@@ -647,7 +647,7 @@ providing the same powerful features.
   Neogen          Neovim    Lua         Required
 
   vim-doge        Neovim /  Rust,       Required
-                  Vim       Vimscript   
+                  Vim       Vimscript
   ------------------------------------------------------------------------
 All of the aforementioned plugins fulfill the same core goal: annotating code
 structures. The main differences are regarding how the plugins are configured,
