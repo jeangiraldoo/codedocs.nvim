@@ -1,8 +1,8 @@
-local Utils = {}
+local M = {}
 
 local _filetypes_map
 
-function Utils._determine_lang_name()
+function M._determine_lang_name()
 	if not _filetypes_map then
 		local langs_config = require("codedocs.config").opts.languages
 		local filetypes_map = {}
@@ -18,4 +18,4 @@ function Utils._determine_lang_name()
 	return _filetypes_map[vim.bo.filetype]
 end
 
-return Utils
+return M

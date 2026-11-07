@@ -1,13 +1,13 @@
 local fs_utils = require "codedocs.utils.fs"
 
-local Treesitter_provider = {}
+local M = {}
 local query_cache = {}
 
 ---@param detection CodedocsDetectionResult
 ---@param extractor_name string
 ---@param query_name string
 ---@return userdata?
-function Treesitter_provider.load_query(detection, extractor_name, query_name)
+function M.load_query(detection, extractor_name, query_name)
 	local language = detection.lang_name
 	local target_name = detection.target_name
 	local cache_key = language .. ":" .. target_name .. ":" .. extractor_name .. ":" .. query_name
@@ -46,7 +46,7 @@ end
 ---@param node TSNode
 ---@param query_obj userdata
 ---@return TSNode[]
-function Treesitter_provider.extract_nodes(node, query_obj)
+function M.extract_nodes(node, query_obj)
 	local node_matches = query_obj:iter_matches(node, 0)
 
 	local target_nodes = {}
@@ -101,7 +101,7 @@ end
 
 ---@param lang_name string
 ---@return CodedocsDetectionResult?
-function Treesitter_provider.detect(lang_name)
+function M.detect(lang_name)
 	vim.validate {
 		lang_name = { lang_name, "string" },
 	}
@@ -110,6 +110,7 @@ function Treesitter_provider.detect(lang_name)
 	if not node_at_cursor then return end
 
 	local target_identifiers = require("codedocs.config").get_target_identifiers(lang_name)
+
 	local detection = traverse_parents(node_at_cursor, target_identifiers)
 	if not detection then return end
 
@@ -120,7 +121,7 @@ end
 ---@param node TSNode
 ---@param query_obj userdata
 ---@return table[]
-function Treesitter_provider.extract_items(node, query_obj)
+function M.extract_items(node, query_obj)
 	if not query_obj then return {} end
 
 	local query_capture_tags = query_obj.captures
@@ -154,16 +155,14 @@ end
 ---@param extractor table
 ---@param extractor_name string
 ---@return table[]
-function Treesitter_provider.extract(detection, extractor, extractor_name)
+function M.extract(detection, extractor, extractor_name)
 	if type(extractor._ts_query_name) == "string" then
-		local query_obj = Treesitter_provider.load_query(detection, extractor_name, extractor._ts_query_name)
+		local query_obj = M.load_query(detection, extractor_name, extractor._ts_query_name)
 
-		return Treesitter_provider.extract_items(detection.node, query_obj)
+		return M.extract_items(detection.node, query_obj)
 	end
 
-	if type(extractor.handler) == "function" then
-		return extractor.handler(detection, extractor_name, Treesitter_provider) or {}
-	end
+	if type(extractor.handler) == "function" then return extractor.handler(detection, extractor_name, M) or {} end
 
 	return {}
 end
@@ -171,7 +170,7 @@ end
 ---Builds a map of tree-sitter node type -> target name for a set of targets
 ---@param targets_data table<string, table>
 ---@return table<string, string>
-function Treesitter_provider.build_identifiers(targets_data)
+function M.build_identifiers(targets_data)
 	local target_identifiers = {}
 	for target_name, target_data in pairs(targets_data) do
 		if target_data.detection_opts then
@@ -183,4 +182,4 @@ function Treesitter_provider.build_identifiers(targets_data)
 	return target_identifiers
 end
 
-return Treesitter_provider
+return M

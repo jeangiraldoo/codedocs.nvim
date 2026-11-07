@@ -1,6 +1,6 @@
 local Logger = require "codedocs.utils.logger"
 
-local Codedocs = {}
+local M = {}
 
 ---@class CodedocsAnnotRequest
 ---@field annot_name string
@@ -38,7 +38,7 @@ local function _write_to_buffer(annotation_lines, row, placement)
 end
 
 ---@param user_config CodedocsConfig?
-function Codedocs.setup(user_config)
+function M.setup(user_config)
 	Logger.info "Setup called"
 	Logger.debug("Setup options: " .. vim.inspect(user_config))
 
@@ -51,7 +51,7 @@ end
 ---@param lang_name string
 ---@param annotation_data CodedocsAnnotRequest
 ---@return { items: table, target_name: string, row: number }
-function Codedocs.resolve_target_data(lang_name, annotation_data)
+function M.resolve_target_data(lang_name, annotation_data)
 	vim.validate {
 		lang_name = { lang_name, "string" },
 		annotation_data = { annotation_data, { "table", "nil" } },
@@ -107,7 +107,7 @@ function Codedocs.resolve_target_data(lang_name, annotation_data)
 end
 
 ---@param annot_data CodedocsAnnotRequest?
-function Codedocs.generate(annot_data)
+function M.generate(annot_data)
 	Logger.info "Annotation generation started"
 
 	vim.validate {
@@ -126,7 +126,7 @@ function Codedocs.generate(annot_data)
 	local lang_name = require("codedocs.utils.general")._determine_lang_name()
 	Logger.info("Language: " .. lang_name)
 
-	local target_data = Codedocs.resolve_target_data(lang_name, annot_data)
+	local target_data = M.resolve_target_data(lang_name, annot_data)
 	local annot = require("codedocs.annotation_builder").prepare_annotation(lang_name, annot_data, target_data)
 
 	Logger.info("Annotation content" .. vim.inspect(annot.lines))
@@ -137,4 +137,4 @@ function Codedocs.generate(annot_data)
 	end
 end
 
-return Codedocs
+return M

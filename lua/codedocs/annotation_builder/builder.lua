@@ -1,7 +1,7 @@
-local Annot_builder = {}
-Annot_builder.__index = Annot_builder
+local M = {}
+M.__index = M
 
-function Annot_builder.new(items, builder_config, row)
+function M.new(items, builder_config, row)
 	local obj = {
 		placeholders = {
 			general = {},
@@ -27,11 +27,11 @@ function Annot_builder.new(items, builder_config, row)
 	}
 	obj = vim.tbl_deep_extend("force", obj, vim.deepcopy(builder_config))
 
-	setmetatable(obj, Annot_builder)
+	setmetatable(obj, M)
 	return obj
 end
 
-function Annot_builder:apply_general_placeholder(str)
+function M:apply_general_placeholder(str)
 	for placeholder, handler in pairs(self.placeholders.general) do
 		str = str:gsub(placeholder, function() return handler(self.state) end)
 	end
@@ -39,7 +39,7 @@ function Annot_builder:apply_general_placeholder(str)
 	return str
 end
 
-function Annot_builder:apply_item_placeholder(str, item)
+function M:apply_item_placeholder(str, item)
 	for placeholder, handler in pairs(self.placeholders.items) do
 		str = str:gsub(placeholder, function() return handler(self.state, item) end)
 		str = self:apply_general_placeholder(str)
@@ -48,7 +48,7 @@ function Annot_builder:apply_item_placeholder(str, item)
 	return str
 end
 
-function Annot_builder:build_items_group_lines(group_items, layout, gap)
+function M:build_items_group_lines(group_items, layout, gap)
 	if #group_items == 0 then return {} end
 
 	local group_lines = {}
@@ -66,7 +66,7 @@ function Annot_builder:build_items_group_lines(group_items, layout, gap)
 	return group_lines
 end
 
-function Annot_builder:block(blocks, is_item)
+function M:block(blocks, is_item)
 	local content = {}
 
 	local gap_data
@@ -114,7 +114,7 @@ function Annot_builder:block(blocks, is_item)
 	return content
 end
 
-function Annot_builder:build(blocks)
+function M:build(blocks)
 	local block_lines = self:block(blocks, false)
 
 	vim.list_extend(self.state.lines, block_lines)
@@ -122,4 +122,4 @@ function Annot_builder:build(blocks)
 	return self.state.lines
 end
 
-return Annot_builder
+return M

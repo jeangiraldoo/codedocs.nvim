@@ -1,4 +1,4 @@
-local Logger = {}
+local M = {}
 
 local LEVELS_LABELS = {
 	[vim.log.levels.DEBUG] = "DEBUG",
@@ -38,18 +38,18 @@ local function _log(msg, level)
 end
 
 ---@param msg string
-function Logger.info(msg) _log(msg, vim.log.levels.INFO) end
+function M.info(msg) _log(msg, vim.log.levels.INFO) end
 
 ---@param msg string
-function Logger.debug(msg) _log(msg, vim.log.levels.DEBUG) end
+function M.debug(msg) _log(msg, vim.log.levels.DEBUG) end
 
 ---@param msg string
-function Logger.warn(msg) _log(msg, vim.log.levels.WARN) end
+function M.warn(msg) _log(msg, vim.log.levels.WARN) end
 
 ---@param msg string
-function Logger.trace(msg) _log(msg, vim.log.levels.TRACE) end
+function M.trace(msg) _log(msg, vim.log.levels.TRACE) end
 
 ---@param msg string
-function Logger.error(msg) _log(msg, vim.log.levels.ERROR) end
+function M.error(msg) _log(msg, vim.log.levels.ERROR) end
 
-return Logger
+return M

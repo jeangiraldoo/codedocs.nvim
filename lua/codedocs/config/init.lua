@@ -1,4 +1,4 @@
-local Config = {}
+local M = {}
 
 local fs_utils = require "codedocs.utils.fs"
 
@@ -77,7 +77,7 @@ local detection_providers = fs_utils.build_dir_tbl "codedocs.item_extractor.prov
 ---@field item_extractor CodedocsItemExtractorConfig? Extraction configuration
 ---@field languages CodedocsLanguagesConfigs? Languages configuration
 ---@type CodedocsConfig
-Config.opts = {
+M.opts = {
 	logging = {
 		level = vim.log.levels.INFO,
 		path = vim.fs.joinpath(vim.fn.stdpath "log", "codedocs.log"),
@@ -161,14 +161,14 @@ Config.opts = {
 	},
 }
 
-function Config.setup(user_config)
+function M.setup(user_config)
 	vim.validate {
 		user_config = { user_config, "table" },
 	}
 
 	if not user_config then return end
 
-	local opts = Config.opts
+	local opts = M.opts
 	local merged = vim.tbl_deep_extend("force", opts, user_config)
 
 	for k in pairs(opts) do
@@ -181,18 +181,18 @@ function Config.setup(user_config)
 	require("codedocs.config.validations").all(merged)
 end
 
-function Config.get_supported_langs() return vim.tbl_keys(Config.opts.languages) end
+function M.get_supported_langs() return vim.tbl_keys(M.opts.languages) end
 
 ---@return string[] supported_styles List of style names
-function Config.get_supported_styles(lang_name)
-	local supported_styles = vim.tbl_keys(Config.opts.languages[lang_name].styles)
+function M.get_supported_styles(lang_name)
+	local supported_styles = vim.tbl_keys(M.opts.languages[lang_name].styles)
 	table.sort(supported_styles)
 	return supported_styles
 end
 
-function Config.get_target_identifiers(lang_name)
-	local lang_config = Config.opts.languages[lang_name]
-	local provider = Config.opts.item_extractor.detection_providers[lang_config.detection_provider]
+function M.get_target_identifiers(lang_name)
+	local lang_config = M.opts.languages[lang_name]
+	local provider = M.opts.item_extractor.detection_providers[lang_config.detection_provider]
 
 	if not provider then return {} end
 
@@ -203,4 +203,4 @@ function Config.get_target_identifiers(lang_name)
 	return targets_data._identifiers
 end
 
-return Config
+return M

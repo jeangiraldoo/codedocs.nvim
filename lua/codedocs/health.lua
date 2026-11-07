@@ -1,4 +1,4 @@
-local Health = {}
+local M = {}
 
 local NEOVIM_VERSION = {
 	MINIMUM = "0.10",
@@ -36,9 +36,9 @@ local function _show_annotable_languages()
 	end
 end
 
-function Health.check()
+function M.check()
 	_check_neovim_version()
 	_show_annotable_languages()
 end
 
-return Health
+return M

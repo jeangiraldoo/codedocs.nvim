@@ -1,6 +1,6 @@
-local Test_utils = {}
+local M = {}
 
-function Test_utils.parse_golden_file(lines)
+function M.parse_golden_file(lines)
 	local marker = "<CURSOR>"
 	local cleaned = vim.deepcopy(lines)
 
@@ -20,7 +20,7 @@ end
 ---@param filetype string
 ---@param buffer_lines string[]
 ---@param cursor_pos { row: number, col: number }
-function Test_utils.mock_buffer(filetype, buffer_lines, cursor_pos)
+function M.mock_buffer(filetype, buffer_lines, cursor_pos)
 	vim.validate {
 		filetype = { filetype, "string" },
 		buffer_lines = { buffer_lines, "table" },
@@ -43,7 +43,7 @@ end
 
 ---Builds a list with the names of the targets a language supports
 ---@return string[] supported_target_names
-function Test_utils.get_supported_targets(lang_name)
+function M.get_supported_targets(lang_name)
 	local target_identifiers = require("codedocs.config").get_target_identifiers(lang_name)
 
 	local values = vim.tbl_values(target_identifiers)
@@ -54,7 +54,7 @@ function Test_utils.get_supported_targets(lang_name)
 	return supported_target_names
 end
 
-function Test_utils.for_style(func)
+function M.for_style(func)
 	for _, lang_name in ipairs(require("codedocs.config").get_supported_langs()) do
 		for _, style_name in ipairs(require("codedocs.config").get_supported_styles(lang_name)) do
 			func(lang_name, style_name)
@@ -62,4 +62,4 @@ function Test_utils.for_style(func)
 	end
 end
 
-return Test_utils
+return M

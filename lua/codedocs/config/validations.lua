@@ -1,6 +1,6 @@
-local Validate = {}
+local M = {}
 
-function Validate.logging(opts)
+function M.logging(opts)
 	vim.validate {
 		["config.logging"] = { opts, "table" },
 	}
@@ -12,7 +12,7 @@ function Validate.logging(opts)
 	}
 end
 
-function Validate.languages(languages_opts)
+function M.languages(languages_opts)
 	vim.validate {
 		["config.languages"] = { languages_opts, "table" },
 	}
@@ -139,9 +139,9 @@ function Validate.languages(languages_opts)
 	end
 end
 
-function Validate.all(config)
-	Validate.logging(config.logging)
-	Validate.languages(config.languages)
+function M.all(config)
+	M.logging(config.logging)
+	M.languages(config.languages)
 end
 
-return Validate
+return M
